@@ -6,10 +6,10 @@ const { seoMiddelware } = require('../middlewares/SeoMiddleware')
 // Установка заголовков и описаний страниц
 router.use(seoMiddelware)
 
-// Главная 
+// Главная
 router.get('/', pages.home)
 
-// Вход на сайт 
+// Вход на сайт
 router.get('/login', pages.login)
 
 // Регистрация

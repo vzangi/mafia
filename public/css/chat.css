@@ -36,14 +36,14 @@
   margin-top: 2px;
 }
 
-.chat-settings>span {
+.chat-settings > span {
   font-size: 26px;
   cursor: pointer;
   transition: color 0.3s ease;
   color: #bbb;
 }
 
-.chat-settings>span:hover {
+.chat-settings > span:hover {
   color: var(--color-true-white);
 }
 
@@ -103,32 +103,32 @@
   right: 0;
   bottom: 0;
   background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
 .slider:before {
   position: absolute;
-  content: "";
+  content: '';
   height: 17px;
   width: 17px;
   left: 4px;
   bottom: 4px;
   background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
-input:checked+.slider {
-  background-color: #2196F3;
+input:checked + .slider {
+  background-color: #2196f3;
   background: var(--color-gold);
 }
 
-input:focus+.slider {
-  box-shadow: 0 0 1px #2196F3;
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196f3;
 }
 
-input:checked+.slider:before {
+input:checked + .slider:before {
   -webkit-transform: translateX(19px);
   -ms-transform: translateX(19px);
   transform: translateX(19px);
@@ -203,6 +203,15 @@ input:checked+.slider:before {
   overflow-x: hidden;
   margin: 1em 0 0.5em;
   transition: all 0.3s ease;
+  line-height: 1.4em;
+}
+
+.chat.font-14 {
+  font-size: 14px;
+}
+
+.chat.font-18 {
+  font-size: 18px;
 }
 
 .expand .chat {
@@ -286,7 +295,7 @@ input:checked+.slider:before {
 .all-smiles-title {
   text-transform: uppercase;
   font-size: 0.8em;
-  color: var(--color-black-light)
+  color: var(--color-black-light);
 }
 
 .all-smiles-items {
@@ -309,7 +318,6 @@ input:checked+.slider:before {
   color: var(--color-yellow);
 }
 
-
 .highlight .m-message,
 .highlight a {
   color: inherit;
@@ -322,11 +330,11 @@ input:checked+.slider:before {
 }
 
 .m-time {
-  font-size: small;
+  font-size: 0.75em;
 }
 
 .m-nik {
-  font-size: 14px;
+  /* font-size: 14px; */
   font-weight: 700;
   border-radius: 5px;
   /* padding: 0 5px 1px; */
@@ -335,19 +343,19 @@ input:checked+.slider:before {
 }
 
 .m-nik.vip:before {
-  content: "\f2fc";
-  font-family: "Ionicons";
+  content: '\f2fc';
+  font-family: 'Ionicons';
   margin-right: 5px;
 }
 
 .m-message {
-  font-size: 14px;
+  /* font-size: 14px; */
   font-weight: 600;
 }
 
 .m-delimiter {
   /* margin: 0 4px 0 0; */
-  font-size: 12px;
+  /* font-size: 12px; */
   position: relative;
   top: -1px;
 }
@@ -368,7 +376,6 @@ input:checked+.slider:before {
 .chat::-webkit-scrollbar {
   width: 10px;
   background-color: var(--chat-black-light);
-  ;
 }
 
 .chat::-webkit-scrollbar-thumb {
@@ -380,7 +387,6 @@ input:checked+.slider:before {
   background-color: #f9f9fd;
 }
 
-
 /* ЗЕЛЁНАЯ ТЕМА */
 
 .chat-box.green {
@@ -391,11 +397,11 @@ input:checked+.slider:before {
   background-color: var(--chat-green-light);
 }
 
-.green .chat-settings>span {
+.green .chat-settings > span {
   color: #050;
 }
 
-.green .chat-settings>span:hover {
+.green .chat-settings > span:hover {
   color: var(--color-white);
 }
 
@@ -409,11 +415,11 @@ input:checked+.slider:before {
   background-color: var(--chat-blue-light);
 }
 
-.blue .chat-settings>span {
+.blue .chat-settings > span {
   color: #007;
 }
 
-.blue .chat-settings>span:hover {
+.blue .chat-settings > span:hover {
   color: var(--color-white);
 }
 
@@ -421,7 +427,7 @@ input:checked+.slider:before {
 
 .chat-box.white {
   background-color: var(--chat-white);
-  color: var(--color-black)
+  color: var(--color-black);
 }
 
 .white .message-box {
@@ -437,6 +443,50 @@ input:checked+.slider:before {
   box-shadow: 0 0 10px #ddd;
 }
 
-.white .chat-settings>span:hover {
+.white .chat-settings > span:hover {
   color: var(--color-black-light);
+}
+
+.font-size-items {
+  display: flex;
+  gap: 1em;
+  align-items: end;
+}
+.font-size {
+  text-align: center;
+  padding: 5px;
+  cursor: pointer;
+  border-radius: 100px;
+  border: 2px solid transparent;
+}
+.font-size.active {
+  border: 2px solid var(--color-gold);
+}
+.font-size.active,
+.font-size:hover {
+  background-color: var(--chat-black);
+}
+.font-size.big {
+  width: 54px;
+}
+.font-size.big svg {
+  width: 40px;
+}
+
+.font-size.normal {
+  width: 44px;
+}
+.font-size.normal svg {
+  width: 30px;
+}
+
+.font-size.small {
+  width: 36px;
+}
+.font-size.small svg {
+  width: 20px;
+}
+.white .font-size.active,
+.white .font-size:hover {
+  background: var(--chat-white);
 }

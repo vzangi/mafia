@@ -1,35 +1,34 @@
 const smiles = require('../units/smiles')
 
 class Pages {
+  home(req, res) {
+    res.render('pages/home')
+  }
 
-    home(req, res) {
-        res.render('home')
-    }
+  lobbi(req, res) {
+    res.render('pages/lobbi', { smiles })
+  }
 
-    lobbi(req, res) {
-        res.render('lobbi', { smiles })
+  login(req, res) {
+    if (req.user) {
+      return res.redirect('pages/lobbi')
     }
+    res.render('pages/login')
+  }
 
-    login(req, res) {
-        if (req.user) {
-            return res.redirect('/lobbi')
-        }
-        res.render('login')
+  registration(req, res) {
+    if (req.user) {
+      return res.redirect('pages/lobbi')
     }
+    res.render('pages/reg')
+  }
 
-    registration(req, res) {
-        if (req.user) {
-            return res.redirect('/lobbi')
-        }
-        res.render('reg')
+  restore(req, res) {
+    if (req.user) {
+      return res.redirect('pages/lobbi')
     }
-
-    restore(req, res) {
-        if (req.user) {
-            return res.redirect('/lobbi')
-        }
-        res.render('restore')
-    }
+    res.render('pages/restore')
+  }
 }
 
 module.exports = new Pages()

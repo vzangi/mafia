@@ -3,9 +3,9 @@ const express = require('express')
 const app = express()
 const http = require('http')
 const server = http.createServer(app)
-const { Server } = require("socket.io")
+const { Server } = require('socket.io')
 const io = new Server(server)
-const sequelize = require('./db');
+const sequelize = require('./db')
 const cookieParser = require('cookie-parser')
 const { validateToken } = require('./jwt')
 const { userToTemplate } = require('../middlewares/AuthMiddleware')
@@ -20,7 +20,7 @@ app.set('view engine', 'pug')
 // Могу использовать json
 app.use(express.json())
 
-// Использую куки 
+// Использую куки
 app.use(cookieParser())
 
 // Проверка наличия и валидности токена авторизации
@@ -30,8 +30,8 @@ app.use(validateToken)
 app.use(userToTemplate)
 
 module.exports = {
-    app,
-    server,
-    io,
-    sequelize
+  app,
+  server,
+  io,
+  sequelize,
 }
