@@ -53,8 +53,12 @@ $(function () {
     $(".to-zags").click(function () {
         const { id } = $(this).data()
         if (confirm("Вы уверены, что хотите сделать предложение?")) {
-            socket.emit('friends.zags', id, () => {
-                location.reload()
+            socket.emit('friends.zags', id, (res) => {
+                if (res && res.status == 0) {
+                    location.reload()
+                } else {
+                    alert(res.msg)
+                }
             })
         }
     })

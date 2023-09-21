@@ -450,7 +450,7 @@ input:checked + .slider:before {
 .font-size-items {
   display: flex;
   gap: 1em;
-  align-items: end;
+  align-items: center;
 }
 .font-size {
   text-align: center;

@@ -37,4 +37,7 @@ router.post(
   profile.changePassword
 )
 
+// Кошелёк
+router.get('/wallet', isAuth, profile.wallet)
+
 module.exports = router

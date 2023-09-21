@@ -42,30 +42,9 @@ class Profile {
       ogimage: process.env.APP_HOST + '/uploads/' + account.avatar,
     }
 
-    data.friends = await Friend.findAll({
-      where: {
-        accountId: account.id,
-        [Op.or]: [
-          { status: Friend.statuses.ACCEPTED },
-          { status: Friend.statuses.MARRIED },
-        ],
-      },
-      include: {
-        model: Account,
-        as: 'friend',
-      },
-    })
+    data.friends = await Friend.scope({ method: ['friends', account.id] }).findAll()
 
-    data.partner = await Friend.findOne({
-      where: {
-        accountId: account.id,
-        status: Friend.statuses.MARRIED,
-      },
-      include: {
-        model: Account,
-        as: 'friend',
-      },
-    })
+    data.partner = await Friend.scope({ method: ['partner', account.id] }).findOne()
 
     data.friendsCorrectForm = correctForm(data.friends.length)
 
@@ -120,6 +99,7 @@ class Profile {
       profile: account,
       friends,
       partner,
+      title: `Друзья игрока ${account.username}`
     })
   }
 
@@ -144,11 +124,14 @@ class Profile {
     res.render('pages/friends-requests', {
       profile: req.account,
       requests,
+      title: `Запросы в друзья`
     })
   }
 
   changePasswordForm(req, res) {
-    res.render('pages/change-password')
+    res.render('pages/change-password', {
+      title: 'Смена пароля'
+    })
   }
 
   async changePassword(req, res) {
@@ -169,6 +152,10 @@ class Profile {
     user.update({ password: hash })
 
     res.json([{ msg: 'Пароль успешно изменён' }])
+  }
+
+  wallet(req, res) {
+    res.render('pages/wallet')
   }
 }
 

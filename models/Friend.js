@@ -55,6 +55,35 @@ const Friend = sequelize.define(
           },
         }
       },
+      // Друзья
+      friends(accountId) {
+        return {
+          where: {
+            accountId,
+            [Op.or]: [
+              { status: friendshipStatuses.ACCEPTED },
+              { status: friendshipStatuses.MARRIED },
+            ],
+          },
+          include: {
+            model: Account,
+            as: 'friend',
+          },
+        }
+      },
+      // Супруг(а)
+      partner(accountId) {
+        return {
+          where: {
+            accountId,
+            status: friendshipStatuses.MARRIED,
+          },
+          include: {
+            model: Account,
+            as: 'friend',
+          },
+        }
+      }
     },
   }
 )

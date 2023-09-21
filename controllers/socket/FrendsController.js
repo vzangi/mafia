@@ -1,3 +1,4 @@
+const { Op } = require('sequelize')
 const Friend = require('../../models/Friend')
 const BaseSocketController = require('./BaseSocketController')
 
@@ -233,12 +234,57 @@ class FrendsController extends BaseSocketController {
 
     // Ищем игрока в друзьях (предложение можно сделать только другу)
     const isFrends = await Friend.findOne({
-      friendId,
-      accountId: user.id,
-      socket: Friend.statuses.ACCEPTED,
+      where: {
+        friendId,
+        accountId: user.id,
+        status: Friend.statuses.ACCEPTED,
+      }
     })
 
-    if (!isFrends) return
+    if (!isFrends) {
+      return callback({
+        status: 1,
+        msg: 'Предложение можно сделать только одному из друзей'
+      })
+    }
+
+    const haveZagsRequests = await Friend.findOne({
+      where: {
+        accountId: user.id,
+        [Op.or]: [
+          { status: Friend.statuses.MARRIED },
+          { status: Friend.statuses.MARRIED_REQUEST },
+        ]
+      }
+    })
+
+    if (haveZagsRequests) {
+      return callback({
+        status: 2,
+        msg: haveZagsRequests.status == Friend.statuses.MARRIED
+          ? 'Вы уже сходили в ЗАГС'
+          : 'Вы уже сделали предложение, нельзя делать второе пока оно не отклонено'
+      })
+    }
+
+    const friendMarried = await Friend.findOne({
+      where: {
+        friendId,
+        [Op.or]: [
+          { status: Friend.statuses.MARRIED },
+          { status: Friend.statuses.MARRIED_REQUEST },
+        ]
+      }
+    })
+
+    if (friendMarried) {
+      return callback({
+        status: 3,
+        msg: friendMarried.status == Friend.statuses.MARRIED
+          ? 'Этот игрок уже сходил в ЗАГС'
+          : 'Этому игроку уже сделали предложение'
+      })
+    }
 
     // Создаем запрос предложения
     await Friend.create({
@@ -248,7 +294,10 @@ class FrendsController extends BaseSocketController {
     })
 
     // Возвращаем на клиент результат
-    callback()
+    callback({
+      status: 0,
+      msg: 'Предложение сделано'
+    })
 
     // Пробуем оповестить о новом предложении
     this._notifyFriendshipRequest(friendId)
@@ -335,7 +384,27 @@ class FrendsController extends BaseSocketController {
   // Развод
   async divorce(friendId, callback) {
     const { user } = this
-    if (!user || !friendId) return
+    if (!user || !friendId) {
+      return callback({
+        status: 1,
+        msg: 'Нет необходимых данных'
+      })
+    } 
+
+    const isMarried = await Friend.findOne({
+      where: {
+        accountId: user.id,
+        friendId,
+        status: Friend.statuses.MARRIED
+      }
+    })
+
+    if (!isMarried) {
+      return callback({
+        status: 2,
+        msg: 'Вы не можете развестись с тем, с кем не состоите в отношениях'
+      })
+    }
 
     // Удаляю записи о свадьбе
     await Friend.destroy({
@@ -351,8 +420,23 @@ class FrendsController extends BaseSocketController {
       },
     })
 
+    // Возвращаю дружбу
+    await Friend.create({
+      accountId: user.id,
+      friendId,
+      status: Friend.statuses.ACCEPTED
+    })
+    await Friend.create({
+      accountId: friendId,
+      friendId: user.id,
+      status: Friend.statuses.ACCEPTED
+    })
+
     // Возвращаю клиенту ответ
-    callback()
+    callback({
+      status: 0,
+      msg: 'Вы развелись'
+    })
   }
 }
 
