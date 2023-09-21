@@ -1,0 +1,13 @@
+include ../form_mixins
+              
+div(class="container")
+  div(class='block block-320 mb-4')
+    div(class='title title-3') Авторизация
+    form(class="form" id="login-form" method="post")
+      +form_row("Никнейм", "text", "login-form-nik", "например, nagibator2005", true)
+      +form_row("Пароль", "password", "login-form-pass", "например, ******", true)
+      div(class="form-row")
+        input(class="btn btn-success me-4" type="submit" value="Войти")
+        a(href="/restore" class="small") Забыли пароль?
+      div(class="alert alert-danger hide") 
+      

@@ -1,0 +1,20 @@
+body {
+    background: #eee;
+}
+header {
+    background: var(--color-true-white);
+    border-bottom: 1px solid #ddd;
+}
+.header-logo>svg>path,
+.header-logo div {
+    fill: var(--color-footer-gray-dark);
+    color: var(--color-footer-gray-dark);
+}
+
+header li a.nav-link {
+    color: var(--color-footer-gray-dark);
+}
+
+.light-text {
+    color: var(--color-footer-gray-light);
+}

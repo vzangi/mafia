@@ -1,0 +1,32 @@
+script(id="userTmpl" type="text/x-jquery-tmpl")
+  span
+    . 
+      [
+    a(href="/profile/${account.id}" title="ответить ${account.username}" class="m-nik {{if account.vip}}vip{{/if}}" tabindex="-1") ${account.username}
+    . 
+      ]
+script(id="messageTmpl" type="text/x-jquery-tmpl")
+  div(class="message-box {{if highlight }}highlight{{/if}}")
+    div(class="message")
+      div(class="m-time me-2" title="${date}") ${time}
+    span {{tmpl() '#userTmpl'}}
+      span(class="m-delimiter")  — 
+      span(class="m-message") {{html message}}
+
+script(id="smileTmpl" type="text/x-jquery-tmpl")
+  img(src='/images/e${smile}.svg' alt='${smile}')
+
+script(id="linkTmpl" type="text/x-jquery-tmpl")
+  a(href='${link}' target='_blank') ${url}
+
+script(id="typingTmpl" type="text/x-jquery-tmpl")
+  .
+    {{if users.length != 0 }}
+      <span>${list}
+      {{if users.length > 2}}и ещё ${users.length - 2}{{/if}} 
+      {{if users.length == 1}}печатает
+      {{else}}печатают
+      {{/if}}
+      ...
+      </span>
+    {{/if}}

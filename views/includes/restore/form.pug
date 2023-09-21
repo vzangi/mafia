@@ -1,0 +1,12 @@
+include ../form_mixins
+              
+div(class="container")
+  div(class='block block-320 mb-4')
+    div(class='title title-3') Восстановление пароля
+    form(class="form" id="restore-form" method="post" action="/restore")
+      +form_row("Электронная почта", "email", "restore-form-email", "например, ivan@mail.ru", true)
+      div(class="form-row")
+        input(class="btn btn-success" type="submit" value="Далее")
+      div(class="alert alert-danger hide") 
+    div(class="success hide")
+      p(class="m-4") Ссылка для восстановления пароля отправлена на указанный адрес.

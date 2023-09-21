@@ -1,0 +1,14 @@
+include ../form_mixins
+              
+div(class="container")
+  div(class='block block-320 mb-4')
+    div(class='title title-3') Смена пароля
+    form(class="form" id="cp-form" method="post")
+      +form_row("Пароль", "password", "cp-form-pass", "например, ******", true)
+      +form_row("Подтверждение", "password", "cp-form-pass2", "например, ******", true)
+      div(class="form-row")
+        input(class="btn btn-success me-4" type="submit" value="Сменить пароль")
+      div(class="alert alert-danger hide") 
+    div(class="success hide")
+      p(class="m-4") Пароль успешно изменён!
+      

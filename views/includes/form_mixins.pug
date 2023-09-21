@@ -1,0 +1,9 @@
+mixin form_row(label, type, id, placeholder, required=false)
+  div(class="form-row")
+    if label != ''
+      label= label
+    if required
+      input(class="form-input" type=type id=id name=id  placeholder= placeholder autocapitalize="false" required="required")
+    else 
+      input(class="form-input" type=type id=id name=id  placeholder= placeholder autocapitalize="false")
+  

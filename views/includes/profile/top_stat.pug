@@ -1,0 +1,47 @@
+div(class="container")
+    div(class="profile-top-stat")
+        div(class="profile-top-stat-actions")
+            if user && user.id != profile.id
+                if !isFrends
+                    div(class="btn btn-success action-add-to-friends" data-id=profile.id) Добавить в друзья
+                else 
+                    if isFrends.status > 0
+                        div(class="btn btn-success action-private-message") Личное сообщение
+                    if isFrends.status == -1
+                        div(class="btn btn-warning") Запрос дружбы отклонён
+                    if isFrends.status == 0
+                        div(class="btn btn-warning") Запрос отправлен
+                    if isFrends.status == 2
+                        div(class="btn btn-warning") Предложение сделано
+
+                div(class="profile-top-stat-actions-dropdown")
+                    if isFrends && isFrends.status == -2
+                        div(class="profile-top-stat-actions-dropdown-text") Игрок в ЧС #[span(class="ion-ios-arrow-down")]
+                        div(class="profile-top-stat-actions-dropdown-list")
+                            div(class="unblock-user" data-id=profile.id) Разблокировать
+                    else
+                        div(class="profile-top-stat-actions-dropdown-text") Действия #[span(class="ion-ios-arrow-down")]
+                        div(class="profile-top-stat-actions-dropdown-list")
+                            if isFrends && isFrends.status > 0
+                                if isFrends.status == 1
+                                    div(class="remove-from-frends" data-id=profile.id) Удалить из друзей
+                                    if !havePartner && !partner
+                                        div(class="to-zags" data-id=profile.id) Позвать в ЗАГС
+                                if isFrends.status == 2
+                                    div(class="remove-zags-request" data-id=profile.id) Отозвать предложение
+                                if isFrends.status == 3
+                                    div(class="remove-partner" data-id=profile.id) Развестись
+                            div(class="block-user" data-id=profile.id) Заблокировать
+
+        div(class="profile-top-stat-list")
+            if friends.length != 0
+                div(class="profile-top-stat-list-one friends")
+                    div(class="friends-stat")
+                        div(class="val")= friends.length
+                        div(class="key")= friendsCorrectForm
+                    div(class="friends-list") 
+                        each friend, index in friends
+                            if index == 5
+                                - break 
+                            a(href="/profile/" + friend.friend.id style="background-image:url(/uploads/"+ friend.friend.avatar +")" data-bs-toggle="tooltip" data-bs-placement="bottom" title=friend.friend.username)
+                    a(class="friends-link" href="/profile/" + profile.id + "/friends") 

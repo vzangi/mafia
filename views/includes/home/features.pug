@@ -1,0 +1,25 @@
+mixin feature(img, title, text)
+  div(class="col-md")
+    div(class="feature")
+      div(class="feature-image" style="background-image: url(/images/" + img + ");")
+      h4(class="feature-text")= title
+      div= text
+
+div(class="features-box pt-5 pb-5")
+
+  div(class="container")
+    
+    div(class="features-header text-center pb-5") Почему вам понравится играть у нас?
+    
+    div(class="row")
+      +feature('okay.svg', 'Это бесплатно!', 'Просто создайте аккаунт и начните играть — никаких подписок и платежей.')
+      +feature('dices.svg', 'Наличие режимов', 'Мы создали множество режимов с уникальными механиками, в которых вы всегда испытаете что-то новое.')
+      +feature('cup.svg', 'Турниры', 'Играйте в Соревновательном режиме, чтобы получить звание и поднимать его с каждой победой.')
+
+    div(class="row")
+      +feature('rating-positive.svg', 'Новые друзья', 'Находите интересных вам игроков и добавляйте их в друзья. Общайтесь в личных сообщениях, обсуждая новые тактики — ну или делитесь новыми мемами.')
+      +feature('delivery.svg', 'Коллекции', 'У нас имеется множество предметов, некоторые из которых очень редкие. Соберите себе коллекцию из того, что вам больше нравится!')
+      +feature('planet.svg', 'Играйте где угодно', 'Вы можете играть на любом устройстве, где есть браузер — хоть на компьютере из дома, хоть на телефоне, пока едете в метро.')
+
+    div(class="text-center")
+      a(href="/lobbi" class="btn btn-success btn-lg f-mon") Начать игру

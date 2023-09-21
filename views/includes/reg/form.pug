@@ -1,0 +1,19 @@
+include ../form_mixins
+              
+div(class="container")
+  div(class='block block-320 mb-4')
+    div(class='title title-2') Регистрация
+    form(class="form" id="reg-form" method="post" action="register")
+      +form_row("Никнейм", "text", "reg-form-nik", "например, nagibator2005", true)
+      +form_row("Электронная почта", "email", "reg-form-email", "например, ivan@mail.ru", true)
+      +form_row("Пароль", "password", "reg-form-pass", "например, ******", true)
+      +form_row("Повторите пароль", "password", "reg-form-pass2", "например, ******", true)
+      div(class="form-row")
+        input(class="checker" type="checkbox" id="reg-form-accept" name="reg-form-accept" design-for="c1")
+        div(class="checker" design-for="c1") 
+        span(class="small") Я прочитал #[a(href="/rules" target="_blank") Правила Сайта] и принимаю их. 
+      div(class="form-row")
+        input(class="btn btn-success" type="submit" value="Зарегистрироваться")
+      div(class="alert alert-danger hide") 
+    div(class="success hide")
+      p(class="m-4") Регистрация прошла успешно.#[br] На указанный электронный адрес отправлена ссылка для активации аккаунта. Пройдите по ней и присоединяйтесь к игре!

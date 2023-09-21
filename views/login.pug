@@ -1,0 +1,9 @@
+extends layouts/grey_layout
+
+block head
+  script(src="/js/login.js")
+
+block content 
+  include includes/login/form
+
+  div(class="text-center small light-text mb-4") Зарегистрироваться можно #[a(href="/registration") здесь].

@@ -1,0 +1,62 @@
+extends layouts/one_column
+
+block head 
+    link(href="/css/profile.css" rel="stylesheet")
+
+block main
+
+    if partner 
+        div(class="block")
+            div(class="friends-top")
+                div(class="friends-crumbs")
+                    div(class="friends-avatar")
+                        a(href="/profile/" + profile.id)
+                            img(src="/uploads/" + profile.avatar alt=profile.username)
+                    a(href="/profile/" + profile.id class="user-name ellipsis")= profile.username
+                    span(class="ion-ios-arrow-right")
+                    span Партнёр
+            div(class="row friends-list")
+                div(class="col-12")
+                    div(class="friend-box")
+                        div(class="friend-avatar")
+                            img(src="/uploads/" + partner.friend.avatar)
+                        div(class="friend-links ms-2")
+                            div 
+                                a(href="/profile/" + partner.friend.id class="ellipsis")= partner.friend.username 
+                            if user && user.id == profile.id
+                                div(class="mt-2")
+                                    a(class="btn btn-danger btn-sm remove-partner" data-id=partner.friend.id) Развестись
+
+    div(class="block")
+        div(class="friends-top")
+            div(class="friends-crumbs")
+                div(class="friends-avatar")
+                    a(href="/profile/" + profile.id)
+                        img(src="/uploads/" + profile.avatar alt=profile.username)
+                a(href="/profile/" + profile.id class="user-name ellipsis")= profile.username
+                span(class="ion-ios-arrow-right")
+                span Друзья
+            if user
+                div(class='friends-buttons')
+                    if user.id == profile.id
+                        a(href="/profile/friends/requests" class="btn btn-success hide") Заявки #[span(class="cnt hide")]
+
+        if friends && friends.length != 0
+            div(class="row friends-list")
+                each friend in friends 
+                    div(class="col-sm-6 col-md-4 col-lg-3")
+                        div(class="friend-box")
+                            div(class="friend-avatar")
+                                img(src="/uploads/" + friend.friend.avatar)
+                            div(class="friend-links ms-2")
+                                div 
+                                    a(href="/profile/" + friend.friend.id class="ellipsis")= friend.friend.username 
+                                if user && user.id == profile.id
+                                    div(class="mt-2")
+                                        a(class="btn btn-danger btn-sm remove-frend" data-id=friend.friend.id) Удалить
+        else 
+            p(class="p-2 text-center text-secondary") У этого пользователя пока нет друзей.
+
+block scripts 
+    if user
+        script(src="/js/friends.js")

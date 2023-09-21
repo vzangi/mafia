@@ -1,0 +1,22 @@
+meta(charset='utf-8')
+meta(name="viewport" content="width=device-width, initial-scale=1")
+title= title || "Mafia One"
+meta(name="description" content=description)
+link(href="/images/logo.png" rel="shortcut icon" type="image/png")
+link(rel='stylesheet' href='http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css')
+link(rel='stylesheet' href='/css/bootstrap.min.css')
+link(rel='stylesheet' href='/css/style.css')
+
+meta(property="og:title" content=title)
+meta(property="og:description" content=description)
+meta(property="og:image" content=ogimage)
+
+script(src="/js/bootstrap.bundle.js")
+script(src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous")
+script(src="/socket.io/socket.io.js")
+script(src="/js/socket.js")
+script(src="/js/jquery.tmpl.js")
+
+if user 
+    script(src="/js/search-user.js")
+    include ./search-user-tmpl

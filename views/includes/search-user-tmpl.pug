@@ -1,0 +1,9 @@
+script(id="searchUserTmpl" type="text/x-jquery-tmpl")
+  a(class="user-item" href="/profile/${id}")
+    div(class="profile-top-info")
+      div(class="profile-avatar{{if online}} online{{/if}} me-2")
+        div(class="profile-avatar-image" style="background-image:url(/uploads/${avatar})")
+      div(class="profile-nik") ${username}
+
+script(id="searchUserNotFoundTmpl" type="text/x-jquery-tmpl")
+  p Игроков с таким ником не найдено

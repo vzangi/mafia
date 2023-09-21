@@ -1,0 +1,55 @@
+header(class="p-3 mb-4")
+  div(class="container")
+    div(class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start")
+      a(href="/" class="d-flex align-items-center mb-lg-0 link-body-emphasis text-decoration-none header-logo")
+        include svg-icon
+        div(class="ms-2 me-3") Mafia One
+      
+      div(class="me-auto")
+        ul(class="nav col-xs col-xs-auto justify-content-center mb-md-0 hidden-xs")
+          li
+            a(href="/lobbi" class="nav-link px-2") Лобби
+          //- if user
+          //- li
+          //-   a(href="/profile/friends" class="nav-link px-2") Друзья #[span(class="cnt hide")]
+
+      div(class="text-end d-flex align-items-center right-header-block")
+        if currentAccount
+          div(class="search d-none0 d-sm-block")
+            span(class="ion-ios-search-strong")
+          div(class="chatbox")
+            span(class="ion-chatboxes")
+          div(class="dropdown text-end")
+            a(href="/profile" class="h-image-box d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false")
+              img(src="/uploads/" + currentAccount.avatar alt=currentAccount.username width="40" height="40" class="rounded-circle")
+            ul(class="dropdown-menu text-small")
+              li
+                div(class="dropdown-box")
+                  img(src="/uploads/" + currentAccount.avatar alt=currentAccount.username width="32" height="32" class="rounded-circle")
+                  a(class="dropdown-item user-nik ps-2" href="/profile")=currentAccount.username
+              li
+                hr(class="dropdown-divider")
+              li
+                a(class="dropdown-item" href="#") Обмены
+              li
+                a(class="dropdown-item" href="/profile/friends") Друзья #[span(class="cnt hide")]
+              li
+                a(class="dropdown-item" href="#") Кошелёк
+              li
+                a(class="dropdown-item" href="#") Настройки
+              li
+                hr(class="dropdown-divider")
+              li
+                form(method="post" action="/logout")
+                  button(type="submit" class="dropdown-item") Выход
+        else
+          a(href="/login" type="button" class="btn btn-warning") Войти
+
+if user
+  include ./form_mixins
+  div(class='bg-wrapper search-wrapper')
+    div(class='container')
+      div(class='user-search-box')
+        form(method="post" action="/search-user")
+          +form_row('', 'text', "user-search-input", "Введите ник игрока", true)
+        div(class='user-search-result') 

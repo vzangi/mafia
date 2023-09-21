@@ -1,0 +1,48 @@
+-function prettyDate(dateString){
+  -var date = new Date(dateString);
+  -var d = date.getDate();
+  -var monthNames = [ "января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря" ];
+  -var m = monthNames[date.getMonth()];
+  -var y = date.getFullYear();
+  -var h = date.getHours();
+  -var min = date.getMinutes();
+  -h = h > 9 ? h : '0' + h
+  -min = min > 9 ? min : '0' + min
+  -return d + ' ' + m + ' ' + y + ' ' + h + ':' + min;
+-}
+
+div(class="container")
+  div(class="profile-top-info main-info")
+    div(class="profile-avatar " + (profile.online ? "online" : ""))
+      div(class="profile-avatar-image" style="background-image:url(/uploads/" + profile.avatar + ")" data-bs-toggle="tooltip" data-bs-placement="top" title=profile.online ? '' : 'Последний раз в онлайне - ' + prettyDate(profile.updatedAt))
+    div(class="profile-top-info-main")
+      div(class="profile-top-info-main-nick")
+        span(class="nick")=profile.username
+      div(class="profile-top-info-main-rank")
+        if profile.rank == 0
+          div(class="image" style="background-image:url(/images/0.svg)")
+          div(class="text") Нет ранга
+        else if profile.rank < 1500
+          div(class="image" style="background-image:url(/images/1.svg)")
+          div(class="text f-mon")= profile.rank
+        else if profile.rank < 2500
+          div(class="image" style="background-image:url(/images/2.svg)")
+          div(class="text f-mon")= profile.rank
+        else if profile.rank < 3000
+          div(class="image" style="background-image:url(/images/3.svg)")
+          div(class="text f-mon")= profile.rank
+        else if profile.rank < 3500
+          div(class="image" style="background-image:url(/images/4.svg)")
+          div(class="text f-mon")= profile.rank
+        else if profile.rank < 4000
+          div(class="image" style="background-image:url(/images/5.svg)")
+          div(class="text f-mon")= profile.rank
+        else
+          div(class="image" style="background-image:url(/images/6.svg)")
+          div(class="text f-mon")= profile.rank
+      if profile.vip
+        div(class="profile-top-info-main-vip mt-3")
+          span(class='vip-user' data-bs-toggle="tooltip" data-bs-placement="right" title='до ' + prettyDate(profile.vipTo)) VIP игрок
+      if partner 
+        div(class="partner mt-3") Партнёр - #[a(href="/profile/" + partner.friend.id)= partner.friend.username]
+
