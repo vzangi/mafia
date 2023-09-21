@@ -466,6 +466,10 @@ input:checked + .slider:before {
 .font-size:hover {
   background-color: var(--chat-black);
 }
+.font-size svg {
+  position: relative;
+  top: -2px;
+}
 .font-size.big {
   width: 54px;
 }
