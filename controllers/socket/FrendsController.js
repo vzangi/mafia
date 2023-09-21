@@ -63,13 +63,13 @@ class FrendsController extends BaseSocketController {
     if (!user || !friendId) return
 
     // Удаляю запросы на добавление в друзья
-    Friend.destroy({
+    await Friend.destroy({
       where: {
         accountId: user.id,
         friendId,
       },
     })
-    Friend.destroy({
+    await Friend.destroy({
       where: {
         accountId: friendId,
         friendId: user.id,
@@ -77,12 +77,12 @@ class FrendsController extends BaseSocketController {
     })
 
     // Создаю подтверждение
-    Friend.create({
+    await Friend.create({
       accountId: user.id,
       friendId,
       status: Friend.statuses.ACCEPTED,
     })
-    Friend.create({
+    await Friend.create({
       accountId: friendId,
       friendId: user.id,
       status: Friend.statuses.ACCEPTED,
@@ -98,13 +98,13 @@ class FrendsController extends BaseSocketController {
     if (!user || !friendId) return
 
     // Удаляю запросы на добавление в друзья
-    Friend.destroy({
+    await Friend.destroy({
       where: {
         accountId: user.id,
         friendId,
       },
     })
-    Friend.destroy({
+    await Friend.destroy({
       where: {
         accountId: friendId,
         friendId: user.id,
@@ -112,7 +112,7 @@ class FrendsController extends BaseSocketController {
     })
 
     // Создаю отмену
-    Friend.create({
+    await Friend.create({
       accountId: friendId,
       friendId: user.id,
       status: Friend.statuses.DECLINE,
@@ -128,13 +128,13 @@ class FrendsController extends BaseSocketController {
     if (!user || !friendId) return
 
     // Удаляю запросы на добавление в друзья
-    Friend.destroy({
+    await Friend.destroy({
       where: {
         accountId: user.id,
         friendId,
       },
     })
-    Friend.destroy({
+    await Friend.destroy({
       where: {
         accountId: friendId,
         friendId: user.id,
@@ -151,13 +151,13 @@ class FrendsController extends BaseSocketController {
     if (!user || !friendId) return
 
     // Удаляю записи дружбы, если они были
-    Friend.destroy({
+    await Friend.destroy({
       where: {
         accountId: user.id,
         friendId,
       },
     })
-    Friend.destroy({
+    await Friend.destroy({
       where: {
         accountId: friendId,
         friendId: user.id,
@@ -165,7 +165,7 @@ class FrendsController extends BaseSocketController {
     })
 
     // Создаю запись ЧС
-    Friend.create({
+    await Friend.create({
       accountId: user.id,
       friendId,
       status: Friend.statuses.BLOCK,
@@ -180,7 +180,7 @@ class FrendsController extends BaseSocketController {
     if (!user || !friendId) return
 
     // Удаляю запись блокировки
-    Friend.destroy({
+    await Friend.destroy({
       where: {
         accountId: user.id,
         friendId,
@@ -196,13 +196,13 @@ class FrendsController extends BaseSocketController {
     if (!user || !id) return
 
     // Удаляю записи дружбы, если они были
-    Friend.destroy({
+    await Friend.destroy({
       where: {
         accountId: user.id,
         friendId,
       },
     })
-    Friend.destroy({
+    await Friend.destroy({
       where: {
         accountId: friendId,
         friendId: user.id,
@@ -210,14 +210,14 @@ class FrendsController extends BaseSocketController {
     })
 
     // Создаю запись ЧС
-    Friend.create({
+    await Friend.create({
       accountId: user.id,
       friendId,
       status: Friend.statuses.BLOCK,
     })
 
     // Создаю запись ЧС
-    Friend.create({
+    await Friend.create({
       accountId: friendId,
       friendId: user.id,
       status: Friend.statuses.BLOCK,
@@ -260,13 +260,13 @@ class FrendsController extends BaseSocketController {
     if (!user || !friendId) return
 
     // Удаляю запросы на добавление в друзья
-    Friend.destroy({
+    await Friend.destroy({
       where: {
         accountId: user.id,
         friendId,
       },
     })
-    Friend.destroy({
+    await Friend.destroy({
       where: {
         accountId: friendId,
         friendId: user.id,
@@ -295,14 +295,14 @@ class FrendsController extends BaseSocketController {
     if (!user || !friendId) return
 
     // Удаляю запросы на добавление в друзья
-    Friend.destroy({
+    await Friend.destroy({
       where: {
         accountId: user.id,
         friendId,
         status: Friend.statuses.MARRIED_REQUEST,
       },
     })
-    Friend.destroy({
+    await Friend.destroy({
       where: {
         accountId: friendId,
         friendId: user.id,
@@ -320,7 +320,7 @@ class FrendsController extends BaseSocketController {
     if (!user || !friendId) return
 
     // Удаляю предложение
-    Friend.destroy({
+    await Friend.destroy({
       where: {
         accountId: user.id,
         friendId,
@@ -338,13 +338,13 @@ class FrendsController extends BaseSocketController {
     if (!user || !friendId) return
 
     // Удаляю записи о свадьбе
-    Friend.destroy({
+    await Friend.destroy({
       where: {
         accountId: user.id,
         friendId,
       },
     })
-    Friend.destroy({
+    await Friend.destroy({
       where: {
         accountId: friendId,
         friendId: user.id,
