@@ -31,5 +31,8 @@
 }
 
 .transactions .icon {
-    min-width: 50px;
+    width: 60px;
 } 
+.transations-title {
+    font-family: 'Open Sans';
+}
