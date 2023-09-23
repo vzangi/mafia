@@ -1,3 +1,6 @@
+article {
+    padding: 2em;
+}
 .price-item {
     font-size: 2em;
 }
@@ -35,4 +38,5 @@
 } 
 .transations-title {
     font-family: 'Open Sans';
+    margin: 0 0 1em 0;
 }
