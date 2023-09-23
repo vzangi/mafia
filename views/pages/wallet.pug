@@ -1,5 +1,8 @@
 extends ../layouts/two_column_9_3
 
+block head 
+    link(href="/css/wallet.css" rel="stylesheet")
+
 prepend content
   include ../includes/wallet/adjunction
   include ../includes/wallet/wallet_form
@@ -8,7 +11,10 @@ block article
   div(class="block mb-5")
     article
       p История транзакций
-      hr 
+      
+      table(class="w-100 table m-0")
+        tbody(class="transactions")
 
 block scripts 
+  include ../includes/wallet/eventTmpl
   script(src="/js/wallet.js")

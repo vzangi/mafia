@@ -38,12 +38,25 @@ const Account = sequelize.define('account', {
     type: DataTypes.INTEGER,
     defaultValue: 0,
   },
+  wallet: {
+    type: DataTypes.FLOAT,
+    defaultValue: 0
+  },
   online: {
     type: DataTypes.BOOLEAN,
     defaultValue: 0,
   },
   vipTo: {
     type: DataTypes.DATE,
+  },
+  kopeiki: {
+    type: DataTypes.VIRTUAL(DataTypes.INTEGER),
+    get() {
+      return Math.floor((this.wallet - Math.floor(this.wallet)) * 100)
+    },
+    set() {
+      throw new Error('Do not try to set the `vip` value!')
+    }
   },
   vip: {
     type: DataTypes.VIRTUAL(DataTypes.INTEGER),
@@ -56,7 +69,7 @@ const Account = sequelize.define('account', {
     },
     set() {
       throw new Error('Do not try to set the `vip` value!')
-    },
+    }
   },
 })
 

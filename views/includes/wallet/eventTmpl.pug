@@ -1,0 +1,29 @@
+script(id="eventTmpl" type="text/x-jquery-tmpl")
+  tr(class="event-item align-middle")
+    td(class="icon") 
+      .
+        {{if eventType == 0}}
+      img(src="/images/eMoney.svg")
+      . 
+        {{/if}}
+    td(class="desc")
+      .
+        {{if eventType == 0}} 
+          
+      div Пополнение кошелька
+      .
+        {{else}}
+      div Что-то другое
+      .
+        {{/if}} 
+
+    td(class="value text-end")
+      .
+        {{if eventType == 0}}
+      span(class="plus") +${value}
+      .
+        {{/if}}
+
+    td(class="date text-end")
+      . 
+        ${coolDate}

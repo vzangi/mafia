@@ -1,4 +1,10 @@
-div(class="modal fade" id="walletForm" tabindex="-1" data-bs-backdrop="static")
+mixin priceItem(value, active = false) 
+  div(class="col-6")
+    div(class="price-item"+(active?" active":""))
+      span= value
+      small р.
+
+iv(class="modal fade" id="walletForm" tabindex="-1" data-bs-backdrop="static")
   div(class="modal-dialog modal-lg modal-dialog-centered")
     div(class="modal-content")
       div(class="modal-header")
@@ -8,6 +14,17 @@ div(class="modal fade" id="walletForm" tabindex="-1" data-bs-backdrop="static")
         div(class="container-fluid")
           div(class="row")
             div(class="col-md-8")
-              p Modal body text goes here.
+              div(class="row")
+                +priceItem(50)
+                +priceItem(100, true)
+                +priceItem(200)
+                +priceItem(500)
+                +priceItem(1000)
+                +priceItem(5000)
+                div(class="col-12")
+                  div(class='other-sum')
+                    h4 
+                      b Другая сумма
+                    p(class="text-secondary") Любая сумма от 1000 до 15000
             div(class="col-md-4")
-              p 123
+              button(class="btn btn-success w-100" id="payBtn") Перейти к оплате

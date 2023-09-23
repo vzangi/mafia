@@ -1,10 +1,10 @@
-div(class="container")
+div(class="container wallet-value")
   div(class="d-flex justify-content-between align-items-center pt-4 pb-4")
     div
       h3 Кошелёк
       h1(class="fw-bold") 
-        span 0 
-        . 
-          р.
+        span= Math.floor(account.wallet)
+        if account.kopeiki != 0
+          small= '.'+account.kopeiki
     div
       a(class="btn btn-success" id="openWalletForm" data-bs-toggle="modal" data-bs-target="#walletForm") Пополнить

@@ -23,7 +23,7 @@ router.get('/friends', isAuth, profile.friends)
 router.get('/:id/friends', profile.friends)
 
 // Запросы в друзья
-router.get('/friends/requests', profile.withAccount, profile.friendsRequest)
+router.get('/friends/requests', isAuth, profile.withAccount, profile.friendsRequest)
 
 // Форма смены пароля
 router.get('/change-password', isAuth, profile.changePasswordForm)
@@ -38,6 +38,6 @@ router.post(
 )
 
 // Кошелёк
-router.get('/wallet', isAuth, profile.wallet)
+router.get('/wallet', isAuth, profile.withAccount, profile.wallet)
 
 module.exports = router

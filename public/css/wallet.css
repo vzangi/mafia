@@ -1,0 +1,35 @@
+.price-item {
+    font-size: 2em;
+}
+.price-item, .other-sum {
+    text-align: center;
+    padding: 20px;
+    border: 1px solid var(--bs-gray-300);
+    border-radius: 10px;
+    margin-bottom: 0.3em;
+    cursor: pointer;
+}
+.price-item:hover, .other-sum:hover {
+    box-shadow: 0 0 5px 0px #ddd;
+}
+.price-item.active {
+    border-color: var(--color-aqua);
+}
+.other-sum p {
+    margin: 0;
+}
+.wallet-value small {
+    opacity: 0.7;
+}
+.transactions {
+    border-top: 1px solid #ddd;
+    font-family: 'Open Sans';
+}
+.plus {
+    color: var(--bs-green);
+    font-weight: 700;
+}
+
+.transactions .icon {
+    min-width: 50px;
+} 

@@ -9,4 +9,10 @@ module.exports = (io, socket) => {
 
   // Возвращаю список доступных смайлов
   socket.on('smiles.list', controller.smiles.bind(controller))
+
+  // Платёж
+  socket.on('payment', controller.payment.bind(controller))
+
+  // Последние транзакции
+  socket.on('transactions', controller.transactions.bind(controller))
 }

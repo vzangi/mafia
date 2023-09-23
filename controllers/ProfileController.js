@@ -155,7 +155,12 @@ class Profile {
   }
 
   wallet(req, res) {
-    res.render('pages/wallet')
+    if (!req.account) {
+      return res.redirect('/login')
+    }
+    const { account } = req
+    console.log(account);
+    res.render('pages/wallet', { account })
   }
 }
 
