@@ -1,6 +1,6 @@
 const { Op } = require('sequelize')
-const Friend = require('../../models/Friend')
 const BaseSocketController = require('./BaseSocketController')
+const Friend = require('../../models/Friend')
 const Account = require('../../models/Account')
 const WalletEvent = require('../../models/WalletEvents')
 
@@ -17,15 +17,14 @@ class FrendsController extends BaseSocketController {
       for (const [sid, s] of socket.server.of('/').sockets) {
         // Если в сокете нет пользователя (он гость), то пропускаем его
         if (!s.user) continue
-        console.log(s.user.id, friendId)
         // Если в каком-то из сокетов найден нужный игрок
         if (s.user.id == friendId) {
           // Отправляем ему оповещение
           socket.broadcast.to(sid).emit('friend.request', count)
         }
       }
-    } catch (e) {
-      console.log(e)
+    } catch (error) {
+      console.log(error)
     }
   }
 

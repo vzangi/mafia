@@ -4,6 +4,7 @@ const BaseSocketController = require('./BaseSocketController')
 
 // Количество пользователей онлайн
 let usersCount = 0
+const userTimers = {}
 
 class UsersCountController extends BaseSocketController {
   // Проверяет, был ли подключен пользователь ранее (true) или это его первый сокет (false)
@@ -43,6 +44,13 @@ class UsersCountController extends BaseSocketController {
     const { user } = this
 
     if (user) {
+
+      if (userTimers[user.id]) {
+        clearTimeout(userTimers[user.id])
+        delete userTimers[user.id]
+        return
+      } 
+
       // Если у пользователя открыт только один сокет
       // увеличиваю количество подключенных пользователей
       if (!this._hasAnySockets()) {
@@ -69,7 +77,7 @@ class UsersCountController extends BaseSocketController {
   disconnect() {
     const { user } = this
 
-    // Если вышел авторизванный пользователь
+    // Если вышел неавторизванный пользователь
     if (!user) {
       this._changeUserCount(-1)
       console.log(`socket disconnect (noname)`, getNowDateTime())
@@ -78,12 +86,17 @@ class UsersCountController extends BaseSocketController {
 
     // Если нет других сессий этого пользователя
     if (!this._hasAnySockets()) {
-      console.log(`${user.username} disconnected`, getNowDateTime())
+      userTimers[user.id] = setTimeout(() => {
+        delete userTimers[user.id]
 
-      this._changeUserCount(-1)
+        console.log(`${user.username} disconnected`, getNowDateTime())
+        
+        this._changeUserCount(-1)
+        
+        // Если сессия была последней, то обновлем статус пользователя в базе на offline
+        this._online(user.id, false)
+      }, 2000)
 
-      // Если сессия была последней, то обновлем статус пользователя в базе на offline
-      this._online(user.id, false)
     }
   }
 }
