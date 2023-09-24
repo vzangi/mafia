@@ -154,7 +154,24 @@ class FrendsController extends BaseSocketController {
   // Блокировка (ЧС)
   async block(friendId, callback) {
     const { user } = this
-    if (!user || !friendId) return callback({ status: 1, msg: 'Нет необходимых данных' })
+    if (!user || !friendId)
+      return callback({ status: 1, msg: 'Нет необходимых данных' })
+
+    // Надо проверить, есть ли сделанные предложения или игроки женаты
+    // Тогда вернуть ошибку, так как это платные услуги
+    const relation = await Friend.findOne({
+      where: {
+        accountId: user.id,
+        friendId,
+      },
+      order: [['id', 'DESC']]
+    })
+
+    if (relation &&
+      (relation.status == Friend.statuses.MARRIED_REQUEST
+        || relation.status == Friend.statuses.MARRIED)) {
+      return callback({ status: 2, msg: 'Нельзя заблокировать игрока, которого позвали в ЗАГС' })
+    }
 
     // Удаляю записи дружбы, если они были
     await Friend.destroy({
@@ -421,7 +438,7 @@ class FrendsController extends BaseSocketController {
   async divorce(friendId, callback) {
     const { user } = this
     if (!user || !friendId) {
-      return callback({status: 1,msg: 'Нет необходимых данных'})
+      return callback({ status: 1, msg: 'Нет необходимых данных' })
     }
 
     const isMarried = await Friend.findOne({

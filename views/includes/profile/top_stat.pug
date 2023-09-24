@@ -31,7 +31,8 @@ div(class="container")
                                     div(class="remove-zags-request action-btn" data-id=profile.id data-question='Ты точно хочешь отозвать предложение? В кошелёк верёнтся 25 рублей.' data-event='friends.zags.recall') Отозвать предложение
                                 if isFrends.status == 3
                                     div(class="remove-partner action-btn" data-id=profile.id data-question='Ты точно хочешь развестись? В кошельке должно быть 100 рублей.' data-event='friends.divorce') Развестись
-                            div(class="block-user action-btn" data-id=profile.id data-question='Заблокировать игрока?' data-event='friends.block') Заблокировать
+                            if !isFrends || isFrends && isFrends.status < 2
+                                div(class="block-user action-btn" data-id=profile.id data-question='Заблокировать игрока?' data-event='friends.block') Заблокировать
 
         div(class="profile-top-stat-list")
             if friends.length != 0
