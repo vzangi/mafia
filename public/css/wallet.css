@@ -32,6 +32,10 @@ article {
     color: var(--bs-green);
     font-weight: 700;
 }
+.minus {
+    color: var(--bs-red);
+    font-weight: 700;
+}
 
 .transactions .icon {
     width: 60px;

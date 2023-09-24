@@ -44,14 +44,18 @@ const Friend = sequelize.define(
         ],
       },
       // Запросы на дружбу/партнёрство
-      requests(userId) {
+      requests(friendId) {
         return {
           where: {
-            friendId: userId,
+            friendId,
             [Op.or]: [
               { status: friendshipStatuses.REQUESTED },
               { status: friendshipStatuses.MARRIED_REQUEST },
             ],
+          },
+          include: {
+            model: Account,
+            as: 'account',
           },
         }
       },
@@ -95,6 +99,19 @@ Friend.statuses = friendshipStatuses
 
 Friend.requestsCount = async (friendId) => {
   return await Friend.scope({ method: ['requests', friendId] }).count()
+}
+
+Friend.correctForm = (friendsCount) => {
+  if (friendsCount == 1) return 'Друг'
+  if (friendsCount < 5) return 'Друга'
+  if (friendsCount < 20) return 'Друзей'
+
+  if (friendsCount % 10 == 1) return 'Друг'
+  if (friendsCount % 10 == 2) return 'Друга'
+  if (friendsCount % 10 == 3) return 'Друга'
+  if (friendsCount % 10 == 4) return 'Друга'
+
+  return 'Друзей'
 }
 
 module.exports = Friend

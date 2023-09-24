@@ -1,3 +1,7 @@
+script(id="noEventTmpl" type="text/x-jquery-tmpl")
+  tr
+    td Пока никаких транзакций не было 
+
 script(id="eventTmpl" type="text/x-jquery-tmpl")
   tr(class="event-item align-middle")
     td(class="icon") 
@@ -6,12 +10,33 @@ script(id="eventTmpl" type="text/x-jquery-tmpl")
       img(src="/images/eMoney.svg")
       . 
         {{/if}}
+        {{if eventType == 1}}
+      img(src="/images/eBottle.svg")
+      . 
+        {{/if}}
+        {{if eventType == 2}}
+      img(src="/images/eDoge.svg")
+      . 
+        {{/if}}
+        {{if eventType == 3}}
+      img(src="/images/eCatCry.svg")
+      . 
+        {{/if}}
+        
     td(class="desc")
       .
         {{if eventType == 0}} 
-          
       div Пополнение кошелька
       .
+        {{else eventType == 1}}
+      div Свадьба
+      .
+        {{else eventType == 2}}
+      div Отзыв предложения
+      .
+        {{else eventType == 3}}
+      div Развод
+      . 
         {{else}}
       div Что-то другое
       .
@@ -21,6 +46,15 @@ script(id="eventTmpl" type="text/x-jquery-tmpl")
       .
         {{if eventType == 0}}
       span(class="plus") +${value}
+      .
+        {{else eventType == 1}}
+      span(class="minus") ${value}
+      .
+        {{else eventType == 2}}
+      span(class="plus") +${value}
+      .
+        {{else eventType == 3}}
+      span(class="minus") ${value}
       .
         {{/if}}
 

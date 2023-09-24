@@ -245,6 +245,7 @@ $(async function () {
     fontSizeItem.removeClass('active')
     $(this).addClass('active')
     localStorage.setItem('fontSize', font)
+    setTimeout(() => scrollToEnd(), 300)
   })
 
   $('.color-sheme.' + colorSheme + ':first').click()

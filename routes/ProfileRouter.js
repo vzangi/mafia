@@ -5,7 +5,7 @@ const {
   validator,
   validationMiddleware,
 } = require('../middlewares/ValidatorsMiddleware')
-const { isAuth } = require('../middlewares/AuthMiddleware')
+const { isAuth, withAccount } = require('../middlewares/AuthMiddleware')
 
 // Использую отправку данных через формы
 router.use(express.urlencoded({ extended: true }))
@@ -23,7 +23,7 @@ router.get('/friends', isAuth, profile.friends)
 router.get('/:id/friends', profile.friends)
 
 // Запросы в друзья
-router.get('/friends/requests', isAuth, profile.withAccount, profile.friendsRequest)
+router.get('/friends/requests', withAccount, profile.friendsRequest)
 
 // Форма смены пароля
 router.get('/change-password', isAuth, profile.changePasswordForm)
@@ -38,6 +38,6 @@ router.post(
 )
 
 // Кошелёк
-router.get('/wallet', isAuth, profile.withAccount, profile.wallet)
+router.get('/wallet', withAccount, profile.wallet)
 
 module.exports = router

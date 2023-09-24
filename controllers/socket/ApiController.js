@@ -25,27 +25,10 @@ class ApiController extends BaseSocketController {
     const { user } = this
     if (!user) return callback({ status: 2, msg: 'Неавторизованный запрос' })
 
-    const t = await sequelize.transaction()
-
     try {
-
-      await WalletEvent.create({
-        accountId: user.id,
-        eventType: WalletEvent.events.PAYMENT,
-        value: sum,
-      }, { transaction: t })
-
-      await Account.increment('wallet', {
-        by: sum,
-        where: { id: user.id },
-        transaction: t
-      })
-
-      t.commit()
-
+      await WalletEvent.payment(user.id, sum)
     } catch (error) {
       console.log(error)
-      await t.rollback()
       return callback({ status: 3, msg: 'Ошибка при пополнении кошелька' })
     }
 

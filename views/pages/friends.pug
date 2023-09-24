@@ -25,7 +25,7 @@ block main
                                 a(href="/profile/" + partner.friend.id class="ellipsis")= partner.friend.username 
                             if user && user.id == profile.id
                                 div(class="mt-2")
-                                    a(class="btn btn-danger btn-sm remove-partner" data-id=partner.friend.id) Развестись
+                                    a(class="btn btn-danger btn-sm remove-partner action-btn" data-id=partner.friend.id data-question='Ты точно хочешь развестись? В кошельке должно быть 100 рублей.' data-event='friends.divorce') Развестись
 
     div(class="block")
         div(class="friends-top")
@@ -53,10 +53,6 @@ block main
                                     a(href="/profile/" + friend.friend.id class="ellipsis")= friend.friend.username 
                                 if user && user.id == profile.id
                                     div(class="mt-2")
-                                        a(class="btn btn-danger btn-sm remove-frend" data-id=friend.friend.id) Удалить
+                                        a(class="btn btn-danger btn-sm remove-frend action-btn" data-id=friend.friend.id data-question='Удалить из друзей?' data-event='friends.remove') Удалить
         else 
             p(class="p-2 text-center text-secondary") У этого пользователя пока нет друзей.
-
-block scripts 
-    if user
-        script(src="/js/friends.js")

@@ -1,8 +1,11 @@
 $(function () {
 
     socket.emit('transactions', 0, (events) => {
-        console.log(events);
-        $("#eventTmpl").tmpl(events).appendTo(".transactions")
+        if (events.length > 0) {
+            $("#eventTmpl").tmpl(events).appendTo(".transactions")
+        } else {
+            $("#noEventTmpl").tmpl().appendTo(".transactions")
+        }
     })
 
     $('.price-item').click(function(){

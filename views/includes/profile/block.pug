@@ -1,6 +1,6 @@
 div(class="container")
     p(class="text-secondary text-center fs-4") Этот пользователь добавил вас в чёрный список.
     if !isFrends || (ifFrends && isFrends.status != -2)
-        p(class="text-secondary text-center") Вы тоже можете #[a(class="block-user-too" data-id=profile.id) добавить] его в чёрный список.
+        p(class="text-secondary text-center") Вы тоже можете #[a(class="block-user-too action-btn" data-id=profile.id data-question='Заблокировать игрока?' data-event='friends.block.too') добавить] его в чёрный список.
     else
-        p(class="text-secondary text-center")  Вы также заблокировали этого игрока, однако вы можете #[a(class="unblock-user" data-id=profile.id) разблокировать] его.
+        p(class="text-secondary text-center")  Вы также заблокировали этого игрока, однако вы можете #[a(class="unblock-user action-btn" data-id=profile.id data-question='Разблокировать игрока?' data-event='friends.unblock') разблокировать] его.

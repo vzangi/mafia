@@ -1,64 +1,43 @@
 const bcrypt = require('bcrypt')
-const pug = require('pug')
-
-// Использую модель данных через ORM sequelize
+const { Op } = require('sequelize')
 const Account = require('../models/Account')
 const Friend = require('../models/Friend')
-const { Op } = require('sequelize')
-
-const correctForm = (friendsCount) => {
-  if (friendsCount == 1) return 'Друг'
-  if (friendsCount < 5) return 'Друга'
-  if (friendsCount < 20) return 'Друзей'
-
-  if (friendsCount % 10 == 1) return 'Друг'
-  if (friendsCount % 10 == 2) return 'Друга'
-  if (friendsCount % 10 == 3) return 'Друга'
-  if (friendsCount % 10 == 4) return 'Друга'
-
-  return 'Друзей'
-}
 
 class Profile {
-  async withAccount(req, res, next) {
-    if (!req.user) return next()
-    const account = await Account.findByPk(req.user.id)
-    if (account) {
-      req.account = account
-    }
-    next()
-  }
 
+  // Переход в профиль
   async showUserAccount(req, res, next) {
+    // Если в параметрах передан id, то ищем пользователя по нему
+    // иначе берем текущего пользователя
     const id = req.params.id || req.user.id
-    const account = await Account.findByPk(id)
-    if (!account) {
-      return next()
+    const profile = await Account.findByPk(id)
+    if (!profile) {
+      return next() // на страницу 404
     }
 
     const data = {
-      profile: account,
-      title: `Профиль игрока ${account.username}`,
-      ogimage: process.env.APP_HOST + '/uploads/' + account.avatar,
+      profile,
+      title: `Профиль игрока ${profile.username}`,
+      ogimage: process.env.APP_HOST + '/uploads/' + profile.avatar,
     }
 
-    data.friends = await Friend.scope({ method: ['friends', account.id] }).findAll()
+    data.friends = await Friend.scope({ method: ['friends', profile.id] }).findAll()
 
-    data.partner = await Friend.scope({ method: ['partner', account.id] }).findOne()
+    data.partner = await Friend.scope({ method: ['partner', profile.id] }).findOne()
 
-    data.friendsCorrectForm = correctForm(data.friends.length)
+    data.friendsCorrectForm = Friend.correctForm(data.friends.length)
 
     if (req.user) {
       data.isFrends = await Friend.findOne({
         where: {
           accountId: req.user.id,
-          friendId: account.id,
+          friendId: profile.id,
         },
         order: [['id', 'DESC']],
       })
       data.isBlock = await Friend.findOne({
         where: {
-          accountId: account.id,
+          accountId: profile.id,
           friendId: req.user.id,
           status: Friend.statuses.BLOCK,
         },
@@ -74,66 +53,59 @@ class Profile {
     res.render('pages/profile', data)
   }
 
+  // Список друзей
   async friends(req, res, next) {
+    // Если в параметрах передан id, то ищем пользователя по нему
+    // иначе берем текущего пользователя
     const id = req.params.id || req.user.id
-    const account = await Account.findByPk(id)
-    if (!account) {
-      return next()
+    const profile = await Account.findByPk(id)
+    if (!profile) {
+      return next() // на страницу 404
     }
 
     const friends = await Friend.scope('def').findAll({
       where: {
-        accountId: account.id,
+        accountId: profile.id,
         status: Friend.statuses.ACCEPTED,
       },
     })
 
     const partner = await Friend.scope('def').findOne({
       where: {
-        accountId: account.id,
+        accountId: profile.id,
         status: Friend.statuses.MARRIED,
       },
     })
 
     res.render('pages/friends', {
-      profile: account,
+      profile,
       friends,
       partner,
-      title: `Друзья игрока ${account.username}`
+      title: `Друзья игрока ${profile.username}`
     })
   }
 
+  // Запросы на дружбу
   async friendsRequest(req, res, next) {
-    if (!req.account) {
-      return res.redirect('/login')
-    }
-    const requests = await Friend.findAll({
-      where: {
-        friendId: req.account.id,
-        [Op.or]: [
-          { status: 0 }, // Дружба
-          { status: 2 }, // Загс
-        ],
-      },
-      include: {
-        model: Account,
-        as: 'account',
-      },
-    })
+    const { account } = req
+
+    const requests = await Friend.scope({method:['requests', account.id]}).findAll()
 
     res.render('pages/friends-requests', {
-      profile: req.account,
+      profile: account,
       requests,
       title: `Запросы в друзья`
     })
   }
 
+  // Форма изменения пароля
   changePasswordForm(req, res) {
     res.render('pages/change-password', {
       title: 'Смена пароля'
     })
   }
 
+  // Процедура изменения пароля
   async changePassword(req, res) {
     const { password, passwordConfirm } = req.body
 
@@ -141,25 +113,19 @@ class Profile {
       return res.status(400).json([{ msg: 'Пароли не совпадают' }])
     }
 
-    const user = await Account.findOne({ where: { id: req.user.id } })
-
-    if (!user) {
-      return res.status(400).json([{ msg: 'Пользователь не найден' }])
+    try {
+      const hash = await bcrypt.hash(password, 10)
+      await Account.update({ password: hash }, { where: { id: req.user.id } })
+      res.json([{ status: 0, msg: 'Пароль успешно изменён' }])
+    } catch (error) {
+      console.log(error)
+      res.json([{ status: 1, msg: 'Ошибка при изменении пароля' }])
     }
-
-    const hash = await bcrypt.hash(password, 10)
-
-    user.update({ password: hash })
-
-    res.json([{ msg: 'Пароль успешно изменён' }])
   }
 
+  // Кошелёк
   wallet(req, res) {
-    if (!req.account) {
-      return res.redirect('/login')
-    }
     const { account } = req
-    console.log(account);
     res.render('pages/wallet', { account })
   }
 }

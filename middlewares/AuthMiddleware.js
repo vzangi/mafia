@@ -12,9 +12,10 @@ const userToTemplate = (req, res, next) => {
       where: {
         id: req.user.id,
       },
-      attributes: ['id', 'username', 'avatar', 'vipTo', 'online', 'vip'],
+      attributes: ['id', 'username', 'avatar', 'vipTo', 'online', 'vip', 'wallet'],
     })
       .then((account) => {
+        req.account = account
         res.locals.currentAccount = account
         res.locals.user = req.user
         next()
@@ -28,7 +29,16 @@ const userToTemplate = (req, res, next) => {
   }
 }
 
+// Добавляет в запрос текущий аккаунт
+const withAccount = async (req, res, next) => {
+  if (!req.account) {
+    return res.redirect('/login')
+  }
+  next()
+}
+
 module.exports = {
   isAuth,
   userToTemplate,
+  withAccount,
 }

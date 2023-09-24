@@ -3,7 +3,7 @@ div(class="container")
         div(class="profile-top-stat-actions")
             if user && user.id != profile.id
                 if !isFrends
-                    div(class="btn btn-success action-add-to-friends" data-id=profile.id) Добавить в друзья
+                    div(class="btn btn-success action-add-to-friends action-btn" data-id=profile.id data-question='Добавить в друзья?' data-event='friends.add') Добавить в друзья
                 else 
                     if isFrends.status > 0
                         div(class="btn btn-success action-private-message") Личное сообщение
@@ -18,20 +18,20 @@ div(class="container")
                     if isFrends && isFrends.status == -2
                         div(class="profile-top-stat-actions-dropdown-text") Игрок в ЧС #[span(class="ion-ios-arrow-down")]
                         div(class="profile-top-stat-actions-dropdown-list")
-                            div(class="unblock-user" data-id=profile.id) Разблокировать
+                            div(class="unblock-user action-btn" data-id=profile.id data-question='Разблокировать игрока?' data-event='friends.unblock') Разблокировать
                     else
                         div(class="profile-top-stat-actions-dropdown-text") Действия #[span(class="ion-ios-arrow-down")]
                         div(class="profile-top-stat-actions-dropdown-list")
                             if isFrends && isFrends.status > 0
                                 if isFrends.status == 1
-                                    div(class="remove-from-frends" data-id=profile.id) Удалить из друзей
+                                    div(class="remove-from-frends action-btn" data-id=profile.id data-question='Удалить из друзей?' data-event='friends.remove') Удалить из друзей
                                     if !havePartner && !partner
-                                        div(class="to-zags" data-id=profile.id) Позвать в ЗАГС
+                                        div(class="to-zags action-btn" data-id=profile.id data-question='Ты уверен, что хочешь сделать предложение? В кошельке должно быть 50 рублей.' data-event='friends.zags') Позвать в ЗАГС
                                 if isFrends.status == 2
-                                    div(class="remove-zags-request" data-id=profile.id) Отозвать предложение
+                                    div(class="remove-zags-request action-btn" data-id=profile.id data-question='Ты точно хочешь отозвать предложение? В кошелёк верёнтся 25 рублей.' data-event='friends.zags.recall') Отозвать предложение
                                 if isFrends.status == 3
-                                    div(class="remove-partner" data-id=profile.id) Развестись
-                            div(class="block-user" data-id=profile.id) Заблокировать
+                                    div(class="remove-partner action-btn" data-id=profile.id data-question='Ты точно хочешь развестись? В кошельке должно быть 100 рублей.' data-event='friends.divorce') Развестись
+                            div(class="block-user action-btn" data-id=profile.id data-question='Заблокировать игрока?' data-event='friends.block') Заблокировать
 
         div(class="profile-top-stat-list")
             if friends.length != 0
