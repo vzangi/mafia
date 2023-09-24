@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt')
 const { Op } = require('sequelize')
 const Account = require('../models/Account')
 const Friend = require('../models/Friend')
+const WalletEvents = require('../models/WalletEvents')
 
 class Profile {
 
@@ -124,9 +125,19 @@ class Profile {
   }
 
   // Кошелёк
-  wallet(req, res) {
+  async wallet(req, res) {
     const { account } = req
-    res.render('pages/wallet', { account })
+    const eventCount = await WalletEvents.count({
+      where: {
+        accountId: account.id
+      }
+    })
+
+    res.render('pages/wallet', { 
+      account, 
+      eventCount,
+      title: `Кошелёк - пополнение баланса`,
+    })
   }
 }
 

@@ -15,6 +15,9 @@ module.exports = (io) => {
     // Роуты основного чата
     require('./socket/ChatRouter')(io, socket)
 
+    // Роуты кошелька
+    require('./socket/WalletRouter')(io, socket)
+
     // Роуты API
     require('./socket/ApiRouter')(io, socket)
   })

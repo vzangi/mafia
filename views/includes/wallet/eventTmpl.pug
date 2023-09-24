@@ -2,6 +2,10 @@ script(id="noEventTmpl" type="text/x-jquery-tmpl")
   tr
     td Пока никаких транзакций не было 
 
+script(id="moreBtnTmpl" type="text/x-jquery-tmpl")
+  div(class="text-center")
+    a(class="btn btn-outline-secondary btn-sm moreBtn" data-offset='${offset}') загрузить ещё #[span(class='ion-ios-arrow-down')]
+
 script(id="eventTmpl" type="text/x-jquery-tmpl")
   tr(class="event-item align-middle")
     td(class="icon") 

@@ -46,6 +46,8 @@ const WalletEvent = sequelize.define(
 
 WalletEvent.events = events
 
+WalletEvent.eventsOnPage = 10
+
 WalletEvent.marriageCost = 50
 WalletEvent.divorceCost = WalletEvent.marriageCost * 2
 WalletEvent.recallCost = WalletEvent.marriageCost / 2
