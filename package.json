@@ -5,7 +5,16 @@
   "main": "index.js",
   "scripts": {
     "start": "node app.js",
-    "dev": "nodemon --config nodemon.json app.js"
+    "dev": "nodemon --config nodemon.json app.js",
+    "migration:create": "npx sequelize-cli migration:create --name",
+    "migrate": "env-cmd npx sequelize-cli db:migrate",
+    "migrate:undo": "env-cmd npx sequelize-cli db:migrate:undo",
+    "migrate:undo:all": "env-cmd npx sequelize-cli db:migrate:undo:all",
+    "seed:create": "npx sequelize-cli seed:generate --name",
+    "seed:run": "env-cmd npx sequelize-cli db:seed:all",
+    "seed:undo": "env-cmd npx sequelize-cli db:seed:undo",
+    "seed:undo:byname": "env-cmd npx sequelize-cli db:seed:undo --seed",
+    "seed:undo:all": "env-cmd npx sequelize-cli db:seed:undo:all"
   },
   "keywords": [],
   "author": "zangi",
@@ -15,6 +24,7 @@
     "bootstrap": "^5.3.1",
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.3.1",
+    "env-cmd": "^10.1.0",
     "express": "^4.18.2",
     "express-session": "^1.17.3",
     "express-validator": "^7.0.1",
@@ -25,6 +35,7 @@
     "nodemailer": "^6.9.4",
     "pug": "^3.0.2",
     "sequelize": "^6.32.1",
+    "sequelize-cli": "^6.6.1",
     "socket.io": "^4.7.2",
     "uuid": "^9.0.0"
   },
