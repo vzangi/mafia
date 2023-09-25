@@ -64,7 +64,20 @@ class FrendsController extends BaseSocketController {
   async accept(friendId, callback) {
     const { user } = this
 
-    if (!user || !friendId) return callback({ status: 1, msg: 'Нет необходимых данных' })
+    if (!user || !friendId)
+      return callback({ status: 1, msg: 'Нет необходимых данных' })
+
+    // Ищу запрос на добавление в друзья
+    const request = await Friend.findOne({
+      where: {
+        accountId: friendId,
+        friendId: user.id,
+        status: Friend.statuses.REQUESTED,
+      },
+    })
+
+    if (!request)
+      return callback({ status: 2, msg: 'Запрос на дружбу не найден' })
 
     // Удаляю запросы на добавление в друзья
     await Friend.destroy({
@@ -103,6 +116,18 @@ class FrendsController extends BaseSocketController {
       return callback({ status: 1, msg: 'Не указанны необходимые данные' })
     }
 
+    // Ищу запрос на добавление в друзья
+    const request = await Friend.findOne({
+      where: {
+        accountId: friendId,
+        friendId: user.id,
+        status: Friend.statuses.REQUESTED,
+      },
+    })
+
+    if (!request)
+      return callback({ status: 2, msg: 'Запрос на дружбу не найден' })
+
     // Удаляю запросы на добавление в друзья
     await Friend.destroy({
       where: {
@@ -133,7 +158,19 @@ class FrendsController extends BaseSocketController {
     const { user } = this
     if (!user || !friendId) return callback({ status: 1, msg: 'Нет необходимых данных' })
 
-    // Удаляю запросы на добавление в друзья
+    // Ищу запись о дружбе
+    const request = await Friend.findOne({
+      where: {
+        accountId: user.id,
+        friendId,
+        status: Friend.statuses.ACCEPTED,
+      },
+    })
+
+    if (!request)
+      return callback({ status: 2, msg: 'Записи о дружбе не найдены' })
+
+    // Удаляю записи о дружбе игроков
     await Friend.destroy({
       where: {
         accountId: user.id,
@@ -163,13 +200,15 @@ class FrendsController extends BaseSocketController {
       where: {
         accountId: user.id,
         friendId,
+        [Op.or]: [
+          { status: Friend.statuses.MARRIED_REQUEST },
+          { status: Friend.statuses.MARRIED },
+        ]
       },
       order: [['id', 'DESC']]
     })
 
-    if (relation &&
-      (relation.status == Friend.statuses.MARRIED_REQUEST
-        || relation.status == Friend.statuses.MARRIED)) {
+    if (relation) {
       return callback({ status: 2, msg: 'Нельзя заблокировать игрока, которого позвали в ЗАГС' })
     }
 
@@ -207,6 +246,7 @@ class FrendsController extends BaseSocketController {
       where: {
         accountId: user.id,
         friendId,
+        status: Friend.statuses.BLOCK,
       },
     })
 
@@ -216,7 +256,20 @@ class FrendsController extends BaseSocketController {
   // Блокировка в ответ (ЧС)
   async blockToo(friendId, callback) {
     const { user } = this
-    if (!user || !friendId) return callback({ status: 1, msg: 'Нет необходимых данных' })
+    if (!user || !friendId)
+      return callback({ status: 1, msg: 'Нет необходимых данных' })
+
+    const block = await Friend.destroy({
+      where: {
+        accountId: friendId,
+        friendId: user.id,
+        status: Friend.statuses.BLOCK,
+      },
+    })
+
+    if (!block)
+      return callback({ status: 2, msg: 'Вы не заблокированы у этого игрока' })
+
 
     // Удаляю записи дружбы, если они были
     await Friend.destroy({
@@ -345,6 +398,18 @@ class FrendsController extends BaseSocketController {
   async zagsAccept(friendId, callback) {
     const { user } = this
     if (!user || !friendId) return callback({ status: 1, msg: 'Нет необходимых данных' })
+
+    // Ищу предложение
+    const request = await Friend.findOne({
+      where: {
+        accountId: friendId,
+        friendId: user.id,
+        status: Friend.statuses.MARRIED_REQUEST,
+      },
+    })
+
+    if (!request)
+      return callback({ status: 2, msg: 'Предложение не найдено' })
 
     // Удаляю запросы на добавление в друзья
     await Friend.destroy({

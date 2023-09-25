@@ -28,8 +28,8 @@ block main
                                 div 
                                     a(href="/profile/" + friend.account.id class="ellipsis friend-nik")= friend.account.username 
                                 div(class="mt-2")
-                                    a(href="#" class="btn btn-success btn-sm me-1 accept" data-id=friend.account.id) Принять
-                                    a(href="#" class="btn btn-danger btn-sm decline" data-id=friend.account.id) Отклонить
+                                    a(href="#" class="btn btn-success btn-sm me-1 accept action-btn" data-id=friend.account.id data-question='Добавить в друзья?' data-event='friends.accept') Принять
+                                    a(href="#" class="btn btn-danger btn-sm decline action-btn" data-id=friend.account.id data-question='Отклонить заявку в друзья?' data-event='friends.decline') Отклонить
                 else 
                     div(class="col-12")
                         h1 Предложение руки и сердца
@@ -40,10 +40,8 @@ block main
                                 div 
                                     a(href="/profile/" + friend.account.id class="ellipsis friend-nik")= friend.account.username 
                                 div(class="mt-2")
-                                    a(href="#" class="btn btn-success btn-sm me-1 accept-zags" data-id=friend.account.id) Принять
-                                    a(href="#" class="btn btn-danger btn-sm decline-zags" data-id=friend.account.id) Отклонить
+                                    a(href="#" class="btn btn-success btn-sm me-1 accept-zags action-btn" data-id=friend.account.id data-question='Принять предложение?' data-event='friends.zags.accept') Принять
+                                    a(href="#" class="btn btn-danger btn-sm decline-zags action-btn" data-id=friend.account.id data-question='Отклонить предложение?' data-event='friends.zags.decline') Отклонить
     else 
         p(class="p-2 text-center text-secondary") Пока нет новых заявок в друзья.
 
-block scripts 
-    script(src="/js/friend-requests.js")
