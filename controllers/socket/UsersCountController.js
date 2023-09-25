@@ -44,24 +44,23 @@ class UsersCountController extends BaseSocketController {
     const { user } = this
 
     if (user) {
-
       if (userTimers[user.id]) {
         clearTimeout(userTimers[user.id])
         delete userTimers[user.id]
         return
-      } 
+      }
 
       // Если у пользователя открыт только один сокет
       // увеличиваю количество подключенных пользователей
       if (!this._hasAnySockets()) {
         this._changeUserCount(+1)
+
+        // Смотрю есть ли новые заявки в друзья
+
+        // Обновляю статус online
+        this._online(user.id)
+        console.log(`${user.username} connected`, getNowDateTime())
       }
-
-      // Смотрю есть ли новые заявки в друзья
-
-      // Обновляю статус online
-      this._online(user.id)
-      console.log(`${user.username} connected`, getNowDateTime())
     } else {
       this._changeUserCount(+1)
       console.log('a user connected', getNowDateTime())
@@ -90,13 +89,12 @@ class UsersCountController extends BaseSocketController {
         delete userTimers[user.id]
 
         console.log(`${user.username} disconnected`, getNowDateTime())
-        
+
         this._changeUserCount(-1)
-        
+
         // Если сессия была последней, то обновлем статус пользователя в базе на offline
         this._online(user.id, false)
       }, 2000)
-
     }
   }
 }
