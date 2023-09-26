@@ -98,8 +98,6 @@ class MessagesController extends BaseSocketController {
       ],
     })
 
-    console.log(lastMsgs)
-
     callback({ status: 0, lastMsgs, userId: user.id })
   }
 }

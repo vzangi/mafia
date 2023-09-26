@@ -99,7 +99,7 @@ WalletEvent.recall = async (userId) => {
 
 // Транзакция отказа от свадьбы
 WalletEvent.denial = async (userId) => {
-  await transaction(WalletEvent.events.RECALL, userId, WalletEvent.recallCost)
+  await transaction(WalletEvent.events.DENIAL, userId, WalletEvent.recallCost)
 }
 
 // Транзакция развода

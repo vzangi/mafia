@@ -26,7 +26,13 @@ script(id="eventTmpl" type="text/x-jquery-tmpl")
       img(src="/images/eCatCry.svg")
       . 
         {{/if}}
-        
+      . 
+        {{/if}}
+        {{if eventType == 4}}
+      img(src="/images/eDoge.svg")
+      . 
+        {{/if}}
+
     td(class="desc")
       .
         {{if eventType == 0}} 
@@ -40,6 +46,9 @@ script(id="eventTmpl" type="text/x-jquery-tmpl")
       .
         {{else eventType == 3}}
       div Развод
+      .
+        {{else eventType == 4}}
+      div Отказ от ЗАГСа
       . 
         {{else}}
       div Что-то другое
@@ -59,6 +68,9 @@ script(id="eventTmpl" type="text/x-jquery-tmpl")
       .
         {{else eventType == 3}}
       span(class="minus") ${value}
+      .
+        {{else eventType == 4}}
+      span(class="plus") +${value}
       .
         {{/if}}
 
