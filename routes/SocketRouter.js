@@ -20,5 +20,8 @@ module.exports = (io) => {
 
     // Роуты API
     require('./socket/ApiRouter')(io, socket)
+
+    // Роуты приватных сообщений
+    require('./socket/MessagesRouter')(io, socket)
   })
 }

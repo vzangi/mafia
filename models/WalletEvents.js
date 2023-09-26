@@ -9,8 +9,9 @@ const events = {
   MARRIAGE: 1, // Свадьба
   RECALL: 2, // Отзыв предложения
   DIVORCE: 3, // Развод
-  SELLING: 4, // Продажа
-  BUY: 5, // Покупка
+  DENIAL: 4, // Отказ от свадьбы
+  SELLING: 5, // Продажа
+  BUY: 6, // Покупка
 }
 
 const WalletEvent = sequelize.define('walletevents', {
@@ -93,6 +94,11 @@ WalletEvent.marriage = async (userId) => {
 
 // Транзакция отзыва предложения
 WalletEvent.recall = async (userId) => {
+  await transaction(WalletEvent.events.RECALL, userId, WalletEvent.recallCost)
+}
+
+// Транзакция отказа от свадьбы
+WalletEvent.denial = async (userId) => {
   await transaction(WalletEvent.events.RECALL, userId, WalletEvent.recallCost)
 }
 

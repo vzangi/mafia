@@ -1,5 +1,5 @@
 module.exports = (io, socket) => {
-  const controller = require('../../controllers/socket/FrendsController')(
+  const controller = require('../../controllers/socket/FriendsController')(
     io,
     socket
   )

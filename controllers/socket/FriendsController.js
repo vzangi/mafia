@@ -4,7 +4,7 @@ const Friend = require('../../models/Friend')
 const Account = require('../../models/Account')
 const WalletEvent = require('../../models/WalletEvents')
 
-class FrendsController extends BaseSocketController {
+class FriendsController extends BaseSocketController {
   // Отправка оповещения о новом запросе на дружбу
   // Пользователю с id = friendId
   async _notifyFriendshipRequest(friendId) {
@@ -156,7 +156,8 @@ class FrendsController extends BaseSocketController {
   // Удаление из друзей
   async remove(friendId, callback) {
     const { user } = this
-    if (!user || !friendId) return callback({ status: 1, msg: 'Нет необходимых данных' })
+    if (!user || !friendId)
+      return callback({ status: 1, msg: 'Нет необходимых данных' })
 
     // Ищу запись о дружбе
     const request = await Friend.findOne({
@@ -203,13 +204,16 @@ class FrendsController extends BaseSocketController {
         [Op.or]: [
           { status: Friend.statuses.MARRIED_REQUEST },
           { status: Friend.statuses.MARRIED },
-        ]
+        ],
       },
-      order: [['id', 'DESC']]
+      order: [['id', 'DESC']],
     })
 
     if (relation) {
-      return callback({ status: 2, msg: 'Нельзя заблокировать игрока, которого позвали в ЗАГС' })
+      return callback({
+        status: 2,
+        msg: 'Нельзя заблокировать игрока, которого позвали в ЗАГС',
+      })
     }
 
     // Удаляю записи дружбы, если они были
@@ -239,7 +243,8 @@ class FrendsController extends BaseSocketController {
   // Разблокировка от ЧС
   async unblock(friendId, callback) {
     const { user } = this
-    if (!user || !friendId) return callback({ status: 1, msg: 'Нет необходимых данных' })
+    if (!user || !friendId)
+      return callback({ status: 1, msg: 'Нет необходимых данных' })
 
     // Удаляю запись блокировки
     await Friend.destroy({
@@ -269,7 +274,6 @@ class FrendsController extends BaseSocketController {
 
     if (!block)
       return callback({ status: 2, msg: 'Вы не заблокированы у этого игрока' })
-
 
     // Удаляю записи дружбы, если они были
     await Friend.destroy({
@@ -306,14 +310,23 @@ class FrendsController extends BaseSocketController {
   async zags(friendId, callback) {
     const { user } = this
     if (!user || !friendId || user.id == friendId)
-      return callback({ status: 1, msg: 'Отсутсвуют необходимые данные. Запрос не выполнен.' })
+      return callback({
+        status: 1,
+        msg: 'Отсутсвуют необходимые данные. Запрос не выполнен.',
+      })
 
     const account = await Account.findByPk(user.id)
     if (!account)
-      return callback({ status: 2, msg: 'Пользователь не найден. Запрос не выполнен.' })
+      return callback({
+        status: 2,
+        msg: 'Пользователь не найден. Запрос не выполнен.',
+      })
 
     if (account.wallet < WalletEvent.marriageCost)
-      return callback({ status: 3, msg: `В кошельке не хватает средств. Чтобы сделать предложение, там должно быть как минимум ${WalletEvent.marriageCost} рублей.` })
+      return callback({
+        status: 3,
+        msg: `В кошельке не хватает средств. Чтобы сделать предложение, там должно быть как минимум ${WalletEvent.marriageCost} рублей.`,
+      })
 
     // Ищем игрока в друзьях (предложение можно сделать только другу)
     const isFrends = await Friend.findOne({
@@ -321,13 +334,13 @@ class FrendsController extends BaseSocketController {
         friendId,
         accountId: user.id,
         status: Friend.statuses.ACCEPTED,
-      }
+      },
     })
 
     if (!isFrends) {
       return callback({
         status: 3,
-        msg: 'Предложение можно сделать только одному из друзей'
+        msg: 'Предложение можно сделать только одному из друзей',
       })
     }
 
@@ -337,16 +350,17 @@ class FrendsController extends BaseSocketController {
         [Op.or]: [
           { status: Friend.statuses.MARRIED },
           { status: Friend.statuses.MARRIED_REQUEST },
-        ]
-      }
+        ],
+      },
     })
 
     if (haveZagsRequests) {
       return callback({
         status: 4,
-        msg: haveZagsRequests.status == Friend.statuses.MARRIED
-          ? 'Вы уже сходили в ЗАГС'
-          : 'Вы уже сделали предложение, нельзя делать второе пока оно не отклонено'
+        msg:
+          haveZagsRequests.status == Friend.statuses.MARRIED
+            ? 'Вы уже сходили в ЗАГС'
+            : 'Вы уже сделали предложение, нельзя делать второе пока оно не отклонено',
       })
     }
 
@@ -356,16 +370,17 @@ class FrendsController extends BaseSocketController {
         [Op.or]: [
           { status: Friend.statuses.MARRIED },
           { status: Friend.statuses.MARRIED_REQUEST },
-        ]
-      }
+        ],
+      },
     })
 
     if (friendMarried) {
       return callback({
         status: 3,
-        msg: friendMarried.status == Friend.statuses.MARRIED
-          ? 'Этот игрок уже сходил в ЗАГС'
-          : 'Этому игроку уже сделали предложение'
+        msg:
+          friendMarried.status == Friend.statuses.MARRIED
+            ? 'Этот игрок уже сходил в ЗАГС'
+            : 'Этому игроку уже сделали предложение',
       })
     }
 
@@ -374,7 +389,10 @@ class FrendsController extends BaseSocketController {
       await WalletEvent.marriage(user.id)
     } catch (error) {
       console.log(error)
-      return callback({ status: 4, msg: 'Не удалось списать средства с кошелька' })
+      return callback({
+        status: 4,
+        msg: 'Не удалось списать средства с кошелька',
+      })
     }
 
     // Создаем запрос предложения
@@ -387,7 +405,7 @@ class FrendsController extends BaseSocketController {
     // Возвращаем на клиент результат
     callback({
       status: 0,
-      msg: 'Предложение сделано'
+      msg: 'Предложение сделано',
     })
 
     // Пробуем оповестить о новом предложении
@@ -397,7 +415,8 @@ class FrendsController extends BaseSocketController {
   // Согласие на ЗАГС
   async zagsAccept(friendId, callback) {
     const { user } = this
-    if (!user || !friendId) return callback({ status: 1, msg: 'Нет необходимых данных' })
+    if (!user || !friendId)
+      return callback({ status: 1, msg: 'Нет необходимых данных' })
 
     // Ищу предложение
     const request = await Friend.findOne({
@@ -408,8 +427,7 @@ class FrendsController extends BaseSocketController {
       },
     })
 
-    if (!request)
-      return callback({ status: 2, msg: 'Предложение не найдено' })
+    if (!request) return callback({ status: 2, msg: 'Предложение не найдено' })
 
     // Удаляю запросы на добавление в друзья
     await Friend.destroy({
@@ -444,7 +462,8 @@ class FrendsController extends BaseSocketController {
   // Отказ от ЗАГСА
   async zagsDecline(friendId, callback) {
     const { user } = this
-    if (!user || !friendId) return callback({ status: 1, msg: 'Нет необходимых данных' })
+    if (!user || !friendId)
+      return callback({ status: 1, msg: 'Нет необходимых данных' })
 
     // Удаляю запросы на добавление в друзья
     await Friend.destroy({
@@ -462,6 +481,17 @@ class FrendsController extends BaseSocketController {
       },
     })
 
+    // Возвращаю на кошелёк половину средств потраченных на предложение
+    try {
+      await WalletEvent.denial(friendId)
+    } catch (error) {
+      console.log(error)
+      return callback({
+        status: 2,
+        msg: 'Не удалось вернуть средства на кошелёк',
+      })
+    }
+
     // Возвращаю клиенту ответ
     callback({ status: 0, msg: 'Запрос выполнен' })
   }
@@ -469,7 +499,8 @@ class FrendsController extends BaseSocketController {
   // Отозвать предложение
   async recall(friendId, callback) {
     const { user } = this
-    if (!user || !friendId) return callback({ status: 1, msg: 'Нет необходимых данных' })
+    if (!user || !friendId)
+      return callback({ status: 1, msg: 'Нет необходимых данных' })
 
     // Находим предложение
     const request = await Friend.findOne({
@@ -489,7 +520,10 @@ class FrendsController extends BaseSocketController {
       await WalletEvent.recall(user.id)
     } catch (error) {
       console.log(error)
-      return callback({ status: 2, msg: 'Не удалось вернуть средства на кошелёк' })
+      return callback({
+        status: 2,
+        msg: 'Не удалось вернуть средства на кошелёк',
+      })
     }
 
     // Удаляю предложение
@@ -510,31 +544,39 @@ class FrendsController extends BaseSocketController {
       where: {
         accountId: user.id,
         friendId,
-        status: Friend.statuses.MARRIED
-      }
+        status: Friend.statuses.MARRIED,
+      },
     })
 
     if (!isMarried) {
       return callback({
         status: 2,
-        msg: 'Вы не можете развестись с тем, с кем не состоите в отношениях'
+        msg: 'Вы не можете развестись с тем, с кем не состоите в отношениях',
       })
     }
 
     const account = await Account.findByPk(user.id)
     if (!account)
-      return callback({ status: 2, msg: 'Пользователь не найден. Запрос не выполнен.' })
+      return callback({
+        status: 2,
+        msg: 'Пользователь не найден. Запрос не выполнен.',
+      })
 
     if (account.wallet < WalletEvent.divorceCost)
-      return callback({ status: 3, msg: `В кошельке не хватает средств. Чтобы развестись, там должно быть как минимум ${WalletEvent.divorceCost} рублей.` })
-
+      return callback({
+        status: 3,
+        msg: `В кошельке не хватает средств. Чтобы развестись, там должно быть как минимум ${WalletEvent.divorceCost} рублей.`,
+      })
 
     // Списываем с кошелька стомость развода
     try {
       await WalletEvent.divorce(user.id)
     } catch (error) {
       console.log(error)
-      return callback({ status: 4, msg: 'Не удалось списать средства с кошелька' })
+      return callback({
+        status: 4,
+        msg: 'Не удалось списать средства с кошелька',
+      })
     }
 
     // Удаляю записи о свадьбе
@@ -555,22 +597,22 @@ class FrendsController extends BaseSocketController {
     await Friend.create({
       accountId: user.id,
       friendId,
-      status: Friend.statuses.ACCEPTED
+      status: Friend.statuses.ACCEPTED,
     })
     await Friend.create({
       accountId: friendId,
       friendId: user.id,
-      status: Friend.statuses.ACCEPTED
+      status: Friend.statuses.ACCEPTED,
     })
 
     // Возвращаю клиенту ответ
     callback({
       status: 0,
-      msg: 'Вы развелись'
+      msg: 'Вы развелись',
     })
   }
 }
 
 module.exports = (io, socket) => {
-  return new FrendsController(io, socket)
+  return new FriendsController(io, socket)
 }

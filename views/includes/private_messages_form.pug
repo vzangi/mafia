@@ -1,0 +1,47 @@
+div(class="pm-form")
+
+  div(class="pm-friends-list-box") 
+    h4 Сообщения
+    div(class="pm-friends-list")
+      if false
+        div(class="friend-item" data-id=1)
+          div(class="friend-avatar") 
+            img(src="/uploads/1-1234-2343.png")
+          div(class="friend-info")
+            div(class="friend-nik ellipsis") zangi
+            div(class="last-message ellipsis") Последнее сообщение
+        div(class="friend-item" data-id=3)
+          div(class="friend-avatar") 
+            img(src="/uploads/2-3294-9438.jpg" class="rounded-circle")
+          div(class="friend-info")
+            div(class="friend-nik ellipsis") Umbrellka
+            div(class="last-message ellipsis") Последнее сообщение
+        div(class="friend-item" data-id=2)
+          div(class="friend-avatar") 
+            img(src="/uploads/noname.svg" class="rounded-circle")
+          div(class="friend-info")
+            div(class="friend-nik ellipsis") test
+            div(class="last-message ellipsis") Последнее сообщение
+
+
+  div(class="pm-chat-box")
+    if true
+      div(class="chat-beginning")
+        div
+          span(class="ion-chatboxes icon")
+          p(class="text-secondary") Выберите диалог из списка слева.
+
+    else
+      div(class="pm-chat-title")
+        div(class="pm-friend-info")
+          div(class="pm-friend-avatar") avatar 
+          div(class="pm-friend-nik") nik
+        div(class="pm-chat-btns")
+          a ...
+
+      div(class="pm-chat")
+
+      div(class="pm-chat-input-box")
+        input(type="text" placeholder="Сообщение...")
+        div(class="smile-icons-box") 
+

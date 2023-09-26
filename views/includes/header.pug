@@ -4,7 +4,7 @@ header(class="p-3 mb-4")
       a(href="/" class="d-flex align-items-center mb-lg-0 me-2 link-body-emphasis text-decoration-none header-logo")
         include svg-icon
         div(class="ms-2 me-3 hidden-xs") Mafia One
-      
+
       div(class="me-auto")
         ul(class="nav col-xs col-xs-auto justify-content-center mb-md-0")
           li
@@ -53,3 +53,7 @@ if user
         form(method="post" action="/search-user")
           +form_row('', 'text', "user-search-input", "Введите ник игрока", true)
         div(class='user-search-result') 
+
+  div(class='bg-wrapper messages-wrapper')
+    div(class="container")
+      include ./private_messages_form

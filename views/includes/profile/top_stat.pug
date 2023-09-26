@@ -6,7 +6,7 @@ div(class="container")
                     div(class="btn btn-success action-add-to-friends action-btn" data-id=profile.id data-question='Добавить в друзья?' data-event='friends.add') Добавить в друзья
                 else 
                     if isFrends.status > 0
-                        div(class="btn btn-success action-private-message") Личное сообщение
+                        div(class="btn btn-success action-private-message" onclick="startPrivateWith("+profile.id+")") Личное сообщение
                     if isFrends.status == -1
                         div(class="btn btn-warning") Запрос дружбы отклонён
                     if isFrends.status == 0
