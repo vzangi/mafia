@@ -186,10 +186,12 @@ $(function () {
       }
 
       if (res.messages.length == 0 && offset == 0) {
+        if (callback) callback()
         return $('#noMessagesTmpl').tmpl().appendTo($('.pm-chat'))
       }
 
       if (res.messages.length == 0) {
+        if (callback) callback()
         return ($('.pm-chat').data().end = true)
       }
 
