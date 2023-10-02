@@ -2,7 +2,7 @@ const { DataTypes, Op } = require('sequelize')
 const sequelize = require('../units/db')
 const Account = require('./Account')
 const Friend = require('./Friend')
-const limit = 10
+const limit = 20
 
 const Message = sequelize.define('messages', {
   id: {
@@ -91,8 +91,18 @@ Message.canMassaging = async (accountId, friendId) => {
 }
 
 Message.getPrivateMessages = async (accountId, friendId, offset) => {
-  return await Message.findAll({
-    where: {
+  let where = {
+    [Op.or]: [
+      {
+        [Op.and]: [{ accountId }, { friendId }],
+      },
+      {
+        [Op.and]: [{ accountId: friendId }, { friendId: accountId }],
+      },
+    ],
+  }
+  if (offset != 0) {
+    where = {
       [Op.or]: [
         {
           [Op.and]: [{ accountId }, { friendId }],
@@ -101,10 +111,15 @@ Message.getPrivateMessages = async (accountId, friendId, offset) => {
           [Op.and]: [{ accountId: friendId }, { friendId: accountId }],
         },
       ],
-    },
-    offset,
+      id: {
+        [Op.lt]: offset,
+      },
+    }
+  }
+  return await Message.findAll({
+    where,
     limit,
-    order: [['id']],
+    order: [['id', 'DESC']],
   })
 }
 

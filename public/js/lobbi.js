@@ -14,7 +14,7 @@ $(async function () {
   const fontSizeItem = $('.font-size')
   const userMarkerBegin = '['
   const userMarkerEnd = ']'
-  const smileMarker = '' //"~"
+
   const userNik = $('.user-nik').text()
   const urlPattern =
     /((http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.#?&//=]*))/g
@@ -41,7 +41,7 @@ $(async function () {
   // Запрашиваю список доступных смайлов для чата
   socket.emit('smiles.list', (smiles) => {
     smiles = smiles.join('|')
-    smilePattern = new RegExp(`${smileMarker}(${smiles})`, 'g')
+    smilePattern = new RegExp(`(${smiles})`, 'g')
 
     // Получение последних сообщений с сервера
     socket.emit('chat.last', (msgs) => {
@@ -216,10 +216,10 @@ $(async function () {
 
   // Вставляет код смайла в поле ввода
   smilesBox.on('click', 'img', function () {
-    insertTextToInput(`${smileMarker}${$(this).attr('alt')} `)
+    insertTextToInput(`${$(this).attr('alt')} `)
   })
   chat.on('click', 'img', function () {
-    insertTextToInput(`${smileMarker}${$(this).attr('alt')} `)
+    insertTextToInput(`${$(this).attr('alt')} `)
   })
 
   // Выбор цветовой схемы

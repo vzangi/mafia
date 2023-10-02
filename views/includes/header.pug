@@ -48,12 +48,10 @@ header(class="p-3 mb-4")
 if user
   include ./form_mixins
   div(class='bg-wrapper search-wrapper')
-    div(class='container')
-      div(class='user-search-box')
-        form(method="post" action="/search-user")
-          +form_row('', 'text', "user-search-input", "Введите ник игрока", true)
-        div(class='user-search-result') 
+    div(class='user-search-box')
+      form(method="post" action="/search-user")
+        +form_row('', 'text', "user-search-input", "Введите ник игрока", true)
+      div(class='user-search-result') 
 
   div(class='bg-wrapper messages-wrapper')
-    div(class="container")
-      include ./private_messages_form
+    include ./private_messages_form

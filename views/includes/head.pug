@@ -18,9 +18,10 @@ script(src="/js/alert.js")
 script(src="/js/main.js")
 script(src="/js/jquery.tmpl.js")
 
+include ./message-tmpl
+
 if user 
-    include ./private-message-tmpl
-    include ./search-user-tmpl
+    include ./user-templates
     link(rel='stylesheet' href='/css/pm.css')
     script(src="/js/private-messages.js")
     script(src="/js/search-user.js")

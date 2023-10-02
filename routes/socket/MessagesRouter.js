@@ -12,4 +12,7 @@ module.exports = (io, socket) => {
 
   // Получение списка игроков, с которыми был приватный чат
   socket.on('messages.list', controller.getList.bind(controller))
+
+  // Отправка сообщения
+  socket.on('messages.send', controller.sendMessage.bind(controller))
 }

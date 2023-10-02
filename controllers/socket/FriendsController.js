@@ -9,23 +9,13 @@ class FriendsController extends BaseSocketController {
   // Пользователю с id = friendId
   async _notifyFriendshipRequest(friendId) {
     const { socket } = this
-    try {
-      // Смотрим сколько запросов на дружбу
-      const count = await Friend.requestsCount(friendId)
 
-      // Проходимся по всем сокетам
-      for (const [sid, s] of socket.server.of('/').sockets) {
-        // Если в сокете нет пользователя (он гость), то пропускаем его
-        if (!s.user) continue
-        // Если в каком-то из сокетов найден нужный игрок
-        if (s.user.id == friendId) {
-          // Отправляем ему оповещение
-          socket.broadcast.to(sid).emit('friend.request', count)
-        }
-      }
-    } catch (error) {
-      console.log(error)
-    }
+    const count = await Friend.requestsCount(friendId)
+    const ids = this.getUserSocketIds(friendId)
+
+    ids.forEach((sid) => {
+      socket.broadcast.to(sid).emit('friend.request', count)
+    })
   }
 
   // Получение количества запросов в друзья

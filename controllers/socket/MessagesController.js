@@ -1,5 +1,6 @@
 const BaseSocketController = require('./BaseSocketController')
 const Message = require('../../models/Message')
+const htmlspecialchars = require('htmlspecialchars')
 
 class MessagesController extends BaseSocketController {
   // Проверка на дружеские отношения
@@ -36,6 +37,34 @@ class MessagesController extends BaseSocketController {
     const lastMsgs = await Message.lastMessages(user.id)
 
     callback({ status: 0, lastMsgs, userId: user.id })
+  }
+
+  // Отправка сообщения
+  async sendMessage(friendId, message, callback) {
+    const { user, socket } = this
+    // Отсеиваю попытки отправки сообщений
+    // неавторизованными пользователями (хакер детектед)
+    if (!user || !friendId) callback(1, 'Нет необходимых данных')
+
+    message = htmlspecialchars(message.substr(0, 255))
+
+    if (message.length > 255) {
+      message = message.substr(0, 255)
+    }
+
+    const msg = await Message.create({
+      accountId: user.id,
+      friendId,
+      message,
+    })
+
+    const friendIds = this.getUserSocketIds(friendId)
+    console.log('friend ids: ', friendIds)
+    friendIds.forEach((sid) => {
+      socket.broadcast.to(sid).emit('messages.new', msg)
+    })
+
+    callback(0, msg)
   }
 }
 
