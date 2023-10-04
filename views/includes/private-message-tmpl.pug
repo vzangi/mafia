@@ -9,7 +9,7 @@ script(id="pmListItemTmpl" type="text/x-jquery-tmpl")
       img(src="/uploads/${avatar}")
     div(class="friend-info")
       div(class="friend-nik ellipsis") ${username}
-      div(class="last-message ellipsis") ${message}
+      div(class="last-message ellipsis read-${isRead}") {{html message}}
 
 script(id="privateMessagesBoxTmpl" type="text/x-jquery-tmpl")
   div(class="pm-chat-title")
@@ -25,11 +25,13 @@ script(id="privateMessagesBoxTmpl" type="text/x-jquery-tmpl")
   div(class="pm-chat")
 
   div(class="pm-chat-input-box")
-    input(type="text" maxlength=255 placeholder="Сообщение...")
+    form
+      input(type="text" maxlength=255 placeholder="Сообщение...")
     div(class="smile-icons-box") 
 
 script(id="myPrivateMessagesTmpl" type="text/x-jquery-tmpl")
-  div(class="my-message") 
+  div(class="my-message read-${isRead?1:0}") 
+    span(class='ion-ios-checkmark-empty isread' title='Прочитано')
     div(class="time" title="${date}") ${time}
     div(class="msg") {{html message}}
 
@@ -41,3 +43,9 @@ script(id="friendPrivateMessagesTmpl" type="text/x-jquery-tmpl")
 script(id="messageDateTmpl" type="text/x-jquery-tmpl")
   div(class="messages-date")
     span ${date}
+
+script(id="messagesBeginningTmpl" type="text/x-jquery-tmpl")
+  div(class="chat-beginning")
+    div
+      span(class="ion-chatboxes icon")
+      p(class="text-secondary") Выберите диалог из списка слева.

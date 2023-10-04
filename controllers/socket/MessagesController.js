@@ -59,12 +59,35 @@ class MessagesController extends BaseSocketController {
     })
 
     const friendIds = this.getUserSocketIds(friendId)
-    console.log('friend ids: ', friendIds)
     friendIds.forEach((sid) => {
       socket.broadcast.to(sid).emit('messages.new', msg)
     })
 
     callback(0, msg)
+  }
+
+  async readMessages(friendId, callback) {
+    const { user, socket } = this
+
+    await Message.update(
+      {
+        isRead: 1,
+      },
+      {
+        where: {
+          accountId: friendId,
+          friendId: user.id,
+          isRead: 0,
+        },
+      }
+    )
+
+    const friendIds = this.getUserSocketIds(friendId)
+    friendIds.forEach((sid) => {
+      socket.broadcast.to(sid).emit('messages.isreaded', user.id)
+    })
+
+    if (callback) callback()
   }
 }
 

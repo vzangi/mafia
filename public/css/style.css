@@ -437,6 +437,7 @@ a.anchor:before {
   color: #c7ccd3;
   cursor: pointer;
   transition: all 0.3s ease;
+  position: relative;
 }
 
 .right-header-block .dropdown {

@@ -95,6 +95,19 @@
 .last-message {
   font-size: 0.9em;
 }
+.last-message img {
+  width: 22px;
+}
+.last-message.read-0:before {
+  content: ' ';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: #f55;
+  margin-right: 0.3rem;
+  margin-bottom: 1px;
+  border-radius: 10px;
+}
 
 .chat-beginning {
   display: flex;
@@ -262,6 +275,33 @@
 .pm-chat .msg a {
   color: inherit;
 }
+
+.chatbox.unread:after {
+  content: ' ';
+  display: block;
+  position: absolute;
+  top: 3px;
+  right: -6px;
+  width: 12px;
+  height: 12px;
+  background: red;
+  border-radius: 10px;
+  border: 2px solid #fff;
+}
+
+.isread {
+  color: #7db4ff;
+  font-size: 1.8rem;
+  line-height: 1rem;
+  position: relative;
+  top: 6px;
+  right: -5px;
+}
+
+.read-0 .isread {
+  display: none;
+}
+
 @media (max-width: 768px) {
   .pm-form {
     display: block;

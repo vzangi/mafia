@@ -15,4 +15,7 @@ module.exports = (io, socket) => {
 
   // Отправка сообщения
   socket.on('messages.send', controller.sendMessage.bind(controller))
+
+  // Отмечает сообщения прочитанными
+  socket.on('messages.read', controller.readMessages.bind(controller))
 }

@@ -1,8 +1,19 @@
 const socket = io()
+let zvuk = new Audio('/sounds/zvuk.mp3')
+$('body').append(zvuk)
+
+// Воспроизводит звук на странице
+function playSound(sound) {
+  setTimeout(function () {
+    if (sound.readyState == 4) {
+      sound.play()
+    } else {
+      playSound(sound)
+    }
+  }, 10)
+}
 
 $(function () {
-  let zvuk = null
-
   // Включаем тултипы
   const tooltipTriggerList = [].slice.call(
     document.querySelectorAll('[data-bs-toggle="tooltip"]')
@@ -10,17 +21,6 @@ $(function () {
   tooltipTriggerList.map(function (tooltipTriggerEl) {
     return new bootstrap.Tooltip(tooltipTriggerEl)
   })
-
-  // Воспроизводит звук на странице
-  function playSound(sound) {
-    setTimeout(function () {
-      if (sound.readyState == 4) {
-        sound.play()
-      } else {
-        playSound(sound)
-      }
-    }, 10)
-  }
 
   // Действие по нажатию на кнопку
   async function action(btn) {
@@ -51,11 +51,6 @@ $(function () {
   })
 
   socket.on('friend.request', (friendRequestsCount) => {
-    if (!zvuk) {
-      zvuk = new Audio('/sounds/zvuk.mp3')
-      zvuk.volume = 1
-      $('body').append(zvuk)
-    }
     setCount(friendRequestsCount)
     playSound(zvuk)
   })

@@ -55,7 +55,7 @@ Message.lastMessages = async (userId) => {
     where: {
       id: results.map((r) => r.id),
     },
-    attributes: ['id', 'friendId', 'accountId', 'message'],
+    //attributes: ['id', 'friendId', 'accountId', 'message', 'isRead'],
     order: [['id', 'DESC']],
     include: [
       {

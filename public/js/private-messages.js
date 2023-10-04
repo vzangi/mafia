@@ -12,7 +12,7 @@ $(function () {
   const urlPattern =
     /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w\-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/g
 
-  let currentFriendId
+  let currentFriendId = null
   let smilePattern = ''
 
   // Запрашиваю список доступных смайлов для чата
@@ -21,6 +21,13 @@ $(function () {
     smilePattern = new RegExp(`(${smiles})`, 'g')
   })
 
+  const setBeginning = () => {
+    currentFriendId = null
+    $('#messagesBeginningTmpl').tmpl().appendTo(pmChatBox.empty())
+    $('.friend-item.active').removeClass('active')
+    pmChatBox.removeClass('open')
+  }
+
   // Получение списка последних приаватных сообщений от каждого друга
   const getMessagesList = () => {
     socket.emit('messages.list', (res) => {
@@ -28,14 +35,21 @@ $(function () {
 
       const data = res.lastMsgs.map((msg) => {
         if (msg.accountId == res.userId) {
+          // Мои сообщения
           return {
-            message: msg.message,
+            message: parseMessage(msg).message,
             ...msg.friend,
+            isRead: 1,
           }
         } else {
+          if (msg.isRead == 0) {
+            $('.chatbox').addClass('unread')
+          }
+          // Сообщения друга
           return {
-            message: msg.message,
+            message: parseMessage(msg).message,
             ...msg.account,
+            isRead: msg.isRead ? 1 : 0,
           }
         }
       })
@@ -48,52 +62,60 @@ $(function () {
   getMessagesList()
 
   // Пришло новое сообщение
-  socket.on('messages.new', (msg) => {
-    getMessagesList()
-
+  socket.on('messages.new', async (msg) => {
     // Если чат с другом открыт, то отображаем сообщение
     if (currentFriendId == msg.friendId || currentFriendId == msg.accountId) {
       showMessage(msg, true)
-      setTimeout(() => {
-        scrollMessages()
-      }, 100)
+      setTimeout(scrollMessages, 100)
+      await socket.emit('messages.read', currentFriendId, (friend) => {
+        getMessagesList()
+      })
     }
     // Иначе оповещаем о новом сообщении
     else {
+      getMessagesList()
+      playSound(zvuk)
+    }
+  })
+
+  // Сообщение прочитано
+  socket.on('messages.isreaded', (friendId) => {
+    if (friendId == currentFriendId) {
+      $('.read-0').removeClass('read-0')
     }
   })
 
   // Отправка сообщения
-  pmForm.on('keydown', '.pm-chat-input-box input', function (event) {
-    const message = $(this).val().trim()
-    if (message == '') return true
+  pmForm.on('submit', '.pm-chat-input-box form', function (event) {
+    $input = $(this).find('input')
+    const message = $input.val().trim()
+    if (message == '') return false
 
-    // typing()
-
-    if (event.key != 'Enter') return true
-
-    // cancelTyping()
-
-    socket.emit('messages.send', currentFriendId, message, (status, msg) => {
-      if (status != 0) {
-        return alert(msg)
+    socket.emit(
+      'messages.send',
+      currentFriendId,
+      message,
+      async (status, msg) => {
+        if (status != 0) {
+          return await alert(msg)
+        }
+        getMessagesList()
+        showMessage(msg, true)
+        scrollMessages()
       }
-      getMessagesList()
-      showMessage(msg, true)
-      scrollMessages()
-    })
-    $(this).val('')
+    )
+    $input.val('')
 
     // if (smilesBox.css('display') == 'block') {
     //   smilesBox.removeClass('active')
     //   setTimeout(() => smilesBox.css('display', 'none'), 300)
     // }
+    return false
   })
 
   // Нажатие на шеврон закрывает чат
   pmForm.on('click', '.back', function () {
-    $('.friend-item.active').removeClass('active')
-    pmChatBox.removeClass('open')
+    setBeginning()
   })
 
   // Нажатие на иконку приватных чатов в хэдере
@@ -101,6 +123,7 @@ $(function () {
     if (messagesWrapper.css('display') == 'block') {
       messagesWrapper.css('display', 'none')
       body.removeClass('fix-body')
+      setBeginning()
     } else {
       messagesWrapper.css('display', 'block')
       body.addClass('fix-body')
@@ -125,7 +148,14 @@ $(function () {
   // Выделяем активный чат
   const setActiveChat = (friendId) => {
     $('.friend-item.active').removeClass('active')
-    $('[data-id=' + friendId + ']').addClass('active')
+    $('[data-id=' + friendId + ']')
+      .addClass('active')
+      .find('.last-message')
+      .removeClass('read-0')
+    if ($('.read-0').length == 0) {
+      $('.chatbox').removeClass('unread')
+    }
+    socket.emit('messages.read', friendId)
   }
 
   // Запуск приватного чата
@@ -149,7 +179,7 @@ $(function () {
         .tmpl(friend)
         .appendTo($('.pm-chat-box').empty())
 
-      // Изначально берем послежние сообщения
+      // Изначально берем последние сообщения
       $('.pm-chat').data().offset = 0
 
       // При скролле сообщений - подгружаем историю
@@ -240,7 +270,7 @@ $(function () {
     }
 
     if (append) {
-      return $(template).tmpl(msg).appendTo($('.pm-chat'))
+      return $(template).tmpl(parseMessage(msg)).appendTo($('.pm-chat'))
     }
 
     if (lastDate != msg.date) {
