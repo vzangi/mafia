@@ -1,5 +1,5 @@
 const socket = io()
-let zvuk = new Audio('/sounds/zvuk.mp3')
+let zvuk = new Audio('/sounds/notification.mp3')
 $('body').append(zvuk)
 
 // Воспроизводит звук на странице
@@ -12,6 +12,8 @@ function playSound(sound) {
     }
   }, 10)
 }
+
+playSound(zvuk)
 
 $(function () {
   // Включаем тултипы
