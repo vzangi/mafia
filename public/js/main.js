@@ -13,8 +13,6 @@ function playSound(sound) {
   }, 10)
 }
 
-playSound(zvuk)
-
 $(function () {
   // Включаем тултипы
   const tooltipTriggerList = [].slice.call(
