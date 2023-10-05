@@ -34,7 +34,6 @@ $(function () {
 
   // Получение списка последних приаватных сообщений от каждого друга
   const getFriendsList = () => {
-    console.log('Получение списка последних сообщений')
     socket.emit('messages.list', (res) => {
       if (res.status != 0) return
 
@@ -61,11 +60,6 @@ $(function () {
 
       friendList.empty()
       $('#pmListItemTmpl').tmpl(data).appendTo(friendList)
-
-      console.log(
-        'Сообщения получены, преобразованы и выведены на старницу: ',
-        data
-      )
     })
   }
 
@@ -160,15 +154,13 @@ $(function () {
     )
     $input.val('')
 
-    toggleActive($('.pm-form .all-smiles'))
+    if ($('.pm-form .all-smiles').hasClass('active')) {
+      toggleActive($('.pm-form .all-smiles'))
+    }
 
     clearTimeout(typingTimerId)
     socket.emit('messages.typing.end', currentFriendId)
 
-    // if (smilesBox.css('display') == 'block') {
-    //   smilesBox.removeClass('active')
-    //   setTimeout(() => smilesBox.css('display', 'none'), 300)
-    // }
     return false
   })
 
@@ -250,7 +242,7 @@ $(function () {
         if ($('.pm-chat').data().end) return
 
         // достигли начала чата
-        if ($(this).scrollTop() < 100) {
+        if ($(this).scrollTop() < 150) {
           // Достаем сдвиг по id из окна чата
           const { offset } = $(this).data()
 
@@ -273,99 +265,58 @@ $(function () {
 
   // Получение сообщений с учётом сдвига по id
   const getMessages = (friendId, offset, callback) => {
-    console.log('Пытаюсь запустить загрузку')
     if (loadMutex) {
-      console.log('Пока не завершилась предыдущая загрузка...')
       return
     }
-    console.log('Блокирую повторную загрузку мутексом')
     loadMutex = true
 
-    console.log('Получение приватных сообщений от ', friendId)
-
-    console.log('Проверка возможности привата с этим игроком')
     socket.emit('messages.get', friendId, offset, async (res) => {
       if (res.status != 0) {
-        console.log('Освобождаю мутекс')
         loadMutex = false
         return await alert(res.msg)
       }
 
-      console.log('Проверка пройдена. Сообщения получены')
-
       if (res.messages.length == 0 && offset == 0) {
-        console.log('Список сообщений пуст и сдвиг нулевой')
-
         if (callback) callback()
 
-        console.log('Освобождаю мутекс')
         loadMutex = false
 
-        console.log('Выводим начальный экран с приглашением начать общение')
         return $('#noMessagesTmpl').tmpl().appendTo($('.pm-chat'))
       }
 
       if (res.messages.length == 0) {
-        console.log('Список сообщений пуст, сдвиг НЕ нулевой: ', offset)
-
         if (callback) callback()
 
-        console.log('Ставим флаг завершения подгрузки')
-
-        console.log('Освобождаю мутекс')
         loadMutex = false
 
         return ($('.pm-chat').data().end = true)
       }
 
       if (offset == 0) {
-        console.log(
-          'Сдвиг нулевой - первая загрузка сообщений. Запоминаем последнюю загруженную дату'
-        )
-
         $('.pm-chat').data().lastDate = getDateFromIso(
           res.messages[0].createdAt
         )
       }
 
       if (offset != 0) {
-        console.log('Сдвиг НЕ нулевой. Сообщения уже подгружались')
-
-        console.log(
-          'Сверяю даты: ',
-          $('.messages-date:first').text(),
-          getDateFromIso(res.messages[0].createdAt)
-        )
-
         if (
           $('.messages-date:first').text() ==
           getDateFromIso(res.messages[0].createdAt)
         ) {
-          console.log('Даты одинаковые. удаляю метку даты перед подгрузкой')
           $('.messages-date:first').remove()
         }
       }
 
-      console.log(
-        'Запоминаю последний загруженный id: ',
-        res.messages[res.messages.length - 1].id
-      )
-
       $('.pm-chat').data().offset = res.messages[res.messages.length - 1].id
-
-      console.log('Отображаю сообщения')
 
       for (msg of res.messages) {
         showMessage(msg)
       }
 
-      console.log('Отображаю последнюю метку даты')
-
       $('#messageDateTmpl')
         .tmpl({ date: $('.pm-chat').data().lastDate })
         .prependTo($('.pm-chat'))
 
-      console.log('Освобождаю мутекс')
       loadMutex = false
 
       if (callback) callback()

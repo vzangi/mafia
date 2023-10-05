@@ -2,7 +2,7 @@ const { DataTypes, Op } = require('sequelize')
 const sequelize = require('../units/db')
 const Account = require('./Account')
 const Friend = require('./Friend')
-const limit = 20
+const limit = 50
 
 const Message = sequelize.define('messages', {
   id: {
