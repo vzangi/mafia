@@ -18,4 +18,10 @@ module.exports = (io, socket) => {
 
   // Отмечает сообщения прочитанными
   socket.on('messages.read', controller.readMessages.bind(controller))
+
+  // Начало печати сообщения
+  socket.on('messages.typing', controller.typingBegin.bind(controller))
+
+  // Завершение печти сообщения
+  socket.on('messages.typing.end', controller.typingEnd.bind(controller))
 }

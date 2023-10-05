@@ -1,8 +1,49 @@
 const BaseSocketController = require('./BaseSocketController')
 const Message = require('../../models/Message')
 const htmlspecialchars = require('htmlspecialchars')
+const typingUsers = []
 
 class MessagesController extends BaseSocketController {
+  // Процедура завершения печати
+  _cancelTyping() {
+    const { user } = this
+    if (typingUsers[user.username]) {
+      delete typingUsers[user.username]
+    }
+  }
+
+  // Пользователь перестал печатать
+  typingEnd(friendId) {
+    const { user, socket } = this
+    if (!user) return
+
+    if (typingUsers[user.username]) clearTimeout(typingUsers[user.username])
+
+    this._cancelTyping()
+
+    const friendIds = this.getUserSocketIds(friendId)
+    friendIds.forEach((sid) => {
+      socket.broadcast.to(sid).emit('messages.typing.end', user.id)
+    })
+  }
+
+  // Пользователь начал что-то печатать в чате
+  typingBegin(friendId) {
+    const { user, socket } = this
+    if (!user) return
+
+    if (typingUsers[user.username]) clearTimeout(typingUsers[user.username])
+
+    typingUsers[user.username] = setTimeout(() => {
+      this._cancelTyping()
+    }, 3000)
+
+    const friendIds = this.getUserSocketIds(friendId)
+    friendIds.forEach((sid) => {
+      socket.broadcast.to(sid).emit('messages.typing', user.id)
+    })
+  }
+
   // Проверка на дружеские отношения
   async isFriend(friendId, callback) {
     const { user } = this
