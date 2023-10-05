@@ -27,17 +27,25 @@ script(id="privateMessagesBoxTmpl" type="text/x-jquery-tmpl")
   div(class="pm-chat-input-box")
     form
       input(type="text" maxlength=255 placeholder="Сообщение...")
-    div(class="smile-icons-box") 
+    div(class="smile-icons-box")
+    div(class="all-smiles" style="display:none") 
+      div(class="all-smiles-title mb-1") Смайлы
+      div(class="all-smiles-items")
+        .
+          {{each(i, smile) smiles}}
+        img(src="/images/e${smile}.svg" alt="${smile}")
+        .
+          {{/each}}
 
 script(id="myPrivateMessagesTmpl" type="text/x-jquery-tmpl")
   div(class="my-message read-${isRead?1:0}") 
     span(class='ion-ios-checkmark-empty isread' title='Прочитано')
     div(class="time" title="${date}") ${time}
-    div(class="msg") {{html message}}
+    div(class="msg {{if smile}}smile{{/if}}") {{html message}}
 
 script(id="friendPrivateMessagesTmpl" type="text/x-jquery-tmpl")
   div(class="friend-message") 
-    div(class="msg") {{html message}}
+    div(class="msg {{if smile}}smile{{/if}}") {{html message}}
     div(class="time" title="${date}") ${time}
 
 script(id="messageDateTmpl" type="text/x-jquery-tmpl")
@@ -55,3 +63,5 @@ script(id="pmTypingTmpl" type="text/x-jquery-tmpl")
     span
     span
     span
+
+

@@ -16,9 +16,11 @@ $(function () {
   let smilePattern = ''
   let typingTimerId
   let loadMutex = false
+  let allSmiles
 
   // Запрашиваю список доступных смайлов для чата
   socket.emit('smiles.list', (smiles) => {
+    allSmiles = smiles
     smiles = smiles.join('|')
     smilePattern = new RegExp(`(${smiles})`, 'g')
   })
@@ -68,6 +70,25 @@ $(function () {
   }
 
   getFriendsList()
+
+  // Открывает высплывающее окно со смайлами
+  pmForm.on('click', '.smile-icons-box', function () {
+    toggleActive($('.pm-form .all-smiles'))
+  })
+
+  pmForm.on('click', '.all-smiles-items img', function () {
+    insertTextToInput(`${$(this).attr('alt')} `)
+  })
+
+  // Вставка текста в поле ввода
+  const insertTextToInput = (text) => {
+    const input = pmForm.find('input')[0]
+    const pos = input.selectionStart
+    input.setRangeText(text, pos, pos)
+    input.selectionStart = pos + text.length
+    input.focus()
+    pmForm.find('.pm-chat-input-box input').keyup()
+  }
 
   // Пришло новое сообщение
   socket.on('messages.new', async (msg) => {
@@ -138,6 +159,8 @@ $(function () {
       }
     )
     $input.val('')
+
+    toggleActive($('.pm-form .all-smiles'))
 
     clearTimeout(typingTimerId)
     socket.emit('messages.typing.end', currentFriendId)
@@ -216,7 +239,7 @@ $(function () {
 
       // Выводим шаблон окна чата с сообщениями
       $('#privateMessagesBoxTmpl')
-        .tmpl(friend)
+        .tmpl({ ...friend, smiles: allSmiles })
         .appendTo($('.pm-chat-box').empty())
 
       // Изначально берем последние сообщения
@@ -380,6 +403,11 @@ $(function () {
   // Функция возвращает распарсенное сообщение
   const parseMessage = (msg) => {
     // Ссылки преобразуются в гиперлинки
+
+    if (allSmiles.indexOf(msg.message) >= 0) {
+      msg.smile = true
+    }
+
     msg.message = msg.message.replaceAll(urlPattern, (url) => {
       let link = url
       if (url.indexOf('//') < 0) link = '//' + url
@@ -390,10 +418,6 @@ $(function () {
     msg.message = msg.message.replaceAll(smilePattern, (_, smile) => {
       return tmpl(smileTemplate, { smile })
     })
-
-    // Достаём дату и время из ISO формта
-    msg.time = getTimeFromIso(msg.createdAt)
-    msg.date = getDateFromIso(msg.createdAt)
 
     return msg
   }
@@ -411,6 +435,17 @@ $(function () {
       if (smooth) data.behavior = 'smooth'
       $('.pm-chat')[0].scrollBy(data)
     }, 10)
+  }
+
+  // Показывает и скрывает блок
+  const toggleActive = (block) => {
+    if (block.css('display') != 'block') {
+      block.css('display', 'block')
+      setTimeout(() => block.addClass('active'))
+    } else {
+      block.removeClass('active')
+      setTimeout(() => block.css('display', 'none'), 300)
+    }
   }
 
   const getTimeFromIso = (isoDate) => {
