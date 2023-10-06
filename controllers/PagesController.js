@@ -13,21 +13,21 @@ class Pages {
     if (req.user) {
       return res.redirect('pages/lobbi')
     }
-    res.render('pages/login')
+    res.render('pages/auth/login')
   }
 
   registration(req, res) {
     if (req.user) {
       return res.redirect('pages/lobbi')
     }
-    res.render('pages/reg')
+    res.render('pages/auth/reg')
   }
 
   restore(req, res) {
     if (req.user) {
       return res.redirect('pages/lobbi')
     }
-    res.render('pages/restore')
+    res.render('pages/auth/restore')
   }
 }
 

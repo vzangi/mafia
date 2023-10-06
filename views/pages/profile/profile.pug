@@ -1,0 +1,13 @@
+extends /layouts/grey_layout
+
+block head 
+    link(href="/css/profile.css" rel="stylesheet")
+
+block content 
+    if !isBlock
+        include /includes/profile/top_info
+        include /includes/profile/top_stat
+    else 
+        include /includes/profile/block
+
+    div(class="m-4")

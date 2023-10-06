@@ -9,4 +9,7 @@ module.exports = (io, socket) => {
 
   // Возвращаю список доступных смайлов
   socket.on('smiles.list', controller.smiles.bind(controller))
+
+  // Указание пола
+  socket.on('profile.gender.change', controller.changeGender.bind(controller))
 }

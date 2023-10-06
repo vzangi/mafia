@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const profile = require('../controllers/ProfileController')
+const controller = require('../controllers/ProfileController')
 const {
   validator,
   validationMiddleware,
@@ -11,22 +11,22 @@ const { isAuth, withAccount } = require('../middlewares/AuthMiddleware')
 router.use(express.urlencoded({ extended: true }))
 
 // Просмотр своего профиля
-router.get('/', isAuth, profile.showUserAccount)
+router.get('/', isAuth, controller.showUserAccount)
 
 // Просмотр чужого профиля
-router.get('/:id', profile.showUserAccount)
+router.get('/:id', controller.showUserAccount)
 
 // Друзья
-router.get('/friends', isAuth, profile.friends)
+router.get('/friends', isAuth, controller.friends)
 
 // Друзья в чужом профиле
-router.get('/:id/friends', profile.friends)
+router.get('/:id/friends', controller.friends)
 
 // Запросы в друзья
-router.get('/friends/requests', withAccount, profile.friendsRequest)
+router.get('/friends/requests', withAccount, controller.friendsRequest)
 
 // Форма смены пароля
-router.get('/change-password', isAuth, profile.changePasswordForm)
+router.get('/change-password', isAuth, controller.changePasswordForm)
 
 // Процедура смены пароля
 router.post(
@@ -34,10 +34,16 @@ router.post(
   isAuth,
   validator.password,
   validationMiddleware,
-  profile.changePassword
+  controller.changePassword
 )
 
 // Кошелёк
-router.get('/wallet', withAccount, profile.wallet)
+router.get('/wallet', withAccount, controller.wallet)
+
+// Настройки профиля
+router.get('/settings', withAccount, controller.settings)
+
+// Смена автарки
+router.post('/settings', withAccount, controller.changeAvatar)
 
 module.exports = router

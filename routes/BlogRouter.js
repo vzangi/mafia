@@ -12,7 +12,7 @@ const pages = [
 
 pages.map((page) => {
   router.get(`/${page}`, (req, res) => {
-    res.render(`pages/${page}`)
+    res.render(`pages/blog/${page}`)
   })
 })
 

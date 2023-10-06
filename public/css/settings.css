@@ -1,0 +1,36 @@
+.top-settings-box {
+  display: flex;
+  padding: 1.2rem;
+  gap: 2rem;
+}
+
+.avatar-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.avatar-box img {
+  min-width: 100px;
+  max-width: 200px;
+  border-radius: 200px;
+}
+
+.fields-box {
+  flex: 1;
+}
+
+.change-avatar-box {
+  position: relative;
+}
+
+.change-avatar-box form {
+  display: none;
+}
+
+@media (max-width: 576px) {
+  .top-settings-box {
+    flex-direction: column;
+  }
+}

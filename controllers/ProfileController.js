@@ -3,9 +3,9 @@ const { Op } = require('sequelize')
 const Account = require('../models/Account')
 const Friend = require('../models/Friend')
 const WalletEvents = require('../models/WalletEvents')
+const fs = require('fs')
 
 class Profile {
-
   // Переход в профиль
   async showUserAccount(req, res, next) {
     // Если в параметрах передан id, то ищем пользователя по нему
@@ -22,9 +22,13 @@ class Profile {
       ogimage: process.env.APP_HOST + '/uploads/' + profile.avatar,
     }
 
-    data.friends = await Friend.scope({ method: ['friends', profile.id] }).findAll()
+    data.friends = await Friend.scope({
+      method: ['friends', profile.id],
+    }).findAll()
 
-    data.partner = await Friend.scope({ method: ['partner', profile.id] }).findOne()
+    data.partner = await Friend.scope({
+      method: ['partner', profile.id],
+    }).findOne()
 
     data.friendsCorrectForm = Friend.correctForm(data.friends.length)
 
@@ -51,7 +55,7 @@ class Profile {
       })
     }
 
-    res.render('pages/profile', data)
+    res.render('pages/profile/profile', data)
   }
 
   // Список друзей
@@ -78,11 +82,11 @@ class Profile {
       },
     })
 
-    res.render('pages/friends', {
+    res.render('pages/profile/friends', {
       profile,
       friends,
       partner,
-      title: `Друзья игрока ${profile.username}`
+      title: `Друзья игрока ${profile.username}`,
     })
   }
 
@@ -90,19 +94,21 @@ class Profile {
   async friendsRequest(req, res, next) {
     const { account } = req
 
-    const requests = await Friend.scope({method:['requests', account.id]}).findAll()
+    const requests = await Friend.scope({
+      method: ['requests', account.id],
+    }).findAll()
 
-    res.render('pages/friends-requests', {
+    res.render('pages/profile/friends-requests', {
       profile: account,
       requests,
-      title: `Запросы в друзья`
+      title: `Запросы в друзья`,
     })
   }
 
   // Форма изменения пароля
   changePasswordForm(req, res) {
-    res.render('pages/change-password', {
-      title: 'Смена пароля'
+    res.render('pages/profile/change-password', {
+      title: 'Смена пароля',
     })
   }
 
@@ -129,14 +135,87 @@ class Profile {
     const { account } = req
     const eventCount = await WalletEvents.count({
       where: {
-        accountId: account.id
-      }
+        accountId: account.id,
+      },
     })
 
-    res.render('pages/wallet', { 
-      account, 
+    res.render('pages/profile/wallet', {
+      account,
       eventCount,
       title: `Кошелёк - пополнение баланса`,
+    })
+  }
+
+  // Отображение страницы с настойками профиля
+  async settings(req, res) {
+    const id = req.user.id
+    const profile = await Account.findByPk(id)
+    if (!profile) {
+      return next() // на страницу 404
+    }
+    res.render('pages/profile/settings', {
+      profile,
+      title: `Настройки профиля ${profile.username}`,
+    })
+  }
+
+  // Процедура смены автарки
+  changeAvatar(req, res) {
+    const { user } = req
+    if (!user) return res.status(400).json({ msg: 'Не авторизован' })
+
+    const { avatar } = req.files
+    if (!avatar) return res.status(400).json({ msg: 'Нет необходимых данных' })
+
+    if (avatar.size > 260000) {
+      return res
+        .status(400)
+        .json({ msg: 'Размер фото не должно превышать ограничение в 260 Кб' })
+    }
+
+    let ext = ''
+    if (avatar.mimetype == 'image/jpeg') ext = 'jpg'
+    if (avatar.mimetype == 'image/png') ext = 'png'
+    if (avatar.mimetype == 'image/gif') ext = 'gif'
+    if (avatar.mimetype == 'image/webp') ext = 'webp'
+
+    if (ext == '') {
+      return res.status(400).json({
+        msg: 'Можно загружать только фото в формате: jpg, png, gif, webp',
+      })
+    }
+
+    const rnd1 = Math.ceil(Math.random() * 10000)
+    const rnd2 = Math.ceil(Math.random() * 10000)
+
+    // Формирую имя новой автарки
+    const fileName = `${user.id}-${rnd1}-${rnd2}.${ext}`
+
+    // Перемещаю загруженное фото в папку с загрузками
+    avatar.mv('./public/uploads/' + fileName, async function (err) {
+      if (err) {
+        res.status(400).json({ msg: 'Ошибка при загрузке' })
+      } else {
+        const profile = await Account.findByPk(user.id)
+
+        // Если предыдущее фото не то, что даётся по умолчанию
+        if (profile.avatar != 'noname.svg') {
+          // Удаляю предыдущее фото, чтобы не захламлять сервер
+          fs.unlink(
+            `${__dirname}/../public/uploads/${profile.avatar}`,
+            (err) => {
+              console.log(err)
+            }
+          )
+        }
+
+        // Сохраняю автарку в базу
+        profile.avatar = fileName
+        await profile.save()
+
+        // Возвращаю ответ с именем новой автарки
+        res.json({ fileName })
+      }
     })
   }
 }

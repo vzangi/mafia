@@ -1,0 +1,39 @@
+extends /layouts/two_column_9_3
+
+
+
+block article
+    h3 Профиль
+    div(class="block")
+        div(class="top-settings-box")
+            div(class="avatar-box")
+                div
+                    img(src='/uploads/'+profile.avatar alt=profile.username)
+                div(class="change-avatar-box") 
+                    button(class="btn btn-success change-avatar-btn") Обновить аватар
+                    form(enctype="multipart/form-data" method="post")
+                        input(type='file' name="avatar")
+
+            div(class="fields-box")
+                div(class="form-row2 mb-3")
+                    label(class="form-label") Ник
+                    input(class="form-control" disabled value=profile.username)
+                div(class="form-row2 mb-3")
+                    label(class="form-label") Почта
+                    input(class="form-control" disabled value=profile.email)
+                div 
+                    label(class="form-label") Пол
+                    select(class="form-control" id="gender")
+                        option(value="0") Не указан
+                        option(value="1" selected=profile.gender==1) Мужской
+                        option(value="2" selected=profile.gender==2) Женский
+
+    h3(class='mt-4') Безопасность
+
+    div(class="block p-3")
+        a(class="btn btn-primary" href="/profile/change-password") Сменить пароль
+
+
+block scripts 
+    link(href="/css/settings.css" rel="stylesheet")
+    script(src="/js/settings.js")

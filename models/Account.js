@@ -30,6 +30,10 @@ const Account = sequelize.define('account', {
     type: DataTypes.STRING,
     defaultValue: 'noname.svg',
   },
+  gender: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
+  },
   rank: {
     type: DataTypes.INTEGER,
     defaultValue: 1500,
@@ -40,7 +44,7 @@ const Account = sequelize.define('account', {
   },
   wallet: {
     type: DataTypes.FLOAT,
-    defaultValue: 0
+    defaultValue: 0,
   },
   online: {
     type: DataTypes.BOOLEAN,
@@ -56,7 +60,7 @@ const Account = sequelize.define('account', {
     },
     set() {
       throw new Error('Do not try to set the `vip` value!')
-    }
+    },
   },
   vip: {
     type: DataTypes.VIRTUAL(DataTypes.INTEGER),
@@ -69,7 +73,7 @@ const Account = sequelize.define('account', {
     },
     set() {
       throw new Error('Do not try to set the `vip` value!')
-    }
+    },
   },
 })
 

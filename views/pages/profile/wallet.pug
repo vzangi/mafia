@@ -1,20 +1,20 @@
-extends ../layouts/two_column_9_3
+extends /layouts/two_column_9_3
 
 block head 
-    link(href="/css/wallet.css" rel="stylesheet")
+  link(href="/css/wallet.css" rel="stylesheet")
 
 prepend content
-  include ../includes/wallet/adjunction
-  include ../includes/wallet/wallet_form
+  include /includes/wallet/adjunction
+  include /includes/wallet/wallet_form
 
 block article 
   div(class="block mb-5")
     article
       p(class="transations-title") История транзакций (#[span(class="total-transactions")= eventCount])
-      
+
       table(class="w-100 table m-0")
         tbody(class="transactions" data-onPage=eventsOnPage)
 
 block scripts 
-  include ../includes/wallet/eventTmpl
+  include /includes/wallet/eventTmpl
   script(src="/js/wallet.js")
