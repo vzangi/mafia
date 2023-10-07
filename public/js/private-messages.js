@@ -223,6 +223,18 @@ $(function () {
 
       const { friend } = res
 
+      if (!friend.online) {
+        const lastOnlineDate = getDateFromIso(friend.updatedAt)
+        const lastOnlineTime = getTimeFromIso(friend.updatedAt)
+        if (lastOnlineDate == getDateFromIso(new Date())) {
+          friend.onlineDate = 'сегодня ' + lastOnlineTime
+        } else {
+          friend.onlineDate = lastOnlineDate + ' ' + lastOnlineTime
+        }
+      }
+
+      console.log(friend);
+
       // Запоминаем Id друга
       currentFriendId = friendId
 

@@ -18,7 +18,22 @@ script(id="privateMessagesBoxTmpl" type="text/x-jquery-tmpl")
       div(class="pm-friend-avatar ${online?'online':''}") 
         img(src="/uploads/${avatar}")
       div(class="pm-friend-nik") 
-        a(href="/profile/${id}") ${username}
+        span
+          a(href="/profile/${id}") ${username}
+        . 
+          {{if online}}
+        small(class='text-secondary') онлайн
+        . 
+          {{else}}
+        small(class='text-secondary') 
+          . 
+            {{if gender == 0}}был(а){{/if}} 
+            {{if gender == 1}}был{{/if}} 
+            {{if gender == 2}}была{{/if}} 
+          . 
+            ${onlineDate}
+        . 
+          {{/if}}
     div(class="pm-chat-btns")
       a 
 

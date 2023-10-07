@@ -62,6 +62,7 @@
   height: 50px;
   border-radius: 50px;
 }
+
 .friend-avatar {
   flex: none;
   position: relative;
@@ -80,24 +81,30 @@
   border-radius: 10px;
   border: 2px solid #fff;
 }
+
 .friend-info {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
 }
+
 .friend-info {
   flex: 1;
   overflow: hidden;
 }
+
 .friend-nik {
   font-weight: 600;
 }
+
 .last-message {
   font-size: 0.9em;
 }
+
 .last-message img {
   width: 22px;
 }
+
 .last-message.read-0:before {
   content: ' ';
   display: inline-block;
@@ -117,6 +124,7 @@
   align-items: center;
   text-align: center;
 }
+
 .chat-beginning .icon {
   font-size: 4rem;
   color: darkgrey;
@@ -137,12 +145,14 @@
   padding: 0 1rem;
   flex: none;
 }
+
 .pm-friend-info {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   flex: 1;
 }
+
 .pm-friend-info .back {
   width: 20px;
   text-align: center;
@@ -154,22 +164,30 @@
   flex: none;
   position: relative;
 }
+
 .pm-friend-avatar img {
   width: 50px;
   height: 50px;
   border-radius: 50px;
 }
+
 .pm-friend-nik {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 }
+
 .pm-chat-btns {
   flex: none;
 }
+
 .pm-chat {
   flex: 1;
   padding: 1rem;
   overflow: auto;
 }
+
 .pm-chat-input-box {
   flex: none;
 }
@@ -182,11 +200,13 @@
   line-height: 21px;
   overflow-wrap: anywhere;
 }
+
 .friend-message .msg {
   background: #f7f7f7;
   color: #5b5d57;
   box-shadow: 0 0 4px 0px #ccc;
 }
+
 .my-message .msg {
   background: linear-gradient(30deg, #6097e0, #367bd8);
   color: #fff;
@@ -200,9 +220,11 @@
   gap: 0.5rem;
   margin-top: 0.5rem;
 }
+
 .my-message {
   justify-content: end;
 }
+
 .pm-chat .time {
   font-size: 0.8rem;
   color: #bbb;
@@ -214,6 +236,7 @@
   position: relative;
   margin: 10px;
 }
+
 .pm-chat-input-box input {
   width: 100%;
   border: 0;
@@ -276,9 +299,11 @@
   border-bottom: 1px solid #aaa;
   transition: all 0.3s ease;
 }
+
 .pm-friend-nik a:hover {
   border-bottom: 1px solid #555;
 }
+
 .nomessages {
   display: flex;
   height: 100%;
@@ -287,14 +312,17 @@
   align-items: center;
   text-align: center;
 }
+
 .nomessages .icon {
   font-size: 3rem;
   color: darkgrey;
 }
+
 .messages-date {
   text-align: center;
   margin-top: 0.5rem;
 }
+
 .messages-date span {
   font-size: 0.8em;
   color: #aaa;
@@ -311,6 +339,7 @@
   background: transparent;
   box-shadow: none;
 }
+
 .pm-chat .msg.smile img {
   width: 100px;
 }
@@ -349,20 +378,24 @@
   .pm-form {
     display: block;
   }
+
   .pm-friends-list-box {
     width: 100%;
     border-radius: 5px;
   }
+
   .pm-chat-box {
     border-radius: 5px;
     position: absolute;
     top: 0;
     opacity: 1;
   }
+
   .pm-chat-box.open {
     opacity: 1;
     left: 0;
   }
+
   .pm-friend-info .back {
     display: block;
   }
@@ -373,9 +406,11 @@
   top: -18px;
   left: 10px;
 }
+
 .typing {
   position: relative;
 }
+
 .typing span {
   content: '';
   -webkit-animation: blink 1.5s infinite;
@@ -390,11 +425,13 @@
   top: 0;
   border-radius: 50%;
 }
+
 .typing span:nth-child(2) {
   -webkit-animation-delay: 0.2s;
   animation-delay: 0.2s;
   margin-left: 15px;
 }
+
 .typing span:nth-child(3) {
   -webkit-animation-delay: 0.4s;
   animation-delay: 0.4s;
@@ -405,9 +442,11 @@
   0% {
     opacity: 0.1;
   }
+
   20% {
     opacity: 1;
   }
+
   100% {
     opacity: 0.1;
   }
@@ -417,9 +456,11 @@
   0% {
     opacity: 0.1;
   }
+
   20% {
     opacity: 1;
   }
+
   100% {
     opacity: 0.1;
   }

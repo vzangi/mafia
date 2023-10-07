@@ -85,7 +85,7 @@ Message.canMassaging = async (accountId, friendId) => {
     include: {
       model: Account,
       as: 'friend',
-      attributes: ['id', 'avatar', 'vipTo', 'vip', 'online', 'username'],
+      attributes: ['id', 'avatar', 'vipTo', 'vip', 'online', 'username', 'updatedAt', 'gender'],
     },
   })
 }
