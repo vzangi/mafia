@@ -19,6 +19,9 @@ const smiles = [
   'Fire',
   'Sirena',
   'Coffee',
+  'Sleep',
+  'Zanda',
+  'Moon',
 ]
 
 module.exports = smiles
