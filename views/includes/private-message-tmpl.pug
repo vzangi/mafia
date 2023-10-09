@@ -11,6 +11,22 @@ script(id="pmListItemTmpl" type="text/x-jquery-tmpl")
       div(class="friend-nik ellipsis") ${username}
       div(class="last-message ellipsis read-${isRead}") {{html message}}
 
+script(id="privateMessagesOnlineStatusTmpl" type="text/x-jquery-tmpl")
+  . 
+    {{if online}}
+  small(class='text-secondary') онлайн
+  . 
+    {{else}}
+  small(class='text-secondary') 
+    . 
+      {{if gender == 0}}был(а){{/if}} 
+      {{if gender == 1}}был{{/if}} 
+      {{if gender == 2}}была{{/if}} 
+    . 
+      ${onlineDate}
+  . 
+    {{/if}}
+
 script(id="privateMessagesBoxTmpl" type="text/x-jquery-tmpl")
   div(class="pm-chat-title")
     div(class="pm-friend-info")
@@ -21,19 +37,7 @@ script(id="privateMessagesBoxTmpl" type="text/x-jquery-tmpl")
         span
           a(href="/profile/${id}") ${username}
         . 
-          {{if online}}
-        small(class='text-secondary') онлайн
-        . 
-          {{else}}
-        small(class='text-secondary') 
-          . 
-            {{if gender == 0}}был(а){{/if}} 
-            {{if gender == 1}}был{{/if}} 
-            {{if gender == 2}}была{{/if}} 
-          . 
-            ${onlineDate}
-        . 
-          {{/if}}
+          {{tmpl() '#privateMessagesOnlineStatusTmpl'}}
     div(class="pm-chat-btns")
       a 
 

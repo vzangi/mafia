@@ -84,6 +84,35 @@ $(function () {
     pmForm.find('.pm-chat-input-box input').keyup()
   }
 
+  socket.on('friend.online', (friend) => {
+    $(`.friend-item[data-id=${friend.id}]`)
+      .find('.friend-avatar')
+      .addClass('online')
+    if (currentFriendId == friend.id) {
+      $('.pm-friend-avatar').addClass('online')
+      $('.pm-friend-nik small').remove()
+      $('#privateMessagesOnlineStatusTmpl')
+        .tmpl({ online: true })
+        .appendTo($('.pm-friend-nik'))
+    }
+  })
+
+  socket.on('friend.offline', (friend) => {
+    $(`.friend-item[data-id=${friend.id}]`)
+      .find('.friend-avatar')
+      .removeClass('online')
+    if (currentFriendId == friend.id) {
+      $('.pm-friend-avatar').removeClass('online')
+      $('.pm-friend-nik small').remove()
+      $('#privateMessagesOnlineStatusTmpl')
+        .tmpl({
+          gender: friend.gender,
+          onlineDate: getTimeFromIso(friend.updatedAt),
+        })
+        .appendTo($('.pm-friend-nik'))
+    }
+  })
+
   // Пришло новое сообщение
   socket.on('messages.new', async (msg) => {
     // Если чат с другом открыт, то отображаем сообщение
@@ -233,7 +262,7 @@ $(function () {
         }
       }
 
-      console.log(friend);
+      console.log(friend)
 
       // Запоминаем Id друга
       currentFriendId = friendId

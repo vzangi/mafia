@@ -1,4 +1,5 @@
 const Account = require('../../models/Account')
+const Friend = require('../../models/Friend')
 const { getNowDateTime } = require('../../units/helpers')
 const BaseSocketController = require('./BaseSocketController')
 
@@ -28,8 +29,8 @@ class UsersCountController extends BaseSocketController {
   }
 
   // Обновление статуса online у пользователя
-  _online(userId, on = true) {
-    Account.update({ online: on }, { where: { id: userId } })
+  async _online(userId, on = true) {
+    await Account.update({ online: on }, { where: { id: userId } })
   }
 
   // Меняет количество пользователей онлайн
@@ -54,6 +55,9 @@ class UsersCountController extends BaseSocketController {
       // увеличиваю количество подключенных пользователей
       if (!this._hasAnySockets()) {
         this._changeUserCount(+1)
+
+        // Сообщаю друзьям, что игрок появился в сети
+        this.notifyFriendsAboutMyOnlineStatus()
 
         // Смотрю есть ли новые заявки в друзья
 
@@ -85,7 +89,7 @@ class UsersCountController extends BaseSocketController {
 
     // Если нет других сессий этого пользователя
     if (!this._hasAnySockets()) {
-      userTimers[user.id] = setTimeout(() => {
+      userTimers[user.id] = setTimeout(async () => {
         delete userTimers[user.id]
 
         console.log(`${user.username} disconnected`, getNowDateTime())
@@ -93,9 +97,49 @@ class UsersCountController extends BaseSocketController {
         this._changeUserCount(-1)
 
         // Если сессия была последней, то обновлем статус пользователя в базе на offline
-        this._online(user.id, false)
+        await this._online(user.id, false)
+
+        // Сообщаю друзьям что игрок покинул сайт
+        this.notifyFriendsAboutMyOnlineStatus(false)
       }, 2000)
     }
+  }
+
+  // Нотификация друзьям о статусе "онлайн" игрока
+  async notifyFriendsAboutMyOnlineStatus(online = true) {
+    const { user, socket } = this
+    if (!user) return
+
+    // Береу инфу из профиля
+    const profile = await Account.findByPk(user.id, {
+      attributes: ['id', 'username', 'gender', 'updatedAt'],
+    })
+
+    // Беру список друзей
+    const friends = await Friend.scope({
+      method: ['friends', user.id],
+    }).findAll()
+
+    // Прохожу по каждому игроку
+    friends.forEach((f) => {
+      const { friend } = f
+
+      // Если друг онлайн
+      if (friend.online) {
+        const friendIds = this.getUserSocketIds(friend.id)
+
+        // Отправляю ему нотификацию
+        friendIds.forEach((sid) => {
+          if (online) {
+            socket.broadcast.to(sid).emit('friend.online', profile)
+          } else {
+            socket.broadcast.to(sid).emit('friend.offline', profile)
+          }
+        })
+      }
+    })
+
+    // console.log(friends)
   }
 }
 
