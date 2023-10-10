@@ -1,5 +1,6 @@
-const { where } = require('sequelize')
+const { where, Op } = require('sequelize')
 const Account = require('../../models/Account')
+const Friend = require('../../models/Friend')
 const smiles = require('../../units/smiles')
 const BaseSocketController = require('./BaseSocketController')
 
@@ -16,6 +17,7 @@ class ApiController extends BaseSocketController {
     callback(smiles)
   }
 
+  // Установка поля "Пол" игрока
   async changeGender(gender) {
     if (gender != 0 && gender != 1 && gender != 2) return
     const { user } = this
@@ -30,6 +32,32 @@ class ApiController extends BaseSocketController {
         },
       }
     )
+  }
+
+  // Получения списка друзей со статусом "онлайн"
+  async getOnlineFriends(callback) {
+    const { user } = this
+    if (!user) return callback(1, 'Не авторизован')
+
+    const friends = await Friend.findAll({
+      where: {
+        accountId: user.id,
+        [Op.or]: [
+          { status: Friend.statuses.ACCEPTED },
+          { status: Friend.statuses.MARRIED },
+        ],
+      },
+      include: {
+        model: Account,
+        as: 'friend',
+        where: {
+          online: true,
+        },
+        attributes: ['id', 'avatar', 'username'],
+      },
+    })
+
+    return callback(0, friends)
   }
 }
 

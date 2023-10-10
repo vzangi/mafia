@@ -112,7 +112,7 @@ class UsersCountController extends BaseSocketController {
 
     // Береу инфу из профиля
     const profile = await Account.findByPk(user.id, {
-      attributes: ['id', 'username', 'gender', 'updatedAt'],
+      attributes: ['id', 'username', 'gender', 'updatedAt', 'avatar'],
     })
 
     // Беру список друзей

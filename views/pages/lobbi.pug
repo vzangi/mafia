@@ -3,6 +3,10 @@ extends /layouts/two_column_3_9
 block main
   include /includes/lobbi/chat
 
+block aside
+  include /includes/lobbi/friends_online
+
 block scripts 
+  include /includes/lobbi/lobbi-tmpl
   script(src="/js/lobbi.js")
   link(href="/css/chat.css" rel="stylesheet")

@@ -12,4 +12,7 @@ module.exports = (io, socket) => {
 
   // Указание пола
   socket.on('profile.gender.change', controller.changeGender.bind(controller))
+
+  // Список друзей онлайн
+  socket.on('friends.online', controller.getOnlineFriends.bind(controller))
 }

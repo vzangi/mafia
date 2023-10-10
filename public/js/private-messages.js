@@ -97,6 +97,11 @@ $(function () {
         .tmpl({ online: true })
         .appendTo($('.pm-friend-nik'))
     }
+
+    if ($('.friends-list').length == 1) {
+      $('.no-online-friends').remove()
+      $('#friendOnlineTmpl').tmpl(friend).prependTo($('.friends-list'))
+    }
   })
 
   // Друг вышел с сайта
@@ -113,6 +118,13 @@ $(function () {
           onlineDate: getTimeFromIso(friend.updatedAt),
         })
         .appendTo($('.pm-friend-nik'))
+    }
+
+    if ($('.friends-list').length == 1) {
+      $(`.online-friend-box[data-id=${friend.id}]`).remove()
+      if ($('.online-friend-box').length == 0) {
+        $('#noFriendsOnlineTmpl').tmpl().appendTo($('.friends-list'))
+      }
     }
   })
 

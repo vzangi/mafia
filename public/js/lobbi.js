@@ -11,6 +11,7 @@ $(async function () {
   const chatWhideCheckbox = $('input.chat-whide')
   const chatFixCheckbox = $('input.chat-fix')
   const colorShemeItem = $('.color-sheme')
+  const friendsOnlineList = $('.friends-list')
   const fontSizeItem = $('.font-size')
   const userMarkerBegin = '['
   const userMarkerEnd = ']'
@@ -23,6 +24,9 @@ $(async function () {
   const smileTemplate = $('#smileTmpl')
   const linkTemplate = $('#linkTmpl')
 
+  const noFriendsTemplate = $('#noFriendsOnlineTmpl')
+  const friendOnlineTemplate = $('#friendOnlineTmpl')
+
   let smilePattern = ''
   let timeoutTyping
   let needScroll = localStorage.getItem('needScroll') == '1'
@@ -32,6 +36,21 @@ $(async function () {
 
   chat.addClass(fontSize)
   $(`.font-size[data-font=${fontSize}]`).addClass('active')
+
+  socket.emit('friends.online', (status, res) => {
+    if (status == 0) {
+      if (res.length == 0) {
+        noFriendsTemplate.tmpl().appendTo(friendsOnlineList.empty())
+      } else {
+        friendsOnlineList.empty()
+        res.forEach((friend) => {
+          friendOnlineTemplate.tmpl(friend.friend).appendTo(friendsOnlineList)
+        })
+      }
+    } else {
+      alert(res)
+    }
+  })
 
   // Обновление количества игроков в онлайне
   socket.emit('online.count', (response) => {

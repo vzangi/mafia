@@ -494,3 +494,53 @@ input:checked + .slider:before {
 .white .font-size:hover {
   background: var(--chat-white);
 }
+
+.friends-online {
+  padding: 1rem;
+}
+.friends-online h4 {
+  font-size: 1rem;
+  color: var(--color-black-light);
+}
+.friends-online form input {
+  border: 1px solid #ddd;
+  outline: 0;
+  width: 100%;
+}
+.friends-list > img {
+  width: 50px;
+  margin: auto;
+  display: block;
+}
+
+.online-friend-box .friend-item {
+  padding: 0;
+  gap: 0.5rem;
+  cursor: default;
+}
+
+.online-friend-box .friend-item:hover {
+  background-color: transparent;
+}
+
+.friend-actions {
+  display: flex;
+  align-items: center;
+}
+
+.start-chat {
+  font-size: 1.4rem;
+  color: #aaa;
+  position: relative;
+  top: 2px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.start-chat:hover {
+  color: var(--color-aqua);
+}
+
+.friend-info a {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
