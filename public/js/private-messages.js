@@ -5,6 +5,7 @@ $(function () {
   const pmForm = $('.pm-form')
   const pmChatBox = $('.pm-chat-box')
   const friendList = $('.pm-friends-list')
+  const closePMBtn = $('.pm-header .close-pm')
 
   const linkTemplate = $('#linkTmpl')
   const smileTemplate = $('#smileTmpl')
@@ -84,6 +85,7 @@ $(function () {
     pmForm.find('.pm-chat-input-box input').keyup()
   }
 
+  // Друг появился онлайн
   socket.on('friend.online', (friend) => {
     $(`.friend-item[data-id=${friend.id}]`)
       .find('.friend-avatar')
@@ -97,6 +99,7 @@ $(function () {
     }
   })
 
+  // Друг вышел с сайта
   socket.on('friend.offline', (friend) => {
     $(`.friend-item[data-id=${friend.id}]`)
       .find('.friend-avatar')
@@ -130,6 +133,7 @@ $(function () {
     }
   })
 
+  // Друг пишет соощение
   socket.on('messages.typing', (friendId) => {
     // Если печатает тот, с кем открыт чат
     if (currentFriendId == friendId) {
@@ -138,6 +142,7 @@ $(function () {
     }
   })
 
+  // Друг завершил писать сообщение
   socket.on('messages.typing.end', (friendId) => {
     // Если печатает тот, с кем открыт чат
     if (currentFriendId == friendId) {
@@ -152,6 +157,7 @@ $(function () {
     }
   })
 
+  // Пишу сообщение
   pmForm.on('keyup', '.pm-chat-input-box input', function () {
     if ($(this).val() == '') return
 
@@ -216,6 +222,10 @@ $(function () {
     messagesBtn.click()
   })
 
+  closePMBtn.click(function () {
+    messagesBtn.click()
+  })
+
   // Загрузка сообшений про выборе игрока из списка
   friendList.on('click', '.friend-item', function () {
     if ($(this).hasClass('active')) return
@@ -261,8 +271,6 @@ $(function () {
           friend.onlineDate = lastOnlineDate + ' ' + lastOnlineTime
         }
       }
-
-      console.log(friend)
 
       // Запоминаем Id друга
       currentFriendId = friendId
@@ -419,14 +427,23 @@ $(function () {
   }
 
   function scrollMessages(smooth = true) {
-    setTimeout(() => {
-      const data = {
-        top: 10000,
-        left: 0,
-      }
-      if (smooth) data.behavior = 'smooth'
-      $('.pm-chat')[0].scrollBy(data)
-    }, 10)
+    const data = {
+      top: 10000,
+      left: 0,
+    }
+
+    if (!smooth) {
+      setTimeout(() => {
+        $('.pm-chat')[0].scrollTop = $('.pm-chat')[0].scrollHeight
+      }, 10)
+    }
+
+    if (smooth) {
+      data.behavior = 'smooth'
+      setTimeout(() => {
+        $('.pm-chat')[0].scrollBy(data)
+      }, 100)
+    }
   }
 
   // Показывает и скрывает блок

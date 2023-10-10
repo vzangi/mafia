@@ -23,6 +23,18 @@
   flex: none;
 }
 
+.pm-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pm-header .close-pm {
+  color: inherit;
+  padding: 0 1rem;
+  display: none;
+}
+
 .pm-friends-list-box h4 {
   padding: 1rem;
   margin: 0;
@@ -376,6 +388,10 @@
 
 @media (max-width: 768px) {
   .pm-form {
+    display: block;
+  }
+
+  .pm-header .close-pm {
     display: block;
   }
 
