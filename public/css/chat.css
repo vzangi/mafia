@@ -502,7 +502,7 @@ input:checked + .slider:before {
   font-size: 1rem;
   color: var(--color-black-light);
 }
-.friends-online form input {
+.friends-online input {
   border: 1px solid #ddd;
   outline: 0;
   width: 100%;

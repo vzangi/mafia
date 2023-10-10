@@ -15,6 +15,7 @@ $(async function () {
   const fontSizeItem = $('.font-size')
   const userMarkerBegin = '['
   const userMarkerEnd = ']'
+  const friendsOnlineFilterInput = $('.friends-online input')
 
   const userNik = $('.user-nik').text()
   const urlPattern =
@@ -36,6 +37,17 @@ $(async function () {
 
   chat.addClass(fontSize)
   $(`.font-size[data-font=${fontSize}]`).addClass('active')
+
+  friendsOnlineFilterInput.keyup(function () {
+    const filter = $(this).val()
+    $('.online-friend-box').each((_, friend) => {
+      if ($(friend).find('.friend-info a').text().indexOf(filter) < 0) {
+        $(friend).slideUp()
+      } else {
+        $(friend).slideDown()
+      }
+    })
+  })
 
   socket.emit('friends.online', (status, res) => {
     if (status == 0) {
