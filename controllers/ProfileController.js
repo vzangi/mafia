@@ -4,6 +4,7 @@ const Account = require('../models/Account')
 const Friend = require('../models/Friend')
 const WalletEvents = require('../models/WalletEvents')
 const fs = require('fs')
+const Jimp = require('jimp')
 
 class Profile {
   // Переход в профиль
@@ -160,18 +161,12 @@ class Profile {
   }
 
   // Процедура смены автарки
-  changeAvatar(req, res) {
+  async changeAvatar(req, res) {
     const { user } = req
     if (!user) return res.status(400).json({ msg: 'Не авторизован' })
 
     const { avatar } = req.files
     if (!avatar) return res.status(400).json({ msg: 'Нет необходимых данных' })
-
-    if (avatar.size > 260000) {
-      return res
-        .status(400)
-        .json({ msg: 'Размер фото не должно превышать ограничение в 260 Кб' })
-    }
 
     let ext = ''
     if (avatar.mimetype == 'image/jpeg') ext = 'jpg'
@@ -191,32 +186,39 @@ class Profile {
     // Формирую имя новой автарки
     const fileName = `${user.id}-${rnd1}-${rnd2}.${ext}`
 
-    // Перемещаю загруженное фото в папку с загрузками
-    avatar.mv('./public/uploads/' + fileName, async function (err) {
-      if (err) {
-        res.status(400).json({ msg: 'Ошибка при загрузке' })
-      } else {
-        const profile = await Account.findByPk(user.id)
+    // Запрещаю загрузку автарок больше 5 мегабайт
+    if (avatar.size > 5_000_000) {
+      return res
+        .status(400)
+        .json({ msg: 'Размер фото не должно превышать ограничение в 5Mb' })
+    }
 
-        // Если предыдущее фото не то, что даётся по умолчанию
-        if (profile.avatar != 'noname.svg') {
-          // Удаляю предыдущее фото, чтобы не захламлять сервер
-          fs.unlink(
-            `${__dirname}/../public/uploads/${profile.avatar}`,
-            (err) => {
-              console.log(err)
-            }
-          )
-        }
+    // Если размер аватарки больше 300 Кб, то сжимаю её
+    if (avatar.size > 300_000) {
+      const img = await Jimp.read(avatar.data)
+      img.resize(250, Jimp.AUTO).writeAsync('./public/uploads/' + fileName)
+    } else {
+      // Перемещаю загруженное фото в папку с загрузками
+      await avatar.mv('./public/uploads/' + fileName)
+    }
 
-        // Сохраняю автарку в базу
-        profile.avatar = fileName
-        await profile.save()
+    // Достаю профиль
+    const profile = await Account.findByPk(user.id)
 
-        // Возвращаю ответ с именем новой автарки
-        res.json({ fileName })
-      }
-    })
+    // Если предыдущее фото не то, что даётся по умолчанию
+    if (profile.avatar != 'noname.svg') {
+      // Удаляю предыдущее фото, чтобы не захламлять сервер
+      fs.unlink(`${__dirname}/../public/uploads/${profile.avatar}`, (err) => {
+        console.log(err)
+      })
+    }
+
+    // Сохраняю автарку в базу
+    profile.avatar = fileName
+    await profile.save()
+
+    // Возвращаю ответ с именем новой автарки
+    res.json({ fileName })
   }
 }
 
