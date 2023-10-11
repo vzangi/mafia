@@ -513,6 +513,10 @@ input:checked + .slider:before {
   display: block;
 }
 
+.online-friend-box {
+  margin-bottom: 0.5rem;
+}
+
 .online-friend-box .friend-item {
   padding: 0;
   gap: 0.5rem;

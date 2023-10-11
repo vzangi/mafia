@@ -350,6 +350,7 @@
 .pm-chat .msg.smile {
   background: transparent;
   box-shadow: none;
+  cursor: pointer;
 }
 
 .pm-chat .msg.smile img {

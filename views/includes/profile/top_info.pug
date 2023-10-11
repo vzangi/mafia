@@ -44,5 +44,12 @@ div(class="container")
         div(class="profile-top-info-main-vip mt-3")
           span(class='vip-user' data-bs-toggle="tooltip" data-bs-placement="right" title='до ' + prettyDate(profile.vipTo)) VIP игрок
       if partner 
-        div(class="partner mt-3") Партнёр - #[a(href="/profile/" + partner.friend.id)= partner.friend.username]
+        div(class="partner mt-3") 
+          if profile.gender == 1
+            span Спруга - 
+          else if profile.gender == 2
+            span Супруг - 
+          else  
+            span Партнёр - 
+          a(href="/profile/" + partner.friend.id)= partner.friend.username
 

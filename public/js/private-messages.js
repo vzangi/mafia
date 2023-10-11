@@ -71,7 +71,13 @@ $(function () {
     toggleActive($('.pm-form .all-smiles'))
   })
 
+  // Нажатие на смайлик из спсика
   pmForm.on('click', '.all-smiles-items img', function () {
+    insertTextToInput(`${$(this).attr('alt')} `)
+  })
+
+  // Нажатие на смайлик в чате
+  pmForm.on('click', '.msg img', function () {
     insertTextToInput(`${$(this).attr('alt')} `)
   })
 
@@ -98,9 +104,11 @@ $(function () {
         .appendTo($('.pm-friend-nik'))
     }
 
-    if ($('.friends-list').length == 1) {
+    if ($('.friends-online .friends-list').length == 1) {
       $('.no-online-friends').remove()
-      $('#friendOnlineTmpl').tmpl(friend).prependTo($('.friends-list'))
+      $('#friendOnlineTmpl')
+        .tmpl(friend)
+        .prependTo($('.friends-online .friends-list'))
     }
   })
 
@@ -120,10 +128,12 @@ $(function () {
         .appendTo($('.pm-friend-nik'))
     }
 
-    if ($('.friends-list').length == 1) {
+    if ($('.friends-online .friends-list').length == 1) {
       $(`.online-friend-box[data-id=${friend.id}]`).remove()
       if ($('.online-friend-box').length == 0) {
-        $('#noFriendsOnlineTmpl').tmpl().appendTo($('.friends-list'))
+        $('#noFriendsOnlineTmpl')
+          .tmpl()
+          .appendTo($('.friends-online .friends-list'))
       }
     }
   })
@@ -271,6 +281,8 @@ $(function () {
       if (res.status != 0) {
         return await alert(res.msg)
       }
+
+      $(window).scrollTop(0)
 
       const { friend } = res
 

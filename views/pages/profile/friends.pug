@@ -14,7 +14,12 @@ block main
                             img(src="/uploads/" + profile.avatar alt=profile.username)
                     a(href="/profile/" + profile.id class="user-name ellipsis")= profile.username
                     span(class="ion-ios-arrow-right")
-                    span Партнёр
+                    if profile.gender == 1
+                        span Супруга
+                    else if profile.gender == 2
+                        span Супруг
+                    else
+                        span Партнёр
             div(class="row friends-list")
                 div(class="col-12")
                     div(class="friend-box")
