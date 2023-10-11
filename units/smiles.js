@@ -22,6 +22,7 @@ const smiles = [
   'Sleep',
   'Zanda',
   'Moon',
+  'Bear',
 ]
 
 module.exports = smiles
