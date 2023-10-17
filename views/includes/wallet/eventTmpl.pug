@@ -30,6 +30,10 @@ script(id="eventTmpl" type="text/x-jquery-tmpl")
       img(src="/images/eDoge.svg")
       . 
         {{/if}}
+        {{if eventType == 7}}
+      img(src="/images/eGift.svg")
+      . 
+        {{/if}}
 
     td(class="desc")
       .
@@ -47,6 +51,9 @@ script(id="eventTmpl" type="text/x-jquery-tmpl")
       .
         {{else eventType == 4}}
       div Отказ от свадьбы
+      .
+        {{else eventType == 7}}
+      div Покупка открытки
       . 
         {{else}}
       div Что-то другое
@@ -69,6 +76,9 @@ script(id="eventTmpl" type="text/x-jquery-tmpl")
       .
         {{else eventType == 4}}
       span(class="plus") +${value}
+      .
+        {{else eventType == 7}}
+      span(class="minus") ${value}
       .
         {{/if}}
 

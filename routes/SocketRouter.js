@@ -23,5 +23,8 @@ module.exports = (io) => {
 
     // Роуты приватных сообщений
     require('./socket/MessagesRouter')(io, socket)
+
+    // Роуты Открыток
+    require('./socket/GiftsRouter')(io, socket)
   })
 }

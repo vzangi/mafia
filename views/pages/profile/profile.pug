@@ -7,7 +7,16 @@ block content
     if !isBlock
         include /includes/profile/top_info
         include /includes/profile/top_stat
+
+        div(class="container mt-4")
+            div(class="row")
+                include /includes/profile/gifts
+
     else 
         include /includes/profile/block
 
     div(class="m-4")
+
+block scripts 
+    include /includes/profile/profile-gift-tmpl
+    script(src="/js/profile.js")

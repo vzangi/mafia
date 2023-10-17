@@ -1,4 +1,4 @@
-const { where, Op } = require('sequelize')
+const { Op } = require('sequelize')
 const Account = require('../../models/Account')
 const Friend = require('../../models/Friend')
 const smiles = require('../../units/smiles')

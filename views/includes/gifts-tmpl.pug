@@ -1,0 +1,14 @@
+script(id="groupOptionTmpl" type="text/x-jquery-tmpl")
+    option(value="${id}") ${name}
+
+script(id="giftItemTmpl" type="text/x-jquery-tmpl")
+    div(class="gift-item" data-id="${id}" data-src="/uploads/gift/${picture}")
+        img(src="/uploads/gift/${picture}")
+        . 
+            {{if isVip == 1}}
+        span(class="ion-android-star vip" title="Премиум открытка")
+        . 
+            {{/if}}
+
+script(id="selectedImgTmpl" type="text/x-jquery-tmpl")
+    img(src="${src}")

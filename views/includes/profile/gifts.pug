@@ -1,0 +1,16 @@
+div(class="col-12 col-md-6") 
+    div(class="gifts-header d-flex justify-content-between align-items-center mb-2")
+        h4(class="mb-0") Открытки
+        div
+            a(href="/gift?to="+profile.username class="btn btn-sm btn-outline-success" data-bs-toggle="tooltip" data-bs-placement="top" title='Подарить открытку '+profile.username) Подарить
+
+    if gifts.length == 0
+        p Здесь пока нет открыток. Подари первую!
+    else
+        div(class="gifts-list" data-id=profile.id)
+            each gift, index in gifts
+                div(class="gift-item" data-id=gift.id)
+                    img(src="/uploads/gift/"+gift.gift.picture data-bs-html="true" data-bs-toggle="tooltip" data-bs-placement="bottom" title=gift.from.username+'<hr>'+gift.description.trim().replace('\n','<br>')+"<hr>"+gift.giftDate)
+        if gifts.length == 9 
+            div(class="more-btn-box text-center pt-2")
+                button(class="more-gifts-btn btn btn-outline-default") Ещё открытки

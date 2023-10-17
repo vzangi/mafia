@@ -1,0 +1,25 @@
+.gifts-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+.gift-item {
+  flex: 0 1 33.33%;
+  position: relative;
+  padding: 0.5rem;
+  cursor: pointer;
+}
+
+.gift-item .vip {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.6rem;
+  color: var(--color-gold);
+  font-size: 2rem;
+  text-shadow: 0 0 1rem #888;
+  line-height: 1rem;
+  opacity: 0.5;
+  transition: all 0.3s ease;
+}
+.gift-item:hover .vip {
+  opacity: 1;
+}

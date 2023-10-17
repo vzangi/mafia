@@ -1,0 +1,25 @@
+extends /layouts/two_column_3_9
+
+block head 
+    link(rel="stylesheet" href="/css/gift.css")
+
+block main
+    h1 Открытки
+    select(id="group" class="form-control mb-2") 
+        option(value="") Все
+
+    div(class="gifts-list mb-5")
+        img(src="/images/loading.gif")
+
+block aside
+    h1 Получатель
+    form(class="gift-form" method="get")
+        input(type="hidden" name="giftId" required)
+        input(value=to name="to" class="form-control mb-2" placeholder="Получатель открытки" required)
+        div(class="selected-gift mb-2")
+        textarea(placeholder="Текст открытки" maxlength=255 rows=4 class="form-control mb-2" name="message" required)
+        button(type="submit" class="btn btn-success btn-sm w-100") Отправить
+
+block scripts 
+    include /includes/gifts-tmpl
+    script(src="/js/gift.js")

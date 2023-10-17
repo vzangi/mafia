@@ -25,7 +25,7 @@ header(class="p-3 mb-4")
             ul(class="dropdown-menu text-small")
               li
                 div(class="dropdown-box")
-                  img(src="/uploads/" + currentAccount.avatar alt=currentAccount.username width="32" height="32" class="rounded-circle")
+                  div(class="profile-avatar-image" style='background-image:url(/uploads/'+currentAccount.avatar+')') 
                   a(class="dropdown-item user-nik ps-2" href="/profile")=currentAccount.username
               li
                 hr(class="dropdown-divider")

@@ -46,6 +46,20 @@ $(function () {
     $('.h-image-box').addClass('has-notify')
   }
 
+  socket.emit('gifts.count', (count) => {
+    console.log(count)
+    if (count == 0) return
+    $('.h-image-box, .dropdown-box .profile-avatar-image').addClass(
+      'has-notify'
+    )
+  })
+
+  socket.on('gifts.notify', (username) => {
+    $('.h-image-box, .dropdown-box .profile-avatar-image').addClass(
+      'has-notify'
+    )
+  })
+
   socket.emit('friends.request.count', (friendRequestsCount) => {
     setCount(friendRequestsCount)
   })

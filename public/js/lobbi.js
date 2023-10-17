@@ -50,6 +50,11 @@ $(async function () {
   })
 
   socket.emit('friends.online', (status, res) => {
+    if (status == 1) {
+      // Не авторизован
+      return noFriendsTemplate.tmpl().appendTo(friendsOnlineList.empty())
+    }
+
     if (status == 0) {
       if (res.length == 0) {
         noFriendsTemplate.tmpl().appendTo(friendsOnlineList.empty())

@@ -580,7 +580,7 @@ a > span.cnt {
   position: relative;
 }
 
-.has-notify.h-image-box:after {
+.has-notify:after {
   content: ' ';
   display: block;
   position: absolute;
@@ -591,4 +591,11 @@ a > span.cnt {
   border: 0;
   border-radius: 10px;
   background: red;
+}
+.dropdown-box .profile-avatar-image {
+  width: 32px;
+  height: 32px;
+  flex: none;
+  margin-left: 1rem;
+  position: relative;
 }

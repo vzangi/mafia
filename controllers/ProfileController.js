@@ -2,9 +2,11 @@ const bcrypt = require('bcrypt')
 const { Op } = require('sequelize')
 const Account = require('../models/Account')
 const Friend = require('../models/Friend')
+const AccountGift = require('../models/AccountGift')
 const WalletEvents = require('../models/WalletEvents')
 const fs = require('fs')
 const Jimp = require('jimp')
+const Gift = require('../models/Gift')
 
 class Profile {
   // Переход в профиль
@@ -55,6 +57,12 @@ class Profile {
         },
       })
     }
+
+    data.gifts = await AccountGift.scope({
+      method: ['withModels', profile.id],
+    }).findAll()
+
+    // console.log(data.gifts)
 
     res.render('pages/profile/profile', data)
   }
