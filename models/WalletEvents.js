@@ -13,6 +13,7 @@ const events = {
   SELLING: 5, // Продажа
   BUY: 6, // Покупка
   GIFT: 7, // Подарок
+  NEWNIK: 8, // Смена ника
 }
 
 const WalletEvent = sequelize.define('walletevents', {
@@ -106,6 +107,11 @@ WalletEvent.denial = async (userId) => {
 // Транзакция покупки открытки
 WalletEvent.gift = async (userId, giftCost) => {
   await transaction(WalletEvent.events.GIFT, userId, -giftCost)
+}
+
+// Транзакция смены ника
+WalletEvent.nikChange = async (userId, nikChangeCost) => {
+  await transaction(WalletEvent.events.NEWNIK, userId, -nikChangeCost)
 }
 
 // Транзакция развода

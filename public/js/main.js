@@ -47,7 +47,6 @@ $(function () {
   }
 
   socket.emit('gifts.count', (count) => {
-    console.log(count)
     if (count == 0) return
     $('.h-image-box, .dropdown-box .profile-avatar-image').addClass(
       'has-notify'

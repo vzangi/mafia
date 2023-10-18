@@ -29,6 +29,25 @@
   display: none;
 }
 
+.accept-input-box {
+  display: flex;
+}
+.accept-input-box input {
+  flex: 1;
+}
+.accept-input-box .btn {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  display: none;
+}
+.accept-input-box.changed input {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  box-shadow: none;
+}
+.accept-input-box.changed .btn {
+  display: block;
+}
 @media (max-width: 576px) {
   .top-settings-box {
     flex-direction: column;

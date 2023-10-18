@@ -15,4 +15,7 @@ module.exports = (io, socket) => {
 
   // Список друзей онлайн
   socket.on('friends.online', controller.getOnlineFriends.bind(controller))
+
+  // Смена ника
+  socket.on('nik.change', controller.changeNik.bind(controller))
 }

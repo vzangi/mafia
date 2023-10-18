@@ -3,6 +3,7 @@ const { Op } = require('sequelize')
 const Account = require('../models/Account')
 const Friend = require('../models/Friend')
 const AccountGift = require('../models/AccountGift')
+const AccountName = require('../models/AccountName')
 const WalletEvents = require('../models/WalletEvents')
 const fs = require('fs')
 const Jimp = require('jimp')
@@ -157,13 +158,21 @@ class Profile {
 
   // Отображение страницы с настойками профиля
   async settings(req, res) {
-    const id = req.user.id
+    const { id } = req.user
     const profile = await Account.findByPk(id)
     if (!profile) {
       return next() // на страницу 404
     }
+
+    const namesChangesCount = await AccountName.count({
+      where: {
+        accountId: id,
+      },
+    })
+
     res.render('pages/profile/settings', {
       profile,
+      namesChangesCount,
       title: `Настройки профиля ${profile.username}`,
     })
   }
