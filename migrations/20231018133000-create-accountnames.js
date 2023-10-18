@@ -3,32 +3,24 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('gifts', {
+    await queryInterface.createTable('accountnames', {
       id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
       },
-      giftgroupId: {
+      accountId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'giftgroups',
+          model: 'accounts',
           key: 'id',
         },
       },
-      picture: {
+      username: {
         type: Sequelize.STRING,
         allowNull: false,
-      },
-      price: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-      },
-      isVip: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: 0,
       },
       createdAt: {
         type: Sequelize.DATE,
@@ -42,6 +34,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('gifts')
+    await queryInterface.dropTable('accountnames')
   },
 }

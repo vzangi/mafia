@@ -49,6 +49,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('messages')
+    await queryInterface.dropTable('accountgifts')
   },
 }
