@@ -46,8 +46,11 @@ class GiftController extends BaseSocketController {
     // to - получатель открытки в виде ника
     // giftId - id открытки
     // description - текст открытки
-    const { to, giftId, description } = data
+    const { to, giftId } = data
+    let { description } = data
     const { user, socket } = this
+
+    if (description.length > 255) description = description.substr(0, 255)
 
     if (!user || !to || !giftId || !description) {
       return callback({
@@ -69,11 +72,16 @@ class GiftController extends BaseSocketController {
         return callback({ status: 1, msg: 'Игрок с таким ником не найден' })
       }
 
+      // Отправитель
       const account = await Account.findOne({
         where: {
           id: user.id,
         },
       })
+
+      if (recipient.id == account.id) {
+        return callback({ status: 1, msg: 'Открытка самому себе? Серьёзно!?' })
+      }
 
       // Ищу открытку в базе
       const gift = await Gift.findOne({
@@ -168,6 +176,34 @@ class GiftController extends BaseSocketController {
     } catch (error) {
       console.log(error)
     }
+  }
+
+  // Удаление открытки
+  async giftRemove(giftId, callback) {
+    const { user } = this
+    if (!user) {
+      return callback({ status: 1, msg: 'Не авторизован' })
+    }
+
+    const gift = await AccountGift.findOne({
+      where: {
+        id: giftId,
+        accountId: user.id,
+      },
+    })
+
+    if (!gift) {
+      return callback({ status: 1, msg: 'Открытка не найдена' })
+    }
+
+    AccountGift.destroy({
+      where: {
+        id: giftId,
+        accountId: user.id,
+      },
+    })
+
+    callback({ status: 0 })
   }
 }
 

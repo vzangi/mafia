@@ -21,4 +21,7 @@ module.exports = (io, socket) => {
 
   // Пометить открытки просмотренными
   socket.on('gifts.looked', controller.giftsLooked.bind(controller))
+
+  // Удаление открытки
+  socket.on('gifts.remove', controller.giftRemove.bind(controller))
 }
