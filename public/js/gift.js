@@ -6,12 +6,31 @@ $(function () {
   const giftId = $('input[name=giftId]')
   const to = $('input[name=to]')
   const description = $('textarea[name=message]')
+  let lastDate = null
 
   groupSelect.change(function () {
     const groupId = $(this).val()
-    socket.emit('gifts.items', groupId, null, (items) => {
+    lastDate = null
+    socket.emit('gifts.items', groupId, lastDate, (items) => {
       giftList.empty()
+      $('.more-gifts').remove()
       $('#giftItemTmpl').tmpl(items).appendTo(giftList)
+      lastDate = items[items.length - 1].updatedAt
+      console.log(lastDate)
+
+      $('#moreGiftsBtnTmpl').tmpl().insertAfter(giftList)
+    })
+  })
+
+  $('main').on('click', '.more-gifts', function () {
+    const groupId = groupSelect.val()
+    socket.emit('gifts.items', groupId, lastDate, (items) => {
+      if (items.length == 0) {
+        $('.more-gifts').remove()
+      } else {
+        lastDate = items[items.length - 1].updatedAt
+        $('#giftItemTmpl').tmpl(items).appendTo(giftList)
+      }
     })
   })
 

@@ -1,4 +1,4 @@
-const { DataTypes } = require('sequelize')
+const { DataTypes, Op } = require('sequelize')
 const sequelize = require('../units/db')
 const GiftGroup = require('./GiftGroup')
 const limit = 24
@@ -30,7 +30,7 @@ const Gift = sequelize.define(
   },
   {
     scopes: {
-      items(giftgroupId, lastId) {
+      items(giftgroupId, lastDate) {
         const res = {
           limit,
           order: [['updatedAt', 'DESC']],
@@ -38,6 +38,14 @@ const Gift = sequelize.define(
         if (giftgroupId) {
           res.where = {
             giftgroupId,
+          }
+        }
+        if (lastDate) {
+          if (!res.where) {
+            res.where = {}
+          }
+          res.where.updatedAt = {
+            [Op.lt]: lastDate,
           }
         }
         return res
