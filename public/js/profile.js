@@ -44,7 +44,10 @@ $(function () {
     })
   })
 
-  if ($('.gifts-header .btn').length != 1) {
+  if (
+    $('.gifts-header .btn').length != 1 &&
+    $('header .dropdown .h-image-box').length > 0
+  ) {
     $('.gifts-list').on('contextmenu', '.gift-item', function () {
       const { id } = $(this).data()
       confirm('Удалить открытку?').then((answer) => {
