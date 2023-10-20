@@ -20,6 +20,11 @@ $(function () {
         $('.more-btn-box').remove()
       }
 
+      gifts = gifts.map((gift) => {
+        gift.description = gift.description.trim().replaceAll('\n', '<br>')
+        return gift
+      })
+
       $('#giftItemTmpl').tmpl(gifts).appendTo($('.gifts-list'))
 
       // Включаем тултипы
