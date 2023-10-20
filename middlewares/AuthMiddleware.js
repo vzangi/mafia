@@ -12,7 +12,16 @@ const userToTemplate = (req, res, next) => {
       where: {
         id: req.user.id,
       },
-      attributes: ['id', 'username', 'avatar', 'vipTo', 'online', 'vip', 'wallet'],
+      attributes: [
+        'id',
+        'username',
+        'avatar',
+        'vipTo',
+        'online',
+        'vip',
+        'wallet',
+        'role',
+      ],
     })
       .then((account) => {
         req.account = account

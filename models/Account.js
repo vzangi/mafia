@@ -26,6 +26,10 @@ const Account = sequelize.define('account', {
     type: DataTypes.INTEGER,
     defaultValue: 0,
   },
+  role: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
+  },
   avatar: {
     type: DataTypes.STRING,
     defaultValue: 'noname.svg',

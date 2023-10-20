@@ -1,0 +1,28 @@
+extends /layouts/two_column_3_9
+
+block main
+  h1 Группы открыток
+  form(method="post" action="/gift/group/create")
+    table(class="table mt-4 mb-4")
+      thead 
+        tr
+          th id 
+          th Название группы
+          th Сортировка
+          th 
+      tbody 
+        each group in groups 
+          tr(class= (group.active==0?"table-danger":""))  
+            td= group.id
+            td= group.name
+            td= group.sort
+            td(class="text-end")
+              a(class="btn btn-sm btn-primary ion-edit" href="/gift/group?id="+group.id title="Редактировать") 
+        tr  
+          td 
+          td 
+            input(type="text" name="name" class="form-control" placeholder="Название новой группы" required)        
+          td 
+            input(type="number" value="0" name="sort" class="form-control" placeholder="Сортировка")
+          td(class="text-end")
+            button(type="submit" class="btn btn-success btn-sm ion-plus" title="Добавить группу") 

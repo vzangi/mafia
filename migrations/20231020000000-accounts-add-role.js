@@ -3,18 +3,15 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.addColumn('accountgifts', 'fromId', {
+    await queryInterface.addColumn('accounts', 'role', {
       type: Sequelize.INTEGER,
       allowNull: false,
-      references: {
-        model: 'accounts',
-        key: 'id',
-      },
-      after: 'accountId',
+      after: 'status',
+      defaultValue: 0,
     })
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.removeColumn('accountgifts', 'fromId')
+    await queryInterface.removeColumn('accounts', 'role')
   },
 }
