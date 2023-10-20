@@ -20,3 +20,5 @@ block content
 block scripts 
     include /includes/profile/profile-gift-tmpl
     script(src="/js/profile.js")
+    if user && user.id == profile.id 
+        script(src="/js/profile-self.js")
