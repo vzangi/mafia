@@ -164,15 +164,17 @@ class Profile {
       return next() // на страницу 404
     }
 
-    const namesChangesCount = await AccountName.count({
+    const nikChanges = await AccountName.findAll({
       where: {
         accountId: id,
       },
+      order: [['id', 'DESC']],
     })
 
     res.render('pages/profile/settings', {
       profile,
-      namesChangesCount,
+      nikChanges,
+      namesChangesCount: nikChanges.length,
       title: `Настройки профиля ${profile.username}`,
     })
   }

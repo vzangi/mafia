@@ -30,6 +30,21 @@ block article
                         option(value="1" selected=profile.gender==1) Мужской
                         option(value="2" selected=profile.gender==2) Женский
 
+    if nikChanges.length != 0
+        h3(class='mt-4') Прошлые ники
+        div(class="block p-3")
+            table(class="table")
+                thead   
+                    tr 
+                        th Ник
+                        th Дата смены
+                tbody
+                    each nik in nikChanges
+                        tr 
+                            td= nik.username
+                            td= nik.coolChangeDate
+
+
     h3(class='mt-4') Безопасность
 
     div(class="block p-3")
