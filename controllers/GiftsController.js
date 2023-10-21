@@ -94,12 +94,15 @@ class Gifts {
         order: [['id', 'DESC']],
       })
 
-      const picture =
-        normalizedPictureName(
-          lastGift.picture.substr(0, lastGift.picture.indexOf('.')) * 1 + 1
-        ) +
-        '.' +
-        ext
+      let picture = '0001.' + ext
+      if (lastGift) {
+        picture =
+          normalizedPictureName(
+            lastGift.picture.substr(0, lastGift.picture.indexOf('.')) * 1 + 1
+          ) +
+          '.' +
+          ext
+      }
 
       await file.mv('./public/uploads/gift/' + picture)
 

@@ -46,6 +46,13 @@ $(function () {
     $('#selectedImgTmpl').tmpl({ src }).appendTo(selectedGift)
 
     $('input[name=giftId]').val(id)
+
+    $("html, body").animate({
+      scrollTop: $(".gift-form").offset().top + "px"
+    }, {
+      duration: 100,
+      easing: "swing"
+    });
   })
 
   // Покупка открытки
