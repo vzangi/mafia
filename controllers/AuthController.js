@@ -3,6 +3,7 @@ const pug = require('pug')
 const { createToken } = require('../units/jwt')
 const { mail } = require('../units/mailer')
 const Account = require('../models/Account')
+const AccountName = require('../models/AccountName')
 const cookieTokenName = process.env.TOKEN_COOKIE || 'jwt'
 const maxAge = 1000 * 60 * 60 * 24 * 30
 const saltNumber = 10
@@ -33,6 +34,16 @@ class Auth {
 
     if (checkNik) {
       return res.status(400).json([{ msg: 'Ник уже используется' }])
+    }
+
+    const secondCheck = await AccountName.findOne({
+      where: {
+        username: nik,
+      },
+    })
+
+    if (secondCheck) {
+      return res.status(400).json([{ msg: 'Ник занят' }])
     }
 
     if (accept != 1) {
