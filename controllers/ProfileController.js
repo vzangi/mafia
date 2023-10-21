@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt')
 const { Op } = require('sequelize')
+const sequelize = require('../units/db')
 const Account = require('../models/Account')
 const Friend = require('../models/Friend')
 const AccountGift = require('../models/AccountGift')
@@ -57,6 +58,29 @@ class Profile {
           status: Friend.statuses.MARRIED,
         },
       })
+
+      // Зашёл в свой профиль
+      if (req.user.id == profile.id) {
+
+        // Пометить открытки просмотренными
+        try {
+          await AccountGift.update(
+            {
+              accountId: req.user.id,
+            },
+            {
+              where: {
+                accountId: req.user.id,
+                createdAt: {
+                  [Op.eq]: sequelize.col('updatedAt'),
+                },
+              },
+            }
+          )
+        } catch (error) {
+          console.log(error)
+        }
+      }
     }
 
     data.gifts = await AccountGift.scope({

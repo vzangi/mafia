@@ -154,30 +154,6 @@ class GiftController extends BaseSocketController {
     callback(giftCount)
   }
 
-  // Пометить открытки просмотренными
-  async giftsLooked() {
-    const { user } = this
-    if (!user) return
-
-    try {
-      await AccountGift.update(
-        {
-          accountId: user.id,
-        },
-        {
-          where: {
-            accountId: user.id,
-            createdAt: {
-              [Op.eq]: sequelize.col('updatedAt'),
-            },
-          },
-        }
-      )
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
   // Удаление открытки
   async giftRemove(giftId, callback) {
     const { user } = this

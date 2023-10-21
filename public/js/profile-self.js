@@ -12,6 +12,4 @@ $(function () {
     })
     return false
   })
-
-  socket.emit('gifts.looked')
 })
