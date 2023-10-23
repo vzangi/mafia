@@ -18,6 +18,9 @@ const Chat = sequelize.define(
       allowNull: false,
       defaultValue: 1,
     },
+    username: {
+      type: DataTypes.STRING,
+    },
     message: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -28,7 +31,7 @@ const Chat = sequelize.define(
       def: {
         limit: lastMessagesLimit,
         order: [['createdAt', 'desc']],
-        attributes: ['message', 'createdAt'],
+        attributes: ['message', 'username', 'createdAt'],
         include: [
           {
             model: ChatUsers,
@@ -40,7 +43,7 @@ const Chat = sequelize.define(
           },
           {
             model: Account,
-            attributes: ['id', 'username', 'vipTo', 'vip'],
+            attributes: ['id', 'vipTo', 'vip'],
           },
         ],
       },
@@ -70,9 +73,11 @@ const getUsersInMessage = async (message) => {
 // Сохраняет новое сообщение в базе и возвращает его
 Chat.newMessage = async (userId, message) => {
   const chatusers = await getUsersInMessage(message)
+  const account = await Account.findByPk(userId)
   const newMsg = await Chat.create(
     {
       accountId: userId,
+      username: account.username,
       message: htmlspecialchars(message),
       chatusers: chatusers,
     },

@@ -44,5 +44,5 @@ div(class="container")
                         each friend, index in friends
                             if index == 5
                                 - break 
-                            a(href="/profile/" + friend.friend.id style="background-image:url(/uploads/"+ friend.friend.avatar +")" data-bs-toggle="tooltip" data-bs-placement="bottom" title=friend.friend.username)
-                    a(class="friends-link" href="/profile/" + profile.id + "/friends") 
+                            a(href="/profile/" + friend.friend.username style="background-image:url(/uploads/"+ friend.friend.avatar +")" data-bs-toggle="tooltip" data-bs-placement="bottom" title=friend.friend.username)
+                    a(class="friends-link" href="/profile/" + profile.username + "/friends") 

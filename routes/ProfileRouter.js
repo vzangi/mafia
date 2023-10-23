@@ -13,17 +13,11 @@ router.use(express.urlencoded({ extended: true }))
 // Просмотр своего профиля
 router.get('/', isAuth, controller.showUserAccount)
 
-// Просмотр чужого профиля
-router.get('/:id', controller.showUserAccount)
-
 // Друзья
 router.get('/friends', isAuth, controller.friends)
 
-// Друзья в чужом профиле
-router.get('/:id/friends', controller.friends)
-
 // Запросы в друзья
-router.get('/friends/requests', withAccount, controller.friendsRequest)
+router.get('/friends/requests', controller.friendsRequest)
 
 // Форма смены пароля
 router.get('/change-password', isAuth, controller.changePasswordForm)
@@ -38,12 +32,18 @@ router.post(
 )
 
 // Кошелёк
-router.get('/wallet', withAccount, controller.wallet)
+router.get('/wallet', controller.wallet)
 
 // Настройки профиля
-router.get('/settings', withAccount, controller.settings)
+router.get('/settings', controller.settings)
 
 // Смена автарки
 router.post('/settings', withAccount, controller.changeAvatar)
+
+// Смена автарки
+router.get('/:nik', controller.showAccountByNik)
+
+// Друзья в чужом профиле
+router.get('/:nik/friends', controller.friends)
 
 module.exports = router

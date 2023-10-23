@@ -8,9 +8,9 @@ block main
     div(class="friends-top")
       div(class="friends-crumbs")
         div(class="friends-avatar")
-          a(href="/profile/" + profile.id)
+          a(href="/profile/" + profile.username)
             img(src="/uploads/" + profile.avatar alt=profile.username)
-        a(href="/profile/" + profile.id class="user-name ellipsis")= profile.username
+        a(href="/profile/" + profile.username class="user-name ellipsis")= profile.username
         span(class="ion-ios-arrow-right user-name")
         a(href="/profile/friends" class="user-name ellipsis") Друзья
         span(class="ion-ios-arrow-right")
@@ -26,7 +26,7 @@ block main
                 img(src="/uploads/" + friend.account.avatar)
                 div(class="friend-links ms-2")
                   div 
-                    a(href="/profile/" + friend.account.id class="ellipsis friend-nik")= friend.account.username 
+                    a(href="/profile/" + friend.account.username class="ellipsis friend-nik")= friend.account.username 
                   div(class="mt-2")
                     a(href="#" class="btn btn-success btn-sm me-1 accept action-btn" data-id=friend.account.id data-question='Добавить в друзья?' data-event='friends.accept') Принять
                     a(href="#" class="btn btn-danger btn-sm decline action-btn" data-id=friend.account.id data-question='Отклонить заявку в друзья?' data-event='friends.decline') Отклонить
@@ -38,7 +38,7 @@ block main
                 img(src="/uploads/" + friend.account.avatar)
                 div(class="friend-links ms-2")
                   div 
-                    a(href="/profile/" + friend.account.id class="ellipsis friend-nik")= friend.account.username 
+                    a(href="/profile/" + friend.account.username class="ellipsis friend-nik")= friend.account.username 
                   div(class="mt-2")
                     a(href="#" class="btn btn-success btn-sm me-1 accept-zags action-btn" data-id=friend.account.id data-question='Принять предложение?' data-event='friends.zags.accept') Принять
                     a(href="#" class="btn btn-danger btn-sm decline-zags action-btn" data-id=friend.account.id data-question='Отклонить предложение?' data-event='friends.zags.decline') Отклонить

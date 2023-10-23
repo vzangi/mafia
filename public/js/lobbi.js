@@ -178,7 +178,7 @@ $(async function () {
 
   // Функция возвращает распарсенное сообщение
   const parseMessage = (msg) => {
-    if (msg.chatusers.length != 0 && msg.account.username == userNik)
+    if (msg.chatusers.length != 0 && msg.username == userNik)
       msg.highlight = true
 
     // Имена пользователей - на ссылки в профиль

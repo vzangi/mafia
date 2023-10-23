@@ -35,7 +35,7 @@ script(id="privateMessagesBoxTmpl" type="text/x-jquery-tmpl")
         img(src="/uploads/${avatar}")
       div(class="pm-friend-nik") 
         span
-          a(href="/profile/${id}") ${username}
+          a(href="/profile/${username}") ${username}
         . 
           {{tmpl() '#privateMessagesOnlineStatusTmpl'}}
     div(class="pm-chat-btns")

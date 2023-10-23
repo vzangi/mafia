@@ -10,9 +10,9 @@ block main
             div(class="friends-top")
                 div(class="friends-crumbs")
                     div(class="friends-avatar")
-                        a(href="/profile/" + profile.id)
+                        a(href="/profile/" + profile.username)
                             img(src="/uploads/" + profile.avatar alt=profile.username)
-                    a(href="/profile/" + profile.id class="user-name ellipsis")= profile.username
+                    a(href="/profile/" + profile.username class="user-name ellipsis")= profile.username
                     span(class="ion-ios-arrow-right")
                     if profile.gender == 1
                         span Супруга
@@ -27,7 +27,7 @@ block main
                             img(src="/uploads/" + partner.friend.avatar)
                         div(class="friend-links ms-2")
                             div 
-                                a(href="/profile/" + partner.friend.id class="ellipsis")= partner.friend.username 
+                                a(href="/profile/" + partner.friend.username class="ellipsis")= partner.friend.username 
                             if user && user.id == profile.id
                                 div(class="mt-2")
                                     a(class="btn btn-danger btn-sm remove-partner action-btn" data-id=partner.friend.id data-question='Ты точно хочешь развестись? В кошельке должно быть 100 рублей.' data-event='friends.divorce') Развестись
@@ -36,9 +36,9 @@ block main
         div(class="friends-top")
             div(class="friends-crumbs")
                 div(class="friends-avatar")
-                    a(href="/profile/" + profile.id)
+                    a(href="/profile/" + profile.username)
                         img(src="/uploads/" + profile.avatar alt=profile.username)
-                a(href="/profile/" + profile.id class="user-name ellipsis")= profile.username
+                a(href="/profile/" + profile.username class="user-name ellipsis")= profile.username
                 span(class="ion-ios-arrow-right")
                 span Друзья
             if user
@@ -55,7 +55,7 @@ block main
                                 img(src="/uploads/" + friend.friend.avatar)
                             div(class="friend-links ms-2")
                                 div 
-                                    a(href="/profile/" + friend.friend.id class="ellipsis")= friend.friend.username 
+                                    a(href="/profile/" + friend.friend.username class="ellipsis")= friend.friend.username 
                                 if user && user.id == profile.id
                                     div(class="mt-2")
                                         a(class="btn btn-danger btn-sm remove-frend action-btn" data-id=friend.friend.id data-question='Удалить из друзей?' data-event='friends.remove') Удалить
