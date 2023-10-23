@@ -121,6 +121,7 @@ class GiftController extends BaseSocketController {
         giftId,
         accountId: recipient.id,
         fromId: user.id,
+        fromusername: account.username,
         description,
       })
 

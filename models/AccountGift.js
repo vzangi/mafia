@@ -25,6 +25,9 @@ const AccountGifts = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    fromusername: {
+      type: DataTypes.STRING,
+    },
     description: {
       type: DataTypes.STRING,
       allowNull: false,

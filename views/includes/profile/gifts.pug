@@ -11,7 +11,7 @@ div(class="col-12 col-md-6")
         div(class="gifts-list" data-id=profile.id)
             each gift, index in gifts
                 div(class="gift-item" data-id=gift.id)
-                    img(src="/uploads/gift/"+gift.gift.picture data-bs-html="true" data-bs-toggle="tooltip" data-bs-placement="bottom" title=gift.from.username+'<hr>'+gift.description.trim().replaceAll('\n','<br>')+"<hr>"+gift.giftDate)
+                    img(src="/uploads/gift/"+gift.gift.picture data-bs-html="true" data-bs-toggle="tooltip" data-bs-placement="bottom" title=gift.fromusername+'<hr>'+gift.description.trim().replaceAll('\n','<br>')+"<hr>"+gift.giftDate)
         if gifts.length == 9 
             div(class="more-btn-box text-center pt-2")
                 button(class="more-gifts-btn btn btn-outline-default") Ещё открытки
