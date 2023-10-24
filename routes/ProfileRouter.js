@@ -5,13 +5,13 @@ const {
   validator,
   validationMiddleware,
 } = require('../middlewares/ValidatorsMiddleware')
-const { isAuth, withAccount } = require('../middlewares/AuthMiddleware')
+const { isAuth } = require('../middlewares/AuthMiddleware')
 
 // Использую отправку данных через формы
 router.use(express.urlencoded({ extended: true }))
 
 // Просмотр своего профиля
-router.get('/', isAuth, controller.showUserAccount)
+router.get('/', isAuth, controller.showAccountByNik)
 
 // Друзья
 router.get('/friends', isAuth, controller.friends)
@@ -32,13 +32,13 @@ router.post(
 )
 
 // Кошелёк
-router.get('/wallet', controller.wallet)
+router.get('/wallet', isAuth, controller.wallet)
 
 // Настройки профиля
-router.get('/settings', controller.settings)
+router.get('/settings', isAuth, controller.settings)
 
 // Смена автарки
-router.post('/settings', withAccount, controller.changeAvatar)
+router.post('/settings', isAuth, controller.changeAvatar)
 
 // Смена автарки
 router.get('/:nik', controller.showAccountByNik)

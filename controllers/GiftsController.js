@@ -1,123 +1,81 @@
-const Gift = require('../models/Gift')
-const GiftGroup = require('../models/GiftGroup')
-
-const normalizedPictureName = (name) => {
-  if (name.length >= 4) return name
-  return normalizedPictureName('0' + name)
-}
+const service = require('../services/GiftService')
 
 class Gifts {
+  // Проверка на наличие прав
+  isSuperAdmin(req, res, next) {
+    const { account } = req
+    if (!account || account.role != 1) {
+      return res.redirect('/gift')
+    }
+    next()
+  }
+
+  // Список открыток
   gift(req, res) {
     const { to } = req.query
 
-    res.render('pages/gift', { to })
+    res.render('pages/gift', { to, title: 'Подарить открытку' })
   }
 
+  // Список групп
   async groups(req, res) {
-    const { account } = req
-    if (!account || account.role != 1) res.redirect('/')
-
-    const groups = await GiftGroup.findAll({ order: [['sort']] })
-
-    res.render('pages/admin/giftGroups', { groups })
-  }
-
-  async group(req, res) {
-    const { account } = req
-    if (!account || account.role != 1) res.redirect('/')
-
-    const { id } = req.query
-    if (!id) res.redirect('/gift/groups')
-
-    const group = await GiftGroup.findByPk(id)
-    if (!group) res.redirect('/gift/groups')
-
-    res.render('pages/admin/giftGroupEdit', { group })
-  }
-
-  async editGroup(req, res) {
-    const { account } = req
-    if (!account || account.role != 1) res.redirect('/')
-
-    const { id, name, sort, active } = req.body
-    if (!id || !name || !sort) res.redirect('/gift/groups')
-
-    const group = await GiftGroup.findByPk(id)
-    if (!group) res.redirect('/gift/groups')
-
-    group.name = name
-    group.sort = sort
-    group.active = active ? 1 : 0
-    await group.save()
-
-    res.redirect('/gift/groups')
-  }
-
-  async addGroup(req, res) {
-    const { account } = req
-    if (!account || account.role != 1) res.redirect('/')
-
-    const { name, sort } = req.body
-    if (!name || !sort) res.redirect('/gift/groups')
-
-    await GiftGroup.create({
-      name,
-      sort,
-    })
-
-    res.redirect('/gift/groups')
-  }
-
-  async addGift(req, res) {
     try {
-      const { account } = req
-      if (!account || account.role != 1) res.redirect('/')
+      const data = await service.groups()
+      res.render('pages/admin/giftGroups', data)
+    } catch (error) {
+      console.log(error)
+      res.redirect('/gift')
+    }
+  }
 
-      const { giftgroupId, price, isVip } = req.body
-      if (!price || !giftgroupId) res.redirect('/gift/groups')
+  // Форма редактирования группы
+  async group(req, res) {
+    try {
+      const { id } = req.query
 
-      const { file } = req.files
-      if (!file) res.redirect('/gift/groups')
-
-      // Запрещаю загрузку открыток размером больше 500 kбайт
-      if (file.size > 500_000) res.redirect('/gift/groups')
-
-      let ext = ''
-      if (file.mimetype == 'image/jpeg') ext = 'jpg'
-      if (file.mimetype == 'image/png') ext = 'png'
-      if (file.mimetype == 'image/gif') ext = 'gif'
-      if (file.mimetype == 'image/webp') ext = 'webp'
-
-      if (ext == '') res.redirect('/gift/groups')
-
-      const lastGift = await Gift.findOne({
-        order: [['id', 'DESC']],
-      })
-
-      let picture = '0001.' + ext
-      if (lastGift) {
-        picture =
-          normalizedPictureName(
-            lastGift.picture.substr(0, lastGift.picture.indexOf('.')) * 1 + 1
-          ) +
-          '.' +
-          ext
-      }
-
-      await file.mv('./public/uploads/gift/' + picture)
-
-      await Gift.create({
-        giftgroupId,
-        price,
-        isVip: isVip ? 1 : 0,
-        picture,
-      })
-
-      res.redirect('/gift/groups')
+      const data = await service.group(id)
+      res.render('pages/admin/giftGroupEdit', data)
     } catch (error) {
       console.log(error)
       res.redirect('/gift/groups')
     }
+  }
+
+  // Сохранение изменений в базе
+  async editGroup(req, res) {
+    try {
+      const { id, name, sort, active } = req.body
+
+      await service.editGroup(id, name, sort, active)
+    } catch (error) {
+      console.log(error)
+    }
+    res.redirect('/gift/groups')
+  }
+
+  // Добавление группы в базу
+  async addGroup(req, res) {
+    try {
+      const { name, sort } = req.body
+
+      await service.addGroup(name, sort)
+    } catch (error) {
+      console.log(error)
+    }
+    res.redirect('/gift/groups')
+  }
+
+  // Загрузка новой открытки
+  async addGift(req, res) {
+    try {
+      const { giftgroupId, price, isVip } = req.body
+      const { file } = req.files
+
+      await service.addGift(file, giftgroupId, price, isVip)
+    } catch (error) {
+      console.log(error)
+    }
+    res.redirect('/gift/groups')
   }
 }
 

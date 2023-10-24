@@ -1,68 +1,74 @@
-const Account = require('../models/Account')
 const service = require('../services/ProfileService')
 
 class Profile {
-  // Переход в профиль по id
-  async showUserAccount(req, res, next) {
-    // Если в параметрах передан id, то ищем пользователя по нему
-    // иначе берем текущего пользователя
-    const { id } = req.user
-
-    try {
-      const profile = await Account.findByPk(id)
-      const info = await service.profileInfo(profile, req.user)
-      res.render('pages/profile/profile', info)
-    } catch (error) {
-      console.log(error)
-      return next() // на страницу 404
-    }
-  }
-
   // Переход в профиль по никнейму
   async showAccountByNik(req, res, next) {
-    const { nik } = req.params
-    const { user } = req
     try {
-      const profile = await Account.findOne({ where: { username: nik } })
-      const info = await service.profileInfo(profile, user)
-      res.render('pages/profile/profile', info)
+      const { nik } = req.params
+      const { user } = req
+
+      const data = await service.profileByNik(nik, user)
+      res.render('pages/profile/profile', data)
     } catch (error) {
       console.log(error)
-      return next() // на страницу 404
+      next()
     }
   }
 
   // Список друзей
   async friends(req, res, next) {
-    // Если в параметрах передан id, то ищем пользователя по нему
-    // иначе берем текущего пользователя
-    let { nik } = req.params
-
     try {
-      let data
-      if (!nik) {
-        data = await service.currentUserFriendsList(req.user)
-      } else {
+      let { nik } = req.params
+      let data = {}
+
+      if (nik) {
         data = await service.friendsList(nik)
+      } else {
+        data = await service.currentUserFriendsList(req.user)
       }
-      console.log(data)
       res.render('pages/profile/friends', data)
     } catch (error) {
       console.log(error)
-      next() // на страницу 404
+      next()
     }
   }
 
   // Запросы на дружбу
   async friendsRequest(req, res, next) {
-    const { user } = req
-
     try {
-      const friends = await service.friendsRequest(user)
-      res.render('pages/profile/friends-requests', friends)
+      const { account } = req
+
+      const data = await service.friendsRequest(account)
+      res.render('pages/profile/friends-requests', data)
     } catch (error) {
       console.log(error)
-      return next() // на страницу 404
+      next()
+    }
+  }
+
+  // Кошелёк
+  async wallet(req, res, next) {
+    try {
+      const { account } = req
+
+      const data = await service.wallet(account)
+      res.render('pages/profile/wallet', data)
+    } catch (error) {
+      console.log(error)
+      next()
+    }
+  }
+
+  // Отображение страницы с настойками профиля
+  async settings(req, res, next) {
+    try {
+      const { account } = req
+
+      const data = await service.settings(account)
+      res.render('pages/profile/settings', data)
+    } catch (error) {
+      console.log(error)
+      next()
     }
   }
 
@@ -75,11 +81,11 @@ class Profile {
 
   // Процедура изменения пароля
   async changePassword(req, res) {
-    const { password, passwordConfirm } = req.body
-    const { user } = req
-
     try {
-      await service.changePassword(user, password, passwordConfirm)
+      const { password, passwordConfirm } = req.body
+      const { account } = req
+
+      await service.changePassword(account, password, passwordConfirm)
       res.json([{ status: 0, msg: 'Пароль успешно изменён' }])
     } catch (error) {
       console.log(error)
@@ -87,39 +93,13 @@ class Profile {
     }
   }
 
-  // Кошелёк
-  async wallet(req, res, next) {
-    const { user } = req
-
-    try {
-      const data = await service.wallet(user)
-      res.render('pages/profile/wallet', data)
-    } catch (error) {
-      console.log(error)
-      next()
-    }
-  }
-
-  // Отображение страницы с настойками профиля
-  async settings(req, res, next) {
-    const { user } = req
-
-    try {
-      const data = await service.settings(user)
-      res.render('pages/profile/settings', data)
-    } catch (error) {
-      console.log(error)
-      next()
-    }
-  }
-
   // Процедура смены автарки
   async changeAvatar(req, res) {
-    const { user } = req
-    const { avatar } = req.files
-
     try {
-      const fileName = await service.changeAvatar(user, avatar)
+      const { account } = req
+      const { avatar } = req.files
+
+      const fileName = await service.changeAvatar(account, avatar)
       // Возвращаю ответ с именем новой автарки
       res.json({ fileName })
     } catch (error) {

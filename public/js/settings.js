@@ -59,7 +59,6 @@ $(function () {
       type: 'post',
       data: formData,
       success: function (res) {
-        console.log(res)
         $('.avatar-box img').attr('src', `/uploads/${res.fileName}`)
         $('.h-image-box img').attr('src', `/uploads/${res.fileName}`)
       },

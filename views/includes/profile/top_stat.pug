@@ -1,7 +1,7 @@
 div(class="container")
     div(class="profile-top-stat")
         div(class="profile-top-stat-actions")
-            if user && user.id != profile.id
+            if currentAccount && currentAccount.id != profile.id
                 if !isFrends
                     div(class="btn btn-success action-add-to-friends action-btn" data-id=profile.id data-question='Добавить в друзья?' data-event='friends.add') Добавить в друзья
                 else 

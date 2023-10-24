@@ -3,14 +3,13 @@ const Jimp = require('jimp')
 const bcrypt = require('bcrypt')
 const { Op } = require('sequelize')
 const sequelize = require('../units/db')
-const BaseService = require('./BaseService')
-const Friend = require('../models/Friend')
-const AccountGift = require('../models/AccountGift')
-const WalletEvents = require('../models/WalletEvents')
 const Account = require('../models/Account')
+const AccountGift = require('../models/AccountGift')
 const AccountName = require('../models/AccountName')
+const Friend = require('../models/Friend')
+const WalletEvents = require('../models/WalletEvents')
 
-class ProfileService extends BaseService {
+class ProfileService {
   async profileInfo(profile, currentUser) {
     const data = {
       profile,
@@ -80,9 +79,21 @@ class ProfileService extends BaseService {
     return data
   }
 
+  async profileByNik(nik, user) {
+    let profile = null
+    if (nik) {
+      profile = await Account.findOne({ where: { username: nik } })
+    } else {
+      profile = await Account.findOne({ where: { id: user.id } })
+    }
+    const data = await this.profileInfo(profile, user)
+    return data
+  }
+
   async currentUserFriendsList(user) {
     const account = await Account.findByPk(user.id)
-    return await this.friendsList(account.username)
+    const data = await this.friendsList(account.username)
+    return data
   }
 
   async friendsList(nik) {
@@ -116,15 +127,12 @@ class ProfileService extends BaseService {
     return data
   }
 
-  async friendsRequest(user) {
-    const account = await Account.findByPk(user.id)
-
+  async friendsRequest(account) {
     const requests = await Friend.scope({
       method: ['requests', account.id],
     }).findAll()
 
     const data = {
-      profile: account,
       requests,
       title: `Запросы в друзья`,
     }
@@ -132,17 +140,11 @@ class ProfileService extends BaseService {
     return data
   }
 
-  async wallet(user) {
-    const account = await Account.findByPk(user.id)
-
-    const eventCount = await WalletEvents.count({
-      where: {
-        accountId: account.id,
-      },
-    })
+  async wallet(account) {
+    const accountId = account.id
+    const eventCount = await WalletEvents.count({ where: { accountId } })
 
     const data = {
-      account,
       eventCount,
       title: `Кошелёк - пополнение баланса`,
     }
@@ -150,28 +152,23 @@ class ProfileService extends BaseService {
     return data
   }
 
-  async settings(user) {
-    const profile = await Account.findByPk(user.id)
-
+  async settings(account) {
+    const accountId = account.id
     const nikChanges = await AccountName.findAll({
-      where: {
-        accountId: user.id,
-      },
+      where: { accountId },
       order: [['id', 'DESC']],
     })
 
     const data = {
-      profile,
       nikChanges,
-      namesChangesCount: nikChanges.length,
-      title: `Настройки профиля ${profile.username}`,
+      title: `Настройки профиля ${account.username}`,
     }
 
     return data
   }
 
-  async changePassword(user, password, passwordConfirm) {
-    if (!user) {
+  async changePassword(account, password, passwordConfirm) {
+    if (!account) {
       throw new Error('Не авторизован')
     }
 
@@ -185,15 +182,15 @@ class ProfileService extends BaseService {
 
     try {
       const hash = await bcrypt.hash(password, 10)
-      await Account.update({ password: hash }, { where: { id: user.id } })
+      await Account.update({ password: hash }, { where: { id: account.id } })
       return true
     } catch (error) {
       throw new Error('Ошибка при смене пароля')
     }
   }
 
-  async changeAvatar(user, avatar) {
-    if (!user || !avatar) throw new Error('Нет необходимых данных')
+  async changeAvatar(account, avatar) {
+    if (!account || !avatar) throw new Error('Нет необходимых данных')
 
     let ext = ''
     if (avatar.mimetype == 'image/jpeg') ext = 'jpg'
@@ -211,7 +208,7 @@ class ProfileService extends BaseService {
     const rnd2 = Math.ceil(Math.random() * 10000)
 
     // Формирую имя новой автарки
-    const fileName = `${user.id}-${rnd1}-${rnd2}.${ext}`
+    const fileName = `${account.id}-${rnd1}-${rnd2}.${ext}`
 
     // Запрещаю загрузку автарок больше 5 мегабайт
     if (avatar.size > 5_000_000) {
@@ -227,20 +224,17 @@ class ProfileService extends BaseService {
       await avatar.mv('./public/uploads/' + fileName)
     }
 
-    // Достаю профиль
-    const profile = await Account.findByPk(user.id)
-
     // Если предыдущее фото не то, что даётся по умолчанию
-    if (profile.avatar != 'noname.svg') {
+    if (account.avatar != 'noname.svg') {
       // Удаляю предыдущее фото, чтобы не захламлять сервер
-      fs.unlink(`${__dirname}/../public/uploads/${profile.avatar}`, (err) => {
-        console.log(err)
+      fs.unlink(`${__dirname}/../public/uploads/${account.avatar}`, (err) => {
+        if (err) console.log(err)
       })
     }
 
     // Сохраняю автарку в базу
-    profile.avatar = fileName
-    await profile.save()
+    account.avatar = fileName
+    await account.save()
 
     return fileName
   }

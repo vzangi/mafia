@@ -1,53 +1,47 @@
 const Account = require('../models/Account')
 
 const isAuth = (req, res, next) => {
-  if (req.user) return next()
+  const { user } = req
+  if (user) return next()
   res.redirect('/login')
 }
 
 // добавляю авторизованного пользователя в переменную user шаблонизатора
-const userToTemplate = (req, res, next) => {
-  if (req.user) {
-    Account.findOne({
-      where: {
-        id: req.user.id,
-      },
-      attributes: [
-        'id',
-        'username',
-        'avatar',
-        'vipTo',
-        'online',
-        'vip',
-        'wallet',
-        'role',
-      ],
-    })
-      .then((account) => {
-        req.account = account
-        res.locals.currentAccount = account
-        res.locals.user = req.user
-        next()
-      })
-      .catch((err) => {
-        console.log(err)
-        next()
-      })
-  } else {
-    next()
-  }
-}
+const userToTemplate = async (req, res, next) => {
+  const { user } = req
 
-// Добавляет в запрос текущий аккаунт
-const withAccount = async (req, res, next) => {
-  if (!req.account) {
-    return res.redirect('/login')
+  if (!user) {
+    return next()
   }
+
+  const account = await Account.findOne({
+    where: {
+      id: req.user.id,
+    },
+    attributes: [
+      'id',
+      'username',
+      'avatar',
+      'vipTo',
+      'online',
+      'vip',
+      'wallet',
+      'status',
+      'role',
+      'gender',
+      'rank',
+      'level',
+      'email',
+    ],
+  })
+
+  req.account = account
+  res.locals.currentAccount = account
+
   next()
 }
 
 module.exports = {
   isAuth,
   userToTemplate,
-  withAccount,
 }

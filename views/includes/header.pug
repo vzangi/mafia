@@ -9,7 +9,7 @@ header(class="p-3 mb-4")
         ul(class="nav col-xs col-xs-auto justify-content-center mb-md-0")
           li
             a(href="/lobbi" class="nav-link px-2") Лобби
-          //- if user
+          //- if currentAccount
           //- li
           //-   a(href="/profile/friends" class="nav-link px-2") Друзья #[span(class="cnt hide")]
 
@@ -43,7 +43,7 @@ header(class="p-3 mb-4")
         else
           a(href="/login" type="button" class="btn btn-warning") Войти
 
-if user
+if currentAccount
   include ./form_mixins
   div(class='bg-wrapper search-wrapper')
     div(class='user-search-box')

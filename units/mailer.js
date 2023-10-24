@@ -18,6 +18,7 @@ const mail = async (email, theme, message) => {
   }
 
   const info = await transporter.sendMail(msg)
+  return info
 }
 
 module.exports = {

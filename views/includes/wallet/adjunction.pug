@@ -3,8 +3,8 @@ div(class="container wallet-value")
     div
       h3 Кошелёк
       h1(class="fw-bold") 
-        span= Math.floor(account.wallet)
-        if account.kopeiki != 0
-          small= '.'+account.kopeiki
+        span= Math.floor(currentAccount.wallet)
+        if currentAccount.kopeiki != 0
+          small= '.'+currentAccount.kopeiki
     div
       a(class="btn btn-success" id="openWalletForm" data-bs-toggle="modal" data-bs-target="#walletForm") Пополнить

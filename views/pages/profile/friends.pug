@@ -28,7 +28,7 @@ block main
                         div(class="friend-links ms-2")
                             div 
                                 a(href="/profile/" + partner.friend.username class="ellipsis")= partner.friend.username 
-                            if user && user.id == profile.id
+                            if currentAccount && currentAccount.id == profile.id
                                 div(class="mt-2")
                                     a(class="btn btn-danger btn-sm remove-partner action-btn" data-id=partner.friend.id data-question='Ты точно хочешь развестись? В кошельке должно быть 100 рублей.' data-event='friends.divorce') Развестись
 
@@ -41,9 +41,9 @@ block main
                 a(href="/profile/" + profile.username class="user-name ellipsis")= profile.username
                 span(class="ion-ios-arrow-right")
                 span Друзья
-            if user
+            if currentAccount
                 div(class='friends-buttons')
-                    if user.id == profile.id
+                    if currentAccount.id == profile.id
                         a(href="/profile/friends/requests" class="btn btn-success hide") Заявки #[span(class="cnt hide")]
 
         if friends && friends.length != 0
@@ -56,7 +56,7 @@ block main
                             div(class="friend-links ms-2")
                                 div 
                                     a(href="/profile/" + friend.friend.username class="ellipsis")= friend.friend.username 
-                                if user && user.id == profile.id
+                                if currentAccount && currentAccount.id == profile.id
                                     div(class="mt-2")
                                         a(class="btn btn-danger btn-sm remove-frend action-btn" data-id=friend.friend.id data-question='Удалить из друзей?' data-event='friends.remove') Удалить
         else 

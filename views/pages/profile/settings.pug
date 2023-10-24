@@ -6,7 +6,7 @@ block article
         div(class="top-settings-box")
             div(class="avatar-box")
                 div
-                    img(src='/uploads/'+profile.avatar alt=profile.username)
+                    img(src='/uploads/'+currentAccount.avatar alt=currentAccount.username)
                 div(class="change-avatar-box") 
                     button(class="btn btn-success change-avatar-btn") Обновить аватар
                     form(enctype="multipart/form-data" method="post")
@@ -16,19 +16,19 @@ block article
                 div(class="form-row2 mb-3 nik-box")
                     label(class="form-label") Ник*
                     div(class="accept-input-box")
-                        input(class="form-control" maxlength=30 value=profile.username data-val=profile.username)
-                        button(class="btn btn-success ion-checkmark accept" title=`Стоимость смены ника: ${namesChangesCount*100} рублей`)
+                        input(class="form-control" maxlength=30 value=currentAccount.username data-val=currentAccount.username)
+                        button(class="btn btn-success ion-checkmark accept" title=`Стоимость смены ника: ${nikChanges.length*100} рублей`)
 
                 div(class="form-row2 mb-3")
                     label(class="form-label") Почта
-                    input(class="form-control" disabled value=profile.email)
+                    input(class="form-control" disabled value=currentAccount.email)
 
                 div 
                     label(class="form-label") Пол
                     select(class="form-control" id="gender")
                         option(value="0") Не указан
-                        option(value="1" selected=profile.gender==1) Мужской
-                        option(value="2" selected=profile.gender==2) Женский
+                        option(value="1" selected=currentAccount.gender==1) Мужской
+                        option(value="2" selected=currentAccount.gender==2) Женский
 
     if nikChanges.length != 0
         h3(class='mt-4') Прошлые ники

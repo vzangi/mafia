@@ -1,222 +1,83 @@
-const bcrypt = require('bcrypt')
-const pug = require('pug')
-const { createToken } = require('../units/jwt')
-const { mail } = require('../units/mailer')
-const Account = require('../models/Account')
-const AccountName = require('../models/AccountName')
 const cookieTokenName = process.env.TOKEN_COOKIE || 'jwt'
 const maxAge = 1000 * 60 * 60 * 24 * 30
-const saltNumber = 10
+
+const service = require('../services/AuthService')
 
 class Auth {
+  // Регистрация
   async register(req, res) {
-    const { nik, email, password, passwordConfirm, accept } = req.body
+    try {
+      const { nik, email, password, passwordConfirm, accept } = req.body
 
-    const checkEmail = await Account.findOne({
-      where: {
-        email: email,
-      },
-    })
-
-    if (checkEmail) {
-      return res.status(400).json([{ msg: 'Email уже используется' }])
+      await service.register(nik, email, password, passwordConfirm, accept)
+      res.json([{ msg: 'Регистрация прошла успешно' }])
+    } catch (error) {
+      console.log(error)
+      res.status(400).json([{ msg: error.message }])
     }
-
-    if (password !== passwordConfirm) {
-      return res.status(400).json([{ msg: 'Пароли не совпадают' }])
-    }
-
-    const checkNik = await Account.findOne({
-      where: {
-        username: nik,
-      },
-    })
-
-    if (checkNik) {
-      return res.status(400).json([{ msg: 'Ник уже используется' }])
-    }
-
-    const secondCheck = await AccountName.findOne({
-      where: {
-        username: nik,
-      },
-    })
-
-    if (secondCheck) {
-      return res.status(400).json([{ msg: 'Ник занят' }])
-    }
-
-    if (accept != 1) {
-      return res
-        .status(400)
-        .json([{ msg: 'Необходимо согласиться с правилами сайта' }])
-    }
-
-    bcrypt.hash(password, saltNumber).then((hash) => {
-      Account.create({
-        username: nik,
-        password: hash,
-        email: email,
-      })
-        .then(async () => {
-          // Отправка сообщения на почту !!!
-          //welkome(email, nik)
-          const reghash = await bcrypt.hash(
-            email + process.env.SECRET_JWT_KEY,
-            saltNumber
-          )
-          const link = `${process.env.APP_HOST}/accept/${email}/${reghash}`
-          const message = pug.compileFile('./views/emails/welkome.pug')({
-            nik,
-            link,
-          })
-          mail(email, 'Регистрация на сайте Mafia One', message)
-
-          res.json([{ msg: 'Регистрация прошла успешно' }])
-        })
-        .catch((err) => {
-          console.log(err)
-          res.status(400).json([{ msg: 'Ошибка при регистрации' }])
-        })
-    })
   }
 
+  // Вход на сайт
   async login(req, res) {
-    const { nik, password } = req.body
+    try {
+      const { nik, password } = req.body
 
-    const user = await Account.findOne({
-      where: {
-        username: nik,
-      },
-    })
-
-    if (!user) {
-      return res
-        .status(400)
-        .json([{ msg: 'Пользователь с таким ником не найден' }])
-    }
-
-    bcrypt.compare(password, user.password).then((match) => {
-      if (!match) {
-        return res
-          .status(400)
-          .json([{ msg: 'Неверное сочетание логина и пароля' }])
-      }
-
-      if (user.status == 0) {
-        return res.status(400).json([{ msg: 'Необходимо подтвердить почту' }])
-      }
-
-      const accessToken = createToken(user)
-
-      res.cookie(cookieTokenName, accessToken, {
-        maxAge,
-      })
-
+      const accessToken = await service.login(nik, password)
+      res.cookie(cookieTokenName, accessToken, { maxAge })
       res.json({ msg: 'Вход выполнен успешно' })
-    })
+    } catch (error) {
+      console.log(error)
+      res.status(400).json([{ msg: error.message }])
+    }
   }
 
+  // Выход с сайта
   logout(req, res) {
     res.clearCookie(cookieTokenName)
     res.redirect('/')
   }
 
+  // Подтверждение регистрации
   async accept(req, res) {
-    const { email, hash } = req.params
-    bcrypt
-      .compare(email + process.env.SECRET_JWT_KEY, hash)
-      .then(async (valid) => {
-        if (!valid) {
-          return res.redirect('/')
-        }
-        const user = await Account.findOne({
-          where: {
-            email: email,
-            status: 0,
-          },
-        })
-        if (user) {
-          user.update({ status: 1 })
-          const accessToken = createToken(user)
+    try {
+      const { email, hash } = req.params
 
-          res.cookie(cookieTokenName, accessToken, {
-            maxAge,
-          })
-        }
-
-        return res.redirect('/')
-      })
-      .catch((err) => {
-        console.log(err)
-        res.json('err')
-      })
+      const accessToken = await service.accept(email, hash)
+      res.cookie(cookieTokenName, accessToken, { maxAge })
+      res.redirect('/')
+    } catch (error) {
+      console.log(error)
+      res.status(400).json([{ msg: error.message }])
+    }
   }
 
+  // Запрос на восстановление пароля
   async restore(req, res) {
-    const { email } = req.body
+    try {
+      const { email } = req.body
 
-    const user = await Account.findOne({
-      where: {
-        email,
-      },
-    })
-
-    if (!user) {
-      return res
-        .status(400)
-        .json([{ msg: 'Пользователь с таким email не найден' }])
+      await service.restore(email)
+      res.json({
+        msg: `Ссылка для восстановления пароля отправлена на ${email}`,
+      })
+    } catch (error) {
+      console.log(error)
+      res.status(400).json([{ msg: error.message }])
     }
-
-    if (user.status == 0) {
-      return res
-        .status(400)
-        .json([{ msg: 'Аккаунт привязанный к этому email не подтверждён' }])
-    }
-
-    // Отправка сообщения на почту со ссылкой для смены пароля
-    const hash = await bcrypt.hash(
-      user.email + user.password + process.env.SECRET_JWT_KEY,
-      saltNumber
-    )
-    const link = `${process.env.APP_HOST}/restore/${user.email}/${hash}`
-    const message = pug.compileFile('./views/emails/restore.pug')({ link })
-    mail(user.email, 'Восстановление пароля на Mafia One', message)
-
-    res.json([
-      { msg: 'Ссылка для восстановления пароля отправлена на ' + email },
-    ])
   }
 
+  // Авторизация по ссылке отправленной на почту для смены пароля
   async restorePassword(req, res) {
-    const { email, hash } = req.params
+    try {
+      const { email, hash } = req.params
 
-    const user = await Account.findOne({
-      where: {
-        email,
-      },
-    })
-
-    if (!user) {
-      return res.redirect('/')
+      const accessToken = await service.restorePassword(email, hash)
+      res.cookie(cookieTokenName, accessToken, { maxAge })
+      res.redirect('/profile/change-password')
+    } catch (error) {
+      console.log(error)
+      res.status(400).json([{ msg: error.message }])
     }
-
-    bcrypt
-      .compare(user.email + user.password + process.env.SECRET_JWT_KEY, hash)
-      .then((valid) => {
-        if (!valid) {
-          res.redirect('/')
-        }
-
-        const accessToken = createToken(user)
-
-        res.cookie(cookieTokenName, accessToken, {
-          maxAge,
-        })
-
-        // изменить редирект на страницу смены пароля
-        res.redirect('/profile/change-password')
-      })
   }
 }
 

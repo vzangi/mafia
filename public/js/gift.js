@@ -16,7 +16,6 @@ $(function () {
       $('.more-gifts').remove()
       $('#giftItemTmpl').tmpl(items).appendTo(giftList)
       lastDate = items[items.length - 1].updatedAt
-      console.log(lastDate)
 
       $('#moreGiftsBtnTmpl').tmpl().insertAfter(giftList)
     })
@@ -47,12 +46,15 @@ $(function () {
 
     $('input[name=giftId]').val(id)
 
-    $("html, body").animate({
-      scrollTop: $(".gift-form").offset().top + "px"
-    }, {
-      duration: 100,
-      easing: "swing"
-    });
+    $('html, body').animate(
+      {
+        scrollTop: $('.gift-form').offset().top + 'px',
+      },
+      {
+        duration: 100,
+        easing: 'swing',
+      }
+    )
   })
 
   // Покупка открытки

@@ -1,24 +1,27 @@
 const express = require('express')
 const router = express.Router()
-const pages = require('../controllers/GiftsController')
-const { isAuth, userToTemplate } = require('../middlewares/AuthMiddleware')
+const controller = require('../controllers/GiftsController')
+const { isAuth } = require('../middlewares/AuthMiddleware')
+const isSuperAdmin = controller.isSuperAdmin
+
+router.use(isAuth)
 
 // Страница с возможностью дарить открытки
-router.get('/', isAuth, pages.gift)
+router.get('/', controller.gift)
 
 // Страница со списком групп
-router.get('/groups', isAuth, userToTemplate, pages.groups)
+router.get('/groups', isSuperAdmin, controller.groups)
 
 // Страница с формой редактирования группы
-router.get('/group', isAuth, userToTemplate, pages.group)
+router.get('/group', isSuperAdmin, controller.group)
 
 // Создание группы
-router.post('/group/create', isAuth, userToTemplate, pages.addGroup)
+router.post('/group/create', isSuperAdmin, controller.addGroup)
 
 // Редактирование группы
-router.post('/group/edit', isAuth, userToTemplate, pages.editGroup)
+router.post('/group/edit', isSuperAdmin, controller.editGroup)
 
 // Добавление открытки
-router.post('/create', isAuth, userToTemplate, pages.addGift)
+router.post('/create', isSuperAdmin, controller.addGift)
 
 module.exports = router

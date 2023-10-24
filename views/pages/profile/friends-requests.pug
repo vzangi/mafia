@@ -8,9 +8,9 @@ block main
     div(class="friends-top")
       div(class="friends-crumbs")
         div(class="friends-avatar")
-          a(href="/profile/" + profile.username)
-            img(src="/uploads/" + profile.avatar alt=profile.username)
-        a(href="/profile/" + profile.username class="user-name ellipsis")= profile.username
+          a(href="/profile/" + currentAccount.username)
+            img(src="/uploads/" + currentAccount.avatar alt=currentAccount.username)
+        a(href="/profile/" + currentAccount.username class="user-name ellipsis")= currentAccount.username
         span(class="ion-ios-arrow-right user-name")
         a(href="/profile/friends" class="user-name ellipsis") Друзья
         span(class="ion-ios-arrow-right")

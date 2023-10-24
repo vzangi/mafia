@@ -1,7 +1,7 @@
 div(class="col-12 col-md-6") 
     div(class="gifts-header d-flex justify-content-between align-items-center mb-2")
         h4(class="mb-0") Открытки
-        if user && user.id != profile.id
+        if currentAccount && currentAccount.id != profile.id
             div
                 a(href="/gift?to="+profile.username class="btn btn-sm btn-outline-success" data-bs-toggle="tooltip" data-bs-placement="top" title='Подарить открытку '+profile.username) Подарить
 
