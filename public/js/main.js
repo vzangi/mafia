@@ -46,8 +46,9 @@ $(function () {
     $('.h-image-box').addClass('has-notify')
   }
 
-  socket.emit('gifts.count', (count) => {
-    if (count == 0) return
+  socket.emit('gifts.count', (res) => {
+    if (res.status != 0) return 
+    if (res.count == 0) return
     $('.h-image-box, .dropdown-box .profile-avatar-image').addClass(
       'has-notify'
     )
@@ -59,8 +60,9 @@ $(function () {
     )
   })
 
-  socket.emit('friends.request.count', (friendRequestsCount) => {
-    setCount(friendRequestsCount)
+  socket.emit('friends.request.count', (res) => {
+    if (res.status != 0) return
+    setCount(res.count)
   })
 
   socket.on('friend.request', (friendRequestsCount) => {

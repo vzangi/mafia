@@ -12,9 +12,6 @@ module.exports = (io) => {
     // Роуты запросов в друзья
     require('./socket/FriendsRouter')(io, socket)
 
-    // Роуты основного чата
-    require('./socket/ChatRouter')(io, socket)
-
     // Роуты кошелька
     require('./socket/WalletRouter')(io, socket)
 
@@ -26,5 +23,14 @@ module.exports = (io) => {
 
     // Роуты Открыток
     require('./socket/GiftsRouter')(io, socket)
+  })
+
+  
+  io.of("/lobbi").use(validateTokenInSocket)
+
+  // Отдельное пространство имён для основного чата
+  io.of("/lobbi").on('connection', (socket) => {
+    // Роуты основного чата
+    require('./socket/ChatRouter')(io, socket)
   })
 }

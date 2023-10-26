@@ -4,9 +4,6 @@ module.exports = (io, socket) => {
     socket
   )
 
-  // Получение количества запросов в друзья
-  socket.on('friends.request.count', controller.requestCount.bind(controller))
-
   // Добавление в друзья
   socket.on('friends.add', controller.add.bind(controller))
 

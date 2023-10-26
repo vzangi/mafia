@@ -1,137 +1,80 @@
 const BaseSocketController = require('./BaseSocketController')
-const Message = require('../../models/Message')
-const htmlspecialchars = require('htmlspecialchars')
-const typingUsers = []
+const Service = require('../../services/socket/MessagesService')
 
 class MessagesController extends BaseSocketController {
-  // Процедура завершения печати
-  _cancelTyping() {
-    const { user } = this
-    if (typingUsers[user.username]) {
-      delete typingUsers[user.username]
-    }
-  }
-
+  
   // Пользователь перестал печатать
   typingEnd(friendId) {
-    const { user, socket } = this
-    if (!user) return
-
-    if (typingUsers[user.username]) clearTimeout(typingUsers[user.username])
-
-    this._cancelTyping()
-
-    const friendIds = this.getUserSocketIds(friendId)
-    friendIds.forEach((sid) => {
-      socket.broadcast.to(sid).emit('messages.typing.end', user.id)
-    })
+    try {
+      this.service.typingEnd(friendId)
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   // Пользователь начал что-то печатать в чате
   typingBegin(friendId) {
-    const { user, socket } = this
-    if (!user) return
-
-    if (typingUsers[user.username]) clearTimeout(typingUsers[user.username])
-
-    typingUsers[user.username] = setTimeout(() => {
-      this._cancelTyping()
-    }, 3000)
-
-    const friendIds = this.getUserSocketIds(friendId)
-    friendIds.forEach((sid) => {
-      socket.broadcast.to(sid).emit('messages.typing', user.id)
-    })
+    try {
+      this.service.typingBegin(friendId)
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   // Проверка на дружеские отношения
   async isFriend(friendId, callback) {
-    const { user } = this
-    if (!user) return callback({ status: 2, msg: 'Неавторизованный запрос' })
-
-    const relations = await Message.canMassaging(user.id, friendId)
-
-    if (!relations)
-      return callback({
-        status: 1,
-        msg: 'Вы не можете писать приватные сообщения этому игроку',
-      })
-
-    callback({ status: 0, friend: relations.friend })
+    try {
+      const friend = await this.service.isFriend(friendId)
+      callback({ status: 0, friend })
+    } catch (error) {
+      callback({ status: 1, msg: error.message })
+    }
   }
 
   // Получение последних сообщений
   async getMessages(friendId, offset, callback) {
-    const { user } = this
-    if (!user) return callback({ status: 2, msg: 'Неавторизованный запрос' })
-
-    const messages = await Message.getPrivateMessages(user.id, friendId, offset)
-
-    callback({ status: 0, messages })
+    try {
+      const messages = await this.service.getMessages(friendId, offset)
+      callback({ status: 0, messages })
+    } catch (error) {
+      callback({ status: 1, msg: error.message })
+    }
   }
 
   // Получение списка друзей с которыми есть приватный чат
   async getList(callback) {
-    const { user } = this
-    if (!user) return callback({ status: 2, msg: 'Неавторизованный запрос' })
-
-    const lastMsgs = await Message.lastMessages(user.id)
-
-    callback({ status: 0, lastMsgs, userId: user.id })
+    try {
+      const lastMsgs = await this.service.getList()
+      callback({ status: 0, lastMsgs, userId: this.user.id })
+    } catch (error) {
+      console.log(error);
+      callback({ status: 1, msg: error.message })
+    }
   }
 
   // Отправка сообщения
   async sendMessage(friendId, message, callback) {
-    const { user, socket } = this
-    // Отсеиваю попытки отправки сообщений
-    // неавторизованными пользователями (хакер детектед)
-    if (!user || !friendId) callback(1, 'Нет необходимых данных')
-
-    message = htmlspecialchars(message.substr(0, 255))
-
-    if (message.length > 255) {
-      message = message.substr(0, 255)
+    try {
+      const msg = await this.service.sendMessage(friendId, message)
+      callback(0, msg)
+    } catch (error) {
+      callback({ status: 1, msg: error.message })
     }
-
-    const msg = await Message.create({
-      accountId: user.id,
-      friendId,
-      message,
-    })
-
-    const friendIds = this.getUserSocketIds(friendId)
-    friendIds.forEach((sid) => {
-      socket.broadcast.to(sid).emit('messages.new', msg)
-    })
-
-    callback(0, msg)
   }
 
+  // Пометить сообщения прочтёнными
   async readMessages(friendId, callback) {
-    const { user, socket } = this
-
-    await Message.update(
-      {
-        isRead: 1,
-      },
-      {
-        where: {
-          accountId: friendId,
-          friendId: user.id,
-          isRead: 0,
-        },
-      }
-    )
-
-    const friendIds = this.getUserSocketIds(friendId)
-    friendIds.forEach((sid) => {
-      socket.broadcast.to(sid).emit('messages.isreaded', user.id)
-    })
-
-    if (callback) callback()
+    try {
+      await this.service.readMessages(friendId)
+      if (callback)
+        callback({ status: 0 })
+    } catch (error) {
+      if (callback)
+        callback({ status: 1, msg: error.message })
+    }
   }
 }
 
 module.exports = (io, socket) => {
-  return new MessagesController(io, socket)
+  return new MessagesController(io, socket, Service)
 }

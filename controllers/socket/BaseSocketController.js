@@ -1,8 +1,11 @@
 class BaseSocketController {
-  constructor(io, socket) {
+  constructor(io, socket, Service) {
     this.io = io
     this.socket = socket
     this.user = socket.user
+    if (Service) {
+      this.service = new Service(io, socket)
+    }
   }
 
   getUserSocketIds(userId) {

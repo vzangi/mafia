@@ -71,15 +71,20 @@ const getUsersInMessage = async (message) => {
 }
 
 // Сохраняет новое сообщение в базе и возвращает его
-Chat.newMessage = async (userId, message) => {
-  const chatusers = await getUsersInMessage(message)
-  const account = await Account.findByPk(userId)
+Chat.newMessage = async (accountId, msg) => {
+  let message = htmlspecialchars(msg)
+  if (message.length > 255) {
+    message = message.substr(0, 255)
+  }
+  const chatusers = await getUsersInMessage(msg)
+  const account = await Account.findByPk(accountId)
+  const { username } = account
   const newMsg = await Chat.create(
     {
-      accountId: userId,
-      username: account.username,
-      message: htmlspecialchars(message),
-      chatusers: chatusers,
+      accountId,
+      username,
+      message,
+      chatusers,
     },
     {
       include: ChatUsers,

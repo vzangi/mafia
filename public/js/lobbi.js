@@ -1,4 +1,7 @@
 $(async function () {
+
+  const lobbiSocket = io('/lobbi')
+
   const userOnlineCount = $('.user-online')
   const chatInput = $('.input-box input')
   const chatSettingsButton = $('.chat-settings > span.gear')
@@ -80,7 +83,7 @@ $(async function () {
     smilePattern = new RegExp(`(${smiles})`, 'g')
 
     // Получение последних сообщений с сервера
-    socket.emit('chat.last', (msgs) => {
+    lobbiSocket.emit('chat.last', (msgs) => {
       chat.empty()
 
       msgs.map((msg) => chat.prepend($('#messageTmpl').tmpl(parseMessage(msg))))
@@ -96,7 +99,7 @@ $(async function () {
   })
 
   // Получение сообщения с сервера
-  socket.on('chat.message', (msg) => {
+  lobbiSocket.on('chat.message', (msg) => {
     chat.append(messageTemplate.tmpl(parseMessage(msg)))
     scrollToEnd()
   })
@@ -112,7 +115,7 @@ $(async function () {
   }
 
   const typing = () => {
-    socket.emit('chat.typing.begin')
+    lobbiSocket.emit('chat.typing.begin')
     clearTimeout(timeoutTyping)
     timeoutTyping = setTimeout(() => {
       cancelTyping()
@@ -121,10 +124,10 @@ $(async function () {
 
   const cancelTyping = () => {
     clearTimeout(timeoutTyping)
-    socket.emit('chat.typing.end')
+    lobbiSocket.emit('chat.typing.end')
   }
 
-  socket.on('chat.typing.begin', (users) => {
+  lobbiSocket.on('chat.typing.begin', (users) => {
     $('#typingTmpl')
       .tmpl({
         users,
@@ -133,7 +136,7 @@ $(async function () {
       .appendTo($('.typing-box').empty())
   })
 
-  socket.on('chat.typing.end', (users) => {
+  lobbiSocket.on('chat.typing.end', (users) => {
     $('#typingTmpl')
       .tmpl({
         users,
@@ -212,7 +215,7 @@ $(async function () {
 
   // Отправка сообщения на сервер
   const sendMessage = (message) => {
-    socket.emit('chat.message', message)
+    lobbiSocket.emit('chat.message', message)
   }
 
   // При получении и потере фокуса меняем стиль обводки поля

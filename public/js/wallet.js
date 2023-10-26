@@ -4,12 +4,17 @@ $(function () {
 
   // Получение порции транзакций
   const getTransactions = (offset) => {
-    socket.emit('transactions', offset, (events) => {
-      if (events.length > 0) {
-        $('#eventTmpl').tmpl(events).appendTo('.transactions')
-        offset += events.length
-        if (offset < totalTransactions)
-          $('#moreBtnTmpl').tmpl({ offset }).insertAfter('.table')
+    socket.emit('transactions', offset, (res) => {
+      if (res.status == 0) {
+        const {events} = res
+        if (events.length > 0) {
+          $('#eventTmpl').tmpl(events).appendTo('.transactions')
+          offset += events.length
+          if (offset < totalTransactions)
+            $('#moreBtnTmpl').tmpl({ offset }).insertAfter('.table')
+        }
+      } else {
+        alert(res.msg)
       }
     })
   }

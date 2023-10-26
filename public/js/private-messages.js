@@ -228,7 +228,6 @@ $(function () {
 
   // Нажатие на иконку приватных чатов в хэдере
   messagesBtn.click(function () {
-    console.log(123)
     if (messagesWrapper.css('display') == 'block') {
       messagesWrapper.css('display', 'none')
       body.removeClass('fix-body')

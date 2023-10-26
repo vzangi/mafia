@@ -11,19 +11,24 @@ $(function () {
   groupSelect.change(function () {
     const groupId = $(this).val()
     lastDate = null
-    socket.emit('gifts.items', groupId, lastDate, (items) => {
-      giftList.empty()
-      $('.more-gifts').remove()
-      $('#giftItemTmpl').tmpl(items).appendTo(giftList)
-      lastDate = items[items.length - 1].updatedAt
-
-      $('#moreGiftsBtnTmpl').tmpl().insertAfter(giftList)
+    socket.emit('gifts.items', groupId, lastDate, (res) => {
+      if (res.status == 0) {
+        const items = res.gifts
+        giftList.empty()
+        $('.more-gifts').remove()
+        $('#giftItemTmpl').tmpl(items).appendTo(giftList)
+        lastDate = items[items.length - 1].updatedAt
+        
+        $('#moreGiftsBtnTmpl').tmpl().insertAfter(giftList)
+      }
     })
   })
 
   $('main').on('click', '.more-gifts', function () {
     const groupId = groupSelect.val()
-    socket.emit('gifts.items', groupId, lastDate, (items) => {
+    socket.emit('gifts.items', groupId, lastDate, (res) => {
+      if (res.status != 0) return
+      const items = res.gifts
       if (items.length == 0) {
         $('.more-gifts').remove()
       } else {
@@ -33,9 +38,11 @@ $(function () {
     })
   })
 
-  socket.emit('gifts.groups', (groups) => {
-    $('#groupOptionTmpl').tmpl(groups).appendTo(groupSelect)
-    groupSelect.change()
+  socket.emit('gifts.groups', (res) => {
+    if (res.status == 0) {
+      $('#groupOptionTmpl').tmpl(res.groups).appendTo(groupSelect)
+      groupSelect.change()
+    }
   })
 
   giftList.on('click', '.gift-item', function () {
@@ -71,14 +78,8 @@ $(function () {
       return alert('Укажите текст открытки')
     }
 
-    const data = {
-      giftId: giftId.val(),
-      to: to.val(),
-      description: description.val(),
-    }
-
     // Отправка данных по сокету
-    socket.emit('gifts.buy', data, (res) => {
+    socket.emit('gifts.buy', giftId.val(), to.val(), description.val(), (res) => {
       if (res.status != 0) {
         return alert(res.msg)
       }
