@@ -5,7 +5,7 @@ class GiftController extends BaseSocketController {
   // Получение следующей партии открыток пользователя
   async getNext(accountId, lastId, callback) {
     try {
-      const gifts = this.service.getNext(accountId, lastId)
+      const gifts = await this.service.getNext(accountId, lastId)
       callback({ status: 0, gifts })
     } catch (error) {
       callback({ status: 1, msg: error.message })
