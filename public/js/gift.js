@@ -55,7 +55,7 @@ $(function () {
 
     $('html, body').animate(
       {
-        scrollTop: $('.gift-form').offset().top + 'px',
+        scrollTop: $('.gift-form').parent().offset().top + 'px',
       },
       {
         duration: 100,
