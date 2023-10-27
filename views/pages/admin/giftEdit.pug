@@ -1,0 +1,34 @@
+extends /layouts/two_column_3_9
+
+block main
+  h1 
+    a(href="/gift/group?id="+gift.giftgroupId)
+      span(class="ion-chevron-left fs-2")
+    span(class="ms-2") Редактирование открытки
+
+  div(class="block p-4 mb-4")
+    form(method="post" action="/gift/edit" enctype="multipart/form-data")
+      input(type="hidden" name="id" value=gift.id)
+      div(class="mb-3")
+        label Группа
+        select(class="form-control" name="giftgroupId")
+          each group in groups 
+            if group.id == gift.giftgroupId
+              option(value=group.id selected)= group.name
+            else
+              option(value=group.id)= group.name
+      div(class="mb-3")
+        label Цена
+        input(class="form-control" type="number" name="price" value=gift.price required)
+      div(class="mb-3")
+        if gift.isVip == 1
+          input(class="form-check-input" type="checkbox" value="on" id="vip" name="isVip" checked)
+        else 
+          input(class="form-check-input" type="checkbox" value="on" id="vip" name="isVip")
+        label(class="form-check-label ms-1" for="vip") Вип открытка
+      div(class="mb-3")
+        input(class="form-control" type="file" name="file")
+      button(type="submit" class="btn btn-success") Изменить открытку
+
+  div 
+    img(src="/uploads/gift/"+gift.picture)

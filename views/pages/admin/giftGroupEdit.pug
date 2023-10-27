@@ -1,5 +1,9 @@
 extends /layouts/two_column_3_9
 
+block head 
+  link(rel="stylesheet" href="/css/giftgroupedit.css")
+  script(src="/js/giftgroupedit.js")
+
 block main
   h1 
     a(href="/gift/groups")
@@ -37,3 +41,19 @@ block main
       div(class="mb-3")
         input(class="form-control" type="file" name="file" required)
       button(type="submit" class="btn btn-success") Добавить открытку
+  
+  h2 Открытки в этой группе
+
+  div(class="block p-4 mb-4")
+    div(class="gifts-list")
+      each gift in gifts
+        div(class="gifts-list-item" data-id=gift.id)
+          img(src="/uploads/gift/"+gift.picture width=140)
+          if gift.isVip 
+            div(class="vip ion-android-star vip" title="Вип открытка") 
+          div(class="price")= gift.price+' р.'
+          div(class="gift-actions")
+            div(class="text-center mb-2")
+              a(href="/gift/edit?id="+gift.id class="btn btn-primary btn-sm") Изменить
+            div(class="text-center mb-2")
+              a(data-id=gift.id class="btn btn-danger btn-sm remove-gift-btn") Удалить

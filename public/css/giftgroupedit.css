@@ -1,0 +1,43 @@
+.gifts-list {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.gifts-list-item  {
+    position: relative;
+    margin: 0.4rem;
+}
+
+.gifts-list-item img {
+    width: 140px;
+}
+.gifts-list-item .vip {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.6rem;
+    color: var(--color-gold);
+    font-size: 2rem;
+    text-shadow: 0 0 1rem #888;
+    line-height: 1rem;
+}
+
+.gifts-list-item .price {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    color: #fff;
+    text-shadow: 0 0 1rem #888;
+
+}
+
+.gifts-list-item .gift-actions {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+.gifts-list-item:hover .gift-actions {
+    opacity: 1;
+}

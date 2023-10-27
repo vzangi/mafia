@@ -24,4 +24,13 @@ router.post('/group/edit', isSuperAdmin, controller.editGroup)
 // Добавление открытки
 router.post('/create', isSuperAdmin, controller.addGift)
 
+// Удаление открытки
+router.post('/remove', isSuperAdmin, controller.removeGift)
+
+// Форма редактирования открытки
+router.get('/edit', isSuperAdmin, controller.giftEditForm)
+
+// Редактирования открытки
+router.post('/edit', isSuperAdmin, controller.editGift)
+
 module.exports = router

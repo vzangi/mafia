@@ -77,6 +77,48 @@ class Gifts {
     }
     res.redirect('/gift/groups')
   }
+
+  // Загрузка новой открытки
+  async giftEditForm(req, res) {
+    try {
+      const { id } = req.query
+      const data = await service.giftEditForm(id)
+      res.render('pages/admin/giftEdit', data)
+    } catch (error) {
+      console.log(error)
+      res.redirect('/gift/groups')
+    }
+  }
+
+  // Удаление открытки
+  async removeGift(req, res) {
+    try {
+      const { giftId } = req.body
+
+      await service.removeGift(giftId)
+      res.json([{ msg: 'Открытка удалена' }])
+    } catch (error) {
+      console.log(error)
+      res.status(400).json([{ msg: error.message }])
+    }
+  }
+
+  // Изменение открытки
+  async editGift(req, res) {
+    try {
+      const { id, giftgroupId, price, isVip } = req.body
+      let file = null
+      if (req.files) {
+        file = req.files.file
+      }
+
+      await service.editGift(file, id, giftgroupId, price, isVip)
+      res.redirect(`/gift/group?id=${giftgroupId}`)
+    } catch (error) {
+      console.log(error)
+      res.redirect('/gift/groups')
+    }
+  }
 }
 
 module.exports = new Gifts()

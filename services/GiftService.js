@@ -21,7 +21,13 @@ class GiftService {
       throw new Error('Группа с таким id не найдена')
     }
 
-    const data = { group }
+    const gifts = await Gift.findAll({
+      where: {
+        giftgroupId: groupId
+      }
+    })
+
+    const data = { group, gifts }
 
     return data
   }
@@ -96,6 +102,59 @@ class GiftService {
       isVip: isVip ? 1 : 0,
       picture,
     })
+  }
+
+  // Удаление открытки
+  async removeGift(giftId) {
+    if (!giftId) {
+      throw new Error('Нет необходимых данных')
+    }
+
+    await Gift.destroy({
+      where: {
+        id: giftId
+      }
+    })
+  }
+
+  // Форма редактирования открытки
+  async giftEditForm(giftId) {
+    if (!giftId) {
+      throw new Error('Нет необходимых данных')
+    }
+
+    const gift = await Gift.findByPk(giftId)
+    const groups = await GiftGroup.findAll()
+
+    const data = { gift, groups }
+    return data
+  }
+
+  // Изменение открытки
+  async editGift(file, id, giftgroupId, price, isVip) {
+    if (!id || !price || !giftgroupId) {
+      throw new Error('Нет необходимых данных')
+    }
+
+    const gift = await Gift.findByPk(id)
+    if (!gift) {
+      throw new Error('Открытка не найдена')
+    }
+
+    if (file) {
+      if (file.size > maxGiftSize) {
+        throw new Error(
+          `Размер открытки превышает ограничение ${maxGiftSize / 100} Кб`
+        )
+      }
+
+      await file.mv('./public/uploads/gift/' + gift.picture)
+    }
+
+    gift.giftgroupId = giftgroupId
+    gift.price = price
+    gift.isVip = isVip ? 1 : 0
+    await gift.save()
   }
 
   // Выдает имя картинки в четырехсимвольном формате
