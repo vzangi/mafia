@@ -97,6 +97,9 @@ class Profile {
   async changeAvatar(req, res) {
     try {
       const { account } = req
+      if (!req.files) {
+        throw new Error("Аватарка не выбрана")
+      }
       const { avatar } = req.files
 
       const fileName = await service.changeAvatar(account, avatar)

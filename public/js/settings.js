@@ -64,7 +64,7 @@ $(function () {
       },
       error: function (err) {
         console.log(err)
-        const { msg } = err.responseJSON
+        const { msg } = err.responseJSON[0]
         alert(msg)
       },
       cache: false,
