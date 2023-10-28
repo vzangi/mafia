@@ -3,15 +3,6 @@ const Chat = require('../../models/Chat')
 const typingUsers = []
 
 class ChatService extends BaseService {
-    // Процедура завершения печати
-    _cancelTyping() {
-        const { user, io } = this
-        if (typingUsers[user.username]) {
-            delete typingUsers[user.username]
-        }
-        io.of('/lobbi').emit('chat.typing.end', Object.keys(typingUsers))
-    }
-
     // Список последних сообщений
     async lastMessages() {
         const messages = await Chat.scope('def').findAll()
@@ -34,16 +25,17 @@ class ChatService extends BaseService {
 
     // Пользователь начал что-то печатать в чате
     typingBegin() {
-        const { user, io } = this
-        if (!user) {
+        const { io, socket } = this
+        if (!socket.account) {
             throw new Error('Не авторизован')
         }
+        const { username } = socket.account
 
-        if (typingUsers[user.username]) {
-            clearTimeout(typingUsers[user.username])
+        if (typingUsers[username]) {
+            clearTimeout(typingUsers[username])
         }
 
-        typingUsers[user.username] = setTimeout(() => {
+        typingUsers[username] = setTimeout(() => {
             this._cancelTyping()
         }, 3000)
 
@@ -52,16 +44,31 @@ class ChatService extends BaseService {
 
     // Пользователь перестал печатать
     typingEnd() {
-        const { user } = this
-        if (!user) {
+        const { socket } = this
+        if (!socket.account) {
             throw new Error('Не авторизован')
         }
+        const { username } = socket.account
 
-        if (typingUsers[user.username]) {
-            clearTimeout(typingUsers[user.username])
+        if (typingUsers[username]) {
+            clearTimeout(typingUsers[username])
         }
 
         this._cancelTyping()
+    }
+
+    // Процедура завершения печати
+    _cancelTyping() {
+        const { io, socket } = this
+        if (!socket.account) {
+            throw new Error('Не авторизован')
+        }
+        const { username } = socket.account
+
+        if (typingUsers[username]) {
+            delete typingUsers[username]
+        }
+        io.of('/lobbi').emit('chat.typing.end', Object.keys(typingUsers))
     }
 }
 

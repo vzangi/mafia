@@ -1,4 +1,4 @@
-const { DataTypes, Sequelize } = require('sequelize')
+const { DataTypes, Op } = require('sequelize')
 const sequelize = require('../units/db')
 const findNikLimit = 10
 
@@ -71,7 +71,6 @@ const Account = sequelize.define('account', {
     get() {
       if (!this.vipTo) return 0
       const now = new Date()
-      // console.log(now, this.vipTo.toISOString())
       if (this.vipTo > now) return 1
       return 0
     },
@@ -86,8 +85,11 @@ Account.findAccountsByNik = async (nik) => {
   const accounts = await Account.findAll({
     where: {
       username: {
-        [Sequelize.Op.substring]: nik,
+        [Op.substring]: nik,
       },
+      status: {
+        [Op.ne]: 0
+      }
     },
     attributes: ['id', 'username', 'online', 'avatar', 'vipTo', 'vip'],
     limit: findNikLimit,

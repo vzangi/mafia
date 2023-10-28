@@ -82,7 +82,14 @@ class ProfileService {
   async profileByNik(nik, user) {
     let profile = null
     if (nik) {
-      profile = await Account.findOne({ where: { username: nik } })
+      profile = await Account.findOne({ 
+        where: { 
+          username: nik,
+          status: {
+            [Op.ne]: 0
+          }
+        } 
+      })
     } else {
       profile = await Account.findOne({ where: { id: user.id } })
     }

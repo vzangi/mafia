@@ -16,11 +16,7 @@ $(function () {
         if (res.status != 0) {
           return alert(res.msg)
         }
-        alert(
-          'Ник успешно сменён. Необходимо залогиниться заново с новым ником'
-        ).then(() => {
-          $('.dropdown-menu li form').submit()
-        })
+        location.reload()
       })
     })
   })

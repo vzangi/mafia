@@ -66,6 +66,11 @@ $(function () {
 
   getFriendsList()
 
+  socket.on('messages.update', () => {
+    messagesBtn.removeClass('unread')
+    getFriendsList()
+  })
+
   // Открывает высплывающее окно со смайлами
   pmForm.on('click', '.smile-icons-box', function () {
     toggleActive($('.pm-form .all-smiles'))

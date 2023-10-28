@@ -5,8 +5,8 @@ const tokenCookieName = process.env.TOKEN_COOKIE || 'jwt'
 
 // Функция создающая токен
 const createToken = (user) => {
-  const { id, username, avatar } = user
-  const accessToken = sign({ id, username, avatar }, secretKey)
+  const { id } = user
+  const accessToken = sign({ id }, secretKey)
   return accessToken
 }
 

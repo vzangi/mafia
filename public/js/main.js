@@ -60,6 +60,10 @@ $(function () {
     )
   })
 
+  socket.on('nik.changed', (nik) => {
+    location.reload()
+  })
+
   socket.emit('friends.request.count', (res) => {
     if (res.status != 0) return
     setCount(res.count)

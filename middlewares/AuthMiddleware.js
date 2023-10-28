@@ -16,7 +16,7 @@ const userToTemplate = async (req, res, next) => {
 
   const account = await Account.findOne({
     where: {
-      id: req.user.id,
+      id: user.id,
     },
     attributes: [
       'id',
@@ -41,7 +41,38 @@ const userToTemplate = async (req, res, next) => {
   next()
 }
 
+const userToSocket = async (socket, next) => {
+  const { user } = socket
+  if (!user) return next()
+
+  const account = await Account.findOne({
+    where: {
+      id: user.id,
+    },
+    attributes: [
+      'id',
+      'username',
+      'avatar',
+      'vipTo',
+      'online',
+      'vip',
+      'wallet',
+      'status',
+      'role',
+      'gender',
+      'rank',
+      'level',
+      'email',
+    ],
+  })
+
+  socket.account = account
+
+  next()
+}
+
 module.exports = {
   isAuth,
   userToTemplate,
+  userToSocket
 }

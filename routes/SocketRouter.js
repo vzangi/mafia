@@ -1,4 +1,5 @@
 const { validateTokenInSocket } = require('../units/jwt')
+const { userToSocket } = require('../middlewares/AuthMiddleware')
 
 module.exports = (io) => {
   // Пытаюсь получить пользователя по токену jwt
@@ -27,6 +28,7 @@ module.exports = (io) => {
 
   
   io.of("/lobbi").use(validateTokenInSocket)
+  io.of("/lobbi").use(userToSocket)
 
   // Отдельное пространство имён для основного чата
   io.of("/lobbi").on('connection', (socket) => {

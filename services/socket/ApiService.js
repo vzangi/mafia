@@ -54,7 +54,7 @@ class ApiService extends BaseService {
 
     // Смена ника
     async changeNik(newnik) {
-        const { user } = this
+        const { user, socket } = this
         if (!user) {
             throw new Error("Не авторизован")
         }
@@ -129,6 +129,13 @@ class ApiService extends BaseService {
         // Меняю ник
         account.username = nik
         account.save()
+
+        // Отправляю на все вкладки оповещение о необходимости обновить страницу
+        const ids = this.getUserSocketIds(user.id)
+        ids.forEach((sid) => {
+            socket.broadcast.to(sid).emit('nik.changed', nik)
+        })
+
     }
 
     // Получения списка друзей со статусом "онлайн"

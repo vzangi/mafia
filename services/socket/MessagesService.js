@@ -156,6 +156,12 @@ class MessagesService extends BaseService {
         friendIds.forEach((sid) => {
             socket.broadcast.to(sid).emit('messages.isreaded', user.id)
         })
+
+        // Оповещаю другие вкладки игрока о необходимости обновить список
+        const ids = this.getUserSocketIds(user.id)
+        ids.forEach((sid) => {
+            socket.broadcast.to(sid).emit('messages.update')
+        })
     }
 }
 
