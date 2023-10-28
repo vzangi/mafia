@@ -11,7 +11,7 @@ class UserCountService extends BaseService {
     // Проверяет, был ли подключен пользователь ранее (true) или это его первый сокет (false)
     _hasAnySockets() {
         const { socket } = this
-        
+
         try {
             // Проходимся по всем сокетам
             for (const [sid, s] of socket.server.of('/').sockets) {
@@ -30,8 +30,17 @@ class UserCountService extends BaseService {
     }
 
     // Обновление статуса online у пользователя
-    async _online(userId, on = true) {
-        await Account.update({ online: on }, { where: { id: userId } })
+    async _online(id, on = true) {
+        await Account.update({ online: on }, { where: { id } })
+        const { io } = this
+
+        const account = await Account.findOne({
+            where: { id },
+            attributes: ['username', 'avatar']
+        })
+
+        const status = on ? 'online' : 'offline'
+        io.of('/online').emit(status, account)
     }
 
     // Меняет количество пользователей онлайн
@@ -109,7 +118,7 @@ class UserCountService extends BaseService {
 
             // Обновляю статус online
             this._online(user.id)
-            console.log(`${user.username} connected`, getNowDateTime())
+            console.log(`${user.id} connected`, getNowDateTime())
         }
     }
 
@@ -135,7 +144,7 @@ class UserCountService extends BaseService {
         userTimers[user.id] = setTimeout(async () => {
             delete userTimers[user.id]
 
-            console.log(`${user.username} disconnected`, getNowDateTime())
+            console.log(`${user.id} disconnected`, getNowDateTime())
 
             this._changeUserCount(-1)
 

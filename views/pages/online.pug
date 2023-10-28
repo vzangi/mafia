@@ -1,0 +1,16 @@
+extends /layouts/two_column_3_9
+
+block main
+    h1 Игроки онлайн
+    
+    div(class="block users-list mt-3 mb-3")
+        each user in users
+            div(class="friend-box d-flex align-items-center m-3" data-nik=user.username)
+                div(class="friend-avatar online")
+                    img(src="/uploads/"+user.avatar alt=user.username)
+                div(class="friend-links ms-2")
+                    a(href="/profile/"+user.username)= user.username
+
+block scripts 
+    include /includes/online-tmpl
+    script(src="/js/online.js")

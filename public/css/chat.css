@@ -36,6 +36,11 @@
   margin-top: 2px;
 }
 
+a.user-online {
+  color: inherit;
+  text-decoration: none;
+}
+
 .chat-settings > span {
   font-size: 26px;
   cursor: pointer;

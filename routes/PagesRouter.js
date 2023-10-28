@@ -21,6 +21,9 @@ router.get('/restore', pages.restore)
 // Лобби
 router.get('/lobbi', pages.lobbi)
 
+// Список игроков онлайн
+router.get('/online', pages.online)
+
 // Cтраницы со статическим содержимым
 router.use('/', require('./BlogRouter'))
 

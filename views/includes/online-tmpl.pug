@@ -1,0 +1,6 @@
+script(id="onlineUserTmpl" type="text/x-jquery-tmpl")
+    div(class="friend-box d-flex align-items-center m-3" data-nik="${username}")
+        div(class="friend-avatar online")
+            img(src="/uploads/${avatar}" alt="${username}")
+        div(class="friend-links ms-2")
+            a(href="/profile/${username}") ${username}

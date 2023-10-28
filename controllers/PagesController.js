@@ -1,4 +1,5 @@
 const smiles = require('../units/smiles')
+const Account = require('../models/Account')
 
 class Pages {
   // Главная страница
@@ -33,6 +34,16 @@ class Pages {
       return res.redirect('pages/lobbi')
     }
     res.render('pages/auth/restore')
+  }
+
+  // Список игроков онлайн
+  async online(req, res) {
+    const users = await Account.findAll({
+      where: {
+        online: 1
+      }
+    })
+    res.render('pages/online', { users })
   }
 }
 
