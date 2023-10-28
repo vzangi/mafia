@@ -23,6 +23,7 @@ const smiles = [
   'Zanda',
   'Moon',
   'Bear',
+  'Microphone',
 ]
 
 module.exports = smiles
