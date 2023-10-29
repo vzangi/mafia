@@ -3,6 +3,7 @@ const Friend = require('../../models/Friend')
 const Account = require('../../models/Account')
 const WalletEvent = require('../../models/WalletEvents')
 const BaseService = require('./BaseService')
+const { genders } = Account
 
 class FriendsService extends BaseService {
     // Отправка оповещения о новом запросе на дружбу
@@ -75,6 +76,12 @@ class FriendsService extends BaseService {
 
         // Оповещение о новом запросе на дружбу
         this._notifyFriendshipRequest(friendId)
+
+        const { socket } = this
+        if (socket.account) {
+            // Отправляю уведомление другу
+            this.notify(friendId, `${socket.account.username} хочет с тобой дружить`)
+        }
     }
 
     // Подтверждение добавления в друзья
@@ -106,6 +113,12 @@ class FriendsService extends BaseService {
 
         // Создаю записи подтверждение
         await this._addRequest(friendId, Friend.statuses.ACCEPTED)
+
+        const { socket } = this
+        if (socket.account) {
+            // Отправляю уведомление другу
+            this.notify(friendId, `${socket.account.username} ${socket.account.gender == genders.FEMALE ? 'приняла' : 'принял'} твой запрос, теперь вы друзья`)
+        }
     }
 
     // Отклонение добавления в друзья
@@ -141,6 +154,12 @@ class FriendsService extends BaseService {
             friendId: user.id,
             status: Friend.statuses.DECLINE,
         })
+
+        const { socket } = this
+        if (socket.account) {
+            // Отправляю уведомление 
+            this.notify(friendId, `${socket.account.username} ${socket.account.gender == genders.FEMALE ? 'отклонила' : 'отклонил'} твой запрос на дружбу`, 2)
+        }
     }
 
     // Удаление из друзей
@@ -169,6 +188,12 @@ class FriendsService extends BaseService {
 
         // Удаляю записи о дружбе игроков
         await this._removeRequests(friendId)
+
+        const { socket } = this
+        if (socket.account) {
+            // Отправляю уведомление 
+            this.notify(friendId, `${socket.account.username} ${socket.account.gender == genders.FEMALE ? 'удалила' : 'удалил'} тебя из друзей`, 2)
+        }
     }
 
     // Блокировка (ЧС)
@@ -340,6 +365,12 @@ class FriendsService extends BaseService {
 
         // Пробуем оповестить о новом предложении
         this._notifyFriendshipRequest(friendId)
+
+        const { socket } = this
+        if (socket.account) {
+            // Отправляю уведомление 
+            this.notify(friendId, `${socket.account.username} зовёт тебя в ЗАГС!`, 1)
+        }
     }
 
     // Согласие на ЗАГС
@@ -371,6 +402,12 @@ class FriendsService extends BaseService {
 
         // Создаю подтверждение
         await this._addRequest(friendId, Friend.statuses.MARRIED)
+
+        const { socket } = this
+        if (socket.account) {
+            // Отправляю уведомление 
+            this.notify(friendId, `${socket.account.username} ${socket.account.gender == genders.FEMALE ? 'согласилась' : 'согласился'} на твоё предложение руки и сердца!`, 1)
+        }
     }
 
     // Отказ от ЗАГСА
@@ -403,7 +440,11 @@ class FriendsService extends BaseService {
         // Возвращаю на кошелёк половину средств потраченных на предложение
         await WalletEvent.denial(friendId)
 
-
+        const { socket } = this
+        if (socket.account) {
+            // Отправляю уведомление 
+            this.notify(friendId, `${socket.account.username} ${socket.account.gender == genders.FEMALE ? 'отказалась' : 'отказался'} от твоего предложения руки и сердца`, 2)
+        }
     }
 
     // Отозвать предложение
@@ -435,6 +476,12 @@ class FriendsService extends BaseService {
 
         // Удаляю предложение
         await request.destroy()
+
+        const { socket } = this
+        if (socket.account) {
+            // Отправляю уведомление 
+            this.notify(friendId, `${socket.account.username} ${socket.account.gender == genders.FEMALE ? 'отозвала' : 'отозвал'} своё предложение руки и сердца`, 2)
+        }
     }
 
     // Развод
@@ -477,6 +524,12 @@ class FriendsService extends BaseService {
 
         // Возвращаю дружбу
         await this._addRequest(friendId, Friend.statuses.ACCEPTED)
+
+        const { socket } = this
+        if (socket.account) {
+            // Отправляю уведомление 
+            this.notify(friendId, `${socket.account.username} ${socket.account.gender == genders.FEMALE ? 'развелась' : 'развёлся'} с тобой`, 2)
+        }
     }
 }
 

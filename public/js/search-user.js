@@ -4,6 +4,7 @@ $(function () {
   const body = $('body')
   const searchInput = $('#user-search-input')
   const searchResult = $('.user-search-result')
+  const form = $(".user-search-box form")
   let searchTimeoutId
 
   // Нажатие на лупу в хэдере
@@ -22,6 +23,11 @@ $(function () {
   searchWrapper.click(function (event) {
     if (event.currentTarget != event.target) return
     searchBtn.click()
+  })
+
+  form.submit(function(event){
+    event.preventDefault()
+    return false
   })
 
   // Ввод ника в поле поиска

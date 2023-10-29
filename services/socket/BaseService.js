@@ -1,3 +1,5 @@
+const Notification = require('../../models/Notification')
+
 class BaseService {
     constructor(io, socket) {
         this.io = io
@@ -23,6 +25,22 @@ class BaseService {
             console.log(error)
         }
         return ids
+    }
+
+    // Новая нотификация
+    async notify(accountId, message, level = 0) {
+        const { socket } = this
+        const newNotify = await Notification.create({ accountId, message, level })
+
+        // Отправка нотификации на открытые сокеты игрока 
+        const ids = this.getUserSocketIds(accountId)
+        ids.forEach((sid) => {
+            socket.broadcast.to(sid).emit('notify', {
+                id: newNotify.id,
+                message: newNotify.message,
+                level: newNotify.level
+            })
+        })
     }
 }
 

@@ -4,7 +4,8 @@ const { userToSocket } = require('../middlewares/AuthMiddleware')
 module.exports = (io) => {
   // Пытаюсь получить пользователя по токену jwt
   io.use(validateTokenInSocket)
-
+  io.use(userToSocket)
+  
   // Подключение к сокету
   io.on('connection', (socket) => {
     // Роуты информации о количестве пользователей онлайн
@@ -22,8 +23,11 @@ module.exports = (io) => {
     // Роуты приватных сообщений
     require('./socket/MessagesRouter')(io, socket)
 
-    // Роуты Открыток
+    // Роуты открыток
     require('./socket/GiftsRouter')(io, socket)
+
+    // Роуты нотификаций
+    require('./socket/NotifyRouter')(io, socket)
   })
 
   

@@ -1,6 +1,11 @@
 const { DataTypes, Op } = require('sequelize')
 const sequelize = require('../units/db')
 const findNikLimit = 10
+const genders = {
+  NOTSET: 0,
+  MALE: 1,
+  FEMALE: 2
+}
 
 const Account = sequelize.define('account', {
   id: {
@@ -96,5 +101,7 @@ Account.findAccountsByNik = async (nik) => {
   })
   return accounts
 }
+
+Account.genders = genders
 
 module.exports = Account

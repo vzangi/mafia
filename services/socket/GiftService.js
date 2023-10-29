@@ -2,6 +2,7 @@ const GiftGroups = require('../../models/GiftGroup')
 const AccountGift = require('../../models/AccountGift')
 const Account = require('../../models/Account')
 const Gift = require('../../models/Gift')
+const Notification = require('../../models/Notification')
 const WalletEvent = require('../../models/WalletEvents')
 const { Op } = require('sequelize')
 const sequelize = require('../../units/db')
@@ -109,6 +110,9 @@ class GiftService extends BaseService {
             fromusername: account.username,
             description,
         })
+
+        // Создаю нотификацию
+        this.notify(recipient.id, `Получена открытка от ${account.username}`)
 
         // Уведомляю о новой открытке
         const ids = this.getUserSocketIds(recipient.id)
