@@ -110,6 +110,30 @@ class Profile {
       return res.status(400).json([{ msg: error.message }])
     }
   }
+
+  async notifications(req, res, next) {
+    try {
+      const { account } = req
+
+      const data = await service.notifications(account)
+      res.render('pages/profile/notifications', data)
+    } catch (error) {
+      console.log(error)
+      next()
+    }
+  }
+
+  async removeNotify(req, res) {
+    try {
+      const { notifyId } = req.body
+      const { account } = req
+
+      const data = await service.removeNotify(account, notifyId)
+    } catch (error) {
+      console.log(error)
+    }
+    res.redirect('/profile/notifications')
+  }
 }
 
 module.exports = new Profile()

@@ -1,5 +1,14 @@
 extends /layouts/two_column_9_3
 
+block aside 
+    h3 Настройки
+    div(class="block p-3")
+        ul(class="nav nav-pills flex-column")
+            li(class="nav-item")
+                a(href="/profile/settings" class="nav-link active") Настройки профиля
+            li(class="nav-item")
+                a(href="/profile/notifications" class="nav-link") Уведомления
+        
 block article
     h3 Профиль
     div(class="block")
@@ -50,7 +59,7 @@ block article
     div(class="block p-3")
         a(class="btn btn-primary" href="/profile/change-password") Сменить пароль
 
-    div(class="mt-3") 
+    div(class="mt-3 mb-3") 
         small(class="text-secondary") * Первая смена ника бесплатна. Каждая последующая на 100 рублей дороже предыдущей стоимости.
 
 block scripts 

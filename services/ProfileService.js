@@ -8,6 +8,7 @@ const AccountGift = require('../models/AccountGift')
 const AccountName = require('../models/AccountName')
 const Friend = require('../models/Friend')
 const WalletEvents = require('../models/WalletEvents')
+const Notification = require('../models/Notification')
 
 class ProfileService {
   async profileInfo(profile, currentUser) {
@@ -82,13 +83,13 @@ class ProfileService {
   async profileByNik(nik, user) {
     let profile = null
     if (nik) {
-      profile = await Account.findOne({ 
-        where: { 
+      profile = await Account.findOne({
+        where: {
           username: nik,
           status: {
             [Op.ne]: 0
           }
-        } 
+        }
       })
     } else {
       profile = await Account.findOne({ where: { id: user.id } })
@@ -244,6 +245,35 @@ class ProfileService {
     await account.save()
 
     return fileName
+  }
+
+  async notifications(account) {
+    if (!account) {
+      throw new Error("Нет необходимых данных")
+    }
+    const notifies = await Notification.findAll({
+      where: {
+        accountId: account.id
+      },
+      order: [['id', 'DESC']]
+    })
+
+    const data = { notifies }
+
+    return data
+  }
+
+  async removeNotify(account, notifyId) {
+    if (!account || !notifyId) {
+      throw new Error("Нет необходимых данных")
+    }
+
+    await Notification.destroy({
+      where: {
+        id: notifyId,
+        accountId: account.id
+      }
+    })
   }
 }
 

@@ -40,10 +40,16 @@ router.get('/settings', isAuth, controller.settings)
 // Смена автарки
 router.post('/settings', isAuth, controller.changeAvatar)
 
-// Смена автарки
+// Уведомления
+router.get('/notifications', isAuth, controller.notifications)
+
+// Удаление уведомления
+router.post('/notifications', isAuth, controller.removeNotify)
+
+// Профиль игрока по нику
 router.get('/:nik', controller.showAccountByNik)
 
-// Друзья в чужом профиле
+// Друзья игрока
 router.get('/:nik/friends', controller.friends)
 
 module.exports = router
