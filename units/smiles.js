@@ -20,7 +20,7 @@ const smiles = [
   'Sirena',
   'Coffee',
   'Sleep',
-  'Zanda',
+  'Okay',
   'Moon',
   'Bear',
   'Microphone',

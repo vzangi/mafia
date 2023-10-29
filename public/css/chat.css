@@ -367,7 +367,6 @@ input:checked + .slider:before {
 
 .m-message img {
   width: 24px;
-  margin-right: 2px;
   cursor: pointer;
   position: relative;
   top: -1px;
