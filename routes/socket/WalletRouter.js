@@ -9,4 +9,7 @@ module.exports = (io, socket) => {
 
   // Последние транзакции
   socket.on('transactions', controller.transactions.bind(controller))
+
+  // Перевод
+  socket.on('transfer', controller.transfer.bind(controller))
 }

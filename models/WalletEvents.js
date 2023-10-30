@@ -14,7 +14,10 @@ const events = {
   BUY: 6, // Покупка
   GIFT: 7, // Подарок
   NEWNIK: 8, // Смена ника
+  TRANSFER: 9, // Перевод
 }
+
+const transferRate = 1.1
 
 const WalletEvent = sequelize.define('walletevents', {
   id: {
@@ -51,6 +54,8 @@ WalletEvent.eventsOnPage = 10
 WalletEvent.marriageCost = 50
 WalletEvent.divorceCost = WalletEvent.marriageCost * 2
 WalletEvent.recallCost = WalletEvent.marriageCost / 2
+
+WalletEvent.transferRate = transferRate
 
 WalletEvent.belongsTo(Thing)
 WalletEvent.belongsTo(Account)
@@ -112,6 +117,18 @@ WalletEvent.gift = async (userId, giftCost) => {
 // Транзакция смены ника
 WalletEvent.nikChange = async (userId, nikChangeCost) => {
   await transaction(WalletEvent.events.NEWNIK, userId, -nikChangeCost)
+}
+
+// Транзакция перевода
+WalletEvent.transfer = async (userId, recipientId, transferCount) => {
+  // Списываю средства у отправителя
+  await transaction(
+    WalletEvent.events.TRANSFER,
+    userId,
+    -transferCount * transferRate
+  )
+  // Зачисляю их получателю
+  await transaction(WalletEvent.events.PAYMENT, recipientId, transferCount)
 }
 
 // Транзакция развода

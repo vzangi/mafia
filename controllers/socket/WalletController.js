@@ -3,7 +3,6 @@ const WalletEvent = require('../../models/WalletEvents')
 const Service = require('../../services/socket/WalletService')
 
 class WalletController extends BaseSocketController {
-
   // Пополнение счёта
   async payment(sum, method, callback) {
     try {
@@ -19,6 +18,16 @@ class WalletController extends BaseSocketController {
     try {
       const events = await this.service.transactions(offset)
       callback({ status: 0, events })
+    } catch (error) {
+      callback({ status: 1, msg: error.message })
+    }
+  }
+
+  // Перевод
+  async transfer(username, count, callback) {
+    try {
+      await this.service.transfer(username, count)
+      callback({ status: 0 })
     } catch (error) {
       callback({ status: 1, msg: error.message })
     }

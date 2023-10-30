@@ -38,6 +38,10 @@ script(id="eventTmpl" type="text/x-jquery-tmpl")
       img(src="/images/eMLG.svg")
       . 
         {{/if}}
+        {{if eventType == 9}}
+      img(src="/images/eMoney.svg")
+      . 
+        {{/if}}
 
     td(class="desc")
       .
@@ -61,6 +65,9 @@ script(id="eventTmpl" type="text/x-jquery-tmpl")
       .
         {{else eventType == 8}}
       div Смена ника
+      .
+        {{else eventType == 9}}
+      div Перевод
       . 
         {{else}}
       div Что-то другое
@@ -88,6 +95,9 @@ script(id="eventTmpl" type="text/x-jquery-tmpl")
       span(class="minus") ${value}
       .
         {{else eventType == 8}}
+      span(class="minus") ${value}
+      .
+        {{else eventType == 9}}
       span(class="minus") ${value}
       .
         {{/if}}

@@ -6,7 +6,7 @@ $(function () {
   const getTransactions = (offset) => {
     socket.emit('transactions', offset, (res) => {
       if (res.status == 0) {
-        const {events} = res
+        const { events } = res
         if (events.length > 0) {
           $('#eventTmpl').tmpl(events).appendTo('.transactions')
           offset += events.length
@@ -55,5 +55,25 @@ $(function () {
       }
       location.reload()
     })
+  })
+
+  $('#transferForm').submit(function (event) {
+    event.preventDefault()
+
+    const username = $(this).find('[name=username]').val().trim()
+    const count = $(this).find('[name=count]').val() * 1
+    if (username == '') {
+      return alert('Введите ник получателя перевода')
+    }
+    if (count < 0 || count > 5000) {
+      return alert('Переводить можно суммы от 1 до 5000 за раз')
+    }
+
+    socket.emit('transfer', username, count, (res) => {
+      if (res.status != 0) return alert(res.msg)
+      location.reload()
+    })
+
+    return false
   })
 })
