@@ -6,19 +6,19 @@
   padding: 4px;
   width: 350px;
   max-width: 98%;
-  font-family: "Segoe UI", "Tahoma", "Calibri", "Verdana", sans-serif;
+  font-family: 'Segoe UI', 'Tahoma', 'Calibri', 'Verdana', sans-serif;
   color: #333;
 
   -webkit-box-sizing: border-box;
-     -moz-box-sizing: border-box;
-      -ms-box-sizing: border-box;
-          box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
 }
 .notifier-container * {
   -webkit-box-sizing: border-box;
-     -moz-box-sizing: border-box;
-      -ms-box-sizing: border-box;
-          box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
 }
 .notifier {
   position: relative;
@@ -28,30 +28,27 @@
   background: white;
   border-left: 4px solid #95a5a6;
   border-radius: 1px;
-  box-shadow: 0 1px 10px 0 rgba(0,0,0,.1), 0 2px 15px 0 rgba(0,0,0,.05);
+  box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.1), 0 2px 15px 0 rgba(0, 0, 0, 0.05);
 
   opacity: 0;
   -webkit-transform: translateX(100%);
-     -moz-transform: translateX(100%);
-      -ms-transform: translateX(100%);
-          transform: translateX(100%);
+  -moz-transform: translateX(100%);
+  -ms-transform: translateX(100%);
+  transform: translateX(100%);
 
-  -webkit-transition: all .6s cubic-bezier(0.5, -0.5, 0.3, 1.4),
-                      opacity .6s ease;
-     -moz-transition: all .6s cubic-bezier(0.5, -0.5, 0.3, 1.4),
-                      opacity .6s ease;
-      -ms-transition: all .6s cubic-bezier(0.5, -0.5, 0.3, 1.4),
-                      opacity .6s ease;
-          transition: all .6s cubic-bezier(0.5, -0.5, 0.3, 1.4),
-                      opacity .6s ease;
+  -webkit-transition: all 0.6s cubic-bezier(0.5, -0.5, 0.3, 1.4),
+    opacity 0.6s ease;
+  -moz-transition: all 0.6s cubic-bezier(0.5, -0.5, 0.3, 1.4), opacity 0.6s ease;
+  -ms-transition: all 0.6s cubic-bezier(0.5, -0.5, 0.3, 1.4), opacity 0.6s ease;
+  transition: all 0.6s cubic-bezier(0.5, -0.5, 0.3, 1.4), opacity 0.6s ease;
   cursor: pointer;
 }
 .notifier.shown {
   opacity: 1;
   -webkit-transform: translateX(0);
-     -moz-transform: translateX(0);
-      -ms-transform: translateX(0);
-          transform: translateX(0);
+  -moz-transform: translateX(0);
+  -ms-transform: translateX(0);
+  transform: translateX(0);
 }
 .notifier.shown:hover {
   opacity: 1;
@@ -73,11 +70,11 @@
   border: none;
   border-radius: 50%;
   cursor: pointer;
-  opacity: .5;
-  -webkit-transition: .3s ease;
-  -moz-transition: .3s ease;
-  -ms-transition: .3s ease;
-  transition: .3s ease;
+  opacity: 0;
+  -webkit-transition: 0.3s ease;
+  -moz-transition: 0.3s ease;
+  -ms-transition: 0.3s ease;
+  transition: 0.3s ease;
 }
 .notifier-close:hover,
 .notifier-close:focus {

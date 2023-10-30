@@ -1,4 +1,7 @@
+// Общий веб-сокет
 const socket = io()
+
+// Звук нотификации
 let zvuk = new Audio('/sounds/notification.mp3')
 $('body').append(zvuk)
 
@@ -13,13 +16,9 @@ function playSound(sound) {
   }, 10)
 }
 
+// Отображает нотификацию
 function notify(msg, timeout = 0, lvl = 0) {
-  lvls = [
-    'success',
-    'warning',
-    'danger',
-    'info'
-  ]
+  lvls = ['success', 'warning', 'danger', 'info']
   notifier.show(msg, '', lvls[lvl], '', timeout)
 }
 
@@ -48,5 +47,5 @@ $(function () {
   // Кнопки с действиями
   $('.action-btn').click(function () {
     action(this)
-  })  
+  })
 })

@@ -84,7 +84,9 @@ class WalletService extends BaseService {
     // Отправляю уведомление другу
     this.notify(
       recipient.id,
-      `${account.username} перевёл тебе ${count} рублей`
+      `${account.username} ${
+        account.gender == Account.genders.FEMALE ? 'перевела' : 'перевёл'
+      } тебе ${count} рублей`
     )
   }
 }

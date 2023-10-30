@@ -63,6 +63,7 @@ WalletEvent.belongsTo(Account)
 const transaction = async (eventType, accountId, value) => {
   const t = await sequelize.transaction()
   try {
+    value = value.toFixed(2)
     await WalletEvent.create(
       {
         accountId,
@@ -119,6 +120,15 @@ WalletEvent.nikChange = async (userId, nikChangeCost) => {
   await transaction(WalletEvent.events.NEWNIK, userId, -nikChangeCost)
 }
 
+// Транзакция развода
+WalletEvent.divorce = async (userId) => {
+  await transaction(
+    WalletEvent.events.DIVORCE,
+    userId,
+    -WalletEvent.divorceCost
+  )
+}
+
 // Транзакция перевода
 WalletEvent.transfer = async (userId, recipientId, transferCount) => {
   // Списываю средства у отправителя
@@ -129,15 +139,6 @@ WalletEvent.transfer = async (userId, recipientId, transferCount) => {
   )
   // Зачисляю их получателю
   await transaction(WalletEvent.events.PAYMENT, recipientId, transferCount)
-}
-
-// Транзакция развода
-WalletEvent.divorce = async (userId) => {
-  await transaction(
-    WalletEvent.events.DIVORCE,
-    userId,
-    -WalletEvent.divorceCost
-  )
 }
 
 module.exports = WalletEvent

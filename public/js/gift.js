@@ -18,7 +18,7 @@ $(function () {
         $('.more-gifts').remove()
         $('#giftItemTmpl').tmpl(items).appendTo(giftList)
         lastDate = items[items.length - 1].updatedAt
-        
+
         $('#moreGiftsBtnTmpl').tmpl().insertAfter(giftList)
       }
     })
@@ -79,18 +79,24 @@ $(function () {
     }
 
     // Отправка данных по сокету
-    socket.emit('gifts.buy', giftId.val(), to.val(), description.val(), (res) => {
-      if (res.status != 0) {
-        return alert(res.msg)
+    socket.emit(
+      'gifts.buy',
+      giftId.val(),
+      to.val(),
+      description.val(),
+      (res) => {
+        if (res.status != 0) {
+          return alert(res.msg)
+        }
+
+        // Очищаю поля для новой открытки
+        selectedGift.empty()
+        giftId.val('')
+        description.val('')
+
+        alert('Открытка подарена!')
       }
-
-      // Очищаю поля для новой открытки
-      selectedGift.empty()
-      giftId.val('')
-      description.val('')
-
-      alert('Открытка подарена!')
-    })
+    )
 
     return false
   })
