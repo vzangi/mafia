@@ -132,7 +132,7 @@ class GiftService extends BaseService {
       bot.sendPhoto(
         recipient.telegramChatId,
         `./public/uploads/gift/${gift.picture}`,
-        { caption: `${notifyMessage}:\r\n ${description}` }
+        { caption: `${notifyMessage}:\r\n${description}` }
       )
     }
   }
