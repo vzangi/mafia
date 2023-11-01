@@ -11,6 +11,7 @@ const { validateToken } = require('./jwt')
 const { userToTemplate } = require('../middlewares/AuthMiddleware')
 const path = require('path')
 const fileUpload = require('express-fileupload')
+const bot = require('./bot')
 
 // Папки со статическими файлами
 app.use(express.static('public'))
@@ -42,4 +43,5 @@ module.exports = {
   server,
   io,
   sequelize,
+  bot,
 }

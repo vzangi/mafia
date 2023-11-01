@@ -46,6 +46,9 @@ router.get('/notifications', isAuth, controller.notifications)
 // Удаление уведомления
 router.post('/notifications', isAuth, controller.removeNotify)
 
+// Удаление уведомления
+router.post('/offtelegram', isAuth, controller.offTelegramNotifes)
+
 // Профиль игрока по нику
 router.get('/:nik', controller.showAccountByNik)
 

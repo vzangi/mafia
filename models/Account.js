@@ -4,7 +4,7 @@ const findNikLimit = 10
 const genders = {
   NOTSET: 0,
   MALE: 1,
-  FEMALE: 2
+  FEMALE: 2,
 }
 
 const Account = sequelize.define('account', {
@@ -34,6 +34,9 @@ const Account = sequelize.define('account', {
   role: {
     type: DataTypes.INTEGER,
     defaultValue: 0,
+  },
+  telegramChatId: {
+    type: DataTypes.STRING,
   },
   avatar: {
     type: DataTypes.STRING,
@@ -93,8 +96,8 @@ Account.findAccountsByNik = async (nik) => {
         [Op.substring]: nik,
       },
       status: {
-        [Op.ne]: 0
-      }
+        [Op.ne]: 0,
+      },
     },
     attributes: ['id', 'username', 'online', 'avatar', 'vipTo', 'vip'],
     limit: findNikLimit,

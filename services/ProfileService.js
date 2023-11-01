@@ -87,9 +87,9 @@ class ProfileService {
         where: {
           username: nik,
           status: {
-            [Op.ne]: 0
-          }
-        }
+            [Op.ne]: 0,
+          },
+        },
       })
     } else {
       profile = await Account.findOne({ where: { id: user.id } })
@@ -249,13 +249,13 @@ class ProfileService {
 
   async notifications(account) {
     if (!account) {
-      throw new Error("Нет необходимых данных")
+      throw new Error('Нет необходимых данных')
     }
     const notifies = await Notification.findAll({
       where: {
-        accountId: account.id
+        accountId: account.id,
       },
-      order: [['id', 'DESC']]
+      order: [['id', 'DESC']],
     })
 
     const data = { notifies }
@@ -265,15 +265,26 @@ class ProfileService {
 
   async removeNotify(account, notifyId) {
     if (!account || !notifyId) {
-      throw new Error("Нет необходимых данных")
+      throw new Error('Нет необходимых данных')
     }
 
     await Notification.destroy({
       where: {
         id: notifyId,
-        accountId: account.id
-      }
+        accountId: account.id,
+      },
     })
+  }
+
+  // Отключение уведомлений в telegram
+  async offTelegramNotifes(account) {
+    if (!account) {
+      throw new Error('Нет необходимых данных')
+    }
+
+    // Просто забываем id чата
+    account.telegramChatId = null
+    await account.save()
   }
 }
 

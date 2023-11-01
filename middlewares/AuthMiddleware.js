@@ -32,6 +32,7 @@ const userToTemplate = async (req, res, next) => {
       'rank',
       'level',
       'email',
+      'telegramChatId',
     ],
   })
 
@@ -74,5 +75,5 @@ const userToSocket = async (socket, next) => {
 module.exports = {
   isAuth,
   userToTemplate,
-  userToSocket
+  userToSocket,
 }

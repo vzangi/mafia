@@ -98,7 +98,7 @@ class Profile {
     try {
       const { account } = req
       if (!req.files) {
-        throw new Error("Аватарка не выбрана")
+        throw new Error('Аватарка не выбрана')
       }
       const { avatar } = req.files
 
@@ -129,6 +129,17 @@ class Profile {
       const { account } = req
 
       const data = await service.removeNotify(account, notifyId)
+    } catch (error) {
+      console.log(error)
+    }
+    res.redirect('/profile/notifications')
+  }
+
+  // Отключение уведомлений в telegram
+  async offTelegramNotifes(req, res) {
+    try {
+      const { account } = req
+      await service.offTelegramNotifes(account)
     } catch (error) {
       console.log(error)
     }

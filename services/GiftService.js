@@ -23,8 +23,8 @@ class GiftService {
 
     const gifts = await Gift.findAll({
       where: {
-        giftgroupId: groupId
-      }
+        giftgroupId: groupId,
+      },
     })
 
     const data = { group, gifts }
@@ -112,8 +112,8 @@ class GiftService {
 
     await Gift.destroy({
       where: {
-        id: giftId
-      }
+        id: giftId,
+      },
     })
   }
 
