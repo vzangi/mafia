@@ -396,7 +396,7 @@ class FriendsService extends BaseService {
 
     // Если у друга подключен ТГ, то отправляю уведомление туда
     const friend = await Account.findByPk(friendId)
-    if (friend && friend.telegramChatId) {
+    if (friend && friend.telegramChatId && !friend.online) {
       bot.sendMessage(friend.telegramChatId, notifyText)
     }
   }

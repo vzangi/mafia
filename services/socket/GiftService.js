@@ -128,7 +128,7 @@ class GiftService extends BaseService {
     })
 
     // Если подключена нотификация по telegram, то отправляем сообщение туда
-    if (recipient.telegramChatId) {
+    if (recipient.telegramChatId && !recipient.online) {
       bot.sendPhoto(
         recipient.telegramChatId,
         `./public/uploads/gift/${gift.picture}`,

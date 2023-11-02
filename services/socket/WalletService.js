@@ -90,7 +90,7 @@ class WalletService extends BaseService {
     this.notify(recipient.id, notifyText)
 
     // Если подключена нотификация по telegram, то отправляем сообщение туда
-    if (recipient.telegramChatId) {
+    if (recipient.telegramChatId && !recipient.online) {
       bot.sendMessage(recipient.telegramChatId, notifyText)
     }
   }
