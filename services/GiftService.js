@@ -25,6 +25,7 @@ class GiftService {
       where: {
         giftgroupId: groupId,
       },
+      order: [['updatedAt', 'DESC']],
     })
 
     const data = { group, gifts }
