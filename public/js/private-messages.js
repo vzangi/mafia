@@ -110,6 +110,10 @@ $(function () {
     }
 
     if ($('.friends-online .friends-list').length == 1) {
+      if (
+        $(`.friends-list .online-friend-box[data-id=${friend.id}]`).length > 0
+      )
+        return
       $('.no-online-friends').remove()
       $('#friendOnlineTmpl')
         .tmpl(friend)

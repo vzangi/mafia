@@ -258,7 +258,10 @@ class ProfileService {
       order: [['id', 'DESC']],
     })
 
-    const data = { notifies }
+    const data = {
+      notifies,
+      botName: process.env.TELEGRAM_BOT_NAME || 'MafiaUanBot',
+    }
 
     return data
   }

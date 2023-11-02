@@ -1,7 +1,8 @@
-const WalletEvent = require('../../models/WalletEvents')
-const Account = require('../../models/Account')
-const BaseService = require('./BaseService')
 const { Op } = require('sequelize')
+const Account = require('../../models/Account')
+const WalletEvent = require('../../models/WalletEvents')
+const bot = require('../../units/bot')
+const BaseService = require('./BaseService')
 
 class WalletService extends BaseService {
   // Пополнение счёта
@@ -81,13 +82,17 @@ class WalletService extends BaseService {
 
     await WalletEvent.transfer(user.id, recipient.id, count)
 
+    const notifyText = `${account.username} ${
+      account.gender == Account.genders.FEMALE ? 'перевела' : 'перевёл'
+    } тебе ${count} рублей`
+
     // Отправляю уведомление другу
-    this.notify(
-      recipient.id,
-      `${account.username} ${
-        account.gender == Account.genders.FEMALE ? 'перевела' : 'перевёл'
-      } тебе ${count} рублей`
-    )
+    this.notify(recipient.id, notifyText)
+
+    // Если подключена нотификация по telegram, то отправляем сообщение туда
+    if (recipient.telegramChatId) {
+      bot.sendMessage(recipient.telegramChatId, notifyText)
+    }
   }
 }
 

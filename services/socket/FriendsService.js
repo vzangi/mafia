@@ -2,535 +2,591 @@ const { Op } = require('sequelize')
 const Friend = require('../../models/Friend')
 const Account = require('../../models/Account')
 const WalletEvent = require('../../models/WalletEvents')
+const bot = require('../../units/bot')
 const BaseService = require('./BaseService')
 const { genders } = Account
 
 class FriendsService extends BaseService {
-    // Отправка оповещения о новом запросе на дружбу
-    async _notifyFriendshipRequest(friendId) {
-        const { socket } = this
+  // Отправка оповещения о новом запросе на дружбу
+  async _notifyFriendshipRequest(friendId) {
+    const { socket } = this
 
-        const count = await Friend.requestsCount(friendId)
+    const count = await Friend.requestsCount(friendId)
 
-        const ids = this.getUserSocketIds(friendId)
-        ids.forEach((sid) => {
-            socket.broadcast.to(sid).emit('friend.request', count)
-        })
+    const ids = this.getUserSocketIds(friendId)
+    ids.forEach((sid) => {
+      socket.broadcast.to(sid).emit('friend.request', count)
+    })
+  }
+
+  // Удаление запросов на добавление в друзья
+  async _removeRequests(friendId) {
+    const { user } = this
+    await Friend.destroy({
+      where: {
+        accountId: user.id,
+        friendId,
+      },
+    })
+    await Friend.destroy({
+      where: {
+        accountId: friendId,
+        friendId: user.id,
+      },
+    })
+  }
+
+  // Создаю запись
+  async _addRequest(friendId, status) {
+    const { user } = this
+    await Friend.create({
+      accountId: user.id,
+      friendId,
+      status,
+    })
+
+    await Friend.create({
+      accountId: friendId,
+      friendId: user.id,
+      status,
+    })
+  }
+
+  // Добавление в друзья
+  async add(friendId) {
+    const { user } = this
+    if (!user) {
+      throw new Error('Не авторизован')
     }
 
-    // Удаление запросов на добавление в друзья
-    async _removeRequests(friendId) {
-        const { user } = this
-        await Friend.destroy({
-            where: {
-                accountId: user.id,
-                friendId,
-            },
-        })
-        await Friend.destroy({
-            where: {
-                accountId: friendId,
-                friendId: user.id,
-            },
-        })
+    if (!friendId) {
+      throw new Error('Нет необходимых данных')
     }
 
-    // Создаю запись 
-    async _addRequest(friendId, status) {
-        const { user } = this
-        await Friend.create({
-            accountId: user.id,
-            friendId,
-            status
-        })
-
-        await Friend.create({
-            accountId: friendId,
-            friendId: user.id,
-            status
-        })
+    if (user.id == friendId) {
+      throw new Error('Дружить с самим собой? Серьёзно!?')
     }
 
-    // Добавление в друзья
-    async add(friendId) {
-        const { user } = this
-        if (!user) {
-            throw new Error('Не авторизован')
-        }
+    // Создаем запрос на дружбу (или просто нахоим его, если он уже был создан)
+    const [_, created] = await Friend.findOrCreate({
+      where: {
+        accountId: user.id,
+        friendId,
+      },
+    })
 
-        if (!friendId) {
-            throw new Error('Нет необходимых данных')
-        }
+    // Оповещение о новом запросе на дружбу
+    this._notifyFriendshipRequest(friendId)
 
-        if (user.id == friendId) {
-            throw new Error('Дружить с самим собой? Серьёзно!?')
-        }
+    const { socket } = this
+    if (socket.account) {
+      // Отправляю уведомление другу
+      this.notify(friendId, `${socket.account.username} хочет с тобой дружить`)
+    }
+  }
 
-        // Создаем запрос на дружбу (или просто нахоим его, если он уже был создан)
-        const [_, created] = await Friend.findOrCreate({
-            where: {
-                accountId: user.id,
-                friendId,
-            },
-        })
-
-        // Оповещение о новом запросе на дружбу
-        this._notifyFriendshipRequest(friendId)
-
-        const { socket } = this
-        if (socket.account) {
-            // Отправляю уведомление другу
-            this.notify(friendId, `${socket.account.username} хочет с тобой дружить`)
-        }
+  // Подтверждение добавления в друзья
+  async accept(friendId) {
+    const { user } = this
+    if (!user) {
+      throw new Error('Не авторизован')
     }
 
-    // Подтверждение добавления в друзья
-    async accept(friendId) {
-        const { user } = this
-        if (!user) {
-            throw new Error('Не авторизован')
-        }
-
-        if (!friendId) {
-            throw new Error('Нет необходимых данных')
-        }
-
-        // Ищу запрос на добавление в друзья
-        const request = await Friend.findOne({
-            where: {
-                accountId: friendId,
-                friendId: user.id,
-                status: Friend.statuses.REQUESTED,
-            },
-        })
-
-        if (!request) {
-            throw new Error('Запрос на дружбу не найден')
-        }
-
-        // Удаляю запросы на добавление в друзья
-        await this._removeRequests(friendId)
-
-        // Создаю записи подтверждение
-        await this._addRequest(friendId, Friend.statuses.ACCEPTED)
-
-        const { socket } = this
-        if (socket.account) {
-            // Отправляю уведомление другу
-            this.notify(friendId, `${socket.account.username} ${socket.account.gender == genders.FEMALE ? 'приняла' : 'принял'} твой запрос, теперь вы друзья`)
-        }
+    if (!friendId) {
+      throw new Error('Нет необходимых данных')
     }
 
-    // Отклонение добавления в друзья
-    async decline(friendId) {
-        const { user } = this
-        if (!user) {
-            throw new Error('Не авторизован')
-        }
+    // Ищу запрос на добавление в друзья
+    const request = await Friend.findOne({
+      where: {
+        accountId: friendId,
+        friendId: user.id,
+        status: Friend.statuses.REQUESTED,
+      },
+    })
 
-        if (!friendId) {
-            throw new Error('Нет необходимых данных')
-        }
-
-        // Ищу запрос на добавление в друзья
-        const request = await Friend.findOne({
-            where: {
-                accountId: friendId,
-                friendId: user.id,
-                status: Friend.statuses.REQUESTED,
-            },
-        })
-
-        if (!request) {
-            throw new Error('Запрос на дружбу не найден')
-        }
-
-        // Удаляю запросы на добавление в друзья
-        await this._removeRequests(friendId)
-
-        // Создаю отмену
-        await Friend.create({
-            accountId: friendId,
-            friendId: user.id,
-            status: Friend.statuses.DECLINE,
-        })
-
-        const { socket } = this
-        if (socket.account) {
-            // Отправляю уведомление 
-            this.notify(friendId, `${socket.account.username} ${socket.account.gender == genders.FEMALE ? 'отклонила' : 'отклонил'} твой запрос на дружбу`, 2)
-        }
+    if (!request) {
+      throw new Error('Запрос на дружбу не найден')
     }
 
-    // Удаление из друзей
-    async remove(friendId) {
-        const { user } = this
-        if (!user) {
-            throw new Error('Не авторизован')
-        }
+    // Удаляю запросы на добавление в друзья
+    await this._removeRequests(friendId)
 
-        if (!friendId) {
-            throw new Error('Нет необходимых данных')
-        }
+    // Создаю записи подтверждение
+    await this._addRequest(friendId, Friend.statuses.ACCEPTED)
 
-        // Ищу запись о дружбе
-        const request = await Friend.findOne({
-            where: {
-                accountId: user.id,
-                friendId,
-                status: Friend.statuses.ACCEPTED,
-            },
-        })
+    const { socket } = this
+    if (socket.account) {
+      // Отправляю уведомление другу
+      this.notify(
+        friendId,
+        `${socket.account.username} ${
+          socket.account.gender == genders.FEMALE ? 'приняла' : 'принял'
+        } твой запрос, теперь вы друзья`
+      )
+    }
+  }
 
-        if (!request) {
-            throw new Error('Записи о дружбе не найдены')
-        }
-
-        // Удаляю записи о дружбе игроков
-        await this._removeRequests(friendId)
-
-        const { socket } = this
-        if (socket.account) {
-            // Отправляю уведомление 
-            this.notify(friendId, `${socket.account.username} ${socket.account.gender == genders.FEMALE ? 'удалила' : 'удалил'} тебя из друзей`, 2)
-        }
+  // Отклонение добавления в друзья
+  async decline(friendId) {
+    const { user } = this
+    if (!user) {
+      throw new Error('Не авторизован')
     }
 
-    // Блокировка (ЧС)
-    async block(friendId) {
-        const { user } = this
-        if (!user) {
-            throw new Error('Не авторизован')
-        }
-
-        if (!friendId) {
-            throw new Error('Нет необходимых данных')
-        }
-
-        // Надо проверить, есть ли сделанные предложения или игроки женаты
-        // Тогда вернуть ошибку, так как это платные услуги
-        const relation = await Friend.findOne({
-            where: {
-                accountId: user.id,
-                friendId,
-                [Op.or]: [
-                    { status: Friend.statuses.MARRIED_REQUEST },
-                    { status: Friend.statuses.MARRIED },
-                ],
-            },
-            order: [['id', 'DESC']],
-        })
-
-        if (relation) {
-            throw new Error('Нельзя заблокировать игрока, которого позвали в ЗАГС')
-        }
-
-        // Удаляю записи дружбы, если они были
-        await this._removeRequests(friendId)
-
-        // Создаю запись ЧС
-        await Friend.create({
-            accountId: user.id,
-            friendId,
-            status: Friend.statuses.BLOCK,
-        })
+    if (!friendId) {
+      throw new Error('Нет необходимых данных')
     }
 
-    // Разблокировка от ЧС
-    async unblock(friendId) {
-        const { user } = this
-        if (!user) {
-            throw new Error('Не авторизован')
-        }
+    // Ищу запрос на добавление в друзья
+    const request = await Friend.findOne({
+      where: {
+        accountId: friendId,
+        friendId: user.id,
+        status: Friend.statuses.REQUESTED,
+      },
+    })
 
-        if (!friendId) {
-            throw new Error('Нет необходимых данных')
-        }
-
-        // Удаляю запись блокировки
-        await Friend.destroy({
-            where: {
-                accountId: user.id,
-                friendId,
-                status: Friend.statuses.BLOCK,
-            },
-        })
+    if (!request) {
+      throw new Error('Запрос на дружбу не найден')
     }
 
-    // Блокировка в ответ (ЧС)
-    async blockToo(friendId) {
-        const { user } = this
-        if (!user) {
-            throw new Error('Не авторизован')
-        }
+    // Удаляю запросы на добавление в друзья
+    await this._removeRequests(friendId)
 
-        if (!friendId) {
-            throw new Error('Нет необходимых данных')
-        }
+    // Создаю отмену
+    await Friend.create({
+      accountId: friendId,
+      friendId: user.id,
+      status: Friend.statuses.DECLINE,
+    })
 
-        const block = await Friend.destroy({
-            where: {
-                accountId: friendId,
-                friendId: user.id,
-                status: Friend.statuses.BLOCK,
-            },
-        })
+    const { socket } = this
+    if (socket.account) {
+      // Отправляю уведомление
+      this.notify(
+        friendId,
+        `${socket.account.username} ${
+          socket.account.gender == genders.FEMALE ? 'отклонила' : 'отклонил'
+        } твой запрос на дружбу`,
+        2
+      )
+    }
+  }
 
-        if (!block) {
-            throw new Error('Вы не заблокированы у этого игрока')
-        }
-
-        // Удаляю записи дружбы, если они были
-        await this._removeRequests(friendId)
-
-        // Создаю записи ЧС
-        await this._addRequest(friendId, Friend.statuses.BLOCK)
+  // Удаление из друзей
+  async remove(friendId) {
+    const { user } = this
+    if (!user) {
+      throw new Error('Не авторизован')
     }
 
-    // Позвать в ЗАГС
-    async zags(friendId) {
-        const { user } = this
-        if (!user) {
-            throw new Error('Не авторизован')
-        }
-
-        if (!friendId) {
-            throw new Error('Нет необходимых данных')
-        }
-
-        const account = await Account.findByPk(user.id)
-
-        if (!account) {
-            throw new Error('Пользователь не найден. Запрос не выполнен.')
-        }
-
-        if (account.wallet < WalletEvent.marriageCost) {
-            throw new Error(`В кошельке не хватает средств. Чтобы сделать предложение, там должно быть как минимум ${WalletEvent.marriageCost} рублей.`)
-        }
-
-        // Ищем игрока в друзьях (предложение можно сделать только другу)
-        const isFrends = await Friend.findOne({
-            where: {
-                friendId,
-                accountId: user.id,
-                status: Friend.statuses.ACCEPTED,
-            },
-        })
-
-        if (!isFrends) {
-            throw new Error('Предложение можно сделать только одному из друзей')
-        }
-
-        const haveZagsRequests = await Friend.findOne({
-            where: {
-                accountId: user.id,
-                [Op.or]: [
-                    { status: Friend.statuses.MARRIED },
-                    { status: Friend.statuses.MARRIED_REQUEST },
-                ],
-            },
-        })
-
-        if (haveZagsRequests) {
-            throw new Error(haveZagsRequests.status == Friend.statuses.MARRIED
-                ? 'Вы уже сходили в ЗАГС'
-                : 'Вы уже сделали предложение, нельзя делать второе пока оно не отклонено')
-        }
-
-        const friendMarried = await Friend.findOne({
-            where: {
-                friendId,
-                [Op.or]: [
-                    { status: Friend.statuses.MARRIED },
-                    { status: Friend.statuses.MARRIED_REQUEST },
-                ],
-            },
-        })
-
-        if (friendMarried) {
-            throw new Error(friendMarried.status == Friend.statuses.MARRIED
-                ? 'Этот игрок уже сходил в ЗАГС'
-                : 'Этому игроку уже сделали предложение')
-        }
-
-        // Списываю с кошелька стомость свадьбы
-        await WalletEvent.marriage(user.id)
-
-        // Создаю запрос предложения
-        await Friend.create({
-            accountId: user.id,
-            friendId,
-            status: Friend.statuses.MARRIED_REQUEST,
-        })
-
-        // Пробуем оповестить о новом предложении
-        this._notifyFriendshipRequest(friendId)
-
-        const { socket } = this
-        if (socket.account) {
-            // Отправляю уведомление 
-            this.notify(friendId, `${socket.account.username} зовёт тебя в ЗАГС!`, 1)
-        }
+    if (!friendId) {
+      throw new Error('Нет необходимых данных')
     }
 
-    // Согласие на ЗАГС
-    async zagsAccept(friendId) {
-        const { user } = this
-        if (!user) {
-            throw new Error('Не авторизован')
-        }
+    // Ищу запись о дружбе
+    const request = await Friend.findOne({
+      where: {
+        accountId: user.id,
+        friendId,
+        status: Friend.statuses.ACCEPTED,
+      },
+    })
 
-        if (!friendId) {
-            throw new Error('Нет необходимых данных')
-        }
-
-        // Ищу предложение
-        const request = await Friend.findOne({
-            where: {
-                accountId: friendId,
-                friendId: user.id,
-                status: Friend.statuses.MARRIED_REQUEST,
-            },
-        })
-
-        if (!request) {
-            throw new Error('Предложение не найдено')
-        }
-
-        // Удаляю запросы на добавление в друзья
-        await this._removeRequests(friendId)
-
-        // Создаю подтверждение
-        await this._addRequest(friendId, Friend.statuses.MARRIED)
-
-        const { socket } = this
-        if (socket.account) {
-            // Отправляю уведомление 
-            this.notify(friendId, `${socket.account.username} ${socket.account.gender == genders.FEMALE ? 'согласилась' : 'согласился'} на твоё предложение руки и сердца!`, 1)
-        }
+    if (!request) {
+      throw new Error('Записи о дружбе не найдены')
     }
 
-    // Отказ от ЗАГСА
-    async zagsDecline(friendId) {
-        const { user } = this
-        if (!user) {
-            throw new Error('Не авторизован')
-        }
+    // Удаляю записи о дружбе игроков
+    await this._removeRequests(friendId)
 
-        if (!friendId) {
-            throw new Error('Нет необходимых данных')
-        }
+    const { socket } = this
+    if (socket.account) {
+      // Отправляю уведомление
+      this.notify(
+        friendId,
+        `${socket.account.username} ${
+          socket.account.gender == genders.FEMALE ? 'удалила' : 'удалил'
+        } тебя из друзей`,
+        2
+      )
+    }
+  }
 
-        // Удаляю запросы на загс
-        await Friend.destroy({
-            where: {
-                accountId: user.id,
-                friendId,
-                status: Friend.statuses.MARRIED_REQUEST,
-            },
-        })
-        await Friend.destroy({
-            where: {
-                accountId: friendId,
-                friendId: user.id,
-                status: Friend.statuses.MARRIED_REQUEST,
-            },
-        })
-
-        // Возвращаю на кошелёк половину средств потраченных на предложение
-        await WalletEvent.denial(friendId)
-
-        const { socket } = this
-        if (socket.account) {
-            // Отправляю уведомление 
-            this.notify(friendId, `${socket.account.username} ${socket.account.gender == genders.FEMALE ? 'отказалась' : 'отказался'} от твоего предложения руки и сердца`, 2)
-        }
+  // Блокировка (ЧС)
+  async block(friendId) {
+    const { user } = this
+    if (!user) {
+      throw new Error('Не авторизован')
     }
 
-    // Отозвать предложение
-    async recall(friendId) {
-        const { user } = this
-        if (!user) {
-            throw new Error('Не авторизован')
-        }
-
-        if (!friendId) {
-            throw new Error('Нет необходимых данных')
-        }
-
-        // Находим предложение
-        const request = await Friend.findOne({
-            where: {
-                accountId: user.id,
-                friendId,
-                status: Friend.statuses.MARRIED_REQUEST,
-            },
-        })
-
-        if (!request) {
-            throw new Error('Предложение не найдено')
-        }
-
-        // Возвращаю на кошелёк половину средств потраченных на предложение
-        await WalletEvent.recall(user.id)
-
-        // Удаляю предложение
-        await request.destroy()
-
-        const { socket } = this
-        if (socket.account) {
-            // Отправляю уведомление 
-            this.notify(friendId, `${socket.account.username} ${socket.account.gender == genders.FEMALE ? 'отозвала' : 'отозвал'} своё предложение руки и сердца`, 2)
-        }
+    if (!friendId) {
+      throw new Error('Нет необходимых данных')
     }
 
-    // Развод
-    async divorce(friendId) {
-        const { user } = this
-        if (!user) {
-            throw new Error('Не авторизован')
-        }
+    // Надо проверить, есть ли сделанные предложения или игроки женаты
+    // Тогда вернуть ошибку, так как это платные услуги
+    const relation = await Friend.findOne({
+      where: {
+        accountId: user.id,
+        friendId,
+        [Op.or]: [
+          { status: Friend.statuses.MARRIED_REQUEST },
+          { status: Friend.statuses.MARRIED },
+        ],
+      },
+      order: [['id', 'DESC']],
+    })
 
-        if (!friendId) {
-            throw new Error('Нет необходимых данных')
-        }
-
-        const isMarried = await Friend.findOne({
-            where: {
-                accountId: user.id,
-                friendId,
-                status: Friend.statuses.MARRIED,
-            },
-        })
-
-        if (!isMarried) {
-            throw new Error('Вы не можете развестись с тем, с кем не состоите в отношениях')
-        }
-
-        const account = await Account.findByPk(user.id)
-        if (!account) {
-            throw new Error('Пользователь не найден. Запрос не выполнен.')
-        }
-
-        if (account.wallet < WalletEvent.divorceCost) {
-            throw new Error(`В кошельке не хватает средств. Чтобы развестись, там должно быть как минимум ${WalletEvent.divorceCost} рублей.`)
-        }
-
-        // Списываю с кошелька стомость развода
-        await WalletEvent.divorce(user.id)
-
-        // Удаляю записи о свадьбе
-        await this._removeRequests(friendId)
-
-        // Возвращаю дружбу
-        await this._addRequest(friendId, Friend.statuses.ACCEPTED)
-
-        const { socket } = this
-        if (socket.account) {
-            // Отправляю уведомление 
-            this.notify(friendId, `${socket.account.username} ${socket.account.gender == genders.FEMALE ? 'развелась' : 'развёлся'} с тобой`, 2)
-        }
+    if (relation) {
+      throw new Error('Нельзя заблокировать игрока, которого позвали в ЗАГС')
     }
+
+    // Удаляю записи дружбы, если они были
+    await this._removeRequests(friendId)
+
+    // Создаю запись ЧС
+    await Friend.create({
+      accountId: user.id,
+      friendId,
+      status: Friend.statuses.BLOCK,
+    })
+  }
+
+  // Разблокировка от ЧС
+  async unblock(friendId) {
+    const { user } = this
+    if (!user) {
+      throw new Error('Не авторизован')
+    }
+
+    if (!friendId) {
+      throw new Error('Нет необходимых данных')
+    }
+
+    // Удаляю запись блокировки
+    await Friend.destroy({
+      where: {
+        accountId: user.id,
+        friendId,
+        status: Friend.statuses.BLOCK,
+      },
+    })
+  }
+
+  // Блокировка в ответ (ЧС)
+  async blockToo(friendId) {
+    const { user } = this
+    if (!user) {
+      throw new Error('Не авторизован')
+    }
+
+    if (!friendId) {
+      throw new Error('Нет необходимых данных')
+    }
+
+    const block = await Friend.destroy({
+      where: {
+        accountId: friendId,
+        friendId: user.id,
+        status: Friend.statuses.BLOCK,
+      },
+    })
+
+    if (!block) {
+      throw new Error('Вы не заблокированы у этого игрока')
+    }
+
+    // Удаляю записи дружбы, если они были
+    await this._removeRequests(friendId)
+
+    // Создаю записи ЧС
+    await this._addRequest(friendId, Friend.statuses.BLOCK)
+  }
+
+  // Позвать в ЗАГС
+  async zags(friendId) {
+    const { user } = this
+    if (!user) {
+      throw new Error('Не авторизован')
+    }
+
+    if (!friendId) {
+      throw new Error('Нет необходимых данных')
+    }
+
+    const account = await Account.findByPk(user.id)
+
+    if (!account) {
+      throw new Error('Пользователь не найден. Запрос не выполнен.')
+    }
+
+    if (account.wallet < WalletEvent.marriageCost) {
+      throw new Error(
+        `В кошельке не хватает средств. Чтобы сделать предложение, там должно быть как минимум ${WalletEvent.marriageCost} рублей.`
+      )
+    }
+
+    // Ищем игрока в друзьях (предложение можно сделать только другу)
+    const isFrends = await Friend.findOne({
+      where: {
+        friendId,
+        accountId: user.id,
+        status: Friend.statuses.ACCEPTED,
+      },
+    })
+
+    if (!isFrends) {
+      throw new Error('Предложение можно сделать только одному из друзей')
+    }
+
+    const haveZagsRequests = await Friend.findOne({
+      where: {
+        accountId: user.id,
+        [Op.or]: [
+          { status: Friend.statuses.MARRIED },
+          { status: Friend.statuses.MARRIED_REQUEST },
+        ],
+      },
+    })
+
+    if (haveZagsRequests) {
+      throw new Error(
+        haveZagsRequests.status == Friend.statuses.MARRIED
+          ? 'Вы уже сходили в ЗАГС'
+          : 'Вы уже сделали предложение, нельзя делать второе пока оно не отклонено'
+      )
+    }
+
+    const friendMarried = await Friend.findOne({
+      where: {
+        friendId,
+        [Op.or]: [
+          { status: Friend.statuses.MARRIED },
+          { status: Friend.statuses.MARRIED_REQUEST },
+        ],
+      },
+    })
+
+    if (friendMarried) {
+      throw new Error(
+        friendMarried.status == Friend.statuses.MARRIED
+          ? 'Этот игрок уже сходил в ЗАГС'
+          : 'Этому игроку уже сделали предложение'
+      )
+    }
+
+    // Списываю с кошелька стомость свадьбы
+    await WalletEvent.marriage(user.id)
+
+    // Создаю запрос предложения
+    await Friend.create({
+      accountId: user.id,
+      friendId,
+      status: Friend.statuses.MARRIED_REQUEST,
+    })
+
+    // Пробуем оповестить о новом предложении
+    this._notifyFriendshipRequest(friendId)
+
+    const notifyText = `${account.username} зовёт тебя в ЗАГС!`
+    // Отправляю уведомление
+    this.notify(friendId, notifyText, 1)
+
+    // Если у друга подключен ТГ, то отправляю уведомление туда
+    const friend = await Account.findByPk(friendId)
+    if (friend && friend.telegramChatId) {
+      bot.sendMessage(friend.telegramChatId, notifyText)
+    }
+  }
+
+  // Согласие на ЗАГС
+  async zagsAccept(friendId) {
+    const { user } = this
+    if (!user) {
+      throw new Error('Не авторизован')
+    }
+
+    if (!friendId) {
+      throw new Error('Нет необходимых данных')
+    }
+
+    // Ищу предложение
+    const request = await Friend.findOne({
+      where: {
+        accountId: friendId,
+        friendId: user.id,
+        status: Friend.statuses.MARRIED_REQUEST,
+      },
+    })
+
+    if (!request) {
+      throw new Error('Предложение не найдено')
+    }
+
+    // Удаляю запросы на добавление в друзья
+    await this._removeRequests(friendId)
+
+    // Создаю подтверждение
+    await this._addRequest(friendId, Friend.statuses.MARRIED)
+
+    const { socket } = this
+    if (socket.account) {
+      // Отправляю уведомление
+      this.notify(
+        friendId,
+        `${socket.account.username} ${
+          socket.account.gender == genders.FEMALE ? 'согласилась' : 'согласился'
+        } на твоё предложение руки и сердца!`,
+        1
+      )
+    }
+  }
+
+  // Отказ от ЗАГСА
+  async zagsDecline(friendId) {
+    const { user } = this
+    if (!user) {
+      throw new Error('Не авторизован')
+    }
+
+    if (!friendId) {
+      throw new Error('Нет необходимых данных')
+    }
+
+    // Удаляю запросы на загс
+    await Friend.destroy({
+      where: {
+        accountId: user.id,
+        friendId,
+        status: Friend.statuses.MARRIED_REQUEST,
+      },
+    })
+    await Friend.destroy({
+      where: {
+        accountId: friendId,
+        friendId: user.id,
+        status: Friend.statuses.MARRIED_REQUEST,
+      },
+    })
+
+    // Возвращаю на кошелёк половину средств потраченных на предложение
+    await WalletEvent.denial(friendId)
+
+    const { socket } = this
+    if (socket.account) {
+      // Отправляю уведомление
+      this.notify(
+        friendId,
+        `${socket.account.username} ${
+          socket.account.gender == genders.FEMALE ? 'отказалась' : 'отказался'
+        } от твоего предложения руки и сердца`,
+        2
+      )
+    }
+  }
+
+  // Отозвать предложение
+  async recall(friendId) {
+    const { user } = this
+    if (!user) {
+      throw new Error('Не авторизован')
+    }
+
+    if (!friendId) {
+      throw new Error('Нет необходимых данных')
+    }
+
+    // Находим предложение
+    const request = await Friend.findOne({
+      where: {
+        accountId: user.id,
+        friendId,
+        status: Friend.statuses.MARRIED_REQUEST,
+      },
+    })
+
+    if (!request) {
+      throw new Error('Предложение не найдено')
+    }
+
+    // Возвращаю на кошелёк половину средств потраченных на предложение
+    await WalletEvent.recall(user.id)
+
+    // Удаляю предложение
+    await request.destroy()
+
+    const { socket } = this
+    if (socket.account) {
+      // Отправляю уведомление
+      this.notify(
+        friendId,
+        `${socket.account.username} ${
+          socket.account.gender == genders.FEMALE ? 'отозвала' : 'отозвал'
+        } своё предложение руки и сердца`,
+        2
+      )
+    }
+  }
+
+  // Развод
+  async divorce(friendId) {
+    const { user } = this
+    if (!user) {
+      throw new Error('Не авторизован')
+    }
+
+    if (!friendId) {
+      throw new Error('Нет необходимых данных')
+    }
+
+    const isMarried = await Friend.findOne({
+      where: {
+        accountId: user.id,
+        friendId,
+        status: Friend.statuses.MARRIED,
+      },
+    })
+
+    if (!isMarried) {
+      throw new Error(
+        'Вы не можете развестись с тем, с кем не состоите в отношениях'
+      )
+    }
+
+    const account = await Account.findByPk(user.id)
+    if (!account) {
+      throw new Error('Пользователь не найден. Запрос не выполнен.')
+    }
+
+    if (account.wallet < WalletEvent.divorceCost) {
+      throw new Error(
+        `В кошельке не хватает средств. Чтобы развестись, там должно быть как минимум ${WalletEvent.divorceCost} рублей.`
+      )
+    }
+
+    // Списываю с кошелька стомость развода
+    await WalletEvent.divorce(user.id)
+
+    // Удаляю записи о свадьбе
+    await this._removeRequests(friendId)
+
+    // Возвращаю дружбу
+    await this._addRequest(friendId, Friend.statuses.ACCEPTED)
+
+    const { socket } = this
+    if (socket.account) {
+      // Отправляю уведомление
+      this.notify(
+        friendId,
+        `${socket.account.username} ${
+          socket.account.gender == genders.FEMALE ? 'развелась' : 'развёлся'
+        } с тобой`,
+        2
+      )
+    }
+  }
 }
 
 module.exports = FriendsService
