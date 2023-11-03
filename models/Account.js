@@ -1,5 +1,7 @@
 const { DataTypes, Op } = require('sequelize')
 const sequelize = require('../units/db')
+const AccountThing = require('./AccountThing')
+
 const findNikLimit = 10
 const genders = {
   NOTSET: 0,
