@@ -43,6 +43,13 @@
   --chat-white: var(--color-true-white);
   --chat-white-light: var(--color-true-white);
   --chat-white-highlight: #00a974;
+
+  /* Цвета классов вещей */
+  --color-class-1: #4fc1e9;
+  --color-class-2: #4b89dc;
+  --color-class-3: #967bdc;
+  --color-class-4: #da4553;
+  --color-class-5: #eab240;
 }
 
 html,
@@ -458,6 +465,11 @@ a.anchor:before {
 
 @media (max-width: 576px) {
   .hidden-xs {
+    display: none;
+  }
+}
+@media (max-width: 380px) {
+  .hidden-xxs {
     display: none;
   }
 }
