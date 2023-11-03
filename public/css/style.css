@@ -32,7 +32,7 @@
   --chat-black-light: #aaa;
 
   /* зелёный */
-  --chat-green: var(--color-body-light);
+  --chat-green: var(--color-body-dark);
   --chat-green-light: #017a4e;
 
   /* синий */
