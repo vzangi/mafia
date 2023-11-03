@@ -67,15 +67,15 @@ class Gifts {
 
   // Загрузка новой открытки
   async addGift(req, res) {
+    const { giftgroupId, price, isVip } = req.body
     try {
-      const { giftgroupId, price, isVip } = req.body
       const { file } = req.files
 
       await service.addGift(file, giftgroupId, price, isVip)
     } catch (error) {
       console.log(error)
     }
-    res.redirect('/gift/groups')
+    res.redirect(`/gift/group?id=${giftgroupId}`)
   }
 
   // Загрузка новой открытки
