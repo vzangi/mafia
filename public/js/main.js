@@ -18,20 +18,8 @@ $(function () {
     playSound(zvuk)
   })
 
-  // Получение количества новых открыток
-  socket.emit('gifts.count', (res) => {
-    if (res.status != 0) return
-    if (res.count == 0) return
-    $('.h-image-box, .dropdown-box .profile-avatar-image').addClass(
-      'has-notify'
-    )
-  })
-
   // При получении новой открытки
   socket.on('gifts.notify', (username) => {
-    $('.h-image-box, .dropdown-box .profile-avatar-image').addClass(
-      'has-notify'
-    )
     playSound(zvuk)
   })
 
