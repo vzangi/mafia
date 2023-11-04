@@ -1,4 +1,4 @@
-const { DataTypes } = require('sequelize')
+const { DataTypes, Op } = require('sequelize')
 const sequelize = require('../units/db')
 const Account = require('./Account')
 const Thing = require('./Thing')
@@ -59,6 +59,24 @@ AccountThing.getMarketList = async () => {
     LIMIT 0, 10
   `)
   return things
+}
+
+AccountThing.getThingList = async (thingId) => {
+  const offers = await AccountThing.findAll({
+    where: {
+      marketPrice: {
+        [Op.ne]: null
+      },
+      thingId,
+    },
+    include: [
+      {
+        model: Account
+      }
+    ],
+    order: [['marketPrice', 'ASC']]
+  })
+  return offers
 }
 
 module.exports = AccountThing

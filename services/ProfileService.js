@@ -81,7 +81,9 @@ class ProfileService {
 
     data.things = await AccountThing.scope({
       method: ['withThings', profile.id]
-    }).findAll()
+    }).findAll({
+      limit: 6
+    })
 
     return data
   }

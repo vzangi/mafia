@@ -161,3 +161,30 @@ a.thing-item {
     justify-content: center;
   }
 }
+
+
+.thing-name-block {
+  border-top-left-radius: inherit;
+  border-top-right-radius: inherit;
+  text-align: center;
+  color: #fff;
+}
+
+.thing-description {
+  font-size: 0.9em;
+}
+
+.thing-type {
+  font-size: 0.8em;
+}
+.offer-account  {
+  flex: none;
+  min-width: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.offer-account img {
+  width: 50px;
+  border-radius: 4px;
+}

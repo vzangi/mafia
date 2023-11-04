@@ -1,0 +1,51 @@
+extends /layouts/two_column_4_8
+
+block head 
+  link(href="/css/market.css" rel="stylesheet")
+
+block main
+  div(class="block")
+    div(class="p-4 bb-1-gray")
+      h4 Предложения
+    div(class="market-list")
+      if !thingOffers
+        p(class="p-4") Предложения не найдены
+      else 
+        each offer in thingOffers
+          
+          div(class="thing-item bb-1-gray")
+        
+            div(class="thing-line")
+              div(class="thing-image")
+                img(src="/uploads/thing/"+thing.picture alt=thing.name)
+              div(class="thing-name-box")
+                div(class="thing-name")= thing.name
+                div
+                  span(class="thing-class thing-class-"+thing.thingclass.id)= `${thing.thingclass.name} класс`
+
+            div(class="thing-line")
+              div(class="offer-account")
+                a(href="/profile/"+offer.account.username title=offer.account.username data-bs-toggle="tooltip" data-bs-placement="bottom")
+                  img(src="/uploads/"+offer.account.avatar)
+              div(class="thing-price-box")
+                span= `${offer.marketPrice} р.`
+                button(class="btn btn-sm btn-success") Купить
+
+
+block aside 
+  div(class="block mb-4")
+    div(class="thing-name-block p-3 thing-class-"+thing.thingclass.id)
+      h4= thing.name
+      div(class="thing-type")
+        span= `${thing.thingtype.name}, ${thing.thingclass.name} класс`
+    div(class="thing-image-block p-4")
+      img(src="/uploads/thing/"+thing.picture alt=thing.name)
+    div(class="thing-description p-4")
+      div(class="text-secondary")= thing.description
+      if thing.thingcollection
+        div(class="text-secondary pt-3")= thing.thingcollection.name
+
+
+block scripts 
+  include /includes/market-tmpl
+  script(src="/js/market.js")

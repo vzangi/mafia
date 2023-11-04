@@ -414,9 +414,10 @@ a.user-name {
 }
 
 .things-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 32%);
+  justify-content: space-between;
+  grid-gap: 0.5rem;
 }
 
 .thing-item {
@@ -449,7 +450,10 @@ a.user-name {
   line-height: 1em;
   overflow: hidden;
   color: var(--color-white);
+  border-bottom-left-radius: inherit;
+  border-bottom-right-radius: inherit;
 }
+
 .tin-class-1 {
   background-color: var(--color-class-1);
 }
