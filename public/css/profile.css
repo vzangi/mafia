@@ -76,6 +76,7 @@
   .profile-top-stat {
     justify-content: center;
   }
+
   .partner {
     text-align: center;
   }
@@ -108,7 +109,7 @@
   /* max-height: 60px; */
 }
 
-.profile-top-stat-actions > div {
+.profile-top-stat-actions>div {
   margin: auto;
   width: 190px;
 }
@@ -118,16 +119,16 @@
   z-index: 1;
 }
 
-.profile-top-stat-actions > div {
+.profile-top-stat-actions>div {
   margin: auto;
   width: 190px;
 }
 
-.profile-top-stat-actions > div:not(:first-child) {
+.profile-top-stat-actions>div:not(:first-child) {
   margin-top: 5px;
 }
 
-.profile-top-stat-actions-dropdown > * {
+.profile-top-stat-actions-dropdown>* {
   position: relative;
 }
 
@@ -167,17 +168,16 @@
   z-index: 1;
 }
 
-.profile-top-stat-actions-dropdown:hover
-  .profile-top-stat-actions-dropdown-list {
+.profile-top-stat-actions-dropdown:hover .profile-top-stat-actions-dropdown-list {
   display: block;
 }
 
-.profile-top-stat-actions-dropdown-list > div:not(._separator) {
+.profile-top-stat-actions-dropdown-list>div:not(._separator) {
   padding: 7px 15px;
   cursor: pointer;
 }
 
-.profile-top-stat-actions-dropdown-list > div:not(._separator):hover {
+.profile-top-stat-actions-dropdown-list>div:not(._separator):hover {
   background: rgba(0, 0, 0, 0.05);
 }
 
@@ -195,7 +195,7 @@
   font-size: 2em;
 }
 
-.friends-crumbs > * {
+.friends-crumbs>* {
   margin-right: 0.3em;
   text-decoration: none;
 }
@@ -214,6 +214,7 @@ a.user-name {
   .friends-crumbs .user-name {
     display: none;
   }
+
   .friends-crumbs {
     font-size: 1.5em;
   }
@@ -222,28 +223,35 @@ a.user-name {
 .friends-list {
   margin: 10px 0;
 }
+
 .friend-avatar {
   flex-shrink: 0;
 }
+
 .friends-list img {
   width: 90px;
   height: 90px;
 }
+
 .friend-box {
   margin-bottom: 1em;
   display: flex;
 }
+
 .friend-links {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
 }
+
 .friend-links a.friend-nik {
   font-size: 20px;
 }
+
 .friend-links .btn {
   display: none;
 }
+
 .friend-box:hover .friend-links .btn {
   display: initial;
 }
@@ -259,6 +267,7 @@ a.user-name {
   margin-left: 25px;
   color: var(--color-black);
 }
+
 .profile-top-stat-list-one.friends {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -268,6 +277,7 @@ a.user-name {
   -ms-flex-flow: row nowrap;
   flex-flow: row nowrap;
 }
+
 .profile-top-stat-list-one.friends .friends-stat {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -287,12 +297,14 @@ a.user-name {
   line-height: 26px;
   text-align: center;
 }
+
 .profile-top-stat-list-one .key {
   margin-top: 8px;
   margin-right: 10px;
   line-height: 10px;
   opacity: 0.5;
 }
+
 .profile-top-stat-list-one.friends .friends-list {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -305,6 +317,7 @@ a.user-name {
   padding-top: 10px;
   margin-top: 0;
 }
+
 .profile-top-stat-list-one.friends .friends-link {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -317,14 +330,17 @@ a.user-name {
   transition: color 333ms;
   text-decoration: none;
 }
+
 .friends-link {
   color: rgba(67, 74, 84, 0.667) !important;
 }
+
 .profile-top-stat-list-one.friends .friends-link:before {
   content: 'все';
   display: block;
   line-height: 46px;
 }
+
 .profile-top-stat-list-one.friends .friends-link:after {
   content: '\f3d1';
   display: block;
@@ -340,11 +356,12 @@ a.user-name {
 .friends-link:hover {
   color: #434a54 !important;
 }
+
 .profile-top-stat-list-one.friends .friends-link:hover:after {
   padding-left: 6px;
 }
 
-.profile-top-stat-list-one.friends .friends-list > a {
+.profile-top-stat-list-one.friends .friends-list>a {
   display: block;
   margin-left: 6px;
   border: none !important;
@@ -354,24 +371,29 @@ a.user-name {
   background-size: cover;
   background-position: center;
 }
-.profile-top-stat-list-one.friends .friends-list > a:first-child {
+
+.profile-top-stat-list-one.friends .friends-list>a:first-child {
   margin-left: 0;
 }
+
 .friend-box.zags-box {
   background: #c3f6bf;
   padding: 10px;
 }
+
 @media (max-width: 576px) {
   .profile-top-stat {
     flex-direction: column;
     justify-content: center;
     align-items: center;
   }
+
   .profile-top-stat-list {
     margin-top: 2em;
     margin-left: 0;
     width: auto;
   }
+
   .profile-top-stat-list-one.friends {
     flex-wrap: wrap;
     justify-content: center;
@@ -382,10 +404,68 @@ a.user-name {
   display: flex;
   flex-wrap: wrap;
 }
+
 .gift-item {
   flex: 0 1 33.33%;
 }
 
 .tooltip-inner hr {
   margin: 0.2rem 0;
+}
+
+.things-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.thing-item {
+  flex: 0 1 30%;
+  background: var(--color-white);
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+.thing-item-img {
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
+
+.thing-item-img img {
+  max-height: 100%;
+}
+
+.thing-item-name {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 35px;
+  font-size: 0.85em;
+  padding: 0 10px;
+  text-align: center;
+  line-height: 1em;
+  overflow: hidden;
+  color: var(--color-white);
+}
+.tin-class-1 {
+  background-color: var(--color-class-1);
+}
+
+.tin-class-2 {
+  background-color: var(--color-class-2);
+}
+
+.tin-class-3 {
+  background-color: var(--color-class-3);
+}
+
+.tin-class-4 {
+  background-color: var(--color-class-4);
+}
+
+.tin-class-5 {
+  background-color: var(--color-class-5);
 }

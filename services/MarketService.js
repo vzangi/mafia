@@ -1,3 +1,4 @@
+const AccountThing = require('../models/AccountThing')
 const ThingType = require('../models/ThingType')
 const ThingClass = require('../models/ThingClass')
 const ThingCollection = require('../models/ThingCollection')
@@ -8,10 +9,13 @@ class MarketService {
     const classes = await ThingClass.findAll({ order: [['sort']] })
     const collections = await ThingCollection.findAll({ order: [['sort']] })
 
+    const things = await AccountThing.getMarketList()
+
     const data = {
       types,
       classes,
       collections,
+      things,
     }
     return data
   }

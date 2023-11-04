@@ -17,7 +17,7 @@ div(class="container")
       div(class="profile-avatar-image" style="background-image:url(/uploads/" + profile.avatar + ")" data-bs-toggle="tooltip" data-bs-placement="top" title=profile.online ? '' : 'Последний раз в онлайне - ' + prettyDate(profile.updatedAt))
     div(class="profile-top-info-main")
       div(class="profile-top-info-main-nick")
-        span(class="nick")=profile.username
+        span(class="nick" data-bs-toggle="tooltip" data-bs-placement="top" title='Дата регистрации - ' + prettyDate(profile.createdAt))=profile.username
       div(class="profile-top-info-main-rank")
         if profile.rank == 0
           div(class="image" style="background-image:url(/images/0.svg)")

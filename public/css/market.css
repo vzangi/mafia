@@ -1,6 +1,7 @@
 h4 {
   margin-bottom: 0;
 }
+
 .bb-1-gray {
   border-bottom: 1px solid #eee;
 }
@@ -25,6 +26,7 @@ h4 {
 .market-category-block.show {
   display: block;
 }
+
 .market-category-block.visible {
   opacity: 1;
   top: 42px;
@@ -36,6 +38,7 @@ h4 {
   cursor: pointer;
   min-width: 200px;
 }
+
 .category-item:hover {
   background-color: #179a5d;
 }
@@ -48,7 +51,7 @@ h4 {
   content: '';
   display: block;
   position: absolute;
-  top: -26px;
+  top: -25px;
   left: 15px;
   width: 0;
   height: 0;
@@ -56,24 +59,105 @@ h4 {
   border-bottom-color: #198754;
 }
 
+.category-selected-items {
+  overflow: hidden;
+}
+
 .category-selected-items .category-item {
   margin: 0 3px 3px 0;
-  background-color: #198754;
+  background-color: #00b863;
   border-radius: 4px;
 }
 
-.category-item.class-1 {
+.category-item.class-1,
+.thing-class-1 {
   background-color: var(--color-class-1);
 }
-.category-item.class-2 {
+
+.category-item.class-2,
+.thing-class-2 {
   background-color: var(--color-class-2);
 }
-.category-item.class-3 {
+
+.category-item.class-3,
+.thing-class-3 {
   background-color: var(--color-class-3);
 }
-.category-item.class-4 {
+
+.category-item.class-4,
+.thing-class-5 {
   background-color: var(--color-class-4);
 }
-.category-item.class-5 {
+
+.category-item.class-5,
+.thing-class-5 {
   background-color: var(--color-class-5);
+}
+
+
+.thing-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  gap: 10px;
+}
+
+.thing-image {
+  width: 100px;
+  padding: 10px;
+  flex: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.thing-name-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+}
+
+.thing-count {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 100px;
+  min-width: 80px;
+  flex: none;
+}
+
+.thing-price-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  max-width: 100px;
+  min-width: 80px;
+  flex: none;
+}
+
+a.thing-item {
+  color: #333;
+  text-decoration: none;
+}
+
+.thing-class {
+  padding: 1px 10px;
+  color: var(--color-white);
+  font-size: 0.8em;
+  border-radius: 4px;
+}
+
+.thing-line {
+  display: flex;
+  gap: 10px;
+}
+
+@media (max-width: 576px) {
+  .thing-line {
+    flex-direction: column-reverse;
+    justify-content: center;
+  }
 }

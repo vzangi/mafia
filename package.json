@@ -11,6 +11,7 @@
     "migrate:undo": "env-cmd npx sequelize-cli db:migrate:undo",
     "migrate:undo:all": "env-cmd npx sequelize-cli db:migrate:undo:all",
     "seed:create": "npx sequelize-cli seed:generate --name",
+    "seed:byname": "npx sequelize-cli db:seed --seed",
     "seed:run": "env-cmd npx sequelize-cli db:seed:all",
     "seed:undo": "env-cmd npx sequelize-cli db:seed:undo",
     "seed:undo:byname": "env-cmd npx sequelize-cli db:seed:undo --seed",

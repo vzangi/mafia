@@ -32,11 +32,9 @@ const Thing = sequelize.define('things', {
   },
   thingclassId: {
     type: DataTypes.INTEGER,
-    allowNull: false,
   },
   thingcollectionId: {
     type: DataTypes.INTEGER,
-    allowNull: false,
   },
 })
 

@@ -6,9 +6,11 @@ const sequelize = require('../units/db')
 const Account = require('../models/Account')
 const AccountGift = require('../models/AccountGift')
 const AccountName = require('../models/AccountName')
+const AccountThing = require('../models/AccountThing')
 const Friend = require('../models/Friend')
 const WalletEvents = require('../models/WalletEvents')
 const Notification = require('../models/Notification')
+const Thing = require('../models/Thing')
 
 class ProfileService {
   async profileInfo(profile, currentUser) {
@@ -75,6 +77,10 @@ class ProfileService {
 
     data.gifts = await AccountGift.scope({
       method: ['withModels', profile.id],
+    }).findAll()
+
+    data.things = await AccountThing.scope({
+      method: ['withThings', profile.id]
     }).findAll()
 
     return data

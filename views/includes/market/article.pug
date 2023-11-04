@@ -1,0 +1,23 @@
+div(class="block mb-4")
+  div(class="market-list-head d-flex justify-content-between align-items-center p-4 bb-1-gray")
+    h4(class="text-secondary") Свежие поступления
+    a(class="btn btn-outline-success btn-sm flex-shrink-0" href="/market/my") Мои лоты
+  div(class="market-list")
+    each thing in things 
+
+      a(class="thing-item bb-1-gray" href="/market/thing/"+thing.thingId)
+        
+        div(class="thing-line")
+          div(class="thing-image")
+            img(src="/uploads/thing/"+thing.picture alt=thing.name)
+          div(class="thing-name-box")
+            div(class="thing-name")= thing.name
+            div
+              span(class="thing-class thing-class-"+thing.tc_id)= `${thing.tc_name} класс`
+
+        div(class="thing-line")
+          div(class="thing-count")
+            span= `${thing.cnt} шт.` 
+          div(class="thing-price-box")
+            span= `от ${thing.min_price} р.`
+            button(class="btn btn-sm btn-success") Купить

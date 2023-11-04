@@ -1,0 +1,16 @@
+div(class="col-12 col-md-6") 
+    div(class="gifts-header d-flex justify-content-between align-items-center mb-2")
+        h4(class="mb-0") Вещи
+        div
+            a(href="/profile/"+profile.username+"/things" class="btn btn-sm btn-outline-default") Все вещи
+
+    if !things || things.length == 0
+        p Пока нет вещей 
+    else
+        div(class="things-list" data-id=profile.id)
+            each thing, index in things
+                div(class="thing-item" data-id=thing.id)
+                    div(class="thing-item-img")
+                        img(src="/uploads/thing/"+thing.thing.picture)
+                    div(class="thing-item-name tin-class-"+thing.thing.thingclassId)
+                        span= thing.thing.name

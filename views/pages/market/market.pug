@@ -4,59 +4,14 @@ block head
   link(href="/css/market.css" rel="stylesheet")
 
 prepend content
-  div(class="container wallet-value")
-    div(class="d-flex justify-content-between align-items-center pt-4 pb-4")
-      div
-        h3 Маркет
-        p Покупайте и продавайте вещи из своего арсенала
+  include /includes/market/header
 
 block article 
-  div(class="block mb-4")
-    div(class="market-list-head d-flex justify-content-between align-items-center p-4 bb-1-gray")
-      h4(class="text-secondary") Свежие поступления
-      a(class="btn btn-outline-success btn-sm flex-shrink-0" href="/market/my") Мои вещи
-    div(class="market-list")
-
-
+  include /includes/market/article
+  
 block aside 
-  div(class="block mb-4")
-    div(class="market-search")
-
-      div(class="mearket-search-head p-4 bb-1-gray")
-        h4(class="text-secondary") Поиск
-
-      div(class="mearket-search-block p-4 bb-1-gray")
-        p Предмет:
-        div(class="category-selected-items category-types") 
-        div(class='category-block-box')
-          button(class="btn btn-sm btn-success ion-plus") 
-          div(class="market-category-block")
-            div(class="mc-wrapper")
-              each cat in types 
-                div(class="category-item" data-id=cat.id)= cat.name
-
-      div(class="mearket-search-block p-4 bb-1-gray")
-        p Класс:
-        div(class="category-selected-items category-classes") 
-        div(class='category-block-box')
-          button(class="btn btn-sm btn-success ion-plus") 
-          div(class="market-category-block")
-            div(class="mc-wrapper")
-              each cat in classes
-                div(class="category-item class-"+cat.id data-id=cat.id)= cat.name
-
-      div(class="mearket-search-block p-4 bb-1-gray")
-        p Коллекция:
-        div(class="category-selected-items category-collections") 
-        div(class='category-block-box')
-          button(class="btn btn-sm btn-success ion-plus") 
-          div(class="market-category-block")
-            div(class="mc-wrapper")
-              each cat in collections
-                div(class="category-item" data-id=cat.id)= cat.name
-
-      div(class="mearket-search-head p-4")
-        button(class="btn btn-success w-100") Найти
+  include /includes/market/aside
+  
 
 block scripts 
   include /includes/market-tmpl
