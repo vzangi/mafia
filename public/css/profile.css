@@ -415,7 +415,7 @@ a.user-name {
 
 .things-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, 32%);
+  grid-template-columns: repeat(auto-fill, 31%);
   justify-content: space-between;
   grid-gap: 0.5rem;
 }

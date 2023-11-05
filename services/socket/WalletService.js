@@ -1,5 +1,6 @@
 const { Op } = require('sequelize')
 const Account = require('../../models/Account')
+const Thing = require('../../models/Thing')
 const WalletEvent = require('../../models/WalletEvents')
 const bot = require('../../units/bot')
 const BaseService = require('./BaseService')
@@ -32,6 +33,9 @@ class WalletService extends BaseService {
       where: {
         accountId: user.id,
       },
+      include: [
+        { model: Thing }
+      ],
       order: [['id', 'DESC']],
       offset,
       limit,
@@ -82,9 +86,8 @@ class WalletService extends BaseService {
 
     await WalletEvent.transfer(user.id, recipient.id, count)
 
-    const notifyText = `${account.username} ${
-      account.gender == Account.genders.FEMALE ? 'перевела' : 'перевёл'
-    } тебе ${count} рублей`
+    const notifyText = `${account.username} ${account.gender == Account.genders.FEMALE ? 'перевела' : 'перевёл'
+      } тебе ${count} рублей`
 
     // Отправляю уведомление другу
     this.notify(recipient.id, notifyText)

@@ -28,6 +28,9 @@ module.exports = (io) => {
 
     // Роуты нотификаций
     require('./socket/NotifyRouter')(io, socket)
+
+    // Роуты маркета
+    require('./socket/MarketRouter')(io, socket)
   })
 
   

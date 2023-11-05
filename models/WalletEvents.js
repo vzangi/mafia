@@ -18,6 +18,7 @@ const events = {
 }
 
 const transferRate = 1.1
+const sellingRate = 0.9
 
 const WalletEvent = sequelize.define('walletevents', {
   id: {
@@ -56,11 +57,14 @@ WalletEvent.divorceCost = WalletEvent.marriageCost * 2
 WalletEvent.recallCost = WalletEvent.marriageCost / 2
 
 WalletEvent.transferRate = transferRate
+WalletEvent.sellingRate = sellingRate
 
 WalletEvent.belongsTo(Thing)
 WalletEvent.belongsTo(Account)
 
-const transaction = async (eventType, accountId, value) => {
+
+// Транзакция
+const transaction = async (eventType, accountId, value, thingId = null) => {
   const t = await sequelize.transaction()
   try {
     value = value.toFixed(2)
@@ -69,6 +73,7 @@ const transaction = async (eventType, accountId, value) => {
         accountId,
         eventType,
         value,
+        thingId
       },
       { transaction: t }
     )
@@ -86,12 +91,12 @@ const transaction = async (eventType, accountId, value) => {
   }
 }
 
-// Транзакция пополнения кошелька
+// Пополнение кошелька
 WalletEvent.payment = async (userId, sum) => {
   await transaction(WalletEvent.events.PAYMENT, userId, sum)
 }
 
-// Транзакция предложения пойти в ЗАГС
+// Предложение пойти в ЗАГС
 WalletEvent.marriage = async (userId) => {
   await transaction(
     WalletEvent.events.MARRIAGE,
@@ -100,27 +105,27 @@ WalletEvent.marriage = async (userId) => {
   )
 }
 
-// Транзакция отзыва предложения
+// Отзыв предложения
 WalletEvent.recall = async (userId) => {
   await transaction(WalletEvent.events.RECALL, userId, WalletEvent.recallCost)
 }
 
-// Транзакция отказа от свадьбы
+// Отказ от свадьбы
 WalletEvent.denial = async (userId) => {
   await transaction(WalletEvent.events.DENIAL, userId, WalletEvent.recallCost)
 }
 
-// Транзакция покупки открытки
+// Покупка открытки
 WalletEvent.gift = async (userId, giftCost) => {
   await transaction(WalletEvent.events.GIFT, userId, -giftCost)
 }
 
-// Транзакция смены ника
+// Смена ника
 WalletEvent.nikChange = async (userId, nikChangeCost) => {
   await transaction(WalletEvent.events.NEWNIK, userId, -nikChangeCost)
 }
 
-// Транзакция развода
+// Развод
 WalletEvent.divorce = async (userId) => {
   await transaction(
     WalletEvent.events.DIVORCE,
@@ -129,7 +134,7 @@ WalletEvent.divorce = async (userId) => {
   )
 }
 
-// Транзакция перевода
+// Перевод
 WalletEvent.transfer = async (userId, recipientId, transferCount) => {
   // Списываю средства у отправителя
   await transaction(
@@ -139,6 +144,16 @@ WalletEvent.transfer = async (userId, recipientId, transferCount) => {
   )
   // Зачисляю их получателю
   await transaction(WalletEvent.events.PAYMENT, recipientId, transferCount)
+}
+
+// Покупка вещи на маркете
+WalletEvent.buyThing = async (userId, offer) => {
+  const { marketPrice, accountId, thingId } = offer
+  // Списываю средства со счёта покупателя
+  await transaction(WalletEvent.events.BUY, userId, -marketPrice, thingId)
+
+  // Зачисляю на счёт продавца (с учётом комиссии)
+  await transaction(WalletEvent.events.SELLING, accountId, marketPrice * sellingRate, thingId)
 }
 
 module.exports = WalletEvent

@@ -4,7 +4,7 @@ block head
   link(href="/css/market.css" rel="stylesheet")
 
 block main
-  div(class="block")
+  div(class="block mb-4")
     div(class="p-4 bb-1-gray")
       h4 Предложения
     div(class="market-list")
@@ -29,7 +29,7 @@ block main
                   img(src="/uploads/"+offer.account.avatar)
               div(class="thing-price-box")
                 span= `${offer.marketPrice} р.`
-                button(class="btn btn-sm btn-success") Купить
+                button(class="btn btn-sm btn-success buy" data-id=offer.id) Купить
 
 
 block aside 
@@ -48,4 +48,5 @@ block aside
 
 block scripts 
   include /includes/market-tmpl
-  script(src="/js/market.js")
+  if currentAccount
+    script(src="/js/market-thing.js")
