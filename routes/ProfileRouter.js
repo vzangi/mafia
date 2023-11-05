@@ -55,4 +55,10 @@ router.get('/:nik', controller.showAccountByNik)
 // Друзья игрока
 router.get('/:nik/friends', controller.friends)
 
+// Инвентарь игрока
+router.get('/:username/things', controller.inventory)
+
+// Инвентарь игрока
+router.get('/things', controller.myInventory)
+
 module.exports = router

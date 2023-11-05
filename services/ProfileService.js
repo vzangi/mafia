@@ -297,6 +297,25 @@ class ProfileService {
     account.telegramChatId = null
     await account.save()
   }
+
+  // Данные для страницы инвентаря
+  async inventory(username) {
+    const profile = await Account.findOne({ where: { username } })
+    if (!profile) {
+      throw new Error("Пользователь с таким ником не найден")
+    }
+
+    const things = await AccountThing.scope({
+      method: ['withThings', profile.id]
+    }).findAll()
+
+    const data = {
+      profile,
+      things
+    }
+
+    return data
+  }
 }
 
 module.exports = new ProfileService()

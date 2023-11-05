@@ -1,8 +1,9 @@
 div(class="col-12 col-md-6") 
     div(class="gifts-header d-flex justify-content-between align-items-center mb-2")
         h4(class="mb-0") Вещи
-        div
-            a(href="/profile/"+profile.username+"/things" class="btn btn-sm btn-outline-default") Все вещи
+        if things.length != 0
+            div
+                a(href="/profile/"+profile.username+"/things" class="btn btn-sm btn-outline-secondary") Все вещи
 
     if !things || things.length == 0
         p Пока нет вещей 

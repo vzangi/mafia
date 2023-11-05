@@ -145,6 +145,30 @@ class Profile {
     }
     res.redirect('/profile/notifications')
   }
+
+  // Инвентарь игрока по нику
+  async inventory(req, res) {
+    try {
+      const { username } = req.params
+      const data = await service.inventory(username)
+      res.render('pages/profile/inventory', data)
+    } catch (error) {
+      console.log(error)
+      res.redirect('/profile')
+    }
+  }
+
+  // Свой инвентарь
+  async myInventory(req, res) {
+    try {
+      const { username } = req.account
+      const data = await service.inventory(username)
+      res.render('pages/profile/inventory', data)
+    } catch (error) {
+      console.log(error)
+      res.redirect('/profile')
+    }
+  }
 }
 
 module.exports = new Profile()
