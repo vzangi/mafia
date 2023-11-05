@@ -16,7 +16,7 @@ block main
         span Вещи
         small(class='text-secondary fs-3')= things.length
 
-    if user && profile.id != currentAccount.id
+    if currentAccount && profile.id != currentAccount.id
       if things.length != 0
         div
           button(class="btn btn-outline-secondary" title="Предложить обмен" data-bs-toggle="tooltip" data-bs-placement="top") Обмен

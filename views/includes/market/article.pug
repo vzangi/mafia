@@ -1,7 +1,7 @@
 div(class="block mb-4")
   div(class="market-list-head d-flex justify-content-between align-items-center p-4 bb-1-gray")
     h4(class="text-secondary") Свежие поступления
-    if user 
+    if currentAccount
       a(class="btn btn-outline-success btn-sm flex-shrink-0" href="/market/my") Мои лоты
   div(class="market-list")
     each thing in things 
