@@ -46,7 +46,7 @@ class MarketService extends BaseService {
         // Провожу покупку
         await WalletEvent.buyThing(user.id, offer)
 
-        const notifyMessage = `${account.username} купил у вас на маркете ${offer.thing.name} за ${offer.marketPrice * WalletEvent.sellingRate} р.`
+        const notifyMessage = `${account.username} ${account.gender == 2 ? 'купила' : 'купил'} у вас на маркете ${offer.thing.name} за ${offer.marketPrice * WalletEvent.sellingRate} р.`
 
         // Передаю лот покупателю
         offer.accountId = user.id

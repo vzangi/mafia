@@ -443,11 +443,11 @@ a.user-name {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 35px;
-  font-size: 0.85em;
+  height: 38px;
+  font-size: 0.8em;
   padding: 0 10px;
   text-align: center;
-  line-height: 1em;
+  line-height: 0.9em;
   overflow: hidden;
   color: var(--color-white);
   border-bottom-left-radius: inherit;
