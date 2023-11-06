@@ -21,7 +21,7 @@ class Gifts {
   async groups(req, res) {
     try {
       const data = await service.groups()
-      res.render('pages/admin/giftGroups', data)
+      res.render('pages/admin/gifts/groups', data)
     } catch (error) {
       console.log(error)
       res.redirect('/gift')
@@ -34,7 +34,7 @@ class Gifts {
       const { id } = req.query
 
       const data = await service.group(id)
-      res.render('pages/admin/giftGroupEdit', data)
+      res.render('pages/admin/gifts/groupEdit', data)
     } catch (error) {
       console.log(error)
       res.redirect('/gift/groups')
@@ -83,7 +83,7 @@ class Gifts {
     try {
       const { id } = req.query
       const data = await service.giftEditForm(id)
-      res.render('pages/admin/giftEdit', data)
+      res.render('pages/admin/gifts/edit', data)
     } catch (error) {
       console.log(error)
       res.redirect('/gift/groups')

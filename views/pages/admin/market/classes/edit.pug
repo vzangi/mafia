@@ -1,0 +1,19 @@
+extends /layouts/two_column_3_9
+
+block main
+    h1 
+        a(href="/market/types")
+            span(class="ion-chevron-left fs-2")
+        span(class="ms-2") Редактирование класса
+
+    div(class="block p-4 mt-4 mb-4")
+        form(method="post" action="/market/classes/edit")
+            input(type="hidden" name="id" value=thingClass.id)
+            div(class="mb-3")
+                label(class="form-label") Название
+                input(type="text" name="name" value=thingClass.name class="form-control")
+            div(class="mb-3")
+                label(class="form-label") Сортировка
+                input(type="number" name="sort" value=thingClass.sort class="form-control")
+            button(type="submit" class="btn btn-primary") Изменить
+
