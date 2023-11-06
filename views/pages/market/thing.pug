@@ -8,13 +8,13 @@ block main
     div(class="p-4 bb-1-gray")
       h4 Предложения
     div(class="market-list")
-      if !thingOffers
-        p(class="p-4") Предложения не найдены
+      if thingOffers.length == 0
+        p(class="p-4") В данный момент никто не продаёт этот предмет
       else 
         each offer in thingOffers
-          
+
           div(class="thing-item bb-1-gray")
-        
+
             div(class="thing-line")
               div(class="thing-image")
                 img(src="/uploads/thing/"+thing.picture alt=thing.name)

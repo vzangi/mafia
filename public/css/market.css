@@ -85,7 +85,7 @@ h4 {
 }
 
 .category-item.class-4,
-.thing-class-5 {
+.thing-class-4 {
   background-color: var(--color-class-4);
 }
 
@@ -93,7 +93,6 @@ h4 {
 .thing-class-5 {
   background-color: var(--color-class-5);
 }
-
 
 .thing-item {
   display: flex;
@@ -162,7 +161,6 @@ a.thing-item {
   }
 }
 
-
 .thing-name-block {
   border-top-left-radius: inherit;
   border-top-right-radius: inherit;
@@ -177,7 +175,7 @@ a.thing-item {
 .thing-type {
   font-size: 0.8em;
 }
-.offer-account  {
+.offer-account {
   flex: none;
   min-width: 60px;
   display: flex;

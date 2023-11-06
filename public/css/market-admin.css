@@ -1,0 +1,37 @@
+.desc {
+  text-wrap: nowrap;
+  overflow: hidden;
+  max-width: 100px;
+  text-overflow: ellipsis;
+}
+tbody tr {
+  cursor: pointer;
+}
+tbody tr:hover td {
+  background-color: var(--color-white);
+}
+
+.thing-class {
+  color: #fff;
+  padding: 0 10px;
+  border-radius: 4px;
+}
+.thing-class-1 {
+  background-color: var(--color-class-1);
+}
+
+.thing-class-2 {
+  background-color: var(--color-class-2);
+}
+
+.thing-class-3 {
+  background-color: var(--color-class-3);
+}
+
+.thing-class-4 {
+  background-color: var(--color-class-4);
+}
+
+.thing-class-5 {
+  background-color: var(--color-class-5);
+}

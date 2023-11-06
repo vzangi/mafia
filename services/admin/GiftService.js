@@ -1,5 +1,5 @@
-const Gift = require('../models/Gift')
-const GiftGroup = require('../models/GiftGroup')
+const Gift = require('../../models/Gift')
+const GiftGroup = require('../../models/GiftGroup')
 const maxGiftSize = 500_000
 
 class GiftService {

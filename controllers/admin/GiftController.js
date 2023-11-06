@@ -1,124 +1,98 @@
-const service = require('../services/GiftService')
+const service = require('../../services/admin/GiftService')
+const BaseAdminController = require('./BaseAdminController')
 
-class Gifts {
-  // Проверка на наличие прав
-  isSuperAdmin(req, res, next) {
-    const { account } = req
-    if (!account || account.role != 1) {
-      return res.redirect('/gift')
-    }
-    next()
-  }
-
-  // Список открыток
-  gift(req, res) {
-    const { to } = req.query
-
-    res.render('pages/gift', { to, title: 'Подарить открытку' })
-  }
-
+class GiftController extends BaseAdminController {
   // Список групп
-  async groups(req, res) {
+  async groups(req, res, next) {
     try {
       const data = await service.groups()
       res.render('pages/admin/gifts/groups', data)
     } catch (error) {
-      console.log(error)
-      res.redirect('/gift')
+      next(error)
     }
   }
 
   // Форма редактирования группы
-  async group(req, res) {
+  async group(req, res, next) {
     try {
-      const { id } = req.query
-
+      const { id } = req.params
       const data = await service.group(id)
       res.render('pages/admin/gifts/groupEdit', data)
     } catch (error) {
-      console.log(error)
-      res.redirect('/gift/groups')
+      next(error)
     }
   }
 
   // Сохранение изменений в базе
-  async editGroup(req, res) {
+  async editGroup(req, res, next) {
     try {
       const { id, name, sort, active } = req.body
-
       await service.editGroup(id, name, sort, active)
+      res.redirect('/gift/groups')
     } catch (error) {
-      console.log(error)
+      next(error)
     }
-    res.redirect('/gift/groups')
   }
 
   // Добавление группы в базу
-  async addGroup(req, res) {
+  async addGroup(req, res, next) {
     try {
       const { name, sort } = req.body
-
       await service.addGroup(name, sort)
+      res.redirect('/gift/groups')
     } catch (error) {
-      console.log(error)
+      next(error)
     }
-    res.redirect('/gift/groups')
   }
 
   // Загрузка новой открытки
-  async addGift(req, res) {
+  async addGift(req, res, next) {
     const { giftgroupId, price, isVip } = req.body
     try {
       const { file } = req.files
-
       await service.addGift(file, giftgroupId, price, isVip)
+      res.redirect(`/gift/group/${giftgroupId}`)
     } catch (error) {
-      console.log(error)
+      next(error)
     }
-    res.redirect(`/gift/group?id=${giftgroupId}`)
   }
 
   // Загрузка новой открытки
-  async giftEditForm(req, res) {
+  async giftEditForm(req, res, next) {
     try {
-      const { id } = req.query
+      const { id } = req.params
       const data = await service.giftEditForm(id)
       res.render('pages/admin/gifts/edit', data)
     } catch (error) {
-      console.log(error)
-      res.redirect('/gift/groups')
+      next(error)
     }
   }
 
   // Удаление открытки
-  async removeGift(req, res) {
+  async removeGift(req, res, next) {
     try {
       const { giftId } = req.body
-
       await service.removeGift(giftId)
       res.json([{ msg: 'Открытка удалена' }])
     } catch (error) {
-      console.log(error)
-      res.status(400).json([{ msg: error.message }])
+      next(error)
     }
   }
 
   // Изменение открытки
-  async editGift(req, res) {
+  async editGift(req, res, next) {
     try {
       const { id, giftgroupId, price, isVip } = req.body
       let file = null
       if (req.files) {
         file = req.files.file
       }
-
       await service.editGift(file, id, giftgroupId, price, isVip)
-      res.redirect(`/gift/group?id=${giftgroupId}`)
+      res.redirect(`/gift/group/${giftgroupId}`)
     } catch (error) {
-      console.log(error)
-      res.redirect('/gift/groups')
+      next(error)
     }
   }
 }
 
-module.exports = new Gifts()
+module.exports = new GiftController()

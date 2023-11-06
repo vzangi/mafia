@@ -1,0 +1,52 @@
+extends /layouts/two_column_8_4
+
+block head 
+  link(href="/css/market-admin.css" rel="stylesheet")
+
+block main
+
+  div(class="d-flex justify-content-between align-items-center")
+    h1 Список предметов
+    div
+      a(href="/market/things/add" class="btn btn-sm btn-success ion-plus" title="Добавить предмет")
+
+
+  table(class="table mt-4 mb-4")
+    thead 
+      tr 
+        th #
+        th Название #[br] Тип
+        th Описание
+        th Цена 
+        th Класс #[br] Коллекция
+        th Картинка
+      tr 
+        th(colspan=6)
+          input(class="form-control" placeholder="Фильтр" id="filter")
+
+    tbody 
+      each thing in things 
+        tr(data-id=thing.id)
+          td= thing.id
+          td
+            span(class="name")= thing.name
+            br
+            span(class='text-secondary')= thing.thingtype.name
+          td
+            div(class="desc" title=thing.description)= thing.description
+          td
+            span= thing.price 
+          td
+            span(class='thing-class thing-class-'+thing.thingclass.id)= thing.thingclass.name
+            br
+            span= thing.thingcollection ? thing.thingcollection.name : ''
+          td
+            img(src="/uploads/thing/"+thing.picture width=100)
+
+
+
+block aside
+  include /includes/admin/market/menu
+
+block scripts 
+  script(src="/js/market-admin.js")

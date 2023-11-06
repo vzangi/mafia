@@ -3,40 +3,44 @@ const sequelize = require('../units/db')
 const Account = require('./Account')
 const Thing = require('./Thing')
 
-const AccountThing = sequelize.define('accountthings', {
-  id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
-    primaryKey: true,
+const AccountThing = sequelize.define(
+  'accountthings',
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    accountId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    thingId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    marketPrice: {
+      type: DataTypes.INTEGER,
+    },
   },
-  accountId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  thingId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  marketPrice: {
-    type: DataTypes.INTEGER,
-  },
-}, {
-  scopes: {
-    withThings(profileId) {
-      return {
-        where: {
-          accountId: profileId,
-          marketPrice: null
-        },
-        include: [
-          {
-            model: Thing
-          }
-        ]
-      }
-    }
+  {
+    scopes: {
+      withThings(profileId) {
+        return {
+          where: {
+            accountId: profileId,
+            marketPrice: null,
+          },
+          include: [
+            {
+              model: Thing,
+            },
+          ],
+        }
+      },
+    },
   }
-})
+)
 
 AccountThing.belongsTo(Account)
 AccountThing.belongsTo(Thing)
@@ -65,16 +69,16 @@ AccountThing.getThingList = async (thingId) => {
   const offers = await AccountThing.findAll({
     where: {
       marketPrice: {
-        [Op.ne]: null
+        [Op.ne]: null,
       },
       thingId,
     },
     include: [
       {
-        model: Account
-      }
+        model: Account,
+      },
     ],
-    order: [['marketPrice', 'ASC']]
+    order: [['marketPrice', 'ASC']],
   })
   return offers
 }

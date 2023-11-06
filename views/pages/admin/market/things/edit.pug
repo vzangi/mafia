@@ -1,0 +1,67 @@
+extends /layouts/two_column_3_9
+
+block main
+    h1 
+        a(href="/market/things")
+            span(class="ion-chevron-left fs-2")
+        span(class="ms-2") Редактирование предмета
+
+    div(class="block p-4 mt-4 mb-4")
+        form(method="post" action="/market/things/update" enctype="multipart/form-data")
+            input(type="hidden" name="id" value=thing.id)
+
+            div(class="mb-3")
+                label(class="form-label") Название
+                input(value=thing.name type="text" name="name" class="form-control" placeholder="Название" required)
+
+            div(class="mb-3")
+                label(class="form-label") Описание
+                textarea(name="description" class="form-control" placeholder="Описание" required)= thing.description
+
+            div(class="mb-3")
+                label(class="form-label") Цена продажи
+                input(value=thing.price type="text" name="price" class="form-control" placeholder="Цена продажи" required)
+
+            div(class="mb-3")
+                if thing.forsale
+                    input(class="form-check-input" type="checkbox" value="on" name="forsale" checked)
+                else
+                    input(class="form-check-input" type="checkbox" value="on" name="forsale")
+                label(class="form-check-label ms-1" for="forsale") На продажу
+
+            div(class="mb-3")
+                label(class="form-label") Тип
+                select(name="thingtypeId" class="form-control")
+                    each item of thingTypes
+                        if thing.thingtypeId == item.id
+                            option(value=item.id selected)= item.name
+                        else
+                            option(value=item.id)= item.name
+
+            div(class="mb-3")
+                label(class="form-label") Класс
+                select(name="thingclassId" class="form-control")
+                    each item of thingClasses
+                        if thing.thingclassId == item.id
+                            option(value=item.id selected)= item.name
+                        else
+                            option(value=item.id)= item.name
+
+            div(class="mb-3")
+                label(class="form-label") Коллекция
+                select(name="thingcollectionId" class="form-control")
+                    option(value='') Не выбрана
+                    each item of thingCollections
+                        if thing.thingcollectionId == item.id
+                            option(value=item.id selected)= item.name
+                        else 
+                            option(value=item.id)= item.name
+
+            div(class="mb-3")
+                label(class="form-label") Картинка
+                input(class="form-control" type="file" name="file")
+
+            div(class="mb-3")
+                img(src="/uploads/thing/" + thing.picture width=200)
+
+            button(type="submit" class="btn btn-primary") Обновить

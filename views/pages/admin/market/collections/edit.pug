@@ -7,7 +7,7 @@ block main
         span(class="ms-2") Редактирование коллекции
 
     div(class="block p-4 mt-4 mb-4")
-        form(method="post" action="/market/collections/edit")
+        form(method="post" action="/market/collections/update")
             input(type="hidden" name="id" value=collection.id)
             div(class="mb-3")
                 label(class="form-label") Название

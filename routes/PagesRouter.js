@@ -24,6 +24,9 @@ router.get('/lobbi', pages.lobbi)
 // Список игроков онлайн
 router.get('/online', pages.online)
 
+// Сраница с открытками
+router.get('/gift', pages.gift)
+
 // Cтраницы со статическим содержимым
 router.use('/', require('./BlogRouter'))
 

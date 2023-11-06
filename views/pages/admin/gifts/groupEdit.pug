@@ -41,7 +41,7 @@ block main
       div(class="mb-3")
         input(class="form-control" type="file" name="file" required)
       button(type="submit" class="btn btn-success") Добавить открытку
-  
+
   h2 Открытки в этой группе
 
   div(class="block p-4 mb-4")
@@ -54,6 +54,6 @@ block main
           div(class="price")= gift.price+' р.'
           div(class="gift-actions")
             div(class="text-center mb-2")
-              a(href="/gift/edit?id="+gift.id class="btn btn-primary btn-sm") Изменить
+              a(href="/gift/edit/"+gift.id class="btn btn-primary btn-sm") Изменить
             div(class="text-center mb-2")
               a(data-id=gift.id class="btn btn-danger btn-sm remove-gift-btn") Удалить

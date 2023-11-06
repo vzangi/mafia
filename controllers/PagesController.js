@@ -40,10 +40,16 @@ class Pages {
   async online(req, res) {
     const users = await Account.findAll({
       where: {
-        online: 1
-      }
+        online: 1,
+      },
     })
     res.render('pages/online', { users })
+  }
+
+  // Список открыток
+  gift(req, res) {
+    const { to } = req.query
+    res.render('pages/gift', { to, title: 'Подарить открытку' })
   }
 }
 

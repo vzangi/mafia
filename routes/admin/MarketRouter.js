@@ -5,7 +5,7 @@ const controller = require('../../controllers/admin/MarketController')
 router.use(controller.isSuperAdmin)
 
 // Меню админки маркета
-router.get('/admin', controller.index)
+router.get('/things', controller.index)
 
 // Список типов
 router.get('/types', controller.typesList)
@@ -30,5 +30,26 @@ router.get('/classes/:id', controller.editClass)
 
 // Редактирование класса
 router.get('/collections/:id', controller.editCollection)
+
+// Обновление типа
+router.post('/types/update', controller.updateType)
+
+// Обновление класса
+router.post('/classes/update', controller.updateClass)
+
+// Обновление коллекции
+router.post('/collections/update', controller.updateCollection)
+
+// Страница добавления новой вещи
+router.get('/things/add', controller.addThing)
+
+// Процедура создания новой вещи
+router.post('/things/create', controller.createThing)
+
+// Страница редактирования вещи
+router.get('/things/edit/:id', controller.editThing)
+
+// Процедура обновления вещи
+router.post('/things/update', controller.updateThing)
 
 module.exports = router
