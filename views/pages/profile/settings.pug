@@ -1,66 +1,12 @@
 extends /layouts/two_column_9_3
 
 block aside 
-    h3 Настройки
-    div(class="block p-3 mb-3")
-        ul(class="nav nav-pills flex-column")
-            li(class="nav-item")
-                a(href="/profile/settings" class="nav-link active") Настройки профиля
-            li(class="nav-item")
-                a(href="/profile/notifications" class="nav-link") Уведомления
+    include /includes/profile/settings/menu
 
 block article
-    h3 Профиль
-    div(class="block")
-        div(class="top-settings-box")
-            div(class="avatar-box")
-                div
-                    img(src='/uploads/'+currentAccount.avatar alt=currentAccount.username)
-                div(class="change-avatar-box") 
-                    button(class="btn btn-success change-avatar-btn") Обновить аватар
-                    form(enctype="multipart/form-data" method="post")
-                        input(type='file' name="avatar")
+    include /includes/profile/settings/topSettings
 
-            div(class="fields-box")
-                div(class="form-row2 mb-3 nik-box")
-                    label(class="form-label") Ник*
-                    div(class="accept-input-box")
-                        input(class="form-control" maxlength=30 value=currentAccount.username data-val=currentAccount.username)
-                        button(class="btn btn-success ion-checkmark accept" title=`Стоимость смены ника: ${nikChanges.length*100} рублей`)
-
-                div(class="form-row2 mb-3")
-                    label(class="form-label") Почта
-                    input(class="form-control" disabled value=currentAccount.email)
-
-                div 
-                    label(class="form-label") Пол
-                    select(class="form-control" id="gender")
-                        option(value="0") Не указан
-                        option(value="1" selected=currentAccount.gender==1) Мужской
-                        option(value="2" selected=currentAccount.gender==2) Женский
-
-    if nikChanges.length != 0
-        h3(class='mt-4') Прошлые ники
-        div(class="block p-3")
-            table(class="table")
-                thead   
-                    tr 
-                        th Ник
-                        th Дата смены
-                tbody
-                    each nik in nikChanges
-                        tr 
-                            td= nik.username
-                            td= nik.coolChangeDate
-
-
-    h3(class='mt-4') Безопасность
-
-    div(class="block p-3")
-        a(class="btn btn-primary" href="/profile/change-password") Сменить пароль
-
-    div(class="mt-3 mb-3") 
-        small(class="text-secondary") * Первая смена ника бесплатна. Каждая последующая на 100 рублей дороже предыдущей стоимости.
+    include /includes/profile/settings/nikChanges
 
 block scripts 
     link(href="/css/settings.css" rel="stylesheet")

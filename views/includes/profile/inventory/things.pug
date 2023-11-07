@@ -1,0 +1,11 @@
+div(class="things-list-box mb-4")
+  if things.length == 0
+    p Пока нет вещей
+  else
+    div(class="things-list")
+      each thing, index in things
+        div(class="thing-item" data-id=thing.id data-thing=thing)
+          div(class="thing-item-img")
+            img(src="/uploads/thing/"+thing.thing.picture)
+          div(class="thing-item-name tin-class-"+thing.thing.thingclassId)
+            span= thing.thing.name

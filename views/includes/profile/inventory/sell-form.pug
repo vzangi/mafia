@@ -1,0 +1,41 @@
+div(class="modal fade" id="sellForm" tabindex="-1" data-bs-backdrop="static" data-id="${id}")
+  div(class="modal-dialog modal-dialog-centered")
+    div(class="modal-content")
+      div(class="modal-header tin-class-2")
+        h5(class="modal-title") Продажа на Маркете
+        button(type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть")
+
+      div(class="modal-body")
+        div(class="container-fluid")
+
+          div(class="row")
+            div(class="col-md-12")
+              div(class="d-flex")
+                p(class="flex-fill me-2") Ты можешь выставить предмет на #[a(href="/market") Маркет], где его смогут купить другие игроки. Пока предмет будет находиться на Маркете, он не будет виден в инвентаре.
+                div(class="sell-form-img")
+
+            //- div(class="col-md-6")
+            //-   label(class="text-secondary") Текущая цена:
+            //- div(class="col-md-6")
+            //-   a(href="#" class="d-block mb-3") 123
+
+            div(class="col-md-6")
+              label(class="text-secondary mt-2") Цена для покупателя:
+            div(class="col-md-6")
+              div(class="input-group mb-3")
+                input(type="number" class="form-control" placeholder="Цена для покупателя" aria-label="Цена для покупателя" aria-describedby="price-for" value='0' id="sellPrice")
+                span(class="input-group-text" id="price-for") р.
+
+            div(class="col-md-6")
+              label(class="text-secondary mt-2") Ты получишь:
+            div(class="col-md-6")
+              div(class="input-group mb-3")
+                input(type="number" class="form-control" placeholder="Ты получишь" aria-label="Ты получишь" aria-describedby="navar" value='0' id="navarCount")
+                span(class="input-group-text" id="navar") р.
+
+            div(class="col-md-12")
+              p С продажи предметов на Маркете удерживается комиссия #[strong 10%].
+
+            div(class="col-md-12 text-center")
+              button(class="btn btn-success btn-sell-on" disabled) Выставить на продажу
+

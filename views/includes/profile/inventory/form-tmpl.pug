@@ -1,0 +1,43 @@
+script(id="formTmpl" type="text/x-jquery-tmpl")
+
+  div(class="modal fade" id="thingForm" tabindex="-1" data-bs-backdrop="static" data-id="${id}")
+    div(class="modal-dialog modal-dialog-centered")
+      div(class="modal-content")
+        div(class="modal-header tin-class-${thing.thingclassId}")
+          h5(class="modal-title") ${thing.name}
+          button(type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть")
+
+        div(class="modal-body")
+          div(class="container-fluid")
+
+            div(class="row")
+              div(class="col-md-12")
+                div(class="thing-image")
+                  img(src="/uploads/thing/${thing.picture}")
+                div(class="thing-desc mt-3 mb-3") 
+                  . 
+                    {{each(i, line) lines}}
+                  p ${line}
+                  . 
+                    {{/each}}
+              . 
+                {{if thing.thingtypeId == 2}}
+              div(class="col-md-12")
+                button(class="w-100 btn btn-outline-success mb-3 btn-activate") Активировать
+              . 
+                {{/if}}
+
+              . 
+                {{if thing.forsale}}
+              div(class="col-md-12")
+                button(class="w-100 btn btn-outline-primary mb-3 btn-sell-on-market") Выставить на маркете
+                button(class="w-100 btn btn-outline-primary mb-3 btn-sell") Продать за ${thing.price} р.
+              . 
+                {{/if}}
+
+script(id="sellFormImgTmpl" type="text/x-jquery-tmpl")
+  div(class="img-sell" title="${thing.name}")
+    div(class="p-2")
+      img(src="/uploads/thing/${thing.picture}")
+    div(class="thing-class tin-class-${thing.thingclassId}")
+

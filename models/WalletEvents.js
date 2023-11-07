@@ -62,7 +62,6 @@ WalletEvent.sellingRate = sellingRate
 WalletEvent.belongsTo(Thing)
 WalletEvent.belongsTo(Account)
 
-
 // Транзакция
 const transaction = async (eventType, accountId, value, thingId = null) => {
   const t = await sequelize.transaction()
@@ -73,7 +72,7 @@ const transaction = async (eventType, accountId, value, thingId = null) => {
         accountId,
         eventType,
         value,
-        thingId
+        thingId,
       },
       { transaction: t }
     )
@@ -153,7 +152,19 @@ WalletEvent.buyThing = async (userId, offer) => {
   await transaction(WalletEvent.events.BUY, userId, -marketPrice, thingId)
 
   // Зачисляю на счёт продавца (с учётом комиссии)
-  await transaction(WalletEvent.events.SELLING, accountId, marketPrice * sellingRate, thingId)
+  await transaction(
+    WalletEvent.events.SELLING,
+    accountId,
+    marketPrice * sellingRate,
+    thingId
+  )
+}
+
+// Продажа вещи
+WalletEvent.sell = async (offer) => {
+  const { accountId, thingId } = offer
+  const { price } = offer.thing
+  await transaction(WalletEvent.events.SELLING, accountId, price, thingId)
 }
 
 module.exports = WalletEvent

@@ -2,7 +2,6 @@ const BaseSocketController = require('./BaseSocketController')
 const Service = require('../../services/socket/ApiService')
 
 class ApiController extends BaseSocketController {
-
   // Получение количества запросов в друзья
   async requestCount(callback) {
     try {
@@ -12,7 +11,7 @@ class ApiController extends BaseSocketController {
       callback({ status: 1, msg: error.message })
     }
   }
-  
+
   // Поиск пользователей по нику
   async searchUsersByNik(nik, callback) {
     try {
@@ -38,7 +37,7 @@ class ApiController extends BaseSocketController {
     try {
       await this.service.changeGender(gender)
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
   }
 
@@ -62,6 +61,16 @@ class ApiController extends BaseSocketController {
       callback(0, friends)
     } catch (error) {
       callback(1, error.message)
+    }
+  }
+
+  // Активация VIP пропуска
+  async vipActivate(id, callback) {
+    try {
+      await this.service.vipActivate(id)
+      callback({ status: 0 })
+    } catch (error) {
+      callback({ status: 1, msg: error.message })
     }
   }
 }

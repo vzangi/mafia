@@ -1,37 +1,7 @@
 extends /layouts/two_column_3_9
 
 block main
-    h3 Уведомления
-
-    div(class="block users-list mb-3 p-3")
-        if notifies.length == 0
-            p Нет уведомлений
-        else
-        table(class="table mb-0")
-            each notify in notifies
-                tr(class=""+notify.level==1?'table-warning': notify.level==2?'table-danger': notify.level==3?'table-info':'table-success')
-                    td= notify.message 
-                    td= notify.coolDate 
-                    td 
-                        form(method="post")
-                            input(type="hidden" name="notifyId" value=notify.id)
-                            button(type="submit" class="btn btn-sm btn-danger ion-trash-b" title="Удалить")
+    include /includes/profile/notifications/notifies
 
 block aside 
-    h3 Настройки
-    div(class="block p-3")
-        ul(class="nav nav-pills flex-column")
-            li(class="nav-item")
-                a(href="/profile/settings" class="nav-link") Настройки профиля
-            li(class="nav-item")
-                a(href="/profile/notifications" class="nav-link active") Уведомления
-
-    if currentAccount.telegramChatId
-        div(class="block p-3 mt-4 mb-3")
-            p Уведомления в telegram подключены. Чтобы отключить - нажми "Отключить"
-            form(method="post" action="/profile/offtelegram")
-                button(type="submit" class="btn btn-danger") Отключить
-    else
-        div(class="block p-3 mt-4 mb-3")
-            p Для подключения уведомлений в telegram, нажми на кнопку "Подключить" и запусти бота
-            a(href="https://t.me/"+botName+"?start="+currentAccount.username+"__"+currentAccount.id+"3301" class="btn btn-success" target="blank") Подключить 
+    include /includes/profile/notifications/menu

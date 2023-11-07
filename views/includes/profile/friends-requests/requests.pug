@@ -1,0 +1,29 @@
+if requests && requests.length != 0
+  div(class="row friends-list") 
+    each friend in requests
+      if friend.status == 0 
+        div(class="col-6")
+          div(class="friend-box")
+            div(class="friend-avatar")
+            img(src="/uploads/" + friend.account.avatar)
+            div(class="friend-links ms-2")
+              div 
+                a(href="/profile/" + friend.account.username class="ellipsis friend-nik")= friend.account.username 
+              div(class="mt-2")
+                a(href="#" class="btn btn-success btn-sm me-1 accept action-btn" data-id=friend.account.id data-question='Добавить в друзья?' data-event='friends.accept') Принять
+                a(href="#" class="btn btn-danger btn-sm decline action-btn" data-id=friend.account.id data-question='Отклонить заявку в друзья?' data-event='friends.decline') Отклонить
+      else 
+        div(class="col-12")
+          h1 Предложение руки и сердца
+          div(class="friend-box zags-box")
+            div(class="friend-avatar")
+            img(src="/uploads/" + friend.account.avatar)
+            div(class="friend-links ms-2")
+              div 
+                a(href="/profile/" + friend.account.username class="ellipsis friend-nik")= friend.account.username 
+              div(class="mt-2")
+                a(href="#" class="btn btn-success btn-sm me-1 accept-zags action-btn" data-id=friend.account.id data-question='Принять предложение?' data-event='friends.zags.accept') Принять
+                a(href="#" class="btn btn-danger btn-sm decline-zags action-btn" data-id=friend.account.id data-question='Отклонить предложение?' data-event='friends.zags.decline') Отклонить
+else 
+  p(class="p-2 text-center text-secondary") Пока нет новых заявок в друзья.
+

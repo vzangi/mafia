@@ -5,21 +5,21 @@ block head
 
 block content 
     if !isBlock
-        include /includes/profile/top_info
-        include /includes/profile/top_stat
+        include /includes/profile/profile/top_info
+        include /includes/profile/profile/top_stat
 
         div(class="container mt-4")
             div(class="row")
-                include /includes/profile/gifts
-                include /includes/profile/things
+                include /includes/profile/profile/gifts
+                include /includes/profile/profile/things
 
     else 
-        include /includes/profile/block
+        include /includes/profile/profile/block
 
     div(class="m-4")
 
 block scripts 
-    include /includes/profile/profile-gift-tmpl
+    include /includes/profile/profile/profile-gift-tmpl
     script(src="/js/profile.js")
     if currentAccount && currentAccount.id == profile.id 
         script(src="/js/profile-self.js")

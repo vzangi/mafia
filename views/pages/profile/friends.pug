@@ -4,60 +4,6 @@ block head
     link(href="/css/profile.css" rel="stylesheet")
 
 block main
+    include /includes/profile/friends/partner
 
-    if partner 
-        div(class="block")
-            div(class="friends-top")
-                div(class="friends-crumbs")
-                    div(class="friends-avatar")
-                        a(href="/profile/" + profile.username)
-                            img(src="/uploads/" + profile.avatar alt=profile.username)
-                    a(href="/profile/" + profile.username class="user-name ellipsis")= profile.username
-                    span(class="ion-ios-arrow-right")
-                    if profile.gender == 1
-                        span Супруга
-                    else if profile.gender == 2
-                        span Супруг
-                    else
-                        span Партнёр
-            div(class="row friends-list")
-                div(class="col-12")
-                    div(class="friend-box")
-                        div(class="friend-avatar")
-                            img(src="/uploads/" + partner.friend.avatar)
-                        div(class="friend-links ms-2")
-                            div 
-                                a(href="/profile/" + partner.friend.username class="ellipsis")= partner.friend.username 
-                            if currentAccount && currentAccount.id == profile.id
-                                div(class="mt-2")
-                                    a(class="btn btn-danger btn-sm remove-partner action-btn" data-id=partner.friend.id data-question='Ты точно хочешь развестись? В кошельке должно быть 100 рублей.' data-event='friends.divorce') Развестись
-
-    div(class="block")
-        div(class="friends-top")
-            div(class="friends-crumbs")
-                div(class="friends-avatar")
-                    a(href="/profile/" + profile.username)
-                        img(src="/uploads/" + profile.avatar alt=profile.username)
-                a(href="/profile/" + profile.username class="user-name ellipsis")= profile.username
-                span(class="ion-ios-arrow-right")
-                span Друзья
-            if currentAccount
-                div(class='friends-buttons')
-                    if currentAccount.id == profile.id
-                        a(href="/profile/friends/requests" class="btn btn-success hide") Заявки #[span(class="cnt hide")]
-
-        if friends && friends.length != 0
-            div(class="row friends-list")
-                each friend in friends 
-                    div(class="col-sm-6 col-md-4 col-lg-3")
-                        div(class="friend-box")
-                            div(class="friend-avatar")
-                                img(src="/uploads/" + friend.friend.avatar)
-                            div(class="friend-links ms-2")
-                                div 
-                                    a(href="/profile/" + friend.friend.username class="ellipsis")= friend.friend.username 
-                                if currentAccount && currentAccount.id == profile.id
-                                    div(class="mt-2")
-                                        a(class="btn btn-danger btn-sm remove-frend action-btn" data-id=friend.friend.id data-question='Удалить из друзей?' data-event='friends.remove') Удалить
-        else 
-            p(class="p-2 text-center text-secondary") У этого пользователя пока нет друзей.
+    include /includes/profile/friends/friends

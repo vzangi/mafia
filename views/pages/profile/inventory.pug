@@ -5,33 +5,13 @@ block head
   link(href="/css/inventory.css" rel="stylesheet")
 
 block main
-  div(class="d-flex justify-content-between align-items-center")
-    div(class="friends-top")
-      div(class="friends-crumbs")
-        div(class="friends-avatar")
-          a(href="/profile/" + profile.username)
-            img(src="/uploads/" + profile.avatar alt=profile.username)
-        a(href="/profile/" + profile.username class="user-name ellipsis")= profile.username
-        span(class="ion-ios-arrow-right")
-        span Вещи
-        small(class='text-secondary fs-3')= things.length
+  include /includes/profile/inventory/head
 
-    if currentAccount && profile.id != currentAccount.id
-      if things.length != 0
-        div
-          button(class="btn btn-outline-secondary" title="Предложить обмен" data-bs-toggle="tooltip" data-bs-placement="top") Обмен
+  include /includes/profile/inventory/things
 
-  div(class="things-list-box mb-4")
-    if things.length == 0
-      p Пока нет вещей
-    else
-      div(class="things-list")
-        each thing, index in things
-          div(class="thing-item" data-thing=thing)
-            div(class="thing-item-img")
-              img(src="/uploads/thing/"+thing.thing.picture)
-            div(class="thing-item-name tin-class-"+thing.thing.thingclassId)
-              span= thing.thing.name
+  if currentAccount
+    include /includes/profile/inventory/form-tmpl
+    include /includes/profile/inventory/sell-form
 
 block scripts 
   if currentAccount

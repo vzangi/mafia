@@ -1,0 +1,10 @@
+div(class="friends-top")
+  div(class="friends-crumbs")
+    div(class="friends-avatar")
+      a(href="/profile/" + currentAccount.username)
+        img(src="/uploads/" + currentAccount.avatar alt=currentAccount.username)
+    a(href="/profile/" + currentAccount.username class="user-name ellipsis")= currentAccount.username
+    span(class="ion-ios-arrow-right user-name")
+    a(href="/profile/friends" class="user-name ellipsis") Друзья
+    span(class="ion-ios-arrow-right")
+    span Заявки 

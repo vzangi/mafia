@@ -1,23 +1,45 @@
 .things-list {
-    grid-template-columns: repeat(auto-fill, 15%);
+  grid-template-columns: repeat(auto-fill, 15%);
 }
 .thing-item {
-    cursor: pointer;
+  cursor: pointer;
+  margin-bottom: 0.8rem;
 }
-
 
 @media (max-width: 768px) {
-    .things-list {
-        grid-template-columns: repeat(auto-fill, 31%);
-    }
+  .things-list {
+    grid-template-columns: repeat(auto-fill, 31%);
+  }
 }
 @media (max-width: 576px) {
-    .things-list {
-        grid-template-columns: repeat(auto-fill, 48%);
-    }
+  .things-list {
+    grid-template-columns: repeat(auto-fill, 48%);
+  }
 }
 @media (max-width: 320px) {
-    .things-list {
-        grid-template-columns: repeat(auto-fill, 100%);
-    }
+  .things-list {
+    grid-template-columns: repeat(auto-fill, 100%);
+  }
+}
+
+.modal-title {
+  color: var(--color-white);
+}
+
+.input-group-text {
+  padding: 0 10px;
+}
+.sell-form-img {
+  width: 100px;
+  flex: none;
+}
+.sell-form-img .thing-class {
+  height: 10px;
+  width: 100%;
+  border-bottom-left-radius: inherit;
+  border-bottom-right-radius: inherit;
+}
+.img-sell {
+  border: 1px solid #eee;
+  border-radius: 4px;
 }

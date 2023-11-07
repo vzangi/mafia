@@ -6,4 +6,10 @@ module.exports = (io, socket) => {
 
   // Покупка лота
   socket.on('market.buy', controller.buy.bind(controller))
+
+  // Продажа вещи
+  socket.on('market.sell', controller.sell.bind(controller))
+
+  // Выставить вещь на маркет
+  socket.on('market.sell.on', controller.sellOnMarket.bind(controller))
 }
