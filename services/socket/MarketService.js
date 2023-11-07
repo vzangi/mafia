@@ -56,11 +56,9 @@ class MarketService extends BaseService {
     // Провожу покупку
     await WalletEvent.buyThing(user.id, offer)
 
-    const notifyMessage = `${account.username} ${
-      account.gender == 2 ? 'купила' : 'купил'
-    } у вас на маркете ${offer.thing.name} за ${
-      offer.marketPrice * WalletEvent.sellingRate
-    } р.`
+    const notifyMessage = `${account.username} ${account.gender == 2 ? 'купила' : 'купил'
+      } у вас на маркете ${offer.thing.name} за ${offer.marketPrice * WalletEvent.sellingRate
+      } р.`
 
     // Передаю лот покупателю
     offer.accountId = user.id
@@ -112,7 +110,7 @@ class MarketService extends BaseService {
     if (!offerId || !marketPrice) {
       throw new Error('Нет необходимых данных')
     }
-
+    
     const offer = await AccountThing.findByPk(offerId)
 
     if (!offer) {
@@ -123,10 +121,10 @@ class MarketService extends BaseService {
       throw new Error('На чужое позарился!?')
     }
 
-    console.log(marketPrice)
-
+    
+    marketPrice = marketPrice * 1
     if (!isInt(marketPrice) && !isFloat(marketPrice)) {
-      //   throw new Error('Цена указана неверно')
+      throw new Error('Цена указана неверно')
     }
 
     offer.marketPrice = marketPrice

@@ -7,7 +7,7 @@ div(class="d-flex justify-content-between align-items-center")
       a(href="/profile/" + profile.username class="user-name ellipsis")= profile.username
       span(class="ion-ios-arrow-right")
       span Вещи
-      small(class='text-secondary fs-3')= things.length
+      small(class='text-secondary fs-3 things-count')= things.length
 
   if currentAccount && profile.id != currentAccount.id
     if things.length != 0
