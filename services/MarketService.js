@@ -3,6 +3,7 @@ const Thing = require('../models/Thing')
 const ThingType = require('../models/ThingType')
 const ThingClass = require('../models/ThingClass')
 const ThingCollection = require('../models/ThingCollection')
+const { Op } = require('sequelize')
 
 class MarketService {
   // Список вещей на продажу
@@ -22,6 +23,37 @@ class MarketService {
     return data
   }
 
+  // Лоты игрока
+  async myLotsData(account) {
+    if (!account) {
+      throw new Error('Не авторизован')
+    }
+    const things = await AccountThing.findAll({
+      where: {
+        accountId: account.id,
+        marketPrice: {
+          [Op.ne]: null,
+        },
+      },
+      include: [
+        {
+          model: Thing,
+          include: [
+            { model: ThingClass },
+            { model: ThingCollection },
+            { model: ThingType },
+          ],
+        },
+      ],
+    })
+
+    const data = {
+      things,
+    }
+
+    return data
+  }
+
   // Предложения по вещи
   async thingData(thingId) {
     if (!thingId) {
@@ -31,15 +63,15 @@ class MarketService {
     const thing = await Thing.findByPk(thingId, {
       include: [
         {
-          model: ThingClass
+          model: ThingClass,
         },
         {
-          model: ThingType
+          model: ThingType,
         },
         {
-          model: ThingCollection
-        }
-      ]
+          model: ThingCollection,
+        },
+      ],
     })
 
     if (!thing) {

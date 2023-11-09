@@ -33,6 +33,17 @@ class MarketController extends BaseSocketController {
       callback({ status: 1, msg: error.message })
     }
   }
+
+  // Вернуть лот в инвентарь
+  async takeBack(offerId, callback) {
+    try {
+      await this.service.takeBack(offerId)
+      callback({ status: 0 })
+    } catch (error) {
+      console.log(error)
+      callback({ status: 1, msg: error.message })
+    }
+  }
 }
 
 module.exports = (io, socket) => {

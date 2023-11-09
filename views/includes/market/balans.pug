@@ -1,0 +1,11 @@
+if currentAccount
+  div(class="block mb-4 p-4")
+    div(class="d-flex flex-column align-items-center")
+      small(class="text-secondary mb-2") Твой баланс
+      div(class="balans mb-3")
+        span(class="fs-2")= Math.ceil(currentAccount.wallet)
+        if currentAccount.kopeiki != 0
+          span(class="text-secondary fs-4") .
+          span(class="text-secondary fs-4")= currentAccount.kopeiki
+      div(class="w-100")
+        a(href="/profile/wallet" class="btn btn-success w-100") Управление балансом

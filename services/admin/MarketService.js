@@ -1,3 +1,5 @@
+const Account = require('../../models/Account')
+const AccountThing = require('../../models/AccountThing')
 const Thing = require('../../models/Thing')
 const ThingType = require('../../models/ThingType')
 const ThingClass = require('../../models/ThingClass')
@@ -274,6 +276,30 @@ class MarketService {
     thing.thingclassId = thingclassId
     thing.thingcollectionId = thingcollectionId ? thingcollectionId : null
     await thing.save()
+  }
+
+  // Подарить вещь игроку
+  async giftThing(thingId, username) {
+    if (!thingId || !username) {
+      throw new Error('Нет необходимых данных')
+    }
+
+    const thing = await Thing.findByPk(thingId)
+
+    if (!thing) {
+      throw new Error('Вещь не найдена')
+    }
+
+    const account = await Account.findOne({ where: { username } })
+
+    if (!account) {
+      throw new Error('Пользователь не найден')
+    }
+
+    await AccountThing.create({
+      thingId,
+      accountId: account.id,
+    })
   }
 
   // Выдает имя картинки в четырехсимвольном формате

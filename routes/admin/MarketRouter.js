@@ -52,4 +52,7 @@ router.get('/things/edit/:id', controller.editThing)
 // Процедура обновления вещи
 router.post('/things/update', controller.updateThing)
 
+// Процедура обновления вещи
+router.post('/things/gift', controller.giftThing)
+
 module.exports = router

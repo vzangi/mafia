@@ -213,6 +213,17 @@ class MarketController extends BaseAdminController {
       next(error)
     }
   }
+
+  // Подарить вещь игроку
+  async giftThing(req, res, next) {
+    try {
+      const { id, username } = req.body
+      await service.giftThing(id, username)
+      res.json({ status: 0 })
+    } catch (error) {
+      res.status(400).json({ status: 1, msg: error.message })
+    }
+  }
 }
 
 module.exports = new MarketController()

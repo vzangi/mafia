@@ -1,0 +1,36 @@
+extends /layouts/two_column_8_4
+
+block head 
+  link(href="/css/market.css" rel="stylesheet")
+
+block main
+  div(class="block mb-4")
+    div(class="market-list-head d-flex justify-content-between align-items-center p-4 bb-1-gray")
+      h4(class="text-secondary") Мои лоты
+
+    div(class="market-list")
+      if !things || things.length == 0
+        p Ты не выставил на продажу ни одного предмета.
+      else 
+        each thing in things 
+          a(class="thing-item bb-1-gray" data-id=thing.id href="/market/thing/"+thing.thingId)
+
+            div(class="thing-line")
+              div(class="thing-image")
+                img(src="/uploads/thing/"+thing.thing.picture alt=thing.thing.name)
+              div(class="thing-name-box")
+                div(class="thing-name")= thing.thing.name
+                div
+                  span(class="thing-class thing-class-"+thing.thing.thingclass.id)= `${thing.thing.thingclass.name} класс`
+
+            div(class="thing-line")
+              div(class="thing-price-box")
+                span= `${thing.marketPrice} р.`
+                button(class="btn btn-sm btn-danger take-back" data-id=thing.id) Снять
+
+block aside 
+  include /includes/market/balans
+
+
+block scripts 
+  script(src="/js/market-my.js")

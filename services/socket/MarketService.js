@@ -14,6 +14,7 @@ const isInt = (n) => {
 }
 
 class MarketService extends BaseService {
+  // Покупка лота
   async buy(offerId) {
     const { user } = this
     if (!user) {
@@ -56,9 +57,11 @@ class MarketService extends BaseService {
     // Провожу покупку
     await WalletEvent.buyThing(user.id, offer)
 
-    const notifyMessage = `${account.username} ${account.gender == 2 ? 'купила' : 'купил'
-      } у вас на маркете ${offer.thing.name} за ${offer.marketPrice * WalletEvent.sellingRate
-      } р.`
+    const notifyMessage = `${account.username} ${
+      account.gender == 2 ? 'купила' : 'купил'
+    } у вас на маркете ${offer.thing.name} за ${
+      offer.marketPrice * WalletEvent.sellingRate
+    } р.`
 
     // Передаю лот покупателю
     offer.accountId = user.id
@@ -74,6 +77,7 @@ class MarketService extends BaseService {
     }
   }
 
+  // Продажа вещи
   async sell(offerId) {
     const { user } = this
     if (!user) {
@@ -102,6 +106,7 @@ class MarketService extends BaseService {
     AccountThing.destroy({ where: { id: offerId } })
   }
 
+  // Выставить вещь на маркет
   async sellOnMarket(offerId, marketPrice) {
     const { user } = this
     if (!user) {
@@ -110,7 +115,7 @@ class MarketService extends BaseService {
     if (!offerId || !marketPrice) {
       throw new Error('Нет необходимых данных')
     }
-    
+
     const offer = await AccountThing.findByPk(offerId)
 
     if (!offer) {
@@ -121,13 +126,36 @@ class MarketService extends BaseService {
       throw new Error('На чужое позарился!?')
     }
 
-    
     marketPrice = marketPrice * 1
     if (!isInt(marketPrice) && !isFloat(marketPrice)) {
       throw new Error('Цена указана неверно')
     }
 
     offer.marketPrice = marketPrice
+    await offer.save()
+  }
+
+  // Вернуть лот в инвентарь
+  async takeBack(offerId) {
+    const { user } = this
+    if (!user) {
+      throw new Error('Не авторизован')
+    }
+    if (!offerId) {
+      throw new Error('Нет необходимых данных')
+    }
+
+    const offer = await AccountThing.findByPk(offerId)
+
+    if (!offer) {
+      throw new Error('Лот не найден')
+    }
+
+    if (offer.accountId != user.id) {
+      throw new Error('На чужое позарился!?')
+    }
+
+    offer.marketPrice = null
     await offer.save()
   }
 }

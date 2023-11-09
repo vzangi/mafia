@@ -9,10 +9,10 @@ block main
 
   include /includes/profile/inventory/things
 
-  if currentAccount
+  if currentAccount && profile.id == currentAccount.id
     include /includes/profile/inventory/form-tmpl
     include /includes/profile/inventory/sell-form
 
 block scripts 
-  if currentAccount
+  if currentAccount && profile.id == currentAccount.id
     script(src="/js/inventory.js")

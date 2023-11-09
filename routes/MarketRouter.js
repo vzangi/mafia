@@ -8,5 +8,7 @@ router.get('/', controller.market)
 // Вещь
 router.get('/thing/:id', controller.thing)
 
+// Лоты игрока
+router.get('/my', controller.myLots)
 
 module.exports = router

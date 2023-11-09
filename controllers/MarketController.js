@@ -23,6 +23,18 @@ class MarketController {
       res.redirect('/market')
     }
   }
+
+  // Список вещей на продажу
+  async myLots(req, res) {
+    try {
+      const { account } = req
+      const data = await service.myLotsData(account)
+      res.render('pages/market/my', data)
+    } catch (error) {
+      console.log(error)
+      res.redirect('/market')
+    }
+  }
 }
 
 module.exports = new MarketController()

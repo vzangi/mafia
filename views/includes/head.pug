@@ -7,7 +7,7 @@ link(rel='stylesheet' href='https://code.ionicframework.com/ionicons/2.0.1/css/i
 link(rel='stylesheet' href='/css/bootstrap.min.css')
 link(rel='stylesheet' href='/css/style.css')
 link(rel='stylesheet' href='/css/pm.css')
-link(rel='stylesheet' href='/css/notifier.css')
+link(rel='stylesheet' href='/css/vendor/notifier.css')
 
 meta(property="og:title" content=title)
 meta(property="og:description" content=description)
@@ -17,9 +17,9 @@ meta(name="color-scheme" content="only light")
 script(src="/js/bootstrap.bundle.js")
 script(src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous")
 script(src="/socket.io/socket.io.js")
-script(src="/js/alert.js")
+script(src="/js/helper/alert.js")
+script(src="/js/vendor/jquery.tmpl.js")
 script(src="/js/base.js")
-script(src="/js/jquery.tmpl.js")
 
 include ./message-tmpl
 
