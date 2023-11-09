@@ -41,9 +41,11 @@ block aside
     div(class="thing-image-block p-4")
       img(src="/uploads/thing/"+thing.picture alt=thing.name)
     div(class="thing-description p-4")
-      div(class="text-secondary")= thing.description
+      div(class="text-secondary")
+        each line in thing.description.split('\r\n')
+          p= line
       if thing.thingcollection
-        div(class="text-secondary pt-3")= thing.thingcollection.name
+        div(class="text-secondary")= thing.thingcollection.name
 
 
 block scripts 
