@@ -195,8 +195,11 @@ $(function () {
     const typeId = $(this).val()
     const items = $('.thing-item')
 
+    items.removeClass('hide-item')
+
+    if (typeId == 0) return
+
     items
-      .removeClass('hide-item')
       .filter((_, item) => $(item).data().thing.thing.thingtypeId != typeId)
       .addClass('hide-item')
   })
