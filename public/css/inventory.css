@@ -1,5 +1,5 @@
 .things-list {
-  grid-template-columns: repeat(auto-fill, 15%);
+  grid-template-columns: repeat(auto-fill, 15.5%);
 }
 .thing-item {
   cursor: pointer;
@@ -8,12 +8,12 @@
 
 @media (max-width: 768px) {
   .things-list {
-    grid-template-columns: repeat(auto-fill, 31%);
+    grid-template-columns: repeat(auto-fill, 31.5%);
   }
 }
 @media (max-width: 576px) {
   .things-list {
-    grid-template-columns: repeat(auto-fill, 48%);
+    grid-template-columns: repeat(auto-fill, 48.8%);
   }
 }
 @media (max-width: 320px) {
@@ -56,13 +56,19 @@
 
 .sort-box select,
 .type-box select {
-  width: 150px;
+  width: 200px;
 }
 
 .hide-item {
   display: none !important;
 }
 
+@media (max-width: 768px) {
+  .sort-box select,
+  .type-box select {
+    width: 167px;
+  }
+}
 @media (max-width: 576px) {
   .sort-box select,
   .type-box select {
