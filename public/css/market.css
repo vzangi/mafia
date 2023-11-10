@@ -187,3 +187,10 @@ a.thing-item {
   height: 50px;
   border-radius: 4px;
 }
+.loading {
+  padding: 1rem;
+  text-align: center;
+}
+.loading img {
+  width: 50px;
+}

@@ -44,6 +44,17 @@ class MarketController extends BaseSocketController {
       callback({ status: 1, msg: error.message })
     }
   }
+
+  // Возвращает отфильтрованный список офферов из маркета
+  async getList(types, classes, collections, callback) {
+    try {
+      const offers = await this.service.getList(types, classes, collections)
+      callback({ status: 0, offers })
+    } catch (error) {
+      console.log(error)
+      callback({ status: 1, msg: error.message })
+    }
+  }
 }
 
 module.exports = (io, socket) => {

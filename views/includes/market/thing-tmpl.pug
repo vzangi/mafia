@@ -1,0 +1,22 @@
+script(id="offerTmpl" type="text/x-jquery-tmpl")
+  a(class="thing-item bb-1-gray" href="/market/thing/${thingId}")
+
+    div(class="thing-line")
+      div(class="thing-image")
+        img(src="/uploads/thing/${picture}" alt="${name}")
+      div(class="thing-name-box")
+        div(class="thing-name") ${name}
+        div
+          span(class="thing-class thing-class-${tc_id}") ${tc_name} класс
+
+    div(class="thing-line")
+      div(class="thing-count")
+        span ${cnt} шт. 
+      div(class="thing-price-box")
+        span от ${min_price} р.
+        button(class="btn btn-sm btn-success") Купить
+
+
+script(id="noOfferTmpl" type="text/x-jquery-tmpl")
+  div(class="p-4")
+    div(class="text-secondary") Ничего не найдено

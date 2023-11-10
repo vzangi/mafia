@@ -42,4 +42,42 @@ $(function () {
     item.appendTo(list)
     btn.show()
   })
+
+  // Нажатие на кнопку "Найти"
+  $('.filter-btn').click(function () {
+    $("<div class='loading'><img src='/images/loading.gif'></div>").appendTo(
+      $('.market-list').empty()
+    )
+
+    const types = $.map(
+      $('.category-selected-items.category-types .category-item'),
+      (t) => $(t).data().id
+    )
+
+    const classes = $.map(
+      $('.category-selected-items.category-classes .category-item'),
+      (t) => $(t).data().id
+    )
+
+    const collections = $.map(
+      $('.category-selected-items.category-collections .category-item'),
+      (t) => $(t).data().id
+    )
+
+    socket.emit('market.list', types, classes, collections, (res) => {
+      if (res.status != 0) {
+        return alert(res.msg)
+      }
+      const { offers } = res
+
+      if (offers && offers.length > 0) {
+        $('#offerTmpl').tmpl(res.offers).appendTo($('.market-list').empty())
+      } else {
+        $('#noOfferTmpl').tmpl().appendTo($('.market-list').empty())
+      }
+    })
+  })
+
+  // Вывести все офферы
+  $('.filter-btn').click()
 })

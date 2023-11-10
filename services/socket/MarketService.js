@@ -158,6 +158,17 @@ class MarketService extends BaseService {
     offer.marketPrice = null
     await offer.save()
   }
+
+  // Возвращает отфильтрованный список офферов из маркета
+  async getList(types, classes, collections) {
+    if (!types || !classes || !collections) {
+      throw new Error('Нет необходимых данных')
+    }
+
+    const offers = await AccountThing.getList(types, classes, collections)
+
+    return offers
+  }
 }
 
 module.exports = MarketService

@@ -4,10 +4,13 @@ div(class="block mb-4")
     if currentAccount
       a(class="btn btn-outline-success btn-sm flex-shrink-0" href="/market/my") Мои лоты
   div(class="market-list")
+
+
+  if false
     each thing in things 
 
       a(class="thing-item bb-1-gray" href="/market/thing/"+thing.thingId)
-        
+
         div(class="thing-line")
           div(class="thing-image")
             img(src="/uploads/thing/"+thing.picture alt=thing.name)

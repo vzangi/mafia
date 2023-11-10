@@ -15,4 +15,7 @@ module.exports = (io, socket) => {
 
   // Вернуть лот в инвентарь
   socket.on('market.takeback', controller.takeBack.bind(controller))
+
+  // Возвращает отфильтрованный список офферов из маркета
+  socket.on('market.list', controller.getList.bind(controller))
 }
