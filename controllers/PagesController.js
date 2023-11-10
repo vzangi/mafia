@@ -1,7 +1,7 @@
 const smiles = require('../units/smiles')
 const Account = require('../models/Account')
 
-class Pages {
+class PagesController {
   // Главная страница
   home(req, res) {
     res.render('pages/home')
@@ -53,4 +53,4 @@ class Pages {
   }
 }
 
-module.exports = new Pages()
+module.exports = new PagesController()

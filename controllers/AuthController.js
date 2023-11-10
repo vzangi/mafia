@@ -3,7 +3,7 @@ const maxAge = 1000 * 60 * 60 * 24 * 30
 
 const service = require('../services/AuthService')
 
-class Auth {
+class AuthController {
   // Регистрация
   async register(req, res) {
     try {
@@ -81,4 +81,4 @@ class Auth {
   }
 }
 
-module.exports = new Auth()
+module.exports = new AuthController()

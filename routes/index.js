@@ -3,6 +3,7 @@ module.exports = (app) => {
   app.use('/', require('./PagesRouter'))
   app.use('/profile', require('./ProfileRouter'))
   app.use('/market', require('./MarketRouter'))
+  app.use('/trades', require('./TradeRouter'))
 
   app.use('/gift', require('./admin/GiftsRouter'))
   app.use('/market', require('./admin/MarketRouter'))

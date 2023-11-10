@@ -1,6 +1,6 @@
 const service = require('../services/ProfileService')
 
-class Profile {
+class ProfileController {
   // Переход в профиль по никнейму
   async showAccountByNik(req, res, next) {
     try {
@@ -171,4 +171,4 @@ class Profile {
   }
 }
 
-module.exports = new Profile()
+module.exports = new ProfileController()

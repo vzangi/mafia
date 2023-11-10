@@ -1,0 +1,4 @@
+.offer .ion-arrow-swap:before {
+  content: '\f268';
+  transform: rotate(90deg);
+}

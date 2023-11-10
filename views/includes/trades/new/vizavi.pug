@@ -1,0 +1,9 @@
+div(class="block p-4")
+  div(class="pm-friend-info")
+    div(class="pm-friend-avatar")
+      img(src="/uploads/"+vizavi.avatar)
+    div(class="pm-friend-nik")
+      span 
+        a(href="/profile/"+vizavi.username)= vizavi.username
+  div(class="mt-3")
+    button(class="btn btn-sm btn-success w-100 send-offer-btn" disabled) Отправить предложение
