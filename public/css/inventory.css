@@ -62,3 +62,14 @@
 .hide-item {
   display: none !important;
 }
+
+@media (max-width: 576px) {
+  .sort-box select,
+  .type-box select {
+    width: 100%;
+  }
+  .sort-box,
+  .type-box {
+    flex: 1 1 50%;
+  }
+}
