@@ -3,7 +3,7 @@ if currentAccount
     div(class="d-flex flex-column align-items-center")
       small(class="text-secondary mb-2") Твой баланс
       div(class="balans mb-3")
-        span(class="fs-2")= Math.ceil(currentAccount.wallet)
+        span(class="fs-2")= Math.floor(currentAccount.wallet)
         if currentAccount.kopeiki != 0
           span(class="text-secondary fs-4") .
           span(class="text-secondary fs-4")= currentAccount.kopeiki
