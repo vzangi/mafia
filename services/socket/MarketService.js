@@ -131,7 +131,7 @@ class MarketService extends BaseService {
       throw new Error('Цена указана неверно')
     }
 
-    offer.marketPrice = marketPrice
+    offer.marketPrice = marketPrice.toFixed(2)
     await offer.save()
   }
 

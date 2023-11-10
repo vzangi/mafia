@@ -10,7 +10,7 @@ const AccountThing = require('../models/AccountThing')
 const Friend = require('../models/Friend')
 const WalletEvents = require('../models/WalletEvents')
 const Notification = require('../models/Notification')
-const Thing = require('../models/Thing')
+const ThingType = require('../models/ThingType')
 
 class ProfileService {
   async profileInfo(profile, currentUser) {
@@ -312,9 +312,14 @@ class ProfileService {
       order: [['id', 'desc']],
     })
 
+    const types = await ThingType.findAll({
+      order: [['sort']],
+    })
+
     const data = {
       profile,
       things,
+      types,
     }
 
     return data

@@ -54,6 +54,11 @@
   align-items: center;
 }
 
-.sort-box select {
+.sort-box select,
+.type-box select {
   width: 150px;
+}
+
+.hide-item {
+  display: none !important;
 }

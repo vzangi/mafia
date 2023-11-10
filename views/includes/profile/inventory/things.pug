@@ -2,17 +2,7 @@ div(class="things-list-box mb-4")
   if things.length == 0
     p Пока нет вещей
   else
-    div(class="things-filter mb-3")
-      div(class="d-flex")
-        div(class="filter-box flex-grow-1")
-          input(class="form-control" placeholder="Поиск по вещам")
-        div(class="ms-2 sort-box flex-grow-0")
-          select(class="form-control")
-            option(value="0") По умолчанию
-            option(value="1") По названию
-            option(value="2") По классу
-            option(value="3") По типу
-            option(value="4") По дате
+    include ./filter
     div(class="things-list")
       each thing, index in things
         div(class="thing-item" data-id=thing.id data-thing=thing)

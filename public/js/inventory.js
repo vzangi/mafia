@@ -140,7 +140,7 @@ $(function () {
     })
   })
 
-  // Пересортировка вещей
+  // Cортировка вещей
   $('.sort-box select').change(function () {
     const sortBy = $(this).val()
     const items = $('.thing-item')
@@ -190,16 +190,26 @@ $(function () {
     }
   })
 
+  // Фильтрация по типу вещи
+  $('.type-box select').change(function () {
+    const typeId = $(this).val()
+    const items = $('.thing-item')
+
+    items
+      .removeClass('hide-item')
+      .filter((_, item) => $(item).data().thing.thing.thingtypeId != typeId)
+      .addClass('hide-item')
+  })
+
   // Фильтрация по имени
   $('.filter-box input').keyup(function () {
     const filterText = $(this).val().toLowerCase()
     const items = $('.thing-item')
 
-    items.show()
-
     items
+      .show()
       .filter(
-        (index, item) =>
+        (_, item) =>
           $(item).data().thing.thing.name.toLowerCase().indexOf(filterText) < 0
       )
       .hide()
