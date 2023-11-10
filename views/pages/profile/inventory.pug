@@ -12,7 +12,8 @@ block main
   if currentAccount && profile.id == currentAccount.id
     include /includes/profile/inventory/form-tmpl
     include /includes/profile/inventory/sell-form
+  else 
+    include /includes/profile/inventory/other-form-tmpl
 
 block scripts 
-  if currentAccount && profile.id == currentAccount.id
-    script(src="/js/inventory.js")
+  script(src="/js/inventory.js")

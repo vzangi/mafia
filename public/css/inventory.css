@@ -53,3 +53,7 @@
   display: flex;
   align-items: center;
 }
+
+.sort-box select {
+  width: 150px;
+}

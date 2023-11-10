@@ -80,9 +80,10 @@ class ProfileService {
     }).findAll()
 
     data.things = await AccountThing.scope({
-      method: ['withThings', profile.id]
+      method: ['withThings', profile.id],
     }).findAll({
-      limit: 6
+      limit: 6,
+      order: [['id', 'desc']],
     })
 
     return data
@@ -302,16 +303,18 @@ class ProfileService {
   async inventory(username) {
     const profile = await Account.findOne({ where: { username } })
     if (!profile) {
-      throw new Error("Пользователь с таким ником не найден")
+      throw new Error('Пользователь с таким ником не найден')
     }
 
     const things = await AccountThing.scope({
-      method: ['withThings', profile.id]
-    }).findAll()
+      method: ['withThings', profile.id],
+    }).findAll({
+      order: [['id', 'desc']],
+    })
 
     const data = {
       profile,
-      things
+      things,
     }
 
     return data

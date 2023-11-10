@@ -20,19 +20,6 @@ script(id="formTmpl" type="text/x-jquery-tmpl")
                   p ${line}
                   . 
                     {{/each}}
-              . 
-                {{if thing.thingtypeId == 2}}
-              div(class="col-md-12")
-                button(class="w-100 btn btn-outline-success mb-3 btn-activate") Активировать
-              . 
-                {{/if}}
-
-              . 
-                {{if thing.forsale}}
-              div(class="col-md-12")
-                button(class="w-100 btn btn-outline-primary mb-3 btn-sell-on-market") Выставить на маркете
-                button(class="w-100 btn btn-outline-primary mb-3 btn-sell") Продать за ${thing.price} р.
-              . 
-                {{/if}}
+                a(href="/market/thing/${thing.id}" class="w-100 btn btn-outline-success mb-3") Купить на маркете
 
 include ./form-img-tmpl

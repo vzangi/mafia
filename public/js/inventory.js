@@ -9,7 +9,7 @@ $(function () {
 
   // Удаление вещи из списка и уменьшение количества на единицу
   const decThingsCount = (thingId) => {
-    const tc = $(".things-count")
+    const tc = $('.things-count')
     tc.text(tc.text() * 1 - 1)
     $(`.thing-item[data-id=${thingId}]`).remove()
   }
@@ -109,10 +109,10 @@ $(function () {
   })
 
   // Установка ограничения в два знака после запятой
-  $("#sellPrice, #navarCount").on('input', function (e) {
+  $('#sellPrice, #navarCount').on('input', function (e) {
     let value = $(this).val()
-    if (value.indexOf(".") != '-1') {
-      value = value.substring(0, value.indexOf(".") + 3); 
+    if (value.indexOf('.') != '-1') {
+      value = value.substring(0, value.indexOf('.') + 3)
       $(this).val(value)
     }
   })
@@ -138,5 +138,70 @@ $(function () {
         decThingsCount(id)
       })
     })
+  })
+
+  // Пересортировка вещей
+  $('.sort-box select').change(function () {
+    const sortBy = $(this).val()
+    const items = $('.thing-item')
+
+    const sortedItems = items.sort((a, b) => {
+      const ta = $(a).data().thing
+      const tb = $(b).data().thing
+
+      // По умолчанию
+      if (sortBy == 0) {
+        if (ta.id > tb.id) return -1
+        if (ta.id < tb.id) return 1
+        return 0
+      }
+
+      // По имени
+      if (sortBy == 1) {
+        if (ta.thing.name > tb.thing.name) return 1
+        if (ta.thing.name < tb.thing.name) return -1
+        return 0
+      }
+
+      // По классу
+      if (sortBy == 2) {
+        if (ta.thing.thingclassId > tb.thing.thingclassId) return -1
+        if (ta.thing.thingclassId < tb.thing.thingclassId) return 1
+        return 0
+      }
+
+      // По типу
+      if (sortBy == 3) {
+        if (ta.thing.thingtypeId > tb.thing.thingtypeId) return 1
+        if (ta.thing.thingtypeId < tb.thing.thingtypeId) return -1
+        return 0
+      }
+
+      // По дате
+      if (sortBy == 4) {
+        if (ta.createdAt > tb.createdAt) return 1
+        if (ta.createdAt < tb.createdAt) return -1
+        return 0
+      }
+    })
+
+    for (let item of sortedItems) {
+      $(item).remove().appendTo('.things-list')
+    }
+  })
+
+  // Фильтрация по имени
+  $('.filter-box input').keyup(function () {
+    const filterText = $(this).val().toLowerCase()
+    const items = $('.thing-item')
+
+    items.show()
+
+    items
+      .filter(
+        (index, item) =>
+          $(item).data().thing.thing.name.toLowerCase().indexOf(filterText) < 0
+      )
+      .hide()
   })
 })
