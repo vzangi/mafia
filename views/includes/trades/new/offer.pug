@@ -1,5 +1,30 @@
-div(class="block p-4")
-    div(class="offer d-flex flex-column")
-        div(class="my-things") my
-        div(class="ion-arrow-swap text-center fs-1 text-secondary")
-        div(class="vizavi-things") vizavi
+div(class="block p-4 mb-4")
+  div(class="offer d-flex flex-column")
+
+    div(class="my-things")
+
+      div(class="d-flex mb-3")
+        div(class="d-flex flex-column align-items-center justify-content-center me-2")
+          div(class="icon bg-danger")
+            span(class="ion-log-in")
+        div(class="d-flex flex-column")
+          span Твои предметы
+          small(class="text-secondary") Эти предметы ты утратишь 
+  
+      div(class="no-one text-center") Ты не предложил ни одного предмета
+      div(class="things-list" data-id=currentAccount.id)
+
+    div(class="ion-arrow-swap text-center fs-2 text-secondary mt-2 mb-2")
+  
+    
+    div(class="vizavi-things offer-things") 
+      div(class="d-flex mb-3")
+        div(class="d-flex flex-column align-items-center justify-content-center me-2")
+          div(class="icon bg-success")
+            span(class="ion-log-out")
+        div(class="d-flex flex-column")
+          span Предметы #[strong= vizavi.username]
+          small(class="text-secondary") Эти предметы ты получишь 
+
+      div(class="no-one text-center") Ты не запросил ни одного предмета
+      div(class="things-list" data-id=vizavi.id)

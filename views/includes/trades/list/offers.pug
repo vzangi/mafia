@@ -1,0 +1,72 @@
+if !trades || trades.length == 0
+  div(class="text-center text-secondary")
+    span У вас нет активных предложений обмена.
+else
+
+  each trade in trades
+    - var myCount = 0
+    each thing in trade.tradeitems
+      if thing.accountId == currentAccount.id 
+        - myCount = myCount + 1
+    - var vizaviCount = trade.tradeitems.length - myCount
+
+    div(class="block p-4 mb-4")
+
+      div(class="pm-friend-info mb-3")
+        div(class="pm-friend-avatar me-2")
+          img(src="/uploads/"+trade.from.avatar)
+        div(class="pm-friend-nik")
+          span 
+            a(href="/profile/"+trade.from.username)= trade.from.username
+            span  предлагает тебе обмен
+          small(class="text-secondary")= trade.coolDate
+
+      hr
+
+      div(class="offer d-flex flex-column")
+
+        div(class="my-things")
+          div(class="d-flex mb-3")
+            div(class="d-flex flex-column align-items-center justify-content-center me-2")
+              div(class="icon bg-danger")
+                span(class="ion-log-in")
+            div(class="d-flex flex-column")
+              span Твои предметы
+              small(class="text-secondary") Эти предметы ты утратишь 
+          if myCount == 0
+            div(class="no-one text-center") У тебя не запросили ни одного предмета
+          div(class="things-list")
+            each thing in trade.tradeitems
+              if thing.accountId == currentAccount.id
+                div(class="thing-item" data-bs-toggle="tooltip" data-bs-placement="bottom" title=thing.accountthing.thing.name)
+                  div(class="thing-item-img")
+                    img(src="/uploads/thing/"+thing.accountthing.thing.picture)
+                  div(class="thing-item-name tin-class-"+thing.accountthing.thing.thingclassId)
+
+
+        div(class="ion-arrow-swap text-center fs-2 text-secondary mt-2 mb-2")
+      
+        
+        div(class="vizavi-things offer-things") 
+          div(class="d-flex mb-3")
+            div(class="d-flex flex-column align-items-center justify-content-center me-2")
+              div(class="icon bg-success")
+                span(class="ion-log-out")
+            div(class="d-flex flex-column")
+              span Предметы #[strong= trade.from.username]
+              small(class="text-secondary") Эти предметы ты получишь 
+          if vizaviCount == 0
+            div(class="no-one text-center") Тебе не предложили ни одного предмета
+          div(class="things-list")
+            each thing in trade.tradeitems
+              if thing.accountId != currentAccount.id
+                div(class="thing-item" data-bs-toggle="tooltip" data-bs-placement="bottom" title=thing.accountthing.thing.name)
+                  div(class="thing-item-img")
+                    img(src="/uploads/thing/"+thing.accountthing.thing.picture)
+                  div(class="thing-item-name tin-class-"+thing.accountthing.thing.thingclassId)
+
+      hr
+
+      div(class="trade-btns d-flex justify-content-center gap-4")
+        button(class="btn btn-success") Принять
+        button(class="btn btn-warning") Отменить

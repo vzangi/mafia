@@ -2,3 +2,21 @@
   content: '\f268';
   transform: rotate(90deg);
 }
+
+.offer .icon {
+  color: var(--color-white);
+  font-size: 1.5rem;
+  padding: 0 7px;
+  border-radius: 50px;
+}
+
+.trader {
+  border-bottom: 3px solid #eee;
+  opacity: 0.7;
+  cursor: pointer;
+}
+
+.trader.active {
+  border-bottom-color: green;
+  opacity: 1;
+}

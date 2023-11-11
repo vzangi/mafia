@@ -11,7 +11,20 @@ class TradeController {
       res.render('pages/trades/new', data)
     } catch (error) {
       console.log(error)
-      next()
+      next(error)
+    }
+  }
+
+  // Список предложенных обменов
+  async tradesList(req, res, next) {
+    try {
+      const { account } = req
+      
+      const data = await service.tradesList(account)
+      res.render('pages/trades/list', data)
+    } catch (error) {
+      console.log(error)
+      next(error)
     }
   }
 }

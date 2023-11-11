@@ -1,5 +1,9 @@
 const Account = require('../models/Account')
 const AccountThing = require('../models/AccountThing')
+const ThingType = require('../models/ThingType')
+const Thing = require('../models/Thing')
+const Trade = require('../models/Trade')
+const TradeItem = require('../models/TradeItem')
 
 class TradeService {
   // Данные страницы нового обмена
@@ -28,10 +32,51 @@ class TradeService {
       method: ['withThings', vizavi.id],
     }).findAll({ order: [['id', 'desc']] })
 
+    const types = await ThingType.findAll({
+      order: [['sort']],
+    })
+
     const data = {
       vizavi,
       vizaviThings,
       myThings,
+      types,
+    }
+
+    return data
+  }
+
+  // Список новых обменов
+  async tradesList(account) {
+    if (!account) {
+      throw new Error('Не авторизован')
+    }
+
+    const trades = await Trade.findAll({
+      where: {
+        toId: account.id,
+        status: 0,
+      },
+      include: [
+        { model: Account, as: 'from' },
+        {
+          model: TradeItem,
+          include: [
+            { model: Trade },
+            { 
+              model: AccountThing,
+              include: [
+                { model: Thing }
+              ]
+            },
+            { model: Account },
+          ]
+        },
+      ]
+    })
+
+    const data = {
+      trades,
     }
 
     return data

@@ -11,6 +11,7 @@ const Friend = require('../models/Friend')
 const WalletEvents = require('../models/WalletEvents')
 const Notification = require('../models/Notification')
 const ThingType = require('../models/ThingType')
+const Trade = require('../models/Trade')
 
 class ProfileService {
   async profileInfo(profile, currentUser) {
@@ -321,6 +322,14 @@ class ProfileService {
       things,
       types,
     }
+
+    // Количество запросов на обмен
+    data.tradesCount = await Trade.count({
+      where: {
+        toId: profile.id,
+        status: 0, 
+      }
+    })
 
     return data
   }

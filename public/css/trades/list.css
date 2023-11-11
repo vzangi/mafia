@@ -1,0 +1,8 @@
+@media (max-width: 576px) {
+    .things-list {
+        grid-template-columns: repeat(auto-fill, 31.1%);
+    }
+}
+.thing-item .thing-item-name {
+    height: 10px;
+}

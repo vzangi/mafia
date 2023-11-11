@@ -611,3 +611,25 @@ a > span.cnt {
   margin-left: 1rem;
   position: relative;
 }
+
+ul.aside-menu {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+ul.aside-menu li a {
+  padding: 0.5rem 1.5rem;
+  text-decoration: none;
+  color: #666;
+  display: block;
+}
+ul.aside-menu li a:hover {
+  background: #eee;
+}
+
+ul.aside-menu li a.active {
+  background-color: #2aa9d8;
+  background-color: rgba(75,137,220,.15);
+  border-left: 3px solid #4b89dc;
+}

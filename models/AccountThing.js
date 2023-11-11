@@ -13,7 +13,6 @@ const AccountThing = sequelize.define(
     },
     accountId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
     },
     thingId: {
       type: DataTypes.INTEGER,

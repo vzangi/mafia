@@ -1,0 +1,40 @@
+mixin trader(trader, thingsCount, active='')
+  div(class="d-flex justify-content-center flex-grow-1 pb-2 trader " + active data-id=trader.id)
+    div
+      div(class="pm-friend-info")
+        div(class="pm-friend-avatar")
+          img(src="/uploads/"+trader.avatar)
+        div(class="pm-friend-nik")
+          span 
+            strong= trader.username
+          small(class="text-secondary")= `предметов: ${thingsCount}`
+
+mixin things(things)
+  div(class="things-list")
+    if things && things.length != 0
+      each thing, index in things
+        div(class="thing-item" data-id=thing.id data-trader=thing.accountId data-thing=thing)
+          div(class="thing-item-img")
+            img(src="/uploads/thing/"+thing.thing.picture)
+          div(class="thing-item-name tin-class-"+thing.thing.thingclassId)
+            span= thing.thing.name
+    else 
+      p Нет вещей
+
+div(class="block p-4 mb-4")
+
+  div(class="traders mb-3")
+    div(class="d-flex")
+
+      +trader(currentAccount, myThings.length, 'active')
+      +trader(vizavi, vizaviThings.length)
+
+  include /includes/profile/inventory/filter
+
+  div(class="things-box")
+
+    div(class="trader-things" data-trader=currentAccount.id)
+      +things(myThings)
+
+    div(class="trader-things hide" data-trader=vizavi.id)
+      +things(vizaviThings)

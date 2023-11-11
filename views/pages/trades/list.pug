@@ -4,17 +4,14 @@ block head
     link(rel="stylesheet" href="/css/profile.css")
     link(rel="stylesheet" href="/css/inventory.css")
     link(rel="stylesheet" href="/css/trades.css")
+    link(rel="stylesheet" href="/css/trades/list.css")
 
 block aside 
-    include /includes/trades/new/vizavi
+    include /includes/trades/list/menu
 
 block article
-    h3 Новый обмен
-
-    include /includes/trades/new/offer
-
-    include /includes/trades/new/traders
+    h3 Предложения обмена
+    include /includes/trades/list/offers
 
 
 block scripts 
-    script(src="/js/trades.js")

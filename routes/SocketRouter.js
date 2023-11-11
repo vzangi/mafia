@@ -31,6 +31,9 @@ module.exports = (io) => {
 
     // Роуты маркета
     require('./socket/MarketRouter')(io, socket)
+
+    // Роуты обменов
+    require('./socket/TradesRouter')(io, socket)
   })
 
   
