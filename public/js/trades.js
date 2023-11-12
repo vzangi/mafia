@@ -129,16 +129,16 @@ $(function () {
             )
             .hide()
     })
-    
+
     // Нажатие на кнопку "Отправить предложение"
-    $('.send-offer-btn').click(function(){
+    $('.send-offer-btn').click(function () {
         const myThingIds = []
-        $('.offer .things-list:first .thing-item').each((_, t) => 
+        $('.offer .things-list:first .thing-item').each((_, t) =>
             myThingIds.push($(t).data().id))
 
         const vizaviId = $('.trader:last').data().id
         const vizaviThingIds = []
-        $('.offer .things-list:last .thing-item').each((_, t) => 
+        $('.offer .things-list:last .thing-item').each((_, t) =>
             vizaviThingIds.push($(t).data().id))
 
         socket.emit('trades.new', vizaviId, myThingIds, vizaviThingIds, (res) => {
@@ -152,6 +152,23 @@ $(function () {
                 location.href = '/profile/things'
             })
 
+        })
+    })
+
+    // Нажатие на "Отменить"
+    $('.decline-btn').click(function () {
+        const { id } = $(this).data()
+        console.log(id);
+        confirm('Отменить обмен?').then(accept => {
+            if (!accept) return
+
+            socket.emit('trades.decline', id, (res) => {
+                if (res.status != 0) {
+                    return alert(res.msg)
+                }
+                $(`.trade-item[data-id=${id}]`).remove()
+                notify('Обмен отменён')
+            })
         })
     })
 })

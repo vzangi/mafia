@@ -12,6 +12,17 @@ class TradesController extends BaseSocketController {
       callback({ status: 1, msg: error.message })
     }
   }
+
+  // Отмена предложения
+  async decline(tradeId, callback) {
+    try {
+      await this.service.decline(tradeId)
+      callback({ status: 0 })
+    } catch (error) {
+      console.log(error)
+      callback({ status: 1, msg: error.message })
+    }
+  }
 }
 
 module.exports = (io, socket) => {

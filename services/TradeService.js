@@ -72,7 +72,8 @@ class TradeService {
             { model: Account },
           ]
         },
-      ]
+      ],
+      order: [['createdAt', 'desc']]
     })
 
     const data = {

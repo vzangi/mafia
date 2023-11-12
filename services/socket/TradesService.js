@@ -120,6 +120,65 @@ class TradesService extends BaseService {
             )
         }
     }
+
+    // Отмена предложения
+    async decline(tradeId) {
+        const { user } = this
+        if (!user) {
+            throw new Error("Не авторизован")
+        }
+
+        if (!tradeId) {
+            throw new Error("Нет необходимых данных")
+        }
+
+        const trade = await Trade.findByPk(tradeId)
+
+        if (!trade) {
+            throw new Error("Предложение обмена не найдено")
+        }
+
+        if (trade.toId != user.id) {
+            throw new Error("Нельзя отменить чужой обмен")
+        }
+
+        if (trade.status != 0) {
+            throw new Error("Нельзя отменить неактивный обмен")
+        }
+
+        trade.status = 3
+        await trade.save()
+    }
+
+    async accept(tradeId) {
+        const { user } = this
+        if (!user) {
+            throw new Error("Не авторизован")
+        }
+
+        if (!tradeId) {
+            throw new Error("Нет необходимых данных")
+        }
+
+        const trade = await Trade.findByPk(tradeId)
+
+        if (!trade) {
+            throw new Error("Предложение обмена не найдено")
+        }
+
+        if (trade.toId != user.id) {
+            throw new Error("Нельзя принять чужой обмен")
+        }
+
+        if (trade.status != 0) {
+            throw new Error("Нельзя принять неактивный обмен")
+        }
+
+        // Доработать обмен !!!
+
+        trade.status = 2
+        await trade.save()
+    }
 }
 
 module.exports = TradesService

@@ -10,7 +10,7 @@ else
         - myCount = myCount + 1
     - var vizaviCount = trade.tradeitems.length - myCount
 
-    div(class="block p-4 mb-4")
+    div(class="block p-4 mb-4 trade-item" data-id=trade.id)
 
       div(class="pm-friend-info mb-3")
         div(class="pm-friend-avatar me-2")
@@ -68,5 +68,5 @@ else
       hr
 
       div(class="trade-btns d-flex justify-content-center gap-4")
-        button(class="btn btn-success") Принять
-        button(class="btn btn-warning") Отменить
+        button(class="btn btn-success accept-btn" data-id=trade.id) Принять
+        button(class="btn btn-warning decline-btn" data-id=trade.id) Отменить
