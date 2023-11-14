@@ -20,3 +20,15 @@
   border-bottom-color: green;
   opacity: 1;
 }
+
+@media (max-width: 576px) {
+  .list-trade-item .things-list {
+    grid-template-columns: repeat(auto-fill, 31.1%);
+  }
+}
+.list-trade-item .thing-item .thing-item-name {
+  height: 10px;
+}
+.list-trade-item .thing-item-img {
+  aspect-ratio: 10/9;
+}

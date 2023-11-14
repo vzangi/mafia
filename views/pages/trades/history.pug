@@ -4,14 +4,13 @@ block head
     link(rel="stylesheet" href="/css/profile/profile.css")
     link(rel="stylesheet" href="/css/profile/inventory.css")
     link(rel="stylesheet" href="/css/trades.css")
-    link(rel="stylesheet" href="/css/trades/list.css")
 
 block aside 
     include /includes/trades/history/menu
 
 block article
     h3 История обменов
-    div(class="history mt-3")
+    div(class="history list-trade-item mt-3")
 
 block scripts 
     include /includes/trades/status-tmpl

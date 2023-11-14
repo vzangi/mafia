@@ -4,14 +4,13 @@ block head
     link(rel="stylesheet" href="/css/profile/profile.css")
     link(rel="stylesheet" href="/css/profile/inventory.css")
     link(rel="stylesheet" href="/css/trades.css")
-    link(rel="stylesheet" href="/css/trades/list.css")
 
 block aside 
     include /includes/trades/sended/menu
 
 block article
     h3 Отправленные предложения
-    div(class="sended-list mt-3")
+    div(class="sended-list mt-3 list-trade-item")
 
 block scripts 
     include /includes/trades/status-tmpl
