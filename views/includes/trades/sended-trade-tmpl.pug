@@ -21,11 +21,11 @@ script(id="sendedTradeTmpl" type="text/x-jquery-tmpl")
           div(class="d-flex flex-column")
             span Твои предметы
             small(class="text-secondary") Эти предметы ты предлагаешь
-          . 
-            {{if fromItems.lenght == 0}}
-          div(class="no-one text-center") Ты не предложил ни одного предмета
-          . 
-            {{/if}}
+        . 
+          {{if fromItems.length == 0}}
+        div(class="no-one text-center") Ты не предложил ни одного предмета
+        . 
+          {{/if}}
         div(class="things-list")
           .
             {{each(i, thing) fromItems}}
@@ -47,8 +47,8 @@ script(id="sendedTradeTmpl" type="text/x-jquery-tmpl")
             span Предметы #[strong ${to.username}]
             small(class="text-secondary") Эти предметы ты запрашиваешь
         . 
-          {{if toItems.lenght == 0}}
-          div(class="no-one text-center") Ты не запросил ни одного предмета
+          {{if toItems.length == 0}}
+        div(class="no-one text-center") Ты не запросил ни одного предмета
         . 
           {{/if}}
         div(class="things-list")

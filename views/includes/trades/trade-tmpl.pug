@@ -34,11 +34,11 @@ script(id="myTradeTmpl" type="text/x-jquery-tmpl")
         div(class="d-flex flex-column")
           span Твои предметы
           small(class="text-secondary") Эти предметы ты предлагал
-        . 
-          {{if fromItems.lenght == 0}}
-        div(class="no-one text-center") Ты не запросили ни одного предмета
-        . 
-          {{/if}}
+      . 
+        {{if fromItems.length == 0}}
+      div(class="no-one text-center") Ты не предложил ни одного предмета
+      . 
+        {{/if}}
       div(class="things-list")
         .
           {{each(i, thing) fromItems}}
@@ -60,8 +60,8 @@ script(id="myTradeTmpl" type="text/x-jquery-tmpl")
           span Предметы #[strong ${to.username}]
           small(class="text-secondary") Эти предметы ты запрашивал
       . 
-        {{if toItems.lenght == 0}}
-        div(class="no-one text-center") У тебя не запросили ни одного предмета
+        {{if toItems.length == 0}}
+      div(class="no-one text-center") Ты не запросил ни одного предмета
       . 
         {{/if}}
       div(class="things-list")
@@ -95,11 +95,11 @@ script(id="otherTradeTmpl" type="text/x-jquery-tmpl")
         div(class="d-flex flex-column")
           span Предметы #[strong ${from.username}]
           small(class="text-secondary") Эти предметы были предложены
-        . 
-          {{if fromItems.lenght == 0}}
-        div(class="no-one text-center") У тебя не запросили ни одного предмета
-        . 
-          {{/if}}
+      . 
+        {{if fromItems.length == 0}}
+      div(class="no-one text-center") Тебе не предложили ни одного предмета
+      . 
+        {{/if}}
       div(class="things-list")
         .
           {{each(i, thing) fromItems}}
@@ -121,8 +121,8 @@ script(id="otherTradeTmpl" type="text/x-jquery-tmpl")
           span Твои предметы
           small(class="text-secondary") Эти предметы были запрошены
       . 
-        {{if toItems.lenght == 0}}
-        div(class="no-one text-center") У тебя не запросили ни одного предмета
+        {{if toItems.length == 0}}
+      div(class="no-one text-center") У тебя не запросили ни одного предмета
       . 
         {{/if}}
       div(class="things-list")
