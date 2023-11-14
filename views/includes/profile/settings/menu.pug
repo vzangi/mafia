@@ -1,13 +1,17 @@
-h3 Настройки
-div(class="block p-3 mb-3")
-  ul(class="nav nav-pills flex-column")
-    li(class="nav-item")
-      a(href="/profile/settings" class="nav-link active") Настройки профиля
-    li(class="nav-item")
-      a(href="/profile/notifications" class="nav-link") Уведомления
+div(class="block mb-4 pb-2")
+  div(class="p-4 pb-2")
+    h4 Настройки
 
-h3 Безопасность
-div(class="block p-3 mb-3")
-  ul(class="nav nav-pills flex-column")
-    li(class="nav-item")
+  ul(class="aside-menu")
+    li 
+      a(href="/profile/settings" class="active") Настройки профиля
+    li 
+      a(href="/profile/notifications") Уведомления
+
+
+  div(class="p-4 pb-2")
+    h4 Безопасность
+
+  ul(class="aside-menu")
+    li 
       a(href="/profile/change-password" class="nav-link") Сменить пароль

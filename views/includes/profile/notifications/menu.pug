@@ -1,10 +1,12 @@
-h3 Настройки
-div(class="block p-3")
-  ul(class="nav nav-pills flex-column")
-    li(class="nav-item")
-      a(href="/profile/settings" class="nav-link") Настройки профиля
-    li(class="nav-item")
-      a(href="/profile/notifications" class="nav-link active") Уведомления
+div(class="block mb-4 pb-2")
+  div(class="p-4 pb-2")
+    h4 Настройки
+
+  ul(class="aside-menu")
+    li 
+      a(href="/profile/settings") Настройки профиля
+    li 
+      a(href="/profile/notifications" class="active") Уведомления
 
 if currentAccount.telegramChatId
   div(class="block p-3 mt-4 mb-3")
@@ -15,3 +17,5 @@ else
   div(class="block p-3 mt-4 mb-3")
     p Для подключения уведомлений в telegram, нажми на кнопку "Подключить" и запусти бота
     a(href="https://t.me/"+botName+"?start="+currentAccount.username+"__"+currentAccount.id+"3301" class="btn btn-success" target="blank") Подключить 
+
+
