@@ -132,8 +132,8 @@ h4 {
   align-items: center;
   justify-content: center;
   gap: 5px;
-  max-width: 100px;
-  min-width: 80px;
+  max-width: 110px;
+  min-width: 105px;
   flex: none;
 }
 
