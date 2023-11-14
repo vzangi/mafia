@@ -58,6 +58,10 @@ const seoData = {
     description:
       'На этой странице можно почитать о системе рангов сайта Mafia One',
   },
+  '/market': {
+    title: 'Маркет онлайн игры Mafia One',
+    description: 'Покупайте и продавайте вещи из своего арсенала',
+  },
 }
 
 const paramsList = Object.keys(seoData['/'])

@@ -31,7 +31,9 @@ class TradeController {
   // История обменов
   async tradesHistory(req, res, next) {
     try {
-      res.render('pages/trades/history')
+      res.render('pages/trades/history', {
+        title: 'История обменов',
+      })
     } catch (error) {
       console.log(error)
       next(error)
@@ -41,7 +43,9 @@ class TradeController {
   // Список отправленных обменов
   async sendedTrades(req, res, next) {
     try {
-      res.render('pages/trades/sended')
+      res.render('pages/trades/sended', {
+        title: 'Отправленные предложения',
+      })
     } catch (error) {
       console.log(error)
       next(error)

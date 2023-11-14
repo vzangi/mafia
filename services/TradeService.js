@@ -41,6 +41,7 @@ class TradeService {
       vizaviThings,
       myThings,
       types,
+      title: 'Предложение нового обмена',
     }
 
     return data
@@ -76,6 +77,7 @@ class TradeService {
 
     const data = {
       trades,
+      title: 'Предложения обмена',
     }
 
     return data

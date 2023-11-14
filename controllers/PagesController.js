@@ -43,7 +43,10 @@ class PagesController {
         online: 1,
       },
     })
-    res.render('pages/online', { users })
+    res.render('pages/online', {
+      users,
+      title: 'Онлайн список игроков Mafia One',
+    })
   }
 
   // Список открыток

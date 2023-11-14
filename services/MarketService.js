@@ -19,6 +19,8 @@ class MarketService {
       classes,
       collections,
       things,
+      title: 'Маркет онлайн игры Mafia One',
+      description: 'Покупайте и продавайте вещи из своего арсенала',
     }
     return data
   }
@@ -49,6 +51,7 @@ class MarketService {
 
     const data = {
       things,
+      title: `Мои лоты на маркете Mafia One`,
     }
 
     return data
@@ -83,6 +86,8 @@ class MarketService {
     const data = {
       thing,
       thingOffers,
+      title: thing.name + ' - покупайте в маркете игры Mafia One',
+      description: thing.description,
     }
 
     return data

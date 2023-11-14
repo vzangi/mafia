@@ -321,14 +321,15 @@ class ProfileService {
       profile,
       things,
       types,
+      title: `Инвентарь ${username}`,
     }
 
     // Количество запросов на обмен
     data.tradesCount = await Trade.count({
       where: {
         toId: profile.id,
-        status: 0, 
-      }
+        status: 0,
+      },
     })
 
     return data
