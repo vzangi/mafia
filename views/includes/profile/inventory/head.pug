@@ -14,6 +14,7 @@ div(class="d-flex justify-content-between align-items-center")
       div
         a(href="/trades/new/"+profile.username class="btn btn-outline-secondary" title="Предложить обмен" data-bs-toggle="tooltip" data-bs-placement="top") Обмен
   else 
-    a(href="/trades" class="btn btn-success" title="Предложения обмена" data-bs-toggle="tooltip" data-bs-placement="top") 
-      span Обмен
-      span= ` (${tradesCount})`
+    a(href="/trades" class="btn btn-outline-success" title="Предложения обмена" data-bs-toggle="tooltip" data-bs-placement="top") 
+      span Обмены
+      if tradesCount > 0
+        span= ` (${tradesCount})`

@@ -179,8 +179,8 @@ $(function () {
 
       // По дате
       if (sortBy == 4) {
-        if (ta.createdAt > tb.createdAt) return 1
-        if (ta.createdAt < tb.createdAt) return -1
+        if (ta.updatedAt > tb.updatedAt) return 1
+        if (ta.updatedAt < tb.updatedAt) return -1
         return 0
       }
     })

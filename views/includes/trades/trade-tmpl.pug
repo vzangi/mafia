@@ -1,0 +1,152 @@
+script(id="statusTmpl" type="text/x-jquery-tmpl")
+  .
+    {{if status == 1}}
+      {{tmpl({date: coolDate(updatedAt)}) '#statusUserCancelledTmpl'}}
+    {{/if}}
+    {{if status == 2}}
+      {{tmpl({date: coolDate(updatedAt)}) '#statusAcceptTmpl'}}
+    {{/if}}
+    {{if status == 3}}
+      {{tmpl({date: coolDate(updatedAt)}) '#statusDeclineTmpl'}}
+    {{/if}}
+    {{if status == 4}}
+      {{tmpl({date: coolDate(updatedAt)}) '#statusCancelledTmpl'}}
+    {{/if}}
+
+script(id="myTradeTmpl" type="text/x-jquery-tmpl")
+  div(class="pm-friend-info mb-3")
+    div(class="pm-friend-avatar me-2")
+      img(src="/uploads/${from.avatar}")
+    div(class="pm-friend-nik")
+      span 
+        span Ты предлагал обмен 
+        a(href="/profile/${to.username}") ${to.username}
+      small(class="text-secondary") ${coolDate(createdAt)}
+
+  hr
+
+  div(class="offer d-flex flex-column")  
+    div(class="my-things")
+      div(class="d-flex mb-3")
+        div(class="d-flex flex-column align-items-center justify-content-center me-2")
+          div(class="icon bg-danger")
+            span(class="ion-log-in")
+        div(class="d-flex flex-column")
+          span Твои предметы
+          small(class="text-secondary") Эти предметы ты предлагал
+        . 
+          {{if fromItems.lenght == 0}}
+        div(class="no-one text-center") Ты не запросили ни одного предмета
+        . 
+          {{/if}}
+      div(class="things-list")
+        .
+          {{each(i, thing) fromItems}}
+        div(class="thing-item" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${accountthing.thing.name}")
+          div(class="thing-item-img")
+            img(src="/uploads/thing/${accountthing.thing.picture}")
+          div(class="thing-item-name tin-class-${accountthing.thing.thingclassId}")
+        .
+          {{/each}}
+
+    div(class="ion-arrow-swap text-center fs-2 text-secondary mt-2 mb-2")
+
+    div(class="vizavi-things offer-things") 
+      div(class="d-flex mb-3")
+        div(class="d-flex flex-column align-items-center justify-content-center me-2")
+          div(class="icon bg-success")
+            span(class="ion-log-out")
+        div(class="d-flex flex-column")
+          span Предметы #[strong ${to.username}]
+          small(class="text-secondary") Эти предметы ты запрашивал
+      . 
+        {{if toItems.lenght == 0}}
+        div(class="no-one text-center") У тебя не запросили ни одного предмета
+      . 
+        {{/if}}
+      div(class="things-list")
+        .
+          {{each(i, thing) toItems}}
+        div(class="thing-item" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${accountthing.thing.name}")
+          div(class="thing-item-img")
+            img(src="/uploads/thing/${accountthing.thing.picture}")
+          div(class="thing-item-name tin-class-${accountthing.thing.thingclassId}")
+        .
+          {{/each}}
+
+script(id="otherTradeTmpl" type="text/x-jquery-tmpl")
+  div(class="pm-friend-info mb-3")
+    div(class="pm-friend-avatar me-2")
+      img(src="/uploads/${from.avatar}")
+    div(class="pm-friend-nik")
+      span 
+        a(href="/profile/${from.username}") ${from.username} 
+        span предлагал тебе обмен
+      small(class="text-secondary") ${coolDate(createdAt)}
+
+  hr
+
+  div(class="offer d-flex flex-column")
+    div(class="my-things")
+      div(class="d-flex mb-3")
+        div(class="d-flex flex-column align-items-center justify-content-center me-2")
+          div(class="icon bg-success")
+            span(class="ion-log-in")
+        div(class="d-flex flex-column")
+          span Предметы #[strong ${from.username}]
+          small(class="text-secondary") Эти предметы были предложены
+        . 
+          {{if fromItems.lenght == 0}}
+        div(class="no-one text-center") У тебя не запросили ни одного предмета
+        . 
+          {{/if}}
+      div(class="things-list")
+        .
+          {{each(i, thing) fromItems}}
+        div(class="thing-item" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${accountthing.thing.name}")
+          div(class="thing-item-img")
+            img(src="/uploads/thing/${accountthing.thing.picture}")
+          div(class="thing-item-name tin-class-${accountthing.thing.thingclassId}")
+        .
+          {{/each}}
+
+    div(class="ion-arrow-swap text-center fs-2 text-secondary mt-2 mb-2")
+
+    div(class="vizavi-things offer-things") 
+      div(class="d-flex mb-3")
+        div(class="d-flex flex-column align-items-center justify-content-center me-2")
+          div(class="icon bg-danger")
+            span(class="ion-log-out")
+        div(class="d-flex flex-column")
+          span Твои предметы
+          small(class="text-secondary") Эти предметы были запрошены
+      . 
+        {{if toItems.lenght == 0}}
+        div(class="no-one text-center") У тебя не запросили ни одного предмета
+      . 
+        {{/if}}
+      div(class="things-list")
+        .
+          {{each(i, thing) toItems}}
+        div(class="thing-item" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${accountthing.thing.name}")
+          div(class="thing-item-img")
+            img(src="/uploads/thing/${accountthing.thing.picture}")
+          div(class="thing-item-name tin-class-${accountthing.thing.thingclassId}")
+        .
+          {{/each}}
+
+script(id="tradeTmpl" type="text/x-jquery-tmpl")
+  div(class="block p-4 mb-4 trade-item")
+    .
+      {{if my}}
+        {{tmpl '#myTradeTmpl'}}
+      {{else}}
+        {{tmpl '#otherTradeTmpl'}}
+      {{/if}}
+    hr
+    div(class="trade-btns d-flex justify-content-center gap-4")
+      .
+        {{tmpl '#statusTmpl'}}
+
+script(id="noTradesTmpl" type="text/x-jquery-tmpl")
+  div(class="pt-2 pb-4") Пока никаких обменов не было

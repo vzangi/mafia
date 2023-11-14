@@ -10,7 +10,7 @@ div(class="block")
     if currentAccount
       div(class='friends-buttons')
         if currentAccount.id == profile.id
-          a(href="/profile/friends/requests" class="btn btn-success hide") Заявки #[span(class="cnt hide")]
+          a(href="/profile/friends/requests" class="btn btn-success hide") Заявки #[span(class="cnt friend-request-count hide")]
 
   if friends && friends.length != 0
     div(class="row friends-list")

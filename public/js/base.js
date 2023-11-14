@@ -22,14 +22,46 @@ function notify(msg, timeout = 0, lvl = 0) {
   notifier.show(msg, '', lvls[lvl], '', timeout)
 }
 
-$(function () {
-  // Включаем тултипы
+function coolDate(date) {
+  const _ = (r) => (r > 9 ? r : `0${r}`)
+
+  const monthes = [
+    'янв',
+    'фев',
+    'мар',
+    'апр',
+    'мая',
+    'июн',
+    'июл',
+    'авг',
+    'сен',
+    'окт',
+    'ноя',
+    'дек',
+  ]
+
+  const d = new Date(date)
+  const day = d.getDate()
+  const month = monthes[d.getMonth()]
+  const year = d.getFullYear()
+  const hour = _(d.getHours())
+  const min = _(d.getMinutes())
+
+  return `${day} ${month}  ${year} ${hour}:${min}`
+}
+
+// Включаем тултипы
+function activateBSTooltips() {
   const tooltipTriggerList = [].slice.call(
     document.querySelectorAll('[data-bs-toggle="tooltip"]')
   )
   tooltipTriggerList.map(function (tooltipTriggerEl) {
     return new bootstrap.Tooltip(tooltipTriggerEl)
   })
+}
+
+$(function () {
+  activateBSTooltips()
 
   // Действие по нажатию на кнопку
   async function action(btn) {

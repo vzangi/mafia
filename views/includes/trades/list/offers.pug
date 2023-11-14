@@ -1,6 +1,6 @@
 if !trades || trades.length == 0
-  div(class="text-center text-secondary")
-    span У вас нет активных предложений обмена.
+  div(class="text-center text-secondary mb-4")
+    span Пока нет активных предложений обмена.
 else
 
   each trade in trades
@@ -45,8 +45,8 @@ else
 
 
         div(class="ion-arrow-swap text-center fs-2 text-secondary mt-2 mb-2")
-      
-        
+
+
         div(class="vizavi-things offer-things") 
           div(class="d-flex mb-3")
             div(class="d-flex flex-column align-items-center justify-content-center me-2")
@@ -69,4 +69,4 @@ else
 
       div(class="trade-btns d-flex justify-content-center gap-4")
         button(class="btn btn-success accept-btn" data-id=trade.id) Принять
-        button(class="btn btn-warning decline-btn" data-id=trade.id) Отменить
+        button(class="btn btn-warning decline-btn" data-id=trade.id) Отклонить

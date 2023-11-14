@@ -24,4 +24,7 @@ module.exports = (io, socket) => {
 
   // Активация VIP пропуска
   socket.on('vip.activate', controller.vipActivate.bind(controller))
+
+  // Получение количества предложений обмена
+  socket.on('trades.count', controller.tradesCount.bind(controller))
 }

@@ -63,17 +63,15 @@ class TradeService {
           model: TradeItem,
           include: [
             { model: Trade },
-            { 
+            {
               model: AccountThing,
-              include: [
-                { model: Thing }
-              ]
+              include: [{ model: Thing }],
             },
             { model: Account },
-          ]
+          ],
         },
       ],
-      order: [['createdAt', 'desc']]
+      order: [['createdAt', 'desc']],
     })
 
     const data = {

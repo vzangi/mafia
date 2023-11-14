@@ -1,7 +1,7 @@
 extends /layouts/grey_layout
 
 block head 
-    link(href="/css/profile.css" rel="stylesheet")
+    link(href="/css/profile/profile.css" rel="stylesheet")
 
 block content 
     if !isBlock
@@ -20,6 +20,6 @@ block content
 
 block scripts 
     include /includes/profile/profile/profile-gift-tmpl
-    script(src="/js/profile.js")
+    script(src="/js/profile/profile.js")
     if currentAccount && currentAccount.id == profile.id 
-        script(src="/js/profile-self.js")
+        script(src="/js/profile/profile-self.js")

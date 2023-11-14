@@ -7,6 +7,18 @@ module.exports = (io, socket) => {
   // Новый обмен
   socket.on('trades.new', controller.newTrade.bind(controller))
 
-  // Новый обмен
+  // Отмена обмена
   socket.on('trades.decline', controller.decline.bind(controller))
+
+  // Принятие обмена
+  socket.on('trades.accept', controller.accept.bind(controller))
+
+  // Принятие обмена
+  socket.on('trades.history', controller.history.bind(controller))
+
+  // Отправленные предложения
+  socket.on('trades.sended', controller.sended.bind(controller))
+
+  // Отзыв обмена
+  socket.on('trades.cancel', controller.cancel.bind(controller))
 }

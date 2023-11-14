@@ -7,12 +7,13 @@ block head
     link(rel="stylesheet" href="/css/trades/list.css")
 
 block aside 
-    include /includes/trades/list/menu
+    include /includes/trades/history/menu
 
 block article
-    h3 Предложения обмена
-    include /includes/trades/list/offers
+    h3 История обменов
+    div(class="history mt-3")
 
 block scripts 
     include /includes/trades/status-tmpl
-    script(src="/js/trades/list.js")
+    include /includes/trades/trade-tmpl
+    script(src="/js/trades/history.js")
