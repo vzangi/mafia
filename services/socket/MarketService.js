@@ -21,16 +21,16 @@ const setTradesCancelled = async (thing) => {
   // Если были предложения обмена с этой вещью, то помечаю их отменёнными системой
   const items = await TradeItem.findAll({
     where: {
-      accountthingId: thing.id
+      accountthingId: thing.id,
     },
     include: [
       {
         model: Trade,
         where: {
-          status: 0
-        }
-      }
-    ]
+          status: 0,
+        },
+      },
+    ],
   })
 
   // Отмняю все обмены с этой вещью
@@ -85,9 +85,13 @@ class MarketService extends BaseService {
     // Провожу покупку
     await WalletEvent.buyThing(user.id, thing)
 
-    const notifyMessage = `${account.username} ${account.gender == 2 ? 'купила' : 'купил'
-      } у тебя на маркете ${thing.thing.name} за ${thing.marketPrice * WalletEvent.sellingRate
-      } р.`
+    const notifyMessage = `${account.username} ${
+      account.gender == 2 ? 'купила' : 'купил'
+    } у тебя на маркете ${thing.thing.name} за ${(
+      thing.marketPrice * WalletEvent.sellingRate
+    ).toFixed(2)} р.`
+
+    console.log(notifyMessage)
 
     // Передаю лот покупателю
     thing.accountId = user.id
