@@ -32,7 +32,12 @@ script(id="formTmpl" type="text/x-jquery-tmpl")
               div(class="col-md-12")
                 button(class="w-100 btn btn-outline-primary mb-3 btn-sell-on-market") Выставить на маркете
                 button(class="w-100 btn btn-outline-primary mb-3 btn-sell") Продать за ${thing.price} р.
-              . 
+                . 
+                  {{if thing.thingtypeId == 1}}
+                button(class="w-100 btn btn-outline-dark mb-3 btn-kraft") Отправить в крафт
+                .
+                  {{/if}}
+              .
                 {{/if}}
 
 include ./form-img-tmpl

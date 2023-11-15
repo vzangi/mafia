@@ -6,7 +6,8 @@ block head
     link(rel="stylesheet" href="/css/trades.css")
 
 block aside 
-    include /includes/trades/list/menu
+    - const menu = 1
+    include /includes/trades/menu
 
 block article
     h3 Предложения обмена

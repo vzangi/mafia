@@ -8,6 +8,7 @@ const Thing = require('../../models/Thing')
 const Trade = require('../../models/Trade')
 const WalletEvents = require('../../models/WalletEvents')
 const BaseService = require('./BaseService')
+const sequelize = require('../../units/db')
 
 class ApiService extends BaseService {
   // Список пользователей по части ника

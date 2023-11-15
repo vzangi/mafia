@@ -307,11 +307,9 @@ class ProfileService {
       throw new Error('Пользователь с таким ником не найден')
     }
 
-    const things = await AccountThing.scope({
+    const thingsCount = await AccountThing.scope({
       method: ['withThings', profile.id],
-    }).findAll({
-      order: [['id', 'desc']],
-    })
+    }).count()
 
     const types = await ThingType.findAll({
       order: [['sort']],
@@ -319,7 +317,7 @@ class ProfileService {
 
     const data = {
       profile,
-      things,
+      thingsCount,
       types,
       title: `Инвентарь ${username}`,
     }

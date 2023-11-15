@@ -10,10 +10,16 @@ block main
   include /includes/profile/inventory/things
 
   if currentAccount && profile.id == currentAccount.id
+    include /includes/profile/inventory/kraft-form-tmpl
     include /includes/profile/inventory/form-tmpl
     include /includes/profile/inventory/sell-form
   else 
     include /includes/profile/inventory/other-form-tmpl
 
 block scripts 
-  script(src="/js/profile/inventory.js")
+  include /includes/profile/inventory/thing-tmpl
+  script(src="/js/profile/inventory/inventory.js")
+  script(src="/js/profile/inventory/filter.js")
+  if currentAccount && profile.id == currentAccount.id
+    script(src="/js/profile/inventory/trading.js")
+    script(src="/js/profile/inventory/kraft.js")

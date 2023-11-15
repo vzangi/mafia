@@ -1,0 +1,27 @@
+script(id="kraftFormTmpl" type="text/x-jquery-tmpl")
+
+  div(class="modal fade" id="kraftForm" tabindex="-1" data-bs-backdrop="static" data-id="${id}")
+    div(class="modal-dialog modal-lg modal-dialog-centered")
+      div(class="modal-content")
+        div(class="modal-header tin-class-${thing.thingclassId}")
+          h5(class="modal-title") Крафт
+          button(type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть")
+
+        div(class="modal-body")
+          div(class="container-fluid")
+
+            div(class="row")
+              div(class="col-md-12")
+                div(class="text-secondary") Крафт - обмен десяти вещей одного класса из твоего инвентаря на одну вещь более высокого класса.
+              div(class="col-md-12")
+                hr
+                p Вещи идущие в крафт (#[span(class="kraft-cnt") 0]&nbsp;/&nbsp;10)
+                div(class="kraft-items things-list")
+
+              div(class="col-md-12")
+                hr
+                p Выберите вещи для крафта
+                div(class="inventory-items things-list")
+              div(class="col-md-12 text-center")
+                hr
+                button(class="btn btn-primary mb-3 send-kraft-btn" disabled) Отправить в крафт

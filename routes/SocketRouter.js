@@ -5,7 +5,7 @@ module.exports = (io) => {
   // Пытаюсь получить пользователя по токену jwt
   io.use(validateTokenInSocket)
   io.use(userToSocket)
-  
+
   // Подключение к сокету
   io.on('connection', (socket) => {
     // Роуты информации о количестве пользователей онлайн
@@ -34,14 +34,16 @@ module.exports = (io) => {
 
     // Роуты обменов
     require('./socket/TradesRouter')(io, socket)
+
+    // Роуты инвентаря
+    require('./socket/InventoryRouter')(io, socket)
   })
 
-  
-  io.of("/lobbi").use(validateTokenInSocket)
-  io.of("/lobbi").use(userToSocket)
+  io.of('/lobbi').use(validateTokenInSocket)
+  io.of('/lobbi').use(userToSocket)
 
   // Отдельное пространство имён для основного чата
-  io.of("/lobbi").on('connection', (socket) => {
+  io.of('/lobbi').on('connection', (socket) => {
     // Роуты основного чата
     require('./socket/ChatRouter')(io, socket)
   })
