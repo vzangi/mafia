@@ -172,64 +172,6 @@ class ApiService extends BaseService {
     return friends
   }
 
-  // Активация VIP пропуска
-  async vipActivate(id) {
-    const { user } = this
-    if (!user) {
-      throw new Error('Не авторизован')
-    }
-
-    if (!id) {
-      throw new Error('Нет необходимых данных')
-    }
-
-    const thing = await AccountThing.findByPk(id, {
-      include: [{ model: Thing }, { model: Account }],
-    })
-
-    if (!thing) {
-      throw new Error('Вещь не найдена')
-    }
-
-    if (thing.accountId != user.id) {
-      throw new Error('На чужое позарился!?')
-    }
-
-    if (thing.thing.thingtypeId != 2) {
-      throw new Error('Активировать можно только пропуска')
-    }
-
-    if (thing.account.vip) {
-      throw new Error('У тебя уже активирован VIP статус')
-    }
-
-    const dt = new Date()
-
-    if (thing.thing.thingclassId == 2) {
-      // VIP на неделю
-      dt.setDate(dt.getDate() + 7)
-    }
-    if (thing.thing.thingclassId == 3) {
-      // VIP на месяц
-      dt.setDate(dt.getDate() + 31)
-    }
-
-    // Удаляю пропуск из инвентаря
-    AccountThing.destroy({ where: { id } })
-
-    // Активирую VIP статус аккаунта
-    Account.update(
-      {
-        vipTo: dt.toISOString(),
-      },
-      {
-        where: {
-          id: user.id,
-        },
-      }
-    )
-  }
-
   // Получение количества предложений обмена
   async tradesCount() {
     const { user } = this

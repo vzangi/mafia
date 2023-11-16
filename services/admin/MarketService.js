@@ -16,7 +16,13 @@ class MarketService {
         { model: ThingCollection },
       ],
     })
-    const data = { things }
+    const classes = await ThingClass.findAll({ order: [['sort']] })
+    const collections = await ThingCollection.findAll({ order: [['sort']] })
+    const data = {
+      things,
+      classes,
+      collections,
+    }
     return data
   }
 

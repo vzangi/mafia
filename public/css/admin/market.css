@@ -35,3 +35,9 @@ tbody tr:hover td {
 .thing-class-5 {
   background-color: var(--color-class-5);
 }
+
+.filter-hide,
+.class-hide,
+.collection-hide {
+  display: none;
+}

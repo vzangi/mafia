@@ -22,11 +22,20 @@ block main
         th Картинка
       tr 
         th(colspan=6)
-          input(class="form-control" placeholder="Фильтр" id="filter")
+          div(class="d-flex gap-1")
+            input(class="form-control" placeholder="Фильтр" id="filter")
+            select(class="form-control" id="class")
+              option(value="") Класс
+              each item in classes 
+                option(value=item.id)= item.name
+            select(class="form-control" id="collection")
+              option(value="") Коллекция
+              each item in collections
+                option(value=item.id)= item.name
 
     tbody 
       each thing in things 
-        tr(data-id=thing.id)
+        tr(data-id=thing.id data-class=thing.thingclassId data-collection=thing.thingcollectionId)
           td= thing.id
           td
             span(class="name")= thing.name

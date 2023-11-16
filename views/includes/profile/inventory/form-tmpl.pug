@@ -14,7 +14,7 @@ script(id="formTmpl" type="text/x-jquery-tmpl")
               div(class="col-md-12")
                 div(class="thing-image text-center")
                   img(src="/uploads/thing/${thing.picture}")
-                div(class="thing-desc mt-3 mb-3") 
+                div(class="thing-desc mt-3 mb-4") 
                   . 
                     {{each(i, line) lines}}
                   p ${line}
@@ -33,7 +33,7 @@ script(id="formTmpl" type="text/x-jquery-tmpl")
                 button(class="w-100 btn btn-outline-primary mb-3 btn-sell-on-market") Выставить на маркете
                 button(class="w-100 btn btn-outline-primary mb-3 btn-sell") Продать за ${thing.price} р.
                 . 
-                  {{if thing.thingtypeId == 1}}
+                  {{if thing.thingtypeId == 1 && thing.thingclassId < 4}}
                 button(class="w-100 btn btn-outline-dark mb-3 btn-kraft") Отправить в крафт
                 .
                   {{/if}}

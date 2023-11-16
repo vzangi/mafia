@@ -64,16 +64,6 @@ class ApiController extends BaseSocketController {
     }
   }
 
-  // Активация VIP пропуска
-  async vipActivate(id, callback) {
-    try {
-      await this.service.vipActivate(id)
-      callback({ status: 0 })
-    } catch (error) {
-      callback({ status: 1, msg: error.message })
-    }
-  }
-
   // Получение количества предложений обмена
   async tradesCount(callback) {
     try {

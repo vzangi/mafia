@@ -4,9 +4,12 @@ module.exports = (io, socket) => {
     socket
   )
 
+  // Вещи в инвентаре
+  socket.on('inventory.things', controller.inventoryThings.bind(controller))
+
   // Крафт
   socket.on('inventory.kraft', controller.kraft.bind(controller))
 
-  // Вещи в инвентаре
-  socket.on('inventory.things', controller.inventoryThings.bind(controller))
+  // Активация VIP пропуска
+  socket.on('vip.activate', controller.vipActivate.bind(controller))
 }
