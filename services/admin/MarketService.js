@@ -150,6 +150,12 @@ class MarketService {
     data.thingTypes = await ThingType.findAll({ order: [['sort']] })
     data.thingClasses = await ThingClass.findAll({ order: [['sort']] })
     data.thingCollections = await ThingCollection.findAll({ order: [['sort']] })
+
+    data.things = await Thing.findAll({
+      order: [['thingtypeId'], ['thingcollectionId'], ['thingclassId']],
+      include: [{ model: ThingCollection }, { model: ThingType }],
+    })
+
     return data
   }
 

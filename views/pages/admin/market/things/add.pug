@@ -1,52 +1,72 @@
 extends /layouts/two_column_3_9
 
+block head 
+  link(href="/css/admin/market.css" rel="stylesheet")
+
 block main
-    h1 
-        a(href="/market/things")
-            span(class="ion-chevron-left fs-2")
-        span(class="ms-2") Добавление предмета
+  h1 
+    a(href="/market/things")
+      span(class="ion-chevron-left fs-2")
+    span(class="ms-2") Добавление предмета
 
-    div(class="block p-4 mt-4 mb-4")
-        form(method="post" action="/market/things/create" enctype="multipart/form-data")
+  div(class="block p-4 mt-4 mb-4")
+    form(method="post" action="/market/things/create" enctype="multipart/form-data")
 
-            div(class="mb-3")
-                label(class="form-label") Название
-                input(type="text" name="name" class="form-control" placeholder="Название" required)
+      div(class="mb-3")
+        label(class="form-label") Название
+        input(type="text" name="name" class="form-control" placeholder="Название" required)
 
-            div(class="mb-3")
-                label(class="form-label") Описание
-                textarea(name="description" class="form-control" placeholder="Описание" required)
+      div(class="mb-3")
+        label(class="form-label") Описание
+        textarea(name="description" class="form-control" placeholder="Описание" required)
 
-            div(class="mb-3")
-                label(class="form-label") Цена продажи
-                input(type="text" name="price" class="form-control" placeholder="Цена продажи" value='0' required)
+      div(class="mb-3")
+        label(class="form-label") Цена продажи
+        input(type="text" name="price" class="form-control" placeholder="Цена продажи" value='0' required)
 
-            div(class="mb-3")
-                input(class="form-check-input" type="checkbox" value="on" name="forsale" checked)
-                label(class="form-check-label ms-1" for="forsale") На продажу
+      div(class="mb-3")
+        input(class="form-check-input" type="checkbox" value="on" name="forsale" checked)
+        label(class="form-check-label ms-1" for="forsale") На продажу
 
-            div(class="mb-3")
-                label(class="form-label") Тип
-                select(name="thingtypeId" class="form-control")
-                    each item of thingTypes
-                        option(value=item.id)= item.name
+      div(class="mb-3")
+        label(class="form-label") Тип
+        select(name="thingtypeId" class="form-control")
+          each item of thingTypes
+            option(value=item.id)= item.name
 
-            div(class="mb-3")
-                label(class="form-label") Класс
-                select(name="thingclassId" class="form-control")
-                    each item of thingClasses
-                        option(value=item.id)= item.name
+      div(class="mb-3")
+        label(class="form-label") Класс
+        select(name="thingclassId" class="form-control")
+          each item of thingClasses
+            option(value=item.id)= item.name
 
-            div(class="mb-3")
-                label(class="form-label") Коллекция
-                select(name="thingcollectionId" class="form-control")
-                    option(value='') Не выбрана
-                    each item of thingCollections
-                        option(value=item.id)= item.name
+      div(class="mb-3")
+        label(class="form-label") Коллекция
+        select(name="thingcollectionId" class="form-control")
+          option(value='') Не выбрана
+          each item of thingCollections
+            option(value=item.id)= item.name
 
-            div(class="mb-3")
-                label(class="form-label") Картинка
-                input(class="form-control" type="file" name="file")
+      div(class="mb-3")
+        label(class="form-label") Картинка
+        input(class="form-control" type="file" name="file")
 
-            button(type="submit" class="btn btn-primary") Добавить
+      input(type="hidden" value="[]" name="items")
 
+      button(type="submit" class="btn btn-primary") Добавить
+
+block aside 
+  div(class="items-list hide")
+    h4 Вещи в наборе
+    each collection in thingCollections
+      hr
+      h5= collection.name
+      each thing in things 
+        if thing.thingcollection && thing.thingcollectionId == collection.id
+          div(class="thing-class-"+thing.thingclassId)
+            label(class="d-block" title=thing.thingtype.name)
+              input(class="ms-1" type="checkbox" data-id=thing.id)
+              span(class="ms-1")= thing.name
+
+block scripts 
+  script(src="/js/admin/things/add.js")
