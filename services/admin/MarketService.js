@@ -264,12 +264,10 @@ class MarketService {
     })
 
     // Для набора или кейса подгружаю также и входящие в него вещи
-    if (thing.thingtypeId == 3 || thing.thingtypeId == 4) {
-      data.items = await NaborThing.findAll({
-        where: { naborId: id },
-        include: [{ model: Thing }],
-      })
-    }
+    data.items = await NaborThing.findAll({
+      where: { naborId: id },
+      include: [{ model: Thing }],
+    })
 
     return data
   }
