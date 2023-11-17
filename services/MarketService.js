@@ -3,6 +3,7 @@ const Thing = require('../models/Thing')
 const ThingType = require('../models/ThingType')
 const ThingClass = require('../models/ThingClass')
 const ThingCollection = require('../models/ThingCollection')
+const NaborThing = require('../models/NaborThing')
 const { Op } = require('sequelize')
 
 class MarketService {
@@ -88,6 +89,17 @@ class MarketService {
       thingOffers,
       title: thing.name + ' - покупайте в маркете игры Mafia One',
       description: thing.description,
+    }
+
+    // Если вещь является набором или кейсом - подгружаю вещи входящие в него
+    if (thing.thingtypeId == 3 || thing.thingtypeId == 4) {
+      data.items = await NaborThing.findAll({
+        where: {
+          naborId: thing.id,
+        },
+        include: [{ model: Thing }],
+        order: [['thing', 'thingclassId']],
+      })
     }
 
     return data

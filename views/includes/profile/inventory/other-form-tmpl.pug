@@ -20,6 +20,19 @@ script(id="formTmpl" type="text/x-jquery-tmpl")
                   p ${line}
                   . 
                     {{/each}}
+
+                  . 
+                    {{if thing.thingtypeId == 3 || thing.thingtypeId == 4}}
+                  p Этот #[span ${thing.thingtypeId == 3 ? 'набор' : 'кейс'}] содержит в себе один предмет из списка:
+                  div(class="d-flex flex-wrap")
+                    . 
+                      {{each(i, t) naborThings}}
+                    a(class="thing-class thing-class-${t.thing.thingclassId} me-1 mb-1 fs-6 text-decoration-none" href="/market/thing/${t.thing.id}" target="_blank") ${t.thing.name}
+                    . 
+                      {{/each}}
+                  . 
+                    {{/if}}
+
                 a(href="/market/thing/${thing.id}" class="w-100 btn btn-outline-success mb-3") Купить на маркете
 
 include ./form-img-tmpl
