@@ -4,6 +4,7 @@ const Thing = require('../../models/Thing')
 const ThingType = require('../../models/ThingType')
 const ThingClass = require('../../models/ThingClass')
 const ThingCollection = require('../../models/ThingCollection')
+const NaborThing = require('../../models/NaborThing')
 const maxPictureSize = 500_000
 
 class MarketService {
@@ -168,6 +169,7 @@ class MarketService {
     thingtypeId,
     thingclassId,
     thingcollectionId,
+    items,
     picture
   ) {
     if (
@@ -176,6 +178,7 @@ class MarketService {
       !price ||
       !thingtypeId ||
       !thingclassId ||
+      !items ||
       !picture
     ) {
       throw new Error('Нет необходимых данных')
@@ -186,8 +189,6 @@ class MarketService {
         `Размер картинки превышает ограничение ${maxPictureSize / 100} Кб`
       )
     }
-
-    console.log(picture.mimetype)
 
     let ext = ''
     if (picture.mimetype == 'image/svg+xml') ext = 'svg'
@@ -213,9 +214,11 @@ class MarketService {
         ext
     }
 
+    // Сохраняю картинку
     await picture.mv('./public/uploads/thing/' + pictureName)
 
-    await Thing.create({
+    // Создаю вещь
+    const newThing = await Thing.create({
       name,
       description,
       price,
@@ -225,6 +228,18 @@ class MarketService {
       thingcollectionId: thingcollectionId ? thingcollectionId : null,
       picture: pictureName,
     })
+
+    // Если создали набор или кейс
+    if (thingtypeId == 3 || thingtypeId == 4) {
+      const thingIds = JSON.parse(items)
+      // Создаю связи с вещами, которые будут в нём
+      thingIds.forEach(async (thingId) => {
+        await NaborThing.create({
+          naborId: newThing.id,
+          thingId,
+        })
+      })
+    }
   }
 
   // Страница редактирования вещи
@@ -243,6 +258,19 @@ class MarketService {
     data.thingTypes = await ThingType.findAll({ order: [['sort']] })
     data.thingClasses = await ThingClass.findAll({ order: [['sort']] })
     data.thingCollections = await ThingCollection.findAll({ order: [['sort']] })
+    data.things = await Thing.findAll({
+      order: [['thingtypeId'], ['thingcollectionId'], ['thingclassId']],
+      include: [{ model: ThingCollection }, { model: ThingType }],
+    })
+
+    // Для набора или кейса подгружаю также и входящие в него вещи
+    if (thing.thingtypeId == 3 || thing.thingtypeId == 4) {
+      data.items = await NaborThing.findAll({
+        where: { naborId: id },
+        include: [{ model: Thing }],
+      })
+    }
+
     return data
   }
 
@@ -256,6 +284,7 @@ class MarketService {
     thingtypeId,
     thingclassId,
     thingcollectionId,
+    items,
     picture
   ) {
     if (
@@ -264,7 +293,8 @@ class MarketService {
       !description ||
       !price ||
       !thingtypeId ||
-      !thingclassId
+      !thingclassId ||
+      !items
     ) {
       throw new Error('Нет необходимых данных')
     }
@@ -288,6 +318,20 @@ class MarketService {
     thing.thingclassId = thingclassId
     thing.thingcollectionId = thingcollectionId ? thingcollectionId : null
     await thing.save()
+
+    // Для набора и кейса обновляю список вещей в них
+    if (thingtypeId == 3 || thingtypeId == 4) {
+      const thingIds = JSON.parse(items)
+      // Удаляю предыдущие записи
+      await NaborThing.destroy({ where: { naborId: id } })
+      // Создаю новые связи с вещами, которые будут в нём
+      thingIds.forEach(async (thingId) => {
+        await NaborThing.create({
+          naborId: id,
+          thingId,
+        })
+      })
+    }
   }
 
   // Подарить вещь игроку

@@ -630,6 +630,33 @@ ul.aside-menu li a:hover {
 
 ul.aside-menu li a.active {
   background-color: #2aa9d8;
-  background-color: rgba(75,137,220,.15);
+  background-color: rgba(75, 137, 220, 0.15);
   border-left: 3px solid #4b89dc;
+}
+
+.thing-class {
+  padding: 1px 10px;
+  color: var(--color-white);
+  font-size: 0.8em;
+  border-radius: 4px;
+}
+
+.thing-class-1 {
+  background-color: var(--color-class-1) !important;
+}
+
+.thing-class-2 {
+  background-color: var(--color-class-2) !important;
+}
+
+.thing-class-3 {
+  background-color: var(--color-class-3) !important;
+}
+
+.thing-class-4 {
+  background-color: var(--color-class-4) !important;
+}
+
+.thing-class-5 {
+  background-color: var(--color-class-5) !important;
 }

@@ -151,6 +151,7 @@ class MarketController extends BaseAdminController {
         thingtypeId,
         thingclassId,
         thingcollectionId,
+        items,
       } = req.body
       const { file } = req.files
       await service.createThing(
@@ -161,6 +162,7 @@ class MarketController extends BaseAdminController {
         thingtypeId,
         thingclassId,
         thingcollectionId,
+        items,
         file
       )
       res.redirect('/market/things')
@@ -192,6 +194,7 @@ class MarketController extends BaseAdminController {
         thingtypeId,
         thingclassId,
         thingcollectionId,
+        items,
       } = req.body
       let file = null
       if (req.files) {
@@ -206,6 +209,7 @@ class MarketController extends BaseAdminController {
         thingtypeId,
         thingclassId,
         thingcollectionId,
+        items,
         file
       )
       res.redirect('/market/things')

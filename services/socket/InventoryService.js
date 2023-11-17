@@ -1,6 +1,7 @@
 const Account = require('../../models/Account')
 const AccountThing = require('../../models/AccountThing')
 const Thing = require('../../models/Thing')
+const NaborThing = require('../../models/NaborThing')
 const sequelize = require('../../units/db')
 const BaseService = require('./BaseService')
 
@@ -178,6 +179,99 @@ class InventoryService extends BaseService {
     // Удаляю пропуск из инвентаря
     thing.accountId = null
     await thing.save()
+  }
+
+  // Получение списка вещей набора или кейса
+  async getNaborThings(naborId) {
+    if (!naborId) {
+      throw new Error('Нет необходимых данных')
+    }
+
+    const things = await NaborThing.findAll({
+      where: { naborId },
+      include: [
+        {
+          model: Thing,
+        },
+      ],
+      order: [['thing', 'thingclassId']],
+    })
+
+    if (!things) {
+      throw new Error('Набор не найден')
+    }
+
+    return things
+  }
+
+  // Открыть набор
+  async openNabor(naborId) {
+    const { user } = this
+    if (!user) {
+      throw new Error('Не авторизован')
+    }
+
+    if (!naborId) {
+      throw new Error('Нет необходимых данных')
+    }
+
+    const nabor = await AccountThing.findByPk(naborId, {
+      where: { accountId: user.id },
+      include: [{ model: Thing }],
+    })
+
+    if (!nabor) {
+      throw new Error('Набор не найден')
+    }
+
+    if (nabor.thing.thingtypeId != 3) {
+      throw new Error('Вещь не является подарочным набором')
+    }
+
+    // Получаю класс предмета, который будет получен из набора
+    const thingclassId = this._getRndClass(true)
+
+    // Получаю случайный предмет в наборе, соответствующие классу
+    const thing = await NaborThing.findOne({
+      where: { naborId: nabor.thingId },
+      include: [
+        {
+          model: Thing,
+          where: { thingclassId },
+        },
+      ],
+      order: sequelize.random(),
+    })
+
+    if (!thing) {
+      throw new Error('Не удалось открыть набор, попробуй ещё раз')
+    }
+
+    const newThing = await AccountThing.create({
+      accountId: user.id,
+      thingId: thing.thing.id,
+    })
+
+    nabor.accountId = null
+    await nabor.save()
+
+    const data = await AccountThing.findByPk(newThing.id, {
+      include: [{ model: Thing }],
+    })
+
+    return data
+  }
+
+  // Получение случайного класса для подарочного набора или кейса
+  _getRndClass(nabor = false) {
+    // Случайное число, для определения класса
+    const rnd = Math.random()
+
+    if (!nabor && rnd < 0.01) return 5 // Эксклюзивный
+    if (rnd < 0.1) return 4 // Высочайший
+    if (rnd < 0.2) return 3 // Особенный
+    if (rnd < 0.3) return 2 // Стандартный
+    return 1 // Обычный
   }
 }
 

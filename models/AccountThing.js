@@ -2,6 +2,7 @@ const { DataTypes, Op } = require('sequelize')
 const sequelize = require('../units/db')
 const Account = require('./Account')
 const Thing = require('./Thing')
+const NaborThing = require('./NaborThing')
 
 const AccountThing = sequelize.define(
   'accountthings',

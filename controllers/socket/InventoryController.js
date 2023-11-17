@@ -31,6 +31,28 @@ class InventoryController extends BaseSocketController {
       callback({ status: 1, msg: error.message })
     }
   }
+
+  // Получение списка вещей набора или кейса
+  async getNaborThings(id, callback) {
+    try {
+      const things = await this.service.getNaborThings(id)
+      callback({ status: 0, things })
+    } catch (error) {
+      console.log(error)
+      callback({ status: 1, msg: error.message })
+    }
+  }
+
+  // Открыть набор
+  async openNabor(naborId, callback) {
+    try {
+      const thing = await this.service.openNabor(naborId)
+      callback({ status: 0, thing })
+    } catch (error) {
+      console.log(error)
+      callback({ status: 1, msg: error.message })
+    }
+  }
 }
 
 module.exports = (io, socket) => {
