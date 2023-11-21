@@ -17,7 +17,8 @@ $(function () {
     showThing(thing)
   })
 
-  $('body').on('click', '.btn-open', function () {
+  // Открыть набор
+  $('body').on('click', '.btn-open-nabor', function () {
     const { id } = $('#thingForm').data()
 
     confirm('Открыть набор?').then((accept) => {
@@ -36,6 +37,45 @@ $(function () {
 
         // Добавляю новую вещь
         $('#thingTmpl').tmpl(thing).prependTo($('.things-list'))
+
+        // Скрываю форму
+        $('#thingForm').modal('hide')
+
+        // Отображаю сообщение о новой вещи
+        alert(`Получена новая вещь: ${thing.thing.name}`).then(() => {
+          // Нажимаю на вещь
+          $(`.things-list-box .thing-item[data-id=${thing.id}]`).click()
+        })
+      })
+    })
+  })
+
+  // Открыть кейс
+  $('body').on('click', '.btn-open-keis', function () {
+    const { id } = $('#thingForm').data()
+
+    confirm('Открыть кейс?').then((accept) => {
+      if (!accept) return
+
+      socket.emit('keis.open', id, (res) => {
+        if (res.status != 0) {
+          return alert(res.msg)
+        }
+
+        // Вещь получена
+        const { thing, keyId } = res.data
+
+        // Удаляю кейс из списка
+        $(`.things-list-box .thing-item[data-id=${id}]`).remove()
+
+        // Удаляю ключ из списка
+        $(`.things-list-box .thing-item[data-id=${keyId}]`).remove()
+
+        // Добавляю новую вещь
+        $('#thingTmpl').tmpl(thing).prependTo($('.things-list'))
+
+        // Обновляю количество вещей
+        $('.things-count').text($('.things-list-box .thing-item').length)
 
         // Скрываю форму
         $('#thingForm').modal('hide')

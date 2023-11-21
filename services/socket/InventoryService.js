@@ -262,12 +262,99 @@ class InventoryService extends BaseService {
     return data
   }
 
+  // Открыть набор
+  async openKeis(keisId) {
+    const { user } = this
+    if (!user) {
+      throw new Error('Не авторизован')
+    }
+
+    if (!keisId) {
+      throw new Error('Нет необходимых данных')
+    }
+
+    const keis = await AccountThing.findByPk(keisId, {
+      where: { accountId: user.id },
+      include: [{ model: Thing }],
+    })
+
+    if (!keis) {
+      throw new Error('Кейс не найден')
+    }
+
+    if (keis.thing.thingtypeId != 4) {
+      throw new Error('Вещь не является кейсом')
+    }
+
+    // Ищу ключ от кейса в инвентаре игрока
+    const key = await AccountThing.findOne({
+      where: {
+        accountId: user.id,
+        marketPrice: null,
+      },
+      include: [
+        {
+          model: Thing,
+          where: {
+            thingtypeId: 5,
+            thingcollectionId: keis.thing.thingcollectionId,
+          },
+        },
+      ],
+    })
+
+    if (!key) {
+      throw new Error(
+        'Для того, чтобы открыть кейс в инвентаре должен быть соответсвующий ключ'
+      )
+    }
+
+    // Получаю класс предмета, который будет получен из кейса
+    const thingclassId = this._getRndClass()
+
+    // Получаю случайный предмет в наборе, соответствующие классу
+    const thing = await NaborThing.findOne({
+      where: { naborId: keis.thingId },
+      include: [
+        {
+          model: Thing,
+          where: { thingclassId },
+        },
+      ],
+      order: sequelize.random(),
+    })
+
+    if (!thing) {
+      throw new Error('Не удалось открыть набор, попробуй ещё раз')
+    }
+
+    const newThing = await AccountThing.create({
+      accountId: user.id,
+      thingId: thing.thing.id,
+    })
+
+    // Удаляю кейс из инвентаря
+    keis.accountId = null
+    await keis.save()
+
+    // Удаляю ключ из инвентаря
+    key.accountId = null
+    await key.save()
+
+    const data = { keyId: key.id }
+    data.thing = await AccountThing.findByPk(newThing.id, {
+      include: [{ model: Thing }],
+    })
+
+    return data
+  }
+
   // Получение случайного класса для подарочного набора или кейса
   _getRndClass(nabor = false) {
     // Случайное число, для определения класса
     const rnd = Math.random()
 
-    if (!nabor && rnd < 0.01) return 5 // Эксклюзивный
+    if (!nabor && rnd < 0.005) return 5 // Эксклюзивный
     if (rnd < 0.1) return 4 // Высочайший
     if (rnd < 0.2) return 3 // Особенный
     if (rnd < 0.3) return 2 // Стандартный

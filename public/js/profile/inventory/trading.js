@@ -80,7 +80,6 @@ $(function () {
   // Ввод суммы прибыли от продажи
   $('#navarCount').keyup(function (event) {
     const price = $(this).val() * 1
-    console.log(price)
     if (price != 0) {
       $('.btn-sell-on').removeAttr('disabled')
     } else {

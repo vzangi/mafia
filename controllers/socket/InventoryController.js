@@ -53,6 +53,17 @@ class InventoryController extends BaseSocketController {
       callback({ status: 1, msg: error.message })
     }
   }
+
+  // Открыть кейс
+  async openKeis(keisId, callback) {
+    try {
+      const data = await this.service.openKeis(keisId)
+      callback({ status: 0, data })
+    } catch (error) {
+      console.log(error)
+      callback({ status: 1, msg: error.message })
+    }
+  }
 }
 
 module.exports = (io, socket) => {

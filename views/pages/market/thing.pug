@@ -46,7 +46,7 @@ block aside
           p= line
 
         if items && items.length != 0
-          div(class="mb-2") Эти вещи входят в набор:
+          div(class="mb-2") Эти вещи входят в #[span= thing.thingtype.id==3?'набор':'кейс']:
           div(class="d-flex flex-wrap mb-3")
             each item in items 
               a(href="/market/thing/"+item.thing.id class="thing-class me-1 mb-1 fs-6 text-decoration-none thing-class-"+item.thing.thingclassId)= item.thing.name

@@ -18,4 +18,7 @@ module.exports = (io, socket) => {
 
   // Открыть набор
   socket.on('nabor.open', controller.openNabor.bind(controller))
+
+  // Открыть кейс
+  socket.on('keis.open', controller.openKeis.bind(controller))
 }

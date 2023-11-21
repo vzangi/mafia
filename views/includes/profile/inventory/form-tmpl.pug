@@ -40,9 +40,15 @@ script(id="formTmpl" type="text/x-jquery-tmpl")
                 {{/if}}
 
               . 
-                {{if thing.thingtypeId == 3 || thing.thingtypeId == 4}}
+                {{if thing.thingtypeId == 3}}
               div(class="col-md-12")
-                button(class="w-100 btn btn-outline-success mb-3 btn-open") Открыть
+                button(class="w-100 btn btn-outline-success mb-3 btn-open-nabor") Открыть
+              . 
+                {{/if}}
+              . 
+                {{if thing.thingtypeId == 4}}
+              div(class="col-md-12")
+                button(class="w-100 btn btn-outline-success mb-3 btn-open-keis") Открыть
               . 
                 {{/if}}
 
