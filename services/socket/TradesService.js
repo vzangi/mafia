@@ -205,6 +205,7 @@ class TradesService extends BaseService {
     for (let item of trade.tradeitems) {
       item.accountthing.accountId =
         item.accountthing.accountId == fromId ? toId : fromId
+      item.accountthing.taked = false
       await item.accountthing.save()
     }
 

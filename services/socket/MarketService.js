@@ -166,6 +166,7 @@ class MarketService extends BaseService {
     }
 
     thing.marketPrice = marketPrice.toFixed(2)
+    thing.taked = false
     await thing.save()
 
     // Пометить все обмены с этой вещью отменёнными
