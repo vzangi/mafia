@@ -39,7 +39,7 @@ block aside
       div(class="thing-type")
         span= `${thing.thingtype.name}, ${thing.thingclass.name} класс`
     div(class="thing-image-block p-4")
-      img(src="/uploads/thing/"+thing.picture alt=thing.name)
+      img(class="w-100" src="/uploads/thing/"+thing.picture alt=thing.name)
     div(class="thing-description p-4")
       div(class="text-secondary")
         each line in thing.description.split('\r\n')
