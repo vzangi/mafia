@@ -12,6 +12,8 @@ const WalletEvents = require('../models/WalletEvents')
 const Notification = require('../models/Notification')
 const ThingType = require('../models/ThingType')
 const Trade = require('../models/Trade')
+const ThingClass = require('../models/ThingClass')
+const Thing = require('../models/Thing')
 
 class ProfileService {
   async profileInfo(profile, currentUser) {
@@ -30,6 +32,23 @@ class ProfileService {
     }).findOne()
 
     data.friendsCorrectForm = Friend.correctForm(data.friends.length)
+
+    // Значок
+    data.badge = await AccountThing.findOne({
+      where: {
+        accountId: profile.id,
+        taked: true,
+        marketPrice: null,
+      },
+      include: [
+        {
+          model: Thing,
+          where: {
+            thingtypeId: 6,
+          },
+        },
+      ],
+    })
 
     if (currentUser) {
       data.isFrends = await Friend.findOne({

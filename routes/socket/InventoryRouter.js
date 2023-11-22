@@ -21,4 +21,10 @@ module.exports = (io, socket) => {
 
   // Открыть кейс
   socket.on('keis.open', controller.openKeis.bind(controller))
+
+  // Нацепить значок
+  socket.on('badge.take', controller.takeBadge.bind(controller))
+
+  // Снять значок
+  socket.on('badge.untake', controller.untakeBadge.bind(controller))
 }

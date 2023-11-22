@@ -22,6 +22,10 @@ const AccountThing = sequelize.define(
     marketPrice: {
       type: DataTypes.INTEGER,
     },
+    taked: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
   },
   {
     scopes: {

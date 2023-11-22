@@ -349,6 +349,104 @@ class InventoryService extends BaseService {
     return data
   }
 
+  // Нацепить значок
+  async takeBadge(thingId) {
+    const { user } = this
+    if (!user) {
+      throw new Error('Не авторизован')
+    }
+
+    if (!thingId) {
+      throw new Error('Нет необходимых данных')
+    }
+
+    // Ищу значок в инвентаре
+    const badge = await AccountThing.findOne({
+      where: {
+        id: thingId,
+        accountId: user.id,
+        marketPrice: null,
+      },
+      include: [{ model: Thing }],
+    })
+
+    if (!badge) {
+      throw new Error('Значок не найден')
+    }
+
+    if (badge.thing.thingtypeId != 6) {
+      throw new Error('Это не значок')
+    }
+
+    if (badge.taked) {
+      throw new Error('Значок уже одет')
+    }
+
+    // Снимаем другой значок (если был одет)
+    await AccountThing.update(
+      {
+        taked: null,
+      },
+      {
+        where: {
+          accountId: user.id,
+          taked: true,
+          marketPrice: null,
+        },
+        include: [
+          {
+            model: Thing,
+            where: {
+              thingtypeId: 6,
+            },
+          },
+        ],
+      }
+    )
+
+    // Одеваю значок
+    badge.taked = true
+    await badge.save()
+  }
+
+  // Снять значок
+  async untakeBadge(thingId) {
+    const { user } = this
+    if (!user) {
+      throw new Error('Не авторизован')
+    }
+
+    if (!thingId) {
+      throw new Error('Нет необходимых данных')
+    }
+
+    // Ищу значок в инвентаре
+    const badge = await AccountThing.findOne({
+      where: {
+        id: thingId,
+        accountId: user.id,
+        marketPrice: null,
+      },
+      include: [{ model: Thing }],
+    })
+
+    if (!badge) {
+      throw new Error('Значок не найден')
+    }
+
+    if (badge.thing.thingtypeId != 6) {
+      throw new Error('Это не значок')
+    }
+
+    if (!badge.taked) {
+      throw new Error('Значок не одет')
+    }
+
+    // Снимаю значок
+    badge.taked = false
+    await badge.save()
+  }
+
   // Получение случайного класса для подарочного набора или кейса
   _getRndClass(nabor = false) {
     // Случайное число, для определения класса

@@ -119,4 +119,60 @@ $(function () {
       })
     })
   })
+
+  // Нацепить значок
+  $('body').on('click', '.btn-take-badge', function () {
+    const { id } = $('#thingForm').data()
+
+    confirm('Нацепить значок на профиль?').then((accept) => {
+      if (!accept) return
+
+      socket.emit('badge.take', id, (res) => {
+        if (res.status != 0) {
+          return alert(res.msg)
+        }
+
+        untakeBadges()
+
+        const item = $(`.things-list-box .thing-item[data-id=${id}]`)
+
+        item.data().thing.taked = true
+        item.addClass('taked')
+
+        $('#thingForm').modal('hide')
+        notify('Значок одет!')
+      })
+    })
+  })
+
+  // Отцепить значок
+  $('body').on('click', '.btn-untake-badge', function () {
+    const { id } = $('#thingForm').data()
+
+    confirm('Отцепить значок от профиля?').then((accept) => {
+      if (!accept) return
+
+      socket.emit('badge.untake', id, (res) => {
+        if (res.status != 0) {
+          return alert(res.msg)
+        }
+
+        untakeBadges()
+
+        $('#thingForm').modal('hide')
+        notify('Значок снят!')
+      })
+    })
+  })
+
+  // Снимаю отметку
+  function untakeBadges() {
+    $(`.things-list-box .thing-item.taked`).each((_, item) => {
+      const { thing } = $(item).data()
+      if (thing.thing.thingtypeId == 6) {
+        $(item).data().thing.taked = false
+        $(item).removeClass('taked')
+      }
+    })
+  }
 })

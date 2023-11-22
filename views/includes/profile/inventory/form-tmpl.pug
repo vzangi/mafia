@@ -51,6 +51,19 @@ script(id="formTmpl" type="text/x-jquery-tmpl")
                 button(class="w-100 btn btn-outline-success mb-3 btn-open-keis") Открыть
               . 
                 {{/if}}
+              . 
+                {{if thing.thingtypeId == 6}}
+              div(class="col-md-12")
+                . 
+                  {{if !taked}}
+                button(class="w-100 btn btn-outline-success mb-3 btn-take-badge") Нацепить на профиль
+                . 
+                  {{else}}
+                button(class="w-100 btn btn-outline-danger mb-3 btn-untake-badge") Отцепить от профиля
+                . 
+                  {{/if}}
+              . 
+                {{/if}}
 
               . 
                 {{if thing.forsale}}

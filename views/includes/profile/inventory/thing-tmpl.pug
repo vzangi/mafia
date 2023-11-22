@@ -1,5 +1,5 @@
 script(id="thingTmpl" type="text/x-jquery-tmpl")
-  div(class="thing-item" data-id="${id}" data-thing="${JSON.stringify(this.data)}")
+  div(class="thing-item ${taked?'taked':''}" data-id="${id}" data-thing="${JSON.stringify(this.data)}")
     div(class="thing-item-img")
       img(src="/uploads/thing/${thing.picture}")
     div(class="thing-item-name tin-class-${thing.thingclassId}")

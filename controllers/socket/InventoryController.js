@@ -64,6 +64,28 @@ class InventoryController extends BaseSocketController {
       callback({ status: 1, msg: error.message })
     }
   }
+
+  // Нацепить значок
+  async takeBadge(thingId, callback) {
+    try {
+      await this.service.takeBadge(thingId)
+      callback({ status: 0 })
+    } catch (error) {
+      console.log(error)
+      callback({ status: 1, msg: error.message })
+    }
+  }
+
+  // Снять значок
+  async untakeBadge(thingId, callback) {
+    try {
+      await this.service.untakeBadge(thingId)
+      callback({ status: 0 })
+    } catch (error) {
+      console.log(error)
+      callback({ status: 1, msg: error.message })
+    }
+  }
 }
 
 module.exports = (io, socket) => {
