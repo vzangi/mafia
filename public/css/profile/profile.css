@@ -491,6 +491,7 @@ a.user-name {
   .badge-box {
     text-align: center;
     width: 100%;
+    padding: 2rem 0;
   }
   .badge-box img {
     position: static;
