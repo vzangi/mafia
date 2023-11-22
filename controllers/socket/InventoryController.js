@@ -86,6 +86,28 @@ class InventoryController extends BaseSocketController {
       callback({ status: 1, msg: error.message })
     }
   }
+
+  // Взять вещь в игру
+  async takeThing(thingId, callback) {
+    try {
+      await this.service.takeThing(thingId)
+      callback({ status: 0 })
+    } catch (error) {
+      console.log(error)
+      callback({ status: 1, msg: error.message })
+    }
+  }
+
+  // Возвращаю вещь в инвентарь
+  async untakeThing(thingId, callback) {
+    try {
+      await this.service.untakeThing(thingId)
+      callback({ status: 0 })
+    } catch (error) {
+      console.log(error)
+      callback({ status: 1, msg: error.message })
+    }
+  }
 }
 
 module.exports = (io, socket) => {

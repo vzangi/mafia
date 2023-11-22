@@ -165,6 +165,52 @@ $(function () {
     })
   })
 
+  // Взять предмет в игру
+  $('body').on('click', '.btn-take-thing', function () {
+    const { id } = $('#thingForm').data()
+
+    confirm('Взять предмет в игру?').then((accept) => {
+      if (!accept) return
+
+      socket.emit('thing.take', id, (res) => {
+        if (res.status != 0) {
+          return alert(res.msg)
+        }
+
+        const item = $(`.things-list-box .thing-item[data-id=${id}]`)
+
+        item.data().thing.taked = true
+        item.addClass('taked')
+
+        $('#thingForm').modal('hide')
+        notify('Предмет взят в игру!')
+      })
+    })
+  })
+
+  // Вернуть предмет в инвентарь
+  $('body').on('click', '.btn-untake-thing', function () {
+    const { id } = $('#thingForm').data()
+
+    confirm('Вернуть предмет в инвентарь?').then((accept) => {
+      if (!accept) return
+
+      socket.emit('thing.untake', id, (res) => {
+        if (res.status != 0) {
+          return alert(res.msg)
+        }
+
+        const item = $(`.things-list-box .thing-item[data-id=${id}]`)
+
+        item.data().thing.taked = false
+        item.removeClass('taked')
+
+        $('#thingForm').modal('hide')
+        notify('Предмет вернулся в инвентарь!')
+      })
+    })
+  })
+
   // Снимаю отметку
   function untakeBadges() {
     $(`.things-list-box .thing-item.taked`).each((_, item) => {

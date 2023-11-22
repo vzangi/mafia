@@ -33,6 +33,20 @@ script(id="formTmpl" type="text/x-jquery-tmpl")
                   . 
                     {{/if}}
               . 
+                {{if thing.thingtypeId == 1}}
+              div(class="col-md-12")
+                . 
+                  {{if !taked}}
+                button(class="w-100 btn btn-outline-success mb-3 btn-take-thing") Взять в игру
+                . 
+                  {{else}}
+                button(class="w-100 btn btn-outline-danger mb-3 btn-untake-thing") Положить в инвентарь
+                . 
+                  {{/if}}
+              . 
+                {{/if}}
+
+              . 
                 {{if thing.thingtypeId == 2}}
               div(class="col-md-12")
                 button(class="w-100 btn btn-outline-success mb-3 btn-activate") Активировать

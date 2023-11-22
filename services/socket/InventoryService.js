@@ -447,6 +447,102 @@ class InventoryService extends BaseService {
     await badge.save()
   }
 
+  // Взять вещь в игру
+  async takeThing(id) {
+    const { user } = this
+    if (!user) {
+      throw new Error('Не авторизован')
+    }
+
+    if (!id) {
+      throw new Error('Нет необходимых данных')
+    }
+
+    // Ищу вещь в инвентаре
+    const thing = await AccountThing.findOne({
+      where: {
+        id,
+        accountId: user.id,
+        marketPrice: null,
+      },
+      include: [{ model: Thing }],
+    })
+
+    if (!thing) {
+      throw new Error('Предмет не найден')
+    }
+
+    if (thing.thing.thingtypeId != 1) {
+      throw new Error('Этот предмет нельзя взять в игру')
+    }
+
+    if (thing.taked) {
+      throw new Error('Предмет уже взят')
+    }
+
+    // Проверяю сколько предметов уже взято
+    const takedCount = await AccountThing.count({
+      where: {
+        taked: true,
+        accountId: user.id,
+      },
+      include: [
+        {
+          model: Thing,
+          where: {
+            thingtypeId: 1,
+          },
+        },
+      ],
+    })
+
+    if (takedCount == 5) {
+      throw new Error('В игру нельзя взять больше 5 предметов')
+    }
+
+    // Беру вещь
+    thing.taked = true
+    await thing.save()
+  }
+
+  // Возвращаю вещь в инвентарь
+  async untakeThing(id) {
+    const { user } = this
+    if (!user) {
+      throw new Error('Не авторизован')
+    }
+
+    if (!id) {
+      throw new Error('Нет необходимых данных')
+    }
+
+    // Ищу вещь в инвентаре
+    const thing = await AccountThing.findOne({
+      where: {
+        id,
+        accountId: user.id,
+        marketPrice: null,
+      },
+      include: [{ model: Thing }],
+    })
+
+    if (!thing) {
+      throw new Error('Предмет не найден')
+    }
+
+    if (thing.thing.thingtypeId != 1) {
+      throw new Error('Этот предмет нельзя вернуть в инвентарь')
+    }
+
+    if (!thing.taked) {
+      throw new Error('Предмет не был взят в игру')
+    }
+
+    // Возвращаю предмет в инвентарь
+    thing.taked = false
+    await thing.save()
+  }
+
   // Получение случайного класса для подарочного набора или кейса
   _getRndClass(nabor = false) {
     // Случайное число, для определения класса

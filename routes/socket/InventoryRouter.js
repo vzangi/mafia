@@ -27,4 +27,10 @@ module.exports = (io, socket) => {
 
   // Снять значок
   socket.on('badge.untake', controller.untakeBadge.bind(controller))
+
+  // Взять вещь в игру
+  socket.on('thing.take', controller.takeThing.bind(controller))
+
+  // Возвращаю вещь в инвентарь
+  socket.on('thing.untake', controller.untakeThing.bind(controller))
 }
