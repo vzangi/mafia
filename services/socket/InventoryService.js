@@ -480,6 +480,28 @@ class InventoryService extends BaseService {
       throw new Error('Предмет уже взят')
     }
 
+    // Проверяю, взят ли такой же (другой) предмет в игру
+    const analog = await AccountThing.findOne({
+      where: {
+        accountId: user.id,
+        taked: true,
+      },
+      include: [
+        {
+          model: Thing,
+          where: {
+            id: thing.thing.id,
+          },
+        },
+      ],
+    })
+
+    if (analog) {
+      throw new Error(
+        'Такой предмет уже взят. Нельзя брать в игру два одинаковых предмета.'
+      )
+    }
+
     // Проверяю сколько предметов уже взято
     const takedCount = await AccountThing.count({
       where: {
