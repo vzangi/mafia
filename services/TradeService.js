@@ -25,12 +25,32 @@ class TradeService {
     // Мои вещи из инвентаря
     const myThings = await AccountThing.scope({
       method: ['withThings', account.id],
-    }).findAll({ order: [['id', 'desc']] })
+    }).findAll({
+      order: [['id', 'desc']],
+      include: [
+        {
+          model: Thing,
+          where: {
+            forsale: true,
+          },
+        },
+      ],
+    })
 
     // Вещи визави
     const vizaviThings = await AccountThing.scope({
       method: ['withThings', vizavi.id],
-    }).findAll({ order: [['id', 'desc']] })
+    }).findAll({
+      order: [['id', 'desc']],
+      include: [
+        {
+          model: Thing,
+          where: {
+            forsale: true,
+          },
+        },
+      ],
+    })
 
     const types = await ThingType.findAll({
       order: [['sort']],

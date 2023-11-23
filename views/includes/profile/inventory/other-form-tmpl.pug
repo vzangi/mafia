@@ -32,7 +32,9 @@ script(id="formTmpl" type="text/x-jquery-tmpl")
                       {{/each}}
                   . 
                     {{/if}}
-
+                . 
+                  {{if thing.forsale}}
                 a(href="/market/thing/${thing.id}" class="w-100 btn btn-outline-success mb-3") Купить на маркете
-
+                . 
+                  {{/if}}
 include ./form-img-tmpl
