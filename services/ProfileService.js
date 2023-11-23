@@ -102,7 +102,7 @@ class ProfileService {
     data.things = await AccountThing.scope({
       method: ['withThings', profile.id],
     }).findAll({
-      limit: 6,
+      limit: 9,
       order: [['id', 'desc']],
     })
 
