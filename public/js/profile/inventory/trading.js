@@ -61,8 +61,22 @@ $(function () {
     $('#thingForm').modal('hide')
     const { id } = $('#thingForm').data()
     const { thing } = $(`.things-list-box .thing-item[data-id=${id}]`).data()
-    $('#sellFormImgTmpl').tmpl(thing).appendTo($('.sell-form-img').empty())
-    $('#sellForm').modal('show')
+
+    socket.emit('market.minprice', thing.thing.id, (res) => {
+      if (res.status != 0) {
+        return alert(res.msg)
+      }
+
+      const { minPrice } = res
+
+      $('.min-price')
+        .text(minPrice ? `${minPrice} р.` : 'нет предложений')
+        .attr('href', '/market/thing/' + thing.thing.id)
+
+      $('#sellFormImgTmpl').tmpl(thing).appendTo($('.sell-form-img').empty())
+
+      $('#sellForm').modal('show')
+    })
   })
 
   // Ввод цены для покупателя

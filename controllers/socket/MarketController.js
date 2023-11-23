@@ -55,6 +55,17 @@ class MarketController extends BaseSocketController {
       callback({ status: 1, msg: error.message })
     }
   }
+
+  // Полчуение минимальной цены вещи на маркете
+  async getMinPrice(thingId, callback) {
+    try {
+      const minPrice = await this.service.getMinPrice(thingId)
+      callback({ status: 0, minPrice })
+    } catch (error) {
+      console.log(error)
+      callback({ status: 1, msg: error.message })
+    }
+  }
 }
 
 module.exports = (io, socket) => {

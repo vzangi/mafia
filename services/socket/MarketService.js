@@ -1,4 +1,4 @@
-const { where } = require('sequelize')
+const { where, Op } = require('sequelize')
 const Account = require('../../models/Account')
 const AccountThing = require('../../models/AccountThing')
 const Thing = require('../../models/Thing')
@@ -206,6 +206,30 @@ class MarketService extends BaseService {
     const things = await AccountThing.getList(types, classes, collections)
 
     return things
+  }
+
+  // Полчуение минимальной цены вещи на маркете
+  async getMinPrice(thingId) {
+    const { user } = this
+    if (!user) {
+      throw new Error('Не авторизован')
+    }
+    if (!thingId) {
+      throw new Error('Нет необходимых данных')
+    }
+
+    const minPriceItem = await AccountThing.findOne({
+      where: {
+        marketPrice: { [Op.ne]: null },
+        accountId: { [Op.ne]: null },
+        thingId,
+      },
+      order: [['marketPrice']],
+    })
+
+    if (!minPriceItem) return 0
+
+    return minPriceItem.marketPrice
   }
 }
 

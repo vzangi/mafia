@@ -18,4 +18,7 @@ module.exports = (io, socket) => {
 
   // Возвращает отфильтрованный список офферов из маркета
   socket.on('market.list', controller.getList.bind(controller))
+
+  // Получение минимальной цены вещи на маркете
+  socket.on('market.minprice', controller.getMinPrice.bind(controller))
 }
