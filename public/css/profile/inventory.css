@@ -50,6 +50,8 @@
   width: 100%;
   border-bottom-left-radius: inherit;
   border-bottom-right-radius: inherit;
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
 }
 .img-sell {
   border: 1px solid #eee;
