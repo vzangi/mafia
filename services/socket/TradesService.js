@@ -76,6 +76,23 @@ const newTradeTransaction = async (fromId, toId, fromItems, toItems) => {
 }
 
 class TradesService extends BaseService {
+  // Получение количества предложений обмена
+  async tradesCount() {
+    const { user } = this
+    if (!user) {
+      throw new Error('Не авторизован')
+    }
+
+    const count = await Trade.count({
+      where: {
+        toId: user.id,
+        status: 0,
+      },
+    })
+
+    return count
+  }
+
   // Новый обмен
   async newTrade(vizaviId, myThings, vizaviThings) {
     const { user, socket } = this

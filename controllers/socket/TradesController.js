@@ -67,6 +67,16 @@ class TradesController extends BaseSocketController {
       callback({ status: 1, msg: error.message })
     }
   }
+
+  // Получение количества предложений обмена
+  async tradesCount(callback) {
+    try {
+      const count = await this.service.tradesCount()
+      callback({ status: 0, count })
+    } catch (error) {
+      callback({ status: 1, msg: error.message })
+    }
+  }
 }
 
 module.exports = (io, socket) => {

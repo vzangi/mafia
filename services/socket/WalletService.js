@@ -5,6 +5,12 @@ const WalletEvent = require('../../models/WalletEvents')
 const bot = require('../../units/bot')
 const BaseService = require('./BaseService')
 
+const minPaymentSumm = 50
+const maxPaymentSumm = 15000
+
+const minTransferSumm = 1
+const maxTransferSumm = 5000
+
 class WalletService extends BaseService {
   // Пополнение счёта
   async payment(sum, method) {
@@ -14,7 +20,7 @@ class WalletService extends BaseService {
     }
 
     sum = sum * 1
-    if (sum < 50 || sum > 15000) {
+    if (sum < minPaymentSumm || sum > maxPaymentSumm) {
       throw new Error('Неверная сумма')
     }
 
@@ -33,9 +39,7 @@ class WalletService extends BaseService {
       where: {
         accountId: user.id,
       },
-      include: [
-        { model: Thing }
-      ],
+      include: [{ model: Thing }],
       order: [['id', 'DESC']],
       offset,
       limit,
@@ -53,7 +57,7 @@ class WalletService extends BaseService {
       throw new Error('Нет необходимых данных')
     }
     count = count * 1
-    if (count < 1 || count > 5000) {
+    if (count < minTransferSumm || count > maxTransferSumm) {
       throw new Error('Неверная сумма')
     }
 
@@ -86,8 +90,9 @@ class WalletService extends BaseService {
 
     await WalletEvent.transfer(user.id, recipient.id, count)
 
-    const notifyText = `${account.username} ${account.gender == Account.genders.FEMALE ? 'перевела' : 'перевёл'
-      } тебе ${count} рублей`
+    const notifyText = `${account.username} ${
+      account.gender == Account.genders.FEMALE ? 'перевела' : 'перевёл'
+    } тебе ${count} рублей`
 
     // Отправляю уведомление другу
     this.notify(recipient.id, notifyText)

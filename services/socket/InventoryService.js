@@ -1,9 +1,21 @@
 const Account = require('../../models/Account')
 const AccountThing = require('../../models/AccountThing')
 const Thing = require('../../models/Thing')
+const ThingType = require('../../models/ThingType')
+const ThingClass = require('../../models/ThingClass')
 const NaborThing = require('../../models/NaborThing')
 const sequelize = require('../../units/db')
 const BaseService = require('./BaseService')
+
+// id типов вещей
+const { thingTypes } = ThingType
+const { thingClasses } = ThingClass
+
+// Количество вещей в крафте
+const kraftThingsCount = 10
+
+// Количество предметов, которые можно брать в игру
+const thingsInGameCount = 5
 
 class InventoryService extends BaseService {
   // Список вещей в инвентаре
@@ -46,23 +58,25 @@ class InventoryService extends BaseService {
       throw new Error('Переданы не уникальные значения')
     }
 
+    // Количество переданных Id должно быть определённым
     const cnt = await AccountThing.count({
       where: { id: ids, accountId: user.id },
     })
 
-    if (cnt != 10) {
+    if (cnt != kraftThingsCount) {
       throw new Error(
         'Некоторые из переданных вещей не найдены в твоём инвентаре'
       )
     }
 
-    // Случайное число от 0 до 9
+    // Случайное число от 0 до kraftThingsCount
     // Нужно, чтоюы выбрать одну из вещей чья коллекция будет использована для крафта вещи
-    const rand10 = Math.floor(Math.random() * 10)
+    const rnd = Math.floor(Math.random() * kraftThingsCount)
 
-    // Берем id вещи
-    const kraftItemId = ids[rand10]
+    // Беру id вещи
+    const kraftItemId = ids[rnd]
 
+    // Беру вещь для получения из неё данных для крафта
     const kraftItem = await AccountThing.findByPk(kraftItemId, {
       include: [{ model: Thing }],
     })
@@ -79,7 +93,7 @@ class InventoryService extends BaseService {
       throw new Error('Крафт вещей этого класса не поддерживается')
     }
 
-    // Берем случайную вещь из базы
+    // Беру случайную вещь из базы
     const thing = await Thing.findOne({
       where: {
         thingclassId: kraftItem.thing.thingclassId + 1,
@@ -93,13 +107,13 @@ class InventoryService extends BaseService {
       throw new Error('Не удалось скрафтить вещь')
     }
 
-    // Добавляем вещь в инвентарь игрока
+    // Добавляю вещь в инвентарь игрока
     const kraftedThing = await AccountThing.create({
       accountId: user.id,
       thingId: thing.id,
     })
 
-    // Удаляем вещи присланные в крафт
+    // Удаляю вещи присланные в крафт
     await AccountThing.update(
       {
         accountId: null,
@@ -111,6 +125,7 @@ class InventoryService extends BaseService {
       }
     )
 
+    // Достаю созданную вещь со всеми необходимыми данными
     const newThing = await AccountThing.scope({
       method: ['withThings', user.id],
     }).findOne({
@@ -133,6 +148,7 @@ class InventoryService extends BaseService {
       throw new Error('Нет необходимых данных')
     }
 
+    // Беру пропуск из инвентаря
     const thing = await AccountThing.findByPk(id, {
       include: [{ model: Thing }, { model: Account }],
     })
@@ -145,7 +161,7 @@ class InventoryService extends BaseService {
       throw new Error('На чужое позарился!?')
     }
 
-    if (thing.thing.thingtypeId != 2) {
+    if (thing.thing.thingtypeId != thingTypes.VIP) {
       throw new Error('Активировать можно только пропуска')
     }
 
@@ -153,16 +169,12 @@ class InventoryService extends BaseService {
       throw new Error('У тебя уже активирован VIP статус')
     }
 
-    const dt = new Date()
+    // Количество дней випа, в зависимости от типа пропуска
+    // (день, неделя, месяц, год, 100 лет)
+    const vipDays = [1, 7, 31, 365, 365 * 100]
 
-    if (thing.thing.thingclassId == 2) {
-      // VIP на неделю
-      dt.setDate(dt.getDate() + 7)
-    }
-    if (thing.thing.thingclassId == 3) {
-      // VIP на месяц
-      dt.setDate(dt.getDate() + 31)
-    }
+    const dt = new Date()
+    dt.setDate(dt.getDate() + vipDays[thing.thing.thingclassId - 1])
 
     // Активирую VIP статус аккаунта
     Account.update(
@@ -187,6 +199,7 @@ class InventoryService extends BaseService {
       throw new Error('Нет необходимых данных')
     }
 
+    // Вещи в наборе
     const things = await NaborThing.findAll({
       where: { naborId },
       include: [
@@ -215,6 +228,7 @@ class InventoryService extends BaseService {
       throw new Error('Нет необходимых данных')
     }
 
+    // Беру набор
     const nabor = await AccountThing.findByPk(naborId, {
       where: { accountId: user.id },
       include: [{ model: Thing }],
@@ -224,7 +238,7 @@ class InventoryService extends BaseService {
       throw new Error('Набор не найден')
     }
 
-    if (nabor.thing.thingtypeId != 3) {
+    if (nabor.thing.thingtypeId != thingTypes.KIT) {
       throw new Error('Вещь не является подарочным набором')
     }
 
@@ -247,14 +261,17 @@ class InventoryService extends BaseService {
       throw new Error('Не удалось открыть набор, попробуй ещё раз')
     }
 
+    // Создаю новую вещь в инвентаре игрока
     const newThing = await AccountThing.create({
       accountId: user.id,
       thingId: thing.thing.id,
     })
 
+    // Убираю набор из инвентаря
     nabor.accountId = null
     await nabor.save()
 
+    // Возвращаю вновь созданную вещь
     const data = await AccountThing.findByPk(newThing.id, {
       include: [{ model: Thing }],
     })
@@ -273,6 +290,7 @@ class InventoryService extends BaseService {
       throw new Error('Нет необходимых данных')
     }
 
+    // Беру кейс из инвентаря
     const keis = await AccountThing.findByPk(keisId, {
       where: { accountId: user.id },
       include: [{ model: Thing }],
@@ -282,7 +300,7 @@ class InventoryService extends BaseService {
       throw new Error('Кейс не найден')
     }
 
-    if (keis.thing.thingtypeId != 4) {
+    if (keis.thing.thingtypeId != thingTypes.KEIS) {
       throw new Error('Вещь не является кейсом')
     }
 
@@ -296,7 +314,7 @@ class InventoryService extends BaseService {
         {
           model: Thing,
           where: {
-            thingtypeId: 5,
+            thingtypeId: thingTypes.KEY,
             thingcollectionId: keis.thing.thingcollectionId,
           },
         },
@@ -328,6 +346,7 @@ class InventoryService extends BaseService {
       throw new Error('Не удалось открыть набор, попробуй ещё раз')
     }
 
+    // Создаю новую вещь в инвентаре
     const newThing = await AccountThing.create({
       accountId: user.id,
       thingId: thing.thing.id,
@@ -341,6 +360,7 @@ class InventoryService extends BaseService {
     key.accountId = null
     await key.save()
 
+    // Возвращаю id использованного ключа и вновь созданную вещь
     const data = { keyId: key.id }
     data.thing = await AccountThing.findByPk(newThing.id, {
       include: [{ model: Thing }],
@@ -374,7 +394,7 @@ class InventoryService extends BaseService {
       throw new Error('Значок не найден')
     }
 
-    if (badge.thing.thingtypeId != 6) {
+    if (badge.thing.thingtypeId != thingTypes.BADGE) {
       throw new Error('Это не значок')
     }
 
@@ -397,7 +417,7 @@ class InventoryService extends BaseService {
           {
             model: Thing,
             where: {
-              thingtypeId: 6,
+              thingtypeId: thingTypes.BADGE,
             },
           },
         ],
@@ -434,7 +454,7 @@ class InventoryService extends BaseService {
       throw new Error('Значок не найден')
     }
 
-    if (badge.thing.thingtypeId != 6) {
+    if (badge.thing.thingtypeId != thingTypes.BADGE) {
       throw new Error('Это не значок')
     }
 
@@ -472,7 +492,7 @@ class InventoryService extends BaseService {
       throw new Error('Предмет не найден')
     }
 
-    if (thing.thing.thingtypeId != 1) {
+    if (thing.thing.thingtypeId != thingTypes.THING) {
       throw new Error('Этот предмет нельзя взять в игру')
     }
 
@@ -512,14 +532,16 @@ class InventoryService extends BaseService {
         {
           model: Thing,
           where: {
-            thingtypeId: 1,
+            thingtypeId: thingTypes.THING,
           },
         },
       ],
     })
 
-    if (takedCount == 5) {
-      throw new Error('В игру нельзя взять больше 5 предметов')
+    if (takedCount == thingsInGameCount) {
+      throw new Error(
+        `В игру нельзя взять больше ${thingsInGameCount} предметов`
+      )
     }
 
     // Беру вещь
@@ -552,7 +574,7 @@ class InventoryService extends BaseService {
       throw new Error('Предмет не найден')
     }
 
-    if (thing.thing.thingtypeId != 1) {
+    if (thing.thing.thingtypeId != thingTypes.THING) {
       throw new Error('Этот предмет нельзя вернуть в инвентарь')
     }
 
@@ -571,9 +593,9 @@ class InventoryService extends BaseService {
     const rnd = Math.random()
 
     if (!nabor && rnd < 0.005) return 5 // Эксклюзивный
-    if (rnd < 0.1) return 4 // Высочайший
-    if (rnd < 0.2) return 3 // Особенный
-    if (rnd < 0.3) return 2 // Стандартный
+    if (rnd < 0.01) return 4 // Высочайший
+    if (rnd < 0.05) return 3 // Особенный
+    if (rnd < 0.2) return 2 // Стандартный
     return 1 // Обычный
   }
 }

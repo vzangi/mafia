@@ -7,8 +7,8 @@ const Friend = require('../../models/Friend')
 const Thing = require('../../models/Thing')
 const Trade = require('../../models/Trade')
 const WalletEvents = require('../../models/WalletEvents')
-const BaseService = require('./BaseService')
 const sequelize = require('../../units/db')
+const BaseService = require('./BaseService')
 
 class ApiService extends BaseService {
   // Список пользователей по части ника
@@ -170,23 +170,6 @@ class ApiService extends BaseService {
     })
 
     return friends
-  }
-
-  // Получение количества предложений обмена
-  async tradesCount() {
-    const { user } = this
-    if (!user) {
-      throw new Error('Не авторизован')
-    }
-
-    const count = await Trade.count({
-      where: {
-        toId: user.id,
-        status: 0,
-      },
-    })
-
-    return count
   }
 }
 

@@ -21,4 +21,7 @@ module.exports = (io, socket) => {
 
   // Отзыв обмена
   socket.on('trades.cancel', controller.cancel.bind(controller))
+
+  // Получение количества предложений обмена
+  socket.on('trades.count', controller.tradesCount.bind(controller))
 }

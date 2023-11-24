@@ -21,7 +21,4 @@ module.exports = (io, socket) => {
 
   // Смена ника
   socket.on('nik.change', controller.changeNik.bind(controller))
-
-  // Получение количества предложений обмена
-  socket.on('trades.count', controller.tradesCount.bind(controller))
 }

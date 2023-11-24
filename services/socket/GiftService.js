@@ -1,13 +1,14 @@
-const GiftGroups = require('../../models/GiftGroup')
-const AccountGift = require('../../models/AccountGift')
-const Account = require('../../models/Account')
-const Gift = require('../../models/Gift')
-const Notification = require('../../models/Notification')
-const WalletEvent = require('../../models/WalletEvents')
 const { Op } = require('sequelize')
 const sequelize = require('../../units/db')
-const BaseService = require('./BaseService')
 const bot = require('../../units/bot')
+const Account = require('../../models/Account')
+const AccountGift = require('../../models/AccountGift')
+const Gift = require('../../models/Gift')
+const GiftGroups = require('../../models/GiftGroup')
+const WalletEvent = require('../../models/WalletEvents')
+const BaseService = require('./BaseService')
+
+const maxGiftMessageLength = 255
 
 class GiftService extends BaseService {
   // Получение следующей партии открыток пользователя
@@ -22,7 +23,7 @@ class GiftService extends BaseService {
   async giftGroups() {
     const groups = await GiftGroups.findAll({
       where: {
-        active: 1,
+        active: true,
       },
       attributes: ['id', 'name'],
       order: [['sort', 'ASC']],
@@ -49,8 +50,8 @@ class GiftService extends BaseService {
       throw new Error('Отсутсвуют необходимые данные')
     }
 
-    if (description.length > 255) {
-      description = description.substr(0, 255)
+    if (description.length > maxGiftMessageLength) {
+      description = description.substr(0, maxGiftMessageLength)
     }
 
     // Нахожу получателя в базе
