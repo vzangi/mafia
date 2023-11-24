@@ -1,7 +1,11 @@
 extends /layouts/two_column_3_9
 
+block head
+  link(href="/css/chat.css" rel="stylesheet")
 block main
   include /includes/lobbi/chat
+  include /includes/lobbi/games
+
 
 block aside
   include /includes/lobbi/friends_online
@@ -9,4 +13,4 @@ block aside
 block scripts 
   include /includes/lobbi/lobbi-tmpl
   script(src="/js/lobbi.js")
-  link(href="/css/chat.css" rel="stylesheet")
+  script(src="/js/lobbi/make-game.js")
