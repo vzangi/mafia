@@ -1,7 +1,4 @@
 $(async function () {
-
-  const lobbiSocket = io('/lobbi')
-
   const userOnlineCount = $('.user-online')
   const chatInput = $('.input-box input')
   const chatSettingsButton = $('.chat-settings > span.gear')

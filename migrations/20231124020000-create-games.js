@@ -44,6 +44,10 @@ module.exports = {
           allowNull: false,
           defaultValue: 0,
         },
+        deadline: {
+          type: Sequelize.DATE,
+          allowNull: false,
+        },
         createdAt: {
           type: Sequelize.DATE,
           allowNull: false,

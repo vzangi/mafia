@@ -46,5 +46,8 @@ module.exports = (io) => {
   io.of('/lobbi').on('connection', (socket) => {
     // Роуты основного чата
     require('./socket/ChatRouter')(io, socket)
+
+    // Роуты лобби
+    require('./socket/LobbiRouter')(io, socket)
   })
 }

@@ -1,0 +1,1 @@
+const lobbiSocket = io('/lobbi')
