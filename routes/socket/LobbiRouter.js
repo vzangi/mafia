@@ -6,4 +6,10 @@ module.exports = (io, socket) => {
 
   // Создание игры
   socket.on('game.make', controller.makeGame.bind(controller))
+
+  // Получение текущих заявок 
+  socket.on('game.games', controller.getGames.bind(controller))
+
+  // Присоединиться к заявке
+  socket.on('game.to', controller.toGame.bind(controller))
 }

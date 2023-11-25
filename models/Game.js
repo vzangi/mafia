@@ -51,6 +51,12 @@ const Game = sequelize.define(
             where: {
               status: 0,
             },
+            include: [
+              {
+                model: Account,
+                attributes: ['username', 'avatar']
+              }
+            ]
           },
         ],
       },

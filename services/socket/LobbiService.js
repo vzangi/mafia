@@ -1,37 +1,47 @@
-const BaseService = require('./BaseService')
+const { Op } = require('sequelize')
+const Account = require('../../models/Account')
 const Game = require('../../models/Game')
-const GameType = require('../../models/GameType')
 const GamePlayer = require('../../models/GamePlayer')
-
-const waitingGames = []
+const GameType = require('../../models/GameType')
+const BaseService = require('./BaseService')
 
 class LobbiService extends BaseService {
+
+  static waitingGames = []
+  static intervalStarted = false
+
   constructor(io, socket) {
     super(io, socket)
 
-    // При запуске сервера проверяю наличие запущенных игр
-    Game
-      //.scope('def')
-      .findAll({
-        where: {
-          status: 0,
-        },
-      })
-      .then((games) => {
-        games.forEach((game) => waitingGames.push(game))
-      })
+    // Проверяю был ли запущен процесс проверки заявок
+    if (!LobbiService.intervalStarted) {
+      // Ставлю маркер запуска
+      LobbiService.intervalStarted = true
 
-    // Раз в секунду проверяю заявки с истёкшим сроком дедлайна
-    setInterval(this._checkDeadLine.bind(this), 1000)
+      // Проверяю наличие запущенных игр
+      Game
+        .scope('def')
+        .findAll({
+          where: {
+            status: 0,
+          },
+        })
+        .then((games) => {
+          games.forEach((game) => LobbiService.waitingGames.push(game))
+        })
+
+      // Раз в секунду проверяю заявки с истёкшим сроком дедлайна
+      setInterval(this._checkDeadLine.bind(this), 1000)
+    }
   }
 
   _checkDeadLine() {
     const date = new Date()
-    for (let index = 0; index < waitingGames.length; index++) {
-      const game = waitingGames[index]
-      // console.log(game.deadline, date)
+    for (let index = 0; index < LobbiService.waitingGames.length; index++) {
+      const game = LobbiService.waitingGames[index]
+
       if (game.deadline < date) {
-        console.log(`Для игры ${game.id} дедлайн истёк`)
+        // console.log(`Для игры ${game.id} дедлайн истёк`)
 
         // Проверяю количество игроков в заявке
         // Если их меньше чем необходимо, то удаляю заявку
@@ -39,7 +49,7 @@ class LobbiService extends BaseService {
         // Иначе запускаю игру
 
         // Пока просто удаляю...
-        waitingGames.splice(index, 1)
+        LobbiService.waitingGames.splice(index, 1)
         index--
 
         this._removeGame(game)
@@ -49,7 +59,7 @@ class LobbiService extends BaseService {
 
   // Удаление игры
   async _removeGame(game) {
-    const { socket } = this
+    const { io } = this
 
     // Ставлю статус 1 - игра не началась
     game.status = 1
@@ -67,8 +77,10 @@ class LobbiService extends BaseService {
       }
     )
 
+    // console.log(`game.remove ${game.id}`);
+
     // Уведомляю об удалении заявки
-    socket.emit('game.remove', game.id)
+    io.of('/lobbi').emit('game.remove', game.id)
   }
 
   // Доступные типы игр
@@ -131,10 +143,76 @@ class LobbiService extends BaseService {
     const game = await Game.scope('def').findByPk(newGame.id)
 
     // Добавляю её в список ожидающих заявок
-    waitingGames.push(game)
+    LobbiService.waitingGames.push(game)
+
+    // Уведомляю подключённые сокеты о новой заявке
+    const { socket } = this
+    socket.broadcast.emit('game.new', game)
 
     // и возвращаю её
-    return newGame
+    return game
+  }
+
+  // Получение текущих заявок 
+  async getGames() {
+    const games = await Game.scope('def').findAll()
+    return games
+  }
+
+  // Присоединиться к заявке
+  async toGame(gameId) {
+    const { user } = this
+    if (!user) {
+      throw new Error('Не авторизован')
+    }
+
+    if (!gameId) {
+      throw new Error('Нет необходимых данных')
+    }
+
+    // Проверка, есть ли игра
+    const game = await Game.scope('def').findByPk(gameId)
+
+    if (!game) {
+      throw new Error('Заявка не найдена')
+    }
+
+    if (game.status != 0) {
+      throw new Error('К этой заявке уже нельзя присоединиться')
+    }
+
+    if (game.playersCount == game.gameplayers.length) {
+      throw new Error('В заявке нет свободных мест')
+    }
+
+    // Проверяю находится ли игрок в другой заявке
+    const inGame = await GamePlayer.count({
+      where: {
+        accountId: user.id,
+        [Op.or]: [
+          { status: 0 },
+          { status: 2 },
+        ]
+      }
+    })
+
+    if (inGame) {
+      throw new Error('Ты всё ещё в другой заявке')
+    }
+
+    // Добавляю игрока в заявку
+    GamePlayer.create({
+      gameId,
+      accountId: user.id
+    })
+
+    // Беру необходимые данные из аккаунта 
+    const account = await Account.findByPk(user.id, { attributes: ['username', 'avatar'] })
+
+    // Отправляю всем информацию об игроке и зявке
+    const { io } = this
+    io.of('/lobbi').emit('game.add.player', gameId, account)
+
   }
 }
 

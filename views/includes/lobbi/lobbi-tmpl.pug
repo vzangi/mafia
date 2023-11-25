@@ -1,13 +1,51 @@
 script(id="noFriendsOnlineTmpl" type="text/x-jquery-tmpl")
-    span(class="pt-1 text-secondary no-online-friends") Друзей в онлайне пока нет
+  span(class="pt-1 text-secondary no-online-friends") Друзей в онлайне пока нет
 
 
 script(id="friendOnlineTmpl" type="text/x-jquery-tmpl")
-    div(class="online-friend-box" data-id="${id}")
-        div(class="friend-item")
-            div(class="friend-avatar online")
-                img(src="/uploads/${avatar}")
-            div(class="friend-info")
-                a(href="/profile/${username}") ${username}
-            div(class="friend-actions") 
-                span(class="start-chat ion-chatbox-working" title="Личное сообщение" onclick="startPrivateWith(${id})")
+  div(class="online-friend-box" data-id="${id}")
+    div(class="friend-item")
+      div(class="friend-avatar online")
+        img(src="/uploads/${avatar}")
+      div(class="friend-info")
+        a(href="/profile/${username}") ${username}
+      div(class="friend-actions") 
+        span(class="start-chat ion-chatbox-working" title="Личное сообщение" onclick="startPrivateWith(${id})")
+
+script(id="gamePlayerTmpl" type="text/x-jquery-tmpl")
+  div(class="player" data-username="${account.username}")
+    div(class="friend-item flex-column align-items-center gap-1")
+      div(class="friend-avatar online")
+        img(src="/uploads/${account.avatar}")
+      div(class="friend-info")
+        a(href="/profile/${account.username}") ${account.username}
+
+script(id="gameItemTmpl" type="text/x-jquery-tmpl")
+  div(class="game-item" data-id="${id}")
+
+    div(class="game-info mb-3")
+      div(class="d-flex justify-content-between")
+        div(class="game-type") ${gametype.name}
+        div(class="players-count") 
+          span Игроков: 
+          span(class="cnt") ${gameplayers.length} 
+          span  / 
+          span ${playersCount} 
+        div(class="waithing-time" data-deadline="${deadline}") ${getDeadline(deadline)} 
+
+      div(class="description")
+        span ${description}
+      
+      div 
+        button(class="btn btn-success btn-to-game" data-id="${id}") Присоединиться
+        button(class="btn btn-success btn-from-game" data-id="${id}") Покинуть заявку
+
+
+    div(class="players d-flex flex-wrap")
+      . 
+        {{each(i,player) gameplayers}}
+          {{tmpl(player) '#gamePlayerTmpl'}}
+      .   
+        {{/each}}
+
+

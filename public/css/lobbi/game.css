@@ -1,0 +1,10 @@
+.inGame .btn-make-game,
+.inGame .btn-to-game {
+    display: none;
+}
+.btn-from-game {
+    display: none;
+}
+.btn-from-game.my-game {
+    display: block;
+}
