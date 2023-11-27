@@ -239,6 +239,25 @@ class LobbiService extends BaseService {
       throw new Error('Эту заявку нельзя удалить')
     }
 
+    // Ищу игрока в этой заявке
+    const playerInGame = await GamePlayer.findOne({
+      where: {
+        gameId,
+        accountId: user.id,
+        status: 0,
+      },
+      include: [
+        {
+          model: Account,
+          attributes: ['username'],
+        },
+      ],
+    })
+
+    if (!playerInGame) {
+      throw new Error('Тебя нет в этой заявке')
+    }
+
     // Если всё ок - удаляю заявку
     await this._removeGame(game)
   }
@@ -255,7 +274,7 @@ class LobbiService extends BaseService {
     }
 
     // Проверка, есть ли заявка
-    const game = await Game.findByPk(gameId)
+    const game = await Game.scope('def').findByPk(gameId)
 
     if (!game) {
       throw new Error('Заявка не найдена')
@@ -282,6 +301,11 @@ class LobbiService extends BaseService {
 
     if (!playerInGame) {
       throw new Error('Тебя нет в этой заявке')
+    }
+
+    if (game.gameplayers.length == 1) {
+      await this._removeGame(game)
+      return
     }
 
     // Ставлю статус игрока - 1 (не в заявке)

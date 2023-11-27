@@ -79,8 +79,10 @@ $(function () {
 
     const player = game.find(`.player[data-username=${leaveUserName}]`)
     if (!player) return
-
     player.remove()
+
+    const cnt = game.find('.player').length
+    game.find('.players-count .cnt').text(cnt)
   })
 
   // Вывести игру на страницу
@@ -163,6 +165,8 @@ $(function () {
         if (res.status != 0) {
           alert(res.msg)
         }
+        $('body').removeClass('inGame')
+        $(`.game-item[data-id=${id}] .btn-from-game`).addClass('hide')
       })
     })
   })
