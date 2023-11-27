@@ -21,31 +21,46 @@ script(id="gamePlayerTmpl" type="text/x-jquery-tmpl")
         a(href="/profile/${account.username}") ${account.username}
 
 script(id="gameItemTmpl" type="text/x-jquery-tmpl")
-  div(class="game-item" data-id="${id}")
+  div(class="game-item" data-id="${id}" data-game="${JSON.stringify(this.data)}")
+    div(class="block p-4 mb-3")
 
-    div(class="game-info mb-3")
-      div(class="d-flex justify-content-between")
-        div(class="game-type") ${gametype.name}
-        div(class="players-count") 
-          span Игроков: 
-          span(class="cnt") ${gameplayers.length} 
-          span  / 
-          span ${playersCount} 
-        div(class="waithing-time" data-deadline="${deadline}") ${getDeadline(deadline)} 
+      div(class="game-info mb-3")
+        div(class="d-flex justify-content-between align-items-center gap-1")
+          div(class="game-type d-flex align-items-center gap-1") 
+            span(class="ion-ios-game-controller-b fs-4 text-secondary" title="Режим игры" data-bs-toggle="tooltip" data-bs-placement="bottom") 
+            span ${gametype.name}
+          div(class="players-count d-flex align-items-center gap-1") 
+            span(class="ion-ios-people fs-3 text-secondary" title="Количество игроков в зявке" data-bs-toggle="tooltip" data-bs-placement="bottom") 
+            span(class="cnt") ${gameplayers.length} 
+            span  / 
+            span ${playersCount} 
+          div(class="d-flex align-items-center gap-1") 
+            span(class="ion-ios-clock fs-5 text-secondary" title="Время для сбора игроков" data-bs-toggle="tooltip" data-bs-placement="bottom")
+            span(class="waithing-time" data-deadline="${deadline}") ${getDeadline(deadline)} 
 
-      div(class="description")
-        span ${description}
-      
-      div 
-        button(class="btn btn-success btn-to-game" data-id="${id}") Присоединиться
-        button(class="btn btn-success btn-from-game" data-id="${id}") Покинуть заявку
+        div(class="description")
+          span ${description}
 
 
-    div(class="players d-flex flex-wrap")
-      . 
-        {{each(i,player) gameplayers}}
-          {{tmpl(player) '#gamePlayerTmpl'}}
-      .   
-        {{/each}}
+      div(class="players d-flex flex-wrap")
+        div(class="game-action-btns d-flex gap-2")
+          . 
+            {{if my}}
+          div(class="game-action-btn btn-remove-game ion-ios-close-outline text-danger me-2" data-id="${id}" title="Удалить заявку" data-bs-toggle="tooltip" data-bs-placement="bottom")
+          .
+            {{/if}}
+
+          div(class="game-action-btn btn-from-game ion-ios-minus-outline text-warning me-2 ${inGame?'':'hide'}" data-id="${id}" title="Покинуть заявку" data-bs-toggle="tooltip" data-bs-placement="bottom")
+
+
+          div(class="game-action-btn btn-to-game ion-ios-plus-outline text-success me-2" data-id="${id}" title="Присоедениться к заявке" data-bs-toggle="tooltip" data-bs-placement="bottom")
+
+
+
+        . 
+          {{each(i,player) gameplayers}}
+            {{tmpl(player) '#gamePlayerTmpl'}}
+        .   
+          {{/each}}
 
 

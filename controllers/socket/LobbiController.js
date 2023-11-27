@@ -18,7 +18,7 @@ class LobbiController extends BaseSocketController {
     }
   }
 
-  // Получение текущих заявок 
+  // Получение текущих заявок
   async getGames(callback) {
     try {
       const games = await this.service.getGames()
@@ -33,6 +33,28 @@ class LobbiController extends BaseSocketController {
   async toGame(gameId, callback) {
     try {
       await this.service.toGame(gameId)
+      callback({ status: 0 })
+    } catch (error) {
+      console.log(error)
+      callback({ status: 1, msg: error.message })
+    }
+  }
+
+  // Удаление заявки
+  async removeGame(gameId, callback) {
+    try {
+      await this.service.removeGame(gameId)
+      callback({ status: 0 })
+    } catch (error) {
+      console.log(error)
+      callback({ status: 1, msg: error.message })
+    }
+  }
+
+  // Покинуть заявку
+  async leaveGame(gameId, callback) {
+    try {
+      await this.service.leaveGame(gameId)
       callback({ status: 0 })
     } catch (error) {
       console.log(error)

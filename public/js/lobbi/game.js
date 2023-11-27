@@ -1,5 +1,5 @@
 function getDeadline(d) {
-  const totalSeconds = ((new Date(d)).getTime() - (new Date()).getTime()) / 1000
+  const totalSeconds = (new Date(d).getTime() - new Date().getTime()) / 1000
   if (totalSeconds < 60) {
     return `${Math.ceil(totalSeconds >= 0 ? totalSeconds : 0)} сек.`
   }
@@ -7,7 +7,6 @@ function getDeadline(d) {
 }
 
 $(function () {
-
   const makeGameBtn = $('.btn-make-game')
   const makeGameForm = $('#makeForm')
   const gamesList = $('.games-list')
@@ -27,21 +26,11 @@ $(function () {
     if (res.status != 0) {
       return alert(res.msg)
     }
-    
+
     const { games } = res
 
-    const inGame = games.filter(g => 
-      g.gameplayers.filter(gp => 
-        gp.account.username == username).length == 1
-      )
-
-      console.log(inGame);
-
-    if (inGame.length != 0) {
-      $('body').addClass('inGame')
-    }
-
-    gameItemTmpl.tmpl(games).appendTo(gamesList)
+    // Вывожу игры на страницу
+    games.forEach((g) => showGame(g))
   })
 
   // Открытие формы новой заявки
@@ -51,7 +40,10 @@ $(function () {
 
   // Удаление заявки
   lobbiSocket.on('game.remove', (id) => {
-    if ($(`.game-item[data-id=${id}] .player[data-username=${username}]`).length == 1) {
+    if (
+      $(`.game-item[data-id=${id}] .player[data-username=${username}]`)
+        .length == 1
+    ) {
       $('body').removeClass('inGame')
     }
     $(`.game-item[data-id=${id}]`).remove()
@@ -63,20 +55,53 @@ $(function () {
     if (!game) return
 
     // Показываю игрока в заявке
-    $('#gamePlayerTmpl').tmpl({ account: player }).appendTo(game.find('.players'))
+    $('#gamePlayerTmpl')
+      .tmpl({ account: player })
+      .appendTo(game.find('.players'))
 
-    // Если текущий игрок, скрываю кнопки 
+    // Если текущий игрок, скрываю кнопки
     if (player.username == username) {
       $('body').addClass('inGame')
+      game.find('.btn-from-game').removeClass('hide')
     }
 
     const cnt = game.find('.player').length
     game.find('.players-count .cnt').text(cnt)
   })
 
-  lobbiSocket.on('game.new', game => {
-    gameItemTmpl.tmpl(game).appendTo(gamesList)
+  lobbiSocket.on('game.new', (game) => {
+    showGame(game)
   })
+
+  lobbiSocket.on('game.player.leave', (gameId, leaveUserName) => {
+    const game = $(`.game-item[data-id=${gameId}]`)
+    if (!game) return
+
+    const player = game.find(`.player[data-username=${leaveUserName}]`)
+    if (!player) return
+
+    player.remove()
+  })
+
+  // Вывести игру на страницу
+  function showGame(game) {
+    // Проверяю, находится ли текущий игрок в заявке
+    game.inGame = false
+    if (
+      game.gameplayers.filter((gp) => gp.account.username == username).length ==
+      1
+    ) {
+      game.inGame = true
+      $('body').addClass('inGame')
+
+      // Проверяю, создал ли игрок эту заявку
+      if (game.account.username == username) game.my = true
+    }
+
+    gameItemTmpl.tmpl(game).prependTo(gamesList)
+
+    activateBSTooltips()
+  }
 
   // Создание заявки
   $('.btn-create').click(function () {
@@ -99,10 +124,7 @@ $(function () {
         }
 
         const { game } = res
-
-        $('body').addClass('inGame')
-
-        gameItemTmpl.tmpl(game).appendTo(gamesList)
+        showGame(game)
       }
     )
   })
@@ -114,6 +136,34 @@ $(function () {
       if (res.status != 0) {
         return alert(res.msg)
       }
+    })
+  })
+
+  // Удалить зявку
+  gamesList.on('click', '.btn-remove-game', function () {
+    const { id } = $(this).data()
+    confirm('Удалить заявку?').then((accept) => {
+      if (!accept) return
+
+      lobbiSocket.emit('game.remove', id, (res) => {
+        if (res.status != 0) {
+          alert(res.msg)
+        }
+      })
+    })
+  })
+
+  // Покинуть зявку
+  gamesList.on('click', '.btn-from-game', function () {
+    const { id } = $(this).data()
+    confirm('Покинуть заявку?').then((accept) => {
+      if (!accept) return
+
+      lobbiSocket.emit('game.leave', id, (res) => {
+        if (res.status != 0) {
+          alert(res.msg)
+        }
+      })
     })
   })
 })

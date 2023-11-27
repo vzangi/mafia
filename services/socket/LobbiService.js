@@ -6,7 +6,6 @@ const GameType = require('../../models/GameType')
 const BaseService = require('./BaseService')
 
 class LobbiService extends BaseService {
-
   static waitingGames = []
   static intervalStarted = false
 
@@ -19,8 +18,7 @@ class LobbiService extends BaseService {
       LobbiService.intervalStarted = true
 
       // Проверяю наличие запущенных игр
-      Game
-        .scope('def')
+      Game.scope('def')
         .findAll({
           where: {
             status: 0,
@@ -153,7 +151,7 @@ class LobbiService extends BaseService {
     return game
   }
 
-  // Получение текущих заявок 
+  // Получение текущих заявок
   async getGames() {
     const games = await Game.scope('def').findAll()
     return games
@@ -189,11 +187,8 @@ class LobbiService extends BaseService {
     const inGame = await GamePlayer.count({
       where: {
         accountId: user.id,
-        [Op.or]: [
-          { status: 0 },
-          { status: 2 },
-        ]
-      }
+        [Op.or]: [{ status: 0 }, { status: 2 }],
+      },
     })
 
     if (inGame) {
@@ -203,16 +198,103 @@ class LobbiService extends BaseService {
     // Добавляю игрока в заявку
     GamePlayer.create({
       gameId,
-      accountId: user.id
+      accountId: user.id,
     })
 
-    // Беру необходимые данные из аккаунта 
-    const account = await Account.findByPk(user.id, { attributes: ['username', 'avatar'] })
+    // Беру необходимые данные из аккаунта
+    const account = await Account.findByPk(user.id, {
+      attributes: ['username', 'avatar'],
+    })
 
     // Отправляю всем информацию об игроке и зявке
     const { io } = this
     io.of('/lobbi').emit('game.add.player', gameId, account)
+  }
 
+  // Удление заявки владельцем
+  async removeGame(gameId) {
+    const { user } = this
+    if (!user) {
+      throw new Error('Не авторизован')
+    }
+
+    if (!gameId) {
+      throw new Error('Нет необходимых данных')
+    }
+
+    // Проверка, есть ли игра
+    const game = await Game.findByPk(gameId)
+
+    if (!game) {
+      throw new Error('Заявка не найдена')
+    }
+
+    if (game.accountId != user.id) {
+      throw new Error('Нельзя удалять чужую заявку')
+
+      // (админу надо разрешить!)
+    }
+
+    if (game.status != 0) {
+      throw new Error('Эту заявку нельзя удалить')
+    }
+
+    // Если всё ок - удаляю заявку
+    await this._removeGame(game)
+  }
+
+  // Покинуть заявку
+  async leaveGame(gameId) {
+    const { user } = this
+    if (!user) {
+      throw new Error('Не авторизован')
+    }
+
+    if (!gameId) {
+      throw new Error('Нет необходимых данных')
+    }
+
+    // Проверка, есть ли заявка
+    const game = await Game.findByPk(gameId)
+
+    if (!game) {
+      throw new Error('Заявка не найдена')
+    }
+
+    if (game.status != 0) {
+      throw new Error('Эту заявку нельзя покинуть')
+    }
+
+    // Ищу игрока в этой заявке
+    const playerInGame = await GamePlayer.findOne({
+      where: {
+        gameId,
+        accountId: user.id,
+        status: 0,
+      },
+      include: [
+        {
+          model: Account,
+          attributes: ['username'],
+        },
+      ],
+    })
+
+    if (!playerInGame) {
+      throw new Error('Тебя нет в этой заявке')
+    }
+
+    // Ставлю статус игрока - 1 (не в заявке)
+    playerInGame.status = 1
+    await playerInGame.save()
+
+    // Отправляю всем информацию что игрок покинул заявку
+    const { io } = this
+    io.of('/lobbi').emit(
+      'game.player.leave',
+      gameId,
+      playerInGame.account.username
+    )
   }
 }
 

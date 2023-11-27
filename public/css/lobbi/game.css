@@ -1,10 +1,16 @@
 .inGame .btn-make-game,
 .inGame .btn-to-game {
-    display: none;
+  display: none;
 }
-.btn-from-game {
-    display: none;
+
+.game-action-btn {
+  font-size: 4rem;
+  line-height: 4.1rem;
+  cursor: pointer;
+  opacity: 0.5;
+  transition: all 0.3s ease;
 }
-.btn-from-game.my-game {
-    display: block;
+
+.game-action-btn:hover {
+  opacity: 1;
 }

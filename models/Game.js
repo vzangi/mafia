@@ -47,17 +47,31 @@ const Game = sequelize.define(
         include: [
           { model: GameType },
           {
+            model: Account,
+            attributes: ['username', 'avatar'],
+          },
+          {
             model: GamePlayer,
             where: {
               status: 0,
             },
+            attributes: ['status'],
             include: [
               {
                 model: Account,
-                attributes: ['username', 'avatar']
-              }
-            ]
+                attributes: ['username', 'avatar'],
+              },
+            ],
           },
+        ],
+        attributes: [
+          'id',
+          'deadline',
+          'playersCount',
+          'status',
+          'waitingTime',
+          'description',
+          'createdAt',
         ],
       },
     },
