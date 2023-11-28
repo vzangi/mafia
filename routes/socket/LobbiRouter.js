@@ -18,4 +18,10 @@ module.exports = (io, socket) => {
 
   // Покинуть заявку
   socket.on('game.leave', controller.leaveGame.bind(controller))
+
+  // Удалить из заявки игрока
+  socket.on(
+    'game.player.remove',
+    controller.removePlayerFromGame.bind(controller)
+  )
 }

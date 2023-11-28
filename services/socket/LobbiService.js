@@ -71,6 +71,7 @@ class LobbiService extends BaseService {
       {
         where: {
           gameId: game.id,
+          status: 0,
         },
       }
     )
@@ -187,12 +188,25 @@ class LobbiService extends BaseService {
     const inGame = await GamePlayer.count({
       where: {
         accountId: user.id,
-        [Op.or]: [{ status: 0 }, { status: 2 }],
+        [Op.or]: [{ status: 0 }, { status: 3 }],
       },
     })
 
     if (inGame) {
       throw new Error('Ты всё ещё в другой заявке')
+    }
+
+    // Проверяю, был ли игрок удалён из этой заявки
+    const wasRemoved = await GamePlayer.count({
+      where: {
+        accountId: user.id,
+        status: 2,
+        gameId,
+      },
+    })
+
+    if (wasRemoved) {
+      throw new Error('Ты был удалён из этой заявки')
     }
 
     // Добавляю игрока в заявку
@@ -208,7 +222,7 @@ class LobbiService extends BaseService {
 
     // Отправляю всем информацию об игроке и зявке
     const { io } = this
-    io.of('/lobbi').emit('game.add.player', gameId, account)
+    io.of('/lobbi').emit('game.player.add', gameId, account)
   }
 
   // Удление заявки владельцем
@@ -319,6 +333,87 @@ class LobbiService extends BaseService {
       gameId,
       playerInGame.account.username
     )
+  }
+
+  // Удалить из заявки игрока
+  async removePlayerFromGame(gameId, username) {
+    const { user } = this
+    if (!user) {
+      throw new Error('Не авторизован')
+    }
+
+    if (!gameId) {
+      throw new Error('Нет необходимых данных')
+    }
+
+    // Проверка, есть ли заявка
+    const game = await Game.scope('def').findByPk(gameId)
+
+    if (!game) {
+      throw new Error('Заявка не найдена')
+    }
+
+    if (game.status != 0) {
+      throw new Error('Из этой заявки уже нельзя удалить игрока')
+    }
+
+    const userAccount = await Account.findByPk(user.id)
+
+    if (game.account.username != userAccount.username) {
+      throw new Error('Удалить игрока можно только из своей заявки')
+    }
+
+    // Ищу игрока в этой заявке
+    const inGame = await GamePlayer.findOne({
+      where: {
+        gameId,
+        accountId: user.id,
+        status: 0,
+      },
+      include: [
+        {
+          model: Account,
+          attributes: ['username'],
+        },
+      ],
+    })
+
+    if (!inGame) {
+      throw new Error('Удалить игрока можно только находясь в заявке')
+    }
+
+    const account = await Account.findOne({ where: { username } })
+
+    if (!account) {
+      throw new Error('Игрок не найден')
+    }
+
+    // Ищу в заявке игрока, которого надо дропнуть
+    const playerInGame = await GamePlayer.findOne({
+      where: {
+        gameId,
+        accountId: account.id,
+        status: 0,
+      },
+    })
+
+    if (!playerInGame) {
+      throw new Error('Игрока нет в этой заявке')
+    }
+
+    // Если в заявке остался только один игрок - удаляю её
+    if (game.gameplayers.length == 1) {
+      await this._removeGame(game)
+      return
+    }
+
+    // Ставлю статус игрока - 2 (удалён из заявки)
+    playerInGame.status = 2
+    await playerInGame.save()
+
+    // Отправляю всем информацию что игрок покинул заявку
+    const { io } = this
+    io.of('/lobbi').emit('game.player.leave', gameId, username)
   }
 }
 

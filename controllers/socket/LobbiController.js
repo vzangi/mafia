@@ -61,6 +61,17 @@ class LobbiController extends BaseSocketController {
       callback({ status: 1, msg: error.message })
     }
   }
+
+  // Удалить из заявки игрока
+  async removePlayerFromGame(gameId, username, callback) {
+    try {
+      await this.service.removePlayerFromGame(gameId, username)
+      callback({ status: 0 })
+    } catch (error) {
+      console.log(error)
+      callback({ status: 1, msg: error.message })
+    }
+  }
 }
 
 module.exports = (io, socket) => {

@@ -13,15 +13,17 @@ script(id="friendOnlineTmpl" type="text/x-jquery-tmpl")
         span(class="start-chat ion-chatbox-working" title="Личное сообщение" onclick="startPrivateWith(${id})")
 
 script(id="gamePlayerTmpl" type="text/x-jquery-tmpl")
-  div(class="player" data-username="${account.username}")
+  div(class="player" data-username="${player.account.username}")
     div(class="friend-item flex-column align-items-center gap-1")
-      div(class="friend-avatar ${account.online?'online':''}")
-        img(src="/uploads/${account.avatar}")
+      div(class="friend-avatar ${player.account.online?'online':''}")
+        img(src="/uploads/${player.account.avatar}")
+        div(class="remove-from-game" data-gameid="${id}" data-username="${player.account.username}")
+          div(class="ion-ios-close-outline text-danger" title="Удалить из заявки" data-bs-toggle="tooltip" data-bs-placement="top")
       div(class="friend-info text-center w-100")
-        a(href="/profile/${account.username}") ${account.username}
+        a(href="/profile/${player.account.username}") ${player.account.username}
 
 script(id="gameItemTmpl" type="text/x-jquery-tmpl")
-  div(class="game-item" data-id="${id}" data-game="${JSON.stringify(this.data)}")
+  div(class="game-item ${my?'my':''} ${inGame?'ingame':''}" data-id="${id}" data-game="${JSON.stringify(this.data)}")
     div(class="block p-4 mb-3")
 
       div(class="game-info mb-3")
@@ -59,7 +61,7 @@ script(id="gameItemTmpl" type="text/x-jquery-tmpl")
 
         . 
           {{each(i,player) gameplayers}}
-            {{tmpl(player) '#gamePlayerTmpl'}}
+            {{tmpl({player, id}) '#gamePlayerTmpl'}}
         .   
           {{/each}}
 
