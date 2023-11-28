@@ -70,10 +70,12 @@ $(function () {
     game.find('.players-count .cnt').text(cnt)
   })
 
+  // Создана новая заявка
   lobbiSocket.on('game.new', (game) => {
     showGame(game)
   })
 
+  // Игрок покинл заявку
   lobbiSocket.on('game.player.leave', (gameId, leaveUserName) => {
     const game = $(`.game-item[data-id=${gameId}]`)
     if (!game) return
@@ -84,18 +86,23 @@ $(function () {
 
     if (leaveUserName == username) {
       game.find('.btn-from-game').hide()
+      $('body').removeClass('inGame')
+      game.find(`.btn-from-game`).addClass('hide')
+      game.removeClass('my').removeClass('ingame')
     }
 
     const cnt = game.find('.player').length
     game.find('.players-count .cnt').text(cnt)
   })
 
+  // Игрок вышел в оффлайн
   onlineSocket.on('offline', (user) => {
     const u = $(`.player[data-username=${user.username}]`)
     if (!u) return
     u.find('.friend-avatar').removeClass('online')
   })
 
+  // Игрок вошёл на сайт
   onlineSocket.on('online', (user) => {
     const u = $(`.player[data-username=${user.username}]`)
     if (!u) return
@@ -104,9 +111,9 @@ $(function () {
 
   // Вывести игру на страницу
   function showGame(game) {
-    // Проверяю, находится ли текущий игрок в заявке
     game.inGame = false
     game.my = false
+    // Проверяю, находится ли текущий игрок в заявке
     if (
       game.gameplayers.filter((gp) => gp.account.username == username).length ==
       1
@@ -183,11 +190,6 @@ $(function () {
         if (res.status != 0) {
           return alert(res.msg)
         }
-
-        $('body').removeClass('inGame')
-        const game = $(`.game-item[data-id=${id}]`)
-        game.find(`.btn-from-game`).addClass('hide')
-        game.removeClass('my').removeClass('ingame')
       })
     })
   })

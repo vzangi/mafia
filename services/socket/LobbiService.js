@@ -99,6 +99,26 @@ class LobbiService extends BaseService {
       throw new Error('Нет необходимых данных')
     }
 
+    if (gametypeId < 1 || gametypeId > 4) {
+      throw new Error('Нет у нас таких режимов')
+    }
+
+    if (playersCount < 6) {
+      throw new Error('Минимальное количество игроков - 6')
+    }
+
+    if (playersCount > 20) {
+      throw new Error('Максимальное количество игроков - 20')
+    }
+
+    if (waitingTime < 1) {
+      throw new Error('Минимальное время для заявки - 1 минута')
+    }
+
+    if (waitingTime > 20) {
+      throw new Error('Максимальное время для заявки - 20 минут')
+    }
+
     // Проверяю, может ли игрок создать заявку:
 
     // 1. Он не находится в другой заявке
