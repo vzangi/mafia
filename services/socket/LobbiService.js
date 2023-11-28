@@ -130,7 +130,7 @@ class LobbiService extends BaseService {
     })
 
     if (inGame != 0) {
-      throw new Error('Ты находишься в другой заявке')
+      throw new Error('Вы находитесь в другой заявке')
     }
 
     // 2. Нет запрета на создание заявки
@@ -213,7 +213,7 @@ class LobbiService extends BaseService {
     })
 
     if (inGame) {
-      throw new Error('Ты всё ещё в другой заявке')
+      throw new Error('Вы всё ещё в другой заявке')
     }
 
     // Проверяю, был ли игрок удалён из этой заявки
@@ -226,7 +226,7 @@ class LobbiService extends BaseService {
     })
 
     if (wasRemoved) {
-      throw new Error('Ты был удалён из этой заявки')
+      throw new Error('Вы были удалён из этой заявки')
     }
 
     // Добавляю игрока в заявку
@@ -289,7 +289,7 @@ class LobbiService extends BaseService {
     })
 
     if (!playerInGame) {
-      throw new Error('Тебя нет в этой заявке')
+      throw new Error('Вас нет в этой заявке')
     }
 
     // Если всё ок - удаляю заявку
@@ -334,7 +334,7 @@ class LobbiService extends BaseService {
     })
 
     if (!playerInGame) {
-      throw new Error('Тебя нет в этой заявке')
+      throw new Error('Вас нет в этой заявке')
     }
 
     if (game.gameplayers.length == 1) {

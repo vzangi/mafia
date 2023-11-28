@@ -91,7 +91,7 @@ class MarketService extends BaseService {
 
     const notifyMessage = `${account.username} ${
       account.gender == 2 ? 'купила' : 'купил'
-    } у тебя на маркете ${thing.thing.name} за ${(
+    } у вас на маркете ${thing.thing.name} за ${(
       thing.marketPrice * WalletEvent.sellingRate
     ).toFixed(2)} р.`
 

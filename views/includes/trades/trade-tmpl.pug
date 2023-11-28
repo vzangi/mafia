@@ -19,7 +19,7 @@ script(id="myTradeTmpl" type="text/x-jquery-tmpl")
       img(src="/uploads/${from.avatar}")
     div(class="pm-friend-nik")
       span 
-        span Ты предлагал обмен 
+        span Вы предлагали обмен 
         a(href="/profile/${to.username}") ${to.username}
       small(class="text-secondary") ${coolDate(createdAt)}
 
@@ -32,11 +32,11 @@ script(id="myTradeTmpl" type="text/x-jquery-tmpl")
           div(class="icon bg-danger")
             span(class="ion-log-in")
         div(class="d-flex flex-column")
-          span Твои предметы
-          small(class="text-secondary") Эти предметы ты предлагал
+          span Ваши предметы
+          small(class="text-secondary") Эти предметы вы предлагали
       . 
         {{if fromItems.length == 0}}
-      div(class="no-one text-center") Ты не предложил ни одного предмета
+      div(class="no-one text-center") Вы не предложил ни одного предмета
       . 
         {{/if}}
       div(class="things-list")
@@ -58,10 +58,10 @@ script(id="myTradeTmpl" type="text/x-jquery-tmpl")
             span(class="ion-log-out")
         div(class="d-flex flex-column")
           span Предметы #[strong ${to.username}]
-          small(class="text-secondary") Эти предметы ты запрашивал
+          small(class="text-secondary") Эти предметы вы запрашивали
       . 
         {{if toItems.length == 0}}
-      div(class="no-one text-center") Ты не запросил ни одного предмета
+      div(class="no-one text-center") Вы не запросил ни одного предмета
       . 
         {{/if}}
       div(class="things-list")
@@ -81,7 +81,7 @@ script(id="otherTradeTmpl" type="text/x-jquery-tmpl")
     div(class="pm-friend-nik")
       span 
         a(href="/profile/${from.username}") ${from.username} 
-        span предлагал тебе обмен
+        span предлагал вам обмен
       small(class="text-secondary") ${coolDate(createdAt)}
 
   hr
@@ -97,7 +97,7 @@ script(id="otherTradeTmpl" type="text/x-jquery-tmpl")
           small(class="text-secondary") Эти предметы были предложены
       . 
         {{if fromItems.length == 0}}
-      div(class="no-one text-center") Тебе не предложили ни одного предмета
+      div(class="no-one text-center") Вам не предложили ни одного предмета
       . 
         {{/if}}
       div(class="things-list")
@@ -118,11 +118,11 @@ script(id="otherTradeTmpl" type="text/x-jquery-tmpl")
           div(class="icon bg-danger")
             span(class="ion-log-out")
         div(class="d-flex flex-column")
-          span Твои предметы
+          span Ваши предметы
           small(class="text-secondary") Эти предметы были запрошены
       . 
         {{if toItems.length == 0}}
-      div(class="no-one text-center") У тебя не запросили ни одного предмета
+      div(class="no-one text-center") У вас не запросили ни одного предмета
       . 
         {{/if}}
       div(class="things-list")

@@ -92,7 +92,7 @@ class WalletService extends BaseService {
 
     const notifyText = `${account.username} ${
       account.gender == Account.genders.FEMALE ? 'перевела' : 'перевёл'
-    } тебе ${count} рублей`
+    } вам ${count} рублей`
 
     // Отправляю уведомление другу
     this.notify(recipient.id, notifyText)

@@ -110,7 +110,7 @@ class TradesService extends BaseService {
     const myAccount = await Account.findByPk(user.id)
 
     if (!myAccount) {
-      throw new Error('Твой аккаунт не найден...')
+      throw new Error('Ваш аккаунт не найден...')
     }
 
     const vizaviAccount = await Account.findByPk(vizaviId)
@@ -253,7 +253,7 @@ class TradesService extends BaseService {
       }
     }
 
-    const notifyMsg = `${account.username} принял твой обмен`
+    const notifyMsg = `${account.username} принял ваш обмен`
 
     this.notify(fromId, notifyMsg)
 

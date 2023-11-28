@@ -18,7 +18,7 @@ else
         div(class="pm-friend-nik")
           span 
             a(href="/profile/"+trade.from.username)= trade.from.username
-            span  предлагает тебе обмен
+            span  предлагает вам обмен
           small(class="text-secondary")= trade.coolDate
 
       hr
@@ -31,10 +31,10 @@ else
               div(class="icon bg-danger")
                 span(class="ion-log-in")
             div(class="d-flex flex-column")
-              span Твои предметы
-              small(class="text-secondary") Эти предметы ты утратишь 
+              span Ваши предметы
+              small(class="text-secondary") Эти предметы вы утратите
           if myCount == 0
-            div(class="no-one text-center") У тебя не запросили ни одного предмета
+            div(class="no-one text-center") У вас не запросили ни одного предмета
           div(class="things-list")
             each thing in trade.tradeitems
               if thing.accountId == currentAccount.id
@@ -54,9 +54,9 @@ else
                 span(class="ion-log-out")
             div(class="d-flex flex-column")
               span Предметы #[strong= trade.from.username]
-              small(class="text-secondary") Эти предметы ты получишь 
+              small(class="text-secondary") Эти предметы вы получите
           if vizaviCount == 0
-            div(class="no-one text-center") Тебе не предложили ни одного предмета
+            div(class="no-one text-center") Вам не предложили ни одного предмета
           div(class="things-list")
             each thing in trade.tradeitems
               if thing.accountId != currentAccount.id

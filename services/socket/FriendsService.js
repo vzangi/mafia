@@ -122,7 +122,7 @@ class FriendsService extends BaseService {
         friendId,
         `${socket.account.username} ${
           socket.account.gender == genders.FEMALE ? 'приняла' : 'принял'
-        } твой запрос, теперь вы друзья`
+        } ваш запрос, теперь вы друзья`
       )
     }
   }
@@ -168,7 +168,7 @@ class FriendsService extends BaseService {
         friendId,
         `${socket.account.username} ${
           socket.account.gender == genders.FEMALE ? 'отклонила' : 'отклонил'
-        } твой запрос на дружбу`,
+        } ваш запрос на дружбу`,
         2
       )
     }
@@ -208,7 +208,7 @@ class FriendsService extends BaseService {
         friendId,
         `${socket.account.username} ${
           socket.account.gender == genders.FEMALE ? 'удалила' : 'удалил'
-        } тебя из друзей`,
+        } вас из друзей`,
         2
       )
     }
@@ -390,7 +390,7 @@ class FriendsService extends BaseService {
     // Пробуем оповестить о новом предложении
     this._notifyFriendshipRequest(friendId)
 
-    const notifyText = `${account.username} зовёт тебя в ЗАГС!`
+    const notifyText = `${account.username} зовёт вас в ЗАГС!`
     // Отправляю уведомление
     this.notify(friendId, notifyText, 1)
 

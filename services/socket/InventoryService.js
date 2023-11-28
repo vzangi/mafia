@@ -166,7 +166,7 @@ class InventoryService extends BaseService {
     }
 
     if (thing.account.vip) {
-      throw new Error('У тебя уже активирован VIP статус')
+      throw new Error('У вас уже активирован VIP статус')
     }
 
     // Количество дней випа, в зависимости от типа пропуска

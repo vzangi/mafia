@@ -23,4 +23,4 @@ if partner
               a(href="/profile/" + partner.friend.username class="ellipsis")= partner.friend.username 
             if currentAccount && currentAccount.id == profile.id
               div(class="mt-2")
-                a(class="btn btn-danger btn-sm remove-partner action-btn" data-id=partner.friend.id data-question='Ты точно хочешь развестись? В кошельке должно быть 100 рублей.' data-event='friends.divorce') Развестись
+                a(class="btn btn-danger btn-sm remove-partner action-btn" data-id=partner.friend.id data-question='Вы точно хотите развестись? В кошельке должно быть 100 рублей.' data-event='friends.divorce') Развестись

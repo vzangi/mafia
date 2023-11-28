@@ -6,7 +6,7 @@ script(id="sendedTradeTmpl" type="text/x-jquery-tmpl")
         img(src="/uploads/${from.avatar}")
       div(class="pm-friend-nik")
         span 
-          span Ты предложил обмен 
+          span Вы предложили обмен 
           a(href="/profile/${to.username}") ${to.username}
         small(class="text-secondary") ${coolDate(createdAt)}
 
@@ -19,11 +19,11 @@ script(id="sendedTradeTmpl" type="text/x-jquery-tmpl")
             div(class="icon bg-danger")
               span(class="ion-log-in")
           div(class="d-flex flex-column")
-            span Твои предметы
-            small(class="text-secondary") Эти предметы ты предлагаешь
+            span Ваши предметы
+            small(class="text-secondary") Эти предметы вы предлагаете
         . 
           {{if fromItems.length == 0}}
-        div(class="no-one text-center") Ты не предложил ни одного предмета
+        div(class="no-one text-center") Вы не предложили ни одного предмета
         . 
           {{/if}}
         div(class="things-list")
@@ -45,10 +45,10 @@ script(id="sendedTradeTmpl" type="text/x-jquery-tmpl")
               span(class="ion-log-out")
           div(class="d-flex flex-column")
             span Предметы #[strong ${to.username}]
-            small(class="text-secondary") Эти предметы ты запрашиваешь
+            small(class="text-secondary") Эти предметы вы запрашиваете
         . 
           {{if toItems.length == 0}}
-        div(class="no-one text-center") Ты не запросил ни одного предмета
+        div(class="no-one text-center") Вы не запросили ни одного предмета
         . 
           {{/if}}
         div(class="things-list")

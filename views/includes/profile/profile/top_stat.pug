@@ -29,11 +29,11 @@ div(class="container")
                                     if isFrends.status == 1
                                         div(class="remove-from-frends action-btn" data-id=profile.id data-question='Удалить из друзей?' data-event='friends.remove') Удалить из друзей
                                         if !havePartner && !partner
-                                            div(class="to-zags action-btn" data-id=profile.id data-question='Ты уверен, что хочешь сделать предложение? В кошельке должно быть 50 рублей.' data-event='friends.zags') Позвать в ЗАГС
+                                            div(class="to-zags action-btn" data-id=profile.id data-question='Вы уверены, что хотите сделать предложение? В кошельке должно быть 50 рублей.' data-event='friends.zags') Позвать в ЗАГС
                                     if isFrends.status == 2
-                                        div(class="remove-zags-request action-btn" data-id=profile.id data-question='Ты точно хочешь отозвать предложение? В кошелёк верёнтся 25 рублей.' data-event='friends.zags.recall') Отозвать предложение
+                                        div(class="remove-zags-request action-btn" data-id=profile.id data-question='Вы точно хотите отозвать предложение? В кошелёк верёнтся 25 рублей.' data-event='friends.zags.recall') Отозвать предложение
                                     if isFrends.status == 3
-                                        div(class="remove-partner action-btn" data-id=profile.id data-question='Ты точно хочешь развестись? В кошельке должно быть 100 рублей.' data-event='friends.divorce') Развестись
+                                        div(class="remove-partner action-btn" data-id=profile.id data-question='Вы точно хотите развестись? В кошельке должно быть 100 рублей.' data-event='friends.divorce') Развестись
                                 if !isFrends || isFrends && isFrends.status < 2
                                     div(class="block-user action-btn" data-id=profile.id data-question='Заблокировать игрока?' data-event='friends.block') Заблокировать
 

@@ -10,7 +10,7 @@ block main
 
     div(class="market-list")
       if !things || things.length == 0
-        p(class="p-4") Ты не выставил на продажу ни одного предмета.
+        p(class="p-4") Вы не выставил на продажу ни одного предмета.
       else 
         each thing in things 
           a(class="thing-item bb-1-gray" data-id=thing.id href="/market/thing/"+thing.thingId)
