@@ -359,6 +359,12 @@ class LobbiService extends BaseService {
 
     const userAccount = await Account.findByPk(user.id)
 
+    if (!userAccount.vip) {
+      throw new Error(
+        'Удалять игроков из заявки могут только игроки c vip-статусом'
+      )
+    }
+
     if (game.account.username != userAccount.username) {
       throw new Error('Удалить игрока можно только из своей заявки')
     }
