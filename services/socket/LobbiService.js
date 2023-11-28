@@ -203,7 +203,7 @@ class LobbiService extends BaseService {
 
     // Беру необходимые данные из аккаунта
     const account = await Account.findByPk(user.id, {
-      attributes: ['username', 'avatar'],
+      attributes: ['username', 'avatar', 'online'],
     })
 
     // Отправляю всем информацию об игроке и зявке
