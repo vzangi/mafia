@@ -14,3 +14,7 @@
 .game-action-btn:hover {
   opacity: 1;
 }
+
+.player {
+  max-width: 120px;
+}

@@ -17,7 +17,7 @@ script(id="gamePlayerTmpl" type="text/x-jquery-tmpl")
     div(class="friend-item flex-column align-items-center gap-1")
       div(class="friend-avatar ${account.online?'online':''}")
         img(src="/uploads/${account.avatar}")
-      div(class="friend-info")
+      div(class="friend-info text-center w-100")
         a(href="/profile/${account.username}") ${account.username}
 
 script(id="gameItemTmpl" type="text/x-jquery-tmpl")
