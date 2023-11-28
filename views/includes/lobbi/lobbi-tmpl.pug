@@ -15,7 +15,7 @@ script(id="friendOnlineTmpl" type="text/x-jquery-tmpl")
 script(id="gamePlayerTmpl" type="text/x-jquery-tmpl")
   div(class="player" data-username="${account.username}")
     div(class="friend-item flex-column align-items-center gap-1")
-      div(class="friend-avatar online")
+      div(class="friend-avatar ${account.online?'online':''}")
         img(src="/uploads/${account.avatar}")
       div(class="friend-info")
         a(href="/profile/${account.username}") ${account.username}

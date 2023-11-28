@@ -86,6 +86,18 @@ $(function () {
     game.find('.players-count .cnt').text(cnt)
   })
 
+  onlineSocket.on('offline', (user) => {
+    const u = $(`.player[data-username=${user.username}]`)
+    if (!u) return
+    u.find('.friend-avatar').removeClass('online')
+  })
+
+  onlineSocket.on('online', (user) => {
+    const u = $(`.player[data-username=${user.username}]`)
+    if (!u) return
+    u.find('.friend-avatar').addClass('online')
+  })
+
   // Вывести игру на страницу
   function showGame(game) {
     // Проверяю, находится ли текущий игрок в заявке
