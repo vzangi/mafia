@@ -36,7 +36,7 @@ script(id="gameItemTmpl" type="text/x-jquery-tmpl")
             span ${playersCount} 
           div(class="d-flex align-items-center gap-1") 
             span(class="ion-ios-clock fs-5 text-secondary" title="Время для сбора игроков" data-bs-toggle="tooltip" data-bs-placement="bottom")
-            span(class="waithing-time" data-deadline="${deadline}") ${getDeadline(deadline)} 
+            span(class="waithing-time" data-deadline="${deadline}" data-seconds="${seconds}" data-stamp="${Date.now()}") 
 
         div(class="description")
           span ${description}

@@ -1,11 +1,3 @@
-function getDeadline(d) {
-  const totalSeconds = (new Date(d).getTime() - new Date().getTime()) / 1000
-  if (totalSeconds < 60) {
-    return `${Math.ceil(totalSeconds >= 0 ? totalSeconds : 0)} сек.`
-  }
-  return `${Math.ceil(totalSeconds / 60)} мин.`
-}
-
 $(function () {
   const makeGameBtn = $('.btn-make-game')
   const makeGameForm = $('#makeForm')
@@ -13,11 +5,20 @@ $(function () {
   const gameItemTmpl = $('#gameItemTmpl')
   const username = $('.user-nik').text().trim()
 
+  // Функция пересчёта времени дедлайна заявки
+  const calcDeadline = (seconds, stamp) => {
+    const totalSeconds = seconds + stamp / 1000 - Date.now() / 1000
+    if (totalSeconds < 60) {
+      return `${Math.ceil(totalSeconds >= 0 ? totalSeconds : 0)} сек.`
+    }
+    return `${Math.ceil(totalSeconds / 60)} мин.`
+  }
+
   // Интервал для пересчёта времени жизни заявки
   setInterval(() => {
     $('.waithing-time').each((_, time) => {
-      const { deadline } = $(time).data()
-      $(time).text(getDeadline(deadline))
+      const { seconds, stamp } = $(time).data()
+      $(time).text(calcDeadline(seconds, stamp))
     })
   }, 1000)
 

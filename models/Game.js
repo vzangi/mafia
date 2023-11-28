@@ -40,6 +40,18 @@ const Game = sequelize.define(
       type: DataTypes.DATE,
       allowNull: false,
     },
+    seconds: {
+      type: DataTypes.VIRTUAL(DataTypes.INTEGER),
+      get() {
+        const s = Math.ceil(
+          (new Date(this.deadline).getTime() - new Date().getTime()) / 1000
+        )
+        return s > 0 ? s : 0
+      },
+      set() {
+        throw new Error('Do not try to set this value!')
+      },
+    },
   },
   {
     scopes: {
@@ -72,6 +84,7 @@ const Game = sequelize.define(
           'waitingTime',
           'description',
           'createdAt',
+          'seconds',
         ],
       },
     },
