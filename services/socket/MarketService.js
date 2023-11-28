@@ -64,6 +64,10 @@ class MarketService extends BaseService {
       throw new Error('Лот не найден')
     }
 
+    if (thing.marketPrice == null) {
+      throw new Error('Лот снят с продажи')
+    }
+
     const seller = await Account.findByPk(thing.accountId)
 
     if (!seller) {
