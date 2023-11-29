@@ -45,6 +45,18 @@
   opacity: 1;
 }
 
+.game-action-btn.btn-to-game {
+  color: var(--color-gold);
+}
+
+.game-action-btn.btn-from-game:hover {
+  color: var(--color-gold);
+}
+
+.game-action-btn.btn-remove-game:hover {
+  color: var(--bs-red);
+}
+
 .player {
   max-width: 120px;
 }

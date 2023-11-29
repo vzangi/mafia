@@ -48,14 +48,14 @@ script(id="gameItemTmpl" type="text/x-jquery-tmpl")
         div(class="game-action-btns d-flex gap-2")
           . 
             {{if my}}
-          div(class="game-action-btn btn-remove-game ion-ios-close-outline text-danger me-2" data-id="${id}" title="Удалить заявку" data-bs-toggle="tooltip" data-bs-placement="bottom")
+          div(class="game-action-btn btn-remove-game ion-ios-close-outline me-2" data-id="${id}" title="Удалить заявку" data-bs-toggle="tooltip" data-bs-placement="top")
           .
             {{/if}}
 
-          div(class="game-action-btn btn-from-game ion-ios-minus-outline text-warning me-2 ${inGame?'':'hide'}" data-id="${id}" title="Покинуть заявку" data-bs-toggle="tooltip" data-bs-placement="bottom")
+          div(class="game-action-btn btn-from-game ion-ios-minus-outline me-2 ${inGame?'':'hide'}" data-id="${id}" title="Покинуть заявку" data-bs-toggle="tooltip" data-bs-placement="top")
 
 
-          div(class="game-action-btn btn-to-game ion-ios-plus-outline text-warning me-2" data-id="${id}" title="Присоедениться к заявке" data-bs-toggle="tooltip" data-bs-placement="bottom")
+          div(class="game-action-btn btn-to-game ion-ios-plus-outline me-2" data-id="${id}" title="Присоедениться к заявке" data-bs-toggle="tooltip" data-bs-placement="top")
 
 
 
