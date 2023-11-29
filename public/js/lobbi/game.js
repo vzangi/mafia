@@ -149,6 +149,11 @@ $(function () {
       (res) => {
         console.log(res)
         if (res.status != 0) {
+          if (playersCount > 20) $('#gamePlayersCount').val(20)
+          if (playersCount < 6) $('#gamePlayersCount').val(6)
+
+          if (waitingTime > 20) $('#waitingTime').val(20)
+          if (waitingTime < 1) $('#waitingTime').val(1)
           return alert(res.msg)
         }
 

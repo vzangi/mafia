@@ -1,3 +1,4 @@
+const htmlspecialchars = require('htmlspecialchars')
 const { Op } = require('sequelize')
 const Account = require('../../models/Account')
 const Game = require('../../models/Game')
@@ -141,6 +142,11 @@ class LobbiService extends BaseService {
     // если нуное количество игроков не соберётся
     const dt = new Date()
     const deadline = new Date(dt.getTime() + waitingTime * 60000)
+
+    description = htmlspecialchars(description)
+    if (description.length > 69) {
+      description = description.substr(0, 69)
+    }
 
     // Создаю заявку на игру
     const newGame = await Game.create({
