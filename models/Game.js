@@ -60,7 +60,7 @@ const Game = sequelize.define(
           { model: GameType },
           {
             model: Account,
-            attributes: ['username', 'avatar', 'vip'],
+            attributes: ['username', 'avatar', 'vip', 'vipTo'],
           },
           {
             model: GamePlayer,

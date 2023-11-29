@@ -229,6 +229,15 @@ class LobbiService extends BaseService {
       throw new Error('Вы были удалён из этой заявки')
     }
 
+    console.log(game.account)
+
+    // Если создатель заявки имеет vip-статус
+    if (game.account.vip) {
+      // Проверяю, не находится ли текущий игрок у него в чс
+
+      console.log(game.account.username, user.id)
+    }
+
     // Добавляю игрока в заявку
     GamePlayer.create({
       gameId,

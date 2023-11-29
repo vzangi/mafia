@@ -66,6 +66,8 @@ $(function () {
       game.find('.btn-from-game').removeClass('hide')
     }
 
+    game.find('.btn-from-game').show()
+
     const cnt = game.find('.player').length
     game.find('.players-count .cnt').text(cnt)
   })
@@ -158,6 +160,9 @@ $(function () {
 
   // Присоединиться к заявке
   gamesList.on('click', '.btn-to-game', function () {
+    const btn = this
+    setTimeout(() => $(btn).tooltip('hide'))
+
     const { id } = $(this).data()
     lobbiSocket.emit('game.to', id, (res) => {
       if (res.status != 0) {
@@ -168,6 +173,9 @@ $(function () {
 
   // Удалить зявку
   gamesList.on('click', '.btn-remove-game', function () {
+    const btn = this
+    setTimeout(() => $(btn).tooltip('hide'))
+
     const { id } = $(this).data()
     confirm('Удалить заявку?').then((accept) => {
       if (!accept) return
@@ -182,6 +190,9 @@ $(function () {
 
   // Покинуть зявку
   gamesList.on('click', '.btn-from-game', function () {
+    const btn = this
+    setTimeout(() => $(btn).tooltip('hide'))
+
     const { id } = $(this).data()
     confirm('Покинуть заявку?').then((accept) => {
       if (!accept) return
@@ -196,6 +207,9 @@ $(function () {
 
   // Удаление игрока из заявки
   gamesList.on('click', '.remove-from-game', function () {
+    const btn = this
+    setTimeout(() => $(btn).tooltip('hide'))
+
     const { gameid, username } = $(this).data()
 
     confirm(`Удалить из заявки игрока ${username}?`).then((accept) => {
