@@ -5,6 +5,23 @@ $(function () {
   const gameItemTmpl = $('#gameItemTmpl')
   const username = $('.user-nik').text().trim()
 
+  // На мобильных утройствах делаю список режимов скрываемым
+  $(window).resize(function () {
+    if (window.innerWidth < 620) {
+      $('.game-types-list').addClass('can-sliding')
+      if ($('.game-settings.active').length == 1) {
+        $('.game-types-list').slideUp()
+      }
+    } else {
+      if ($('.game-types-list').hasClass('can-sliding')) {
+        $('.game-types-list').removeClass('can-sliding')
+        $('.game-types-list').slideDown()
+      }
+    }
+  })
+
+  $(window).resize()
+
   // Функция пересчёта времени дедлайна заявки
   const calcDeadline = (seconds, stamp) => {
     const totalSeconds = seconds + stamp / 1000 - Date.now() / 1000
@@ -161,6 +178,137 @@ $(function () {
         showGame(game)
       }
     )
+  })
+
+  // Создание заявки в классическом режиме
+  $('.btn-make-type-1').click(function () {
+    const typeId = 1
+    const waitingTime = $('#waitingTime').val()
+    const playersCount = $('#gamePlayersCount').val()
+    const description = $('#gameDescription').val()
+
+    // Запрос на создание игры
+    lobbiSocket.emit(
+      'game.make',
+      typeId,
+      playersCount,
+      waitingTime,
+      description,
+      (res) => {
+        console.log(res)
+        if (res.status != 0) {
+          if (playersCount > 20) $('#gamePlayersCount').val(20)
+          if (playersCount < 6) $('#gamePlayersCount').val(6)
+
+          if (waitingTime > 20) $('#waitingTime').val(20)
+          if (waitingTime < 1) $('#waitingTime').val(1)
+          return alert(res.msg)
+        }
+
+        const { game } = res
+        showGame(game)
+      }
+    )
+  })
+
+  // Создание заявки в режиме перестрелки
+  $('.btn-make-type-2').click(function () {
+    const typeId = 2
+    const waitingTime = $('#waitingTime').val()
+    const playersCount = $('#gamePlayersCount').val()
+    const description = $('#gameDescription').val()
+
+    // Запрос на создание игры
+    lobbiSocket.emit(
+      'game.make',
+      typeId,
+      playersCount,
+      waitingTime,
+      description,
+      (res) => {
+        console.log(res)
+        if (res.status != 0) {
+          if (playersCount > 20) $('#gamePlayersCount').val(20)
+          if (playersCount < 6) $('#gamePlayersCount').val(6)
+
+          if (waitingTime > 20) $('#waitingTime').val(20)
+          if (waitingTime < 1) $('#waitingTime').val(1)
+          return alert(res.msg)
+        }
+
+        const { game } = res
+        showGame(game)
+      }
+    )
+  })
+
+  $('.btn-make-type-3').click(function () {
+    alert('Пока недоступно')
+  })
+
+  // Создание заявки в мультиролевом режиме
+  $('.btn-make-type-4').click(function () {
+    const typeId = 4
+    const waitingTime = $('#waitingTime').val()
+    const playersCount = $('#gamePlayersCount').val()
+    const description = $('#gameDescription').val()
+
+    // Запрос на создание игры
+    lobbiSocket.emit(
+      'game.make',
+      typeId,
+      playersCount,
+      waitingTime,
+      description,
+      (res) => {
+        console.log(res)
+        if (res.status != 0) {
+          if (playersCount > 20) $('#gamePlayersCount').val(20)
+          if (playersCount < 6) $('#gamePlayersCount').val(6)
+
+          if (waitingTime > 20) $('#waitingTime').val(20)
+          if (waitingTime < 1) $('#waitingTime').val(1)
+          return alert(res.msg)
+        }
+
+        const { game } = res
+        showGame(game)
+      }
+    )
+  })
+
+  // Выбор режима
+  $('.game-type-item').click(function () {
+    if ($(this).hasClass('active')) return
+    $('.game-type-item').removeClass('active')
+    $(this).addClass('active')
+
+    const { id } = $(this).data()
+
+    $('.welkome-game').slideUp()
+
+    setTimeout(() => {
+      $('.welkome-game').remove()
+    }, 300)
+
+    $('.game-settings.active').slideUp()
+    setTimeout(() => $('.game-settings.active').removeClass('active'), 300)
+
+    $('.game-types-list.can-sliding').slideUp()
+
+    $(`.game-settings[data-id=${id}]`).slideDown()
+    setTimeout(() => $(`.game-settings[data-id=${id}]`).addClass('active'), 300)
+  })
+
+  // Вернуться к списку режимов
+  $('.gs-back').click(function () {
+    const gs = $('.game-settings.active')
+    gs.slideUp()
+
+    setTimeout(() => gs.removeClass('active'), 300)
+
+    $('.game-type-item').removeClass('active')
+    $('.game-types-list').slideDown()
   })
 
   // Присоединиться к заявке

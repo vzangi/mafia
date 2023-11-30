@@ -23,7 +23,7 @@ script(id="gamePlayerTmpl" type="text/x-jquery-tmpl")
         a(href="/profile/${player.account.username}") ${player.account.username}
 
 script(id="gameItemTmpl" type="text/x-jquery-tmpl")
-  div(class="game-item ${my?'my':''} ${inGame?'ingame':''}" data-id="${id}" data-game="${JSON.stringify(this.data)}")
+  div(class="game-item ${my?'my':''} ${inGame?'ingame':''} game-type-${gametype.id}" data-id="${id}" data-game="${JSON.stringify(this.data)}")
     div(class="block p-4 mb-3")
 
       div(class="game-info mb-3")
@@ -48,14 +48,15 @@ script(id="gameItemTmpl" type="text/x-jquery-tmpl")
         div(class="game-action-btns d-flex gap-2")
           . 
             {{if my}}
-          div(class="game-action-btn btn-remove-game ion-ios-close-outline me-2" data-id="${id}" title="Удалить заявку" data-bs-toggle="tooltip" data-bs-placement="top")
+          div
+            div(class="game-action-btn btn-remove-game ion-ios-close-outline me-2" data-id="${id}" title="Удалить заявку" data-bs-toggle="tooltip" data-bs-placement="bottom")
           .
             {{/if}}
+          div
+            div(class="game-action-btn btn-from-game ion-ios-minus-outline me-2 ${inGame?'':'hide'}" data-id="${id}" title="Покинуть заявку" data-bs-toggle="tooltip" data-bs-placement="bottom")
 
-          div(class="game-action-btn btn-from-game ion-ios-minus-outline me-2 ${inGame?'':'hide'}" data-id="${id}" title="Покинуть заявку" data-bs-toggle="tooltip" data-bs-placement="top")
-
-
-          div(class="game-action-btn btn-to-game ion-ios-plus-outline me-2" data-id="${id}" title="Присоедениться к заявке" data-bs-toggle="tooltip" data-bs-placement="top")
+          div
+            div(class="game-action-btn btn-to-game ion-ios-plus-outline me-2" data-id="${id}" title="Присоедениться к заявке" data-bs-toggle="tooltip" data-bs-placement="bottom")
 
 
 

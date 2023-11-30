@@ -1,0 +1,150 @@
+.game-form {
+  position: relative;
+}
+
+.game-types-list,
+.game-settings {
+  padding: 0.8rem;
+}
+
+.game-types-list {
+  background-color: var(--color-white);
+  color: #555;
+  border-radius: var(--border-radius);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.game-type-item {
+  padding: 0.8rem 1rem;
+  cursor: pointer;
+  border-radius: var(--border-radius);
+}
+
+.game-type-item:hover {
+  background: #eaeaea;
+}
+
+.game-type-1.active {
+  background-color: var(--color-green);
+  color: var(--color-white);
+}
+
+.game-type-2.active {
+  background-color: var(--bs-red);
+  color: var(--color-white);
+}
+
+.game-type-3.active {
+  background-color: var(--bs-blue);
+  color: var(--color-white);
+}
+
+.game-type-4.active {
+  background-color: var(--bs-purple);
+  color: var(--color-white);
+}
+
+.game-type-item h4 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+
+.game-type-item p {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1rem;
+}
+
+.game-settings-list {
+  background: #fff;
+  border-radius: var(--border-radius);
+}
+
+.game-settings {
+  display: none;
+}
+
+.game-settings.active {
+  display: block;
+}
+
+.game-settings .settings-head {
+  padding: 0.6rem;
+  color: var(--color-white);
+}
+
+.game-settings-1 .settings-head {
+  background-color: var(--color-green);
+}
+.game-settings-2 .settings-head {
+  background-color: var(--bs-red);
+}
+.game-settings-3 .settings-head {
+  background-color: var(--bs-blue);
+}
+.game-settings-4 .settings-head {
+  background-color: var(--bs-purple);
+}
+
+.game-settings .settings-head h5 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0;
+}
+
+.game-settings .btn {
+  min-width: 150px;
+}
+
+.welkome-game {
+  display: none;
+  height: 100%;
+}
+
+.gs-back {
+  margin-right: 10px;
+}
+
+@media (min-width: 620px) {
+  #makeForm .modal-dialog {
+    max-width: 600px;
+  }
+  .game-form {
+    display: flex;
+  }
+  .game-types-list {
+    flex: none;
+    max-width: 300px;
+  }
+  .game-settings-list {
+    flex: 1;
+    display: block;
+  }
+
+  .game-settings.active {
+    display: block;
+  }
+  .welkome-game {
+    display: block;
+  }
+  .game-settings-list {
+    border-top-right-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
+    box-shadow: -9px 0px 5px -2px #dadada;
+  }
+  .game-types-list {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  .gs-back {
+    display: none;
+  }
+  .game-settings .settings-head {
+    padding: 0rem;
+    color: #555;
+    background-color: transparent;
+  }
+}

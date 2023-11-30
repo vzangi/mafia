@@ -1,0 +1,138 @@
+div(class="modal fade" id="makeForm" tabindex="-1")
+  div(class="modal-dialog modal-dialog-centered")
+    div(class="modal-content")
+
+
+
+      div(class="game-form")
+
+        div(class="game-types-list")
+          div(class="game-type-item game-type-1" data-id="1")
+            h4 Классическая игра
+            p Режим игры со стандартным набором ролей
+
+          div(class="game-type-item game-type-2" data-id="2")
+            h4 Перестрелка
+            p Режим, в котором используются вещи из вашего арсенала
+
+          div(class="game-type-item game-type-3" data-id="3")
+            h4 Соревновательный
+            p Игра, которая влияет на ваш ранг
+
+          div(class="game-type-item game-type-4" data-id="4")
+            h4 Мультиролевая игра
+            p Режим игры с расширенным набором ролей
+
+        div(class="game-settings-list")
+
+          div(class="welkome-game flex-grow-1")
+            div(class="d-flex flex-column justify-content-center align-items-center h-100 p-2 text-center")
+              div(class="ion-ios-game-controller-b fs-1 text-secondary")
+              h4(class="text-secondary") Выберите #[br] режим игры
+
+          div(class="game-settings game-settings-1" data-id="1")
+            div(class="settings-head d-flex align-items-center mb-3 mt-2")
+              div 
+                span(class="ion-chevron-left back gs-back")
+              h5 Классическая игра
+
+            p(class="text-secondary")
+              small Роли доступные в этом режиме: #[b честный житель], #[b мафия], #[b комиссар], #[b сержант].
+
+            div(class="mb-3")
+              div(class="d-flex flex-column gap-1")
+                label(class="text-secondary") 
+                  small Количество игроков (6 - 20 игроков)
+                input(class="form-control" type="number" placeholder="Количество игроков" min="6" max="20" value="7" id="gamePlayersCount" name="gamePlayersCount" width="100" required)
+
+            div(class="mb-3")
+              div(class="d-flex flex-column gap-1")
+                label(class="text-secondary") 
+                  small Время на сбор (1 - 20 минут)
+                input(class="form-control" type="number" placeholder="Время на сбор" min="1" max="20" value="20" id="waitingTime" name="waitingTime" required)
+
+            div(class="mb-3")
+              div(class="d-flex flex-column gap-1")
+                label(class="text-secondary") 
+                  small Подпись к заявке
+                input(class="form-control" type="text" placeholder="Подпись к заявке" maxlength="69" id="gameDescription" name="gameDescription")
+
+            div(class="text-center mt-4")
+              button(type="button" class="btn btn-primary btn-sm btn-make-type-1" data-type="1" data-bs-dismiss="modal") Создать
+
+
+          div(class="game-settings game-settings-2" data-id="2")
+            div(class="settings-head d-flex align-items-center mb-3 mt-2")
+              div 
+                span(class="ion-chevron-left back gs-back")
+              h5 Перестрелка
+
+            p(class="text-secondary")
+              small Роли доступные в этом режиме: #[b честный житель], #[b мафия], #[b комиссар], #[b сержант], #[b маньяк], #[b врач], #[b дитя].
+
+            div(class="mb-3")
+              div(class="d-flex flex-column gap-1")
+                label(class="text-secondary") 
+                  small Количество игроков (6 - 20 игроков)
+                input(class="form-control" type="number" placeholder="Количество игроков" min="6" max="20" value="7" id="gamePlayersCount" name="gamePlayersCount" width="100" required)
+
+            div(class="mb-3")
+              div(class="d-flex flex-column gap-1")
+                label(class="text-secondary") 
+                  small Время на сбор (1 - 20 минут)
+                input(class="form-control" type="number" placeholder="Время на сбор" min="1" max="20" value="20" id="waitingTime" name="waitingTime" required)
+
+            div(class="mb-3")
+              div(class="d-flex flex-column gap-1")
+                label(class="text-secondary") 
+                  small Подпись к заявке
+                input(class="form-control" type="text" placeholder="Подпись к заявке" maxlength="69" id="gameDescription" name="gameDescription")
+
+            div(class="text-center mt-4")
+              button(type="button" class="btn btn-primary btn-sm btn-make-type-2" data-type="1" data-bs-dismiss="modal") Создать
+
+
+
+          div(class="game-settings game-settings-3" data-id="3")
+            div(class="settings-head d-flex align-items-center mb-3 mt-2")
+              div 
+                span(class="ion-chevron-left back gs-back")
+              h5 Соревновательный
+
+            p(class="text-secondary")
+              small В этом режиме тип игры и набор ролей выбирается случайным образом и вы заранее не знаете с кем будете играть
+
+            div(class="text-center mt-4")
+              button(type="button" class="btn btn-primary btn-sm btn-make-type-3" data-type="1" data-bs-dismiss="modal") Играть
+
+
+          div(class="game-settings game-settings-4" data-id="4")
+            div(class="settings-head d-flex align-items-center mb-3 mt-2")
+              div 
+                span(class="ion-chevron-left back gs-back")
+              h5 Мультиролевая игра
+
+            p(class="text-secondary")
+              small В этом режиме вы можете настроить какие роли, кроме честных жителей и мафии будут присутствовать в игре.
+
+            div(class="mb-3")
+              div(class="d-flex flex-column gap-1")
+                label(class="text-secondary") 
+                  small Количество игроков (3 - 20 игроков)
+                input(class="form-control" type="number" placeholder="Количество игроков" min="3" max="20" value="7" id="gamePlayersCount" name="gamePlayersCount" width="100" required)
+
+            div(class="mb-3")
+              div(class="d-flex flex-column gap-1")
+                label(class="text-secondary") 
+                  small Время на сбор (1 - 20 минут)
+                input(class="form-control" type="number" placeholder="Время на сбор" min="1" max="20" value="20" id="waitingTime" name="waitingTime" required)
+
+            div(class="mb-3")
+              div(class="d-flex flex-column gap-1")
+                label(class="text-secondary") 
+                  small Подпись к заявке
+                input(class="form-control" type="text" placeholder="Подпись к заявке" maxlength="69" id="gameDescription" name="gameDescription")
+
+            div(class="text-center mt-4")
+              button(type="button" class="btn btn-primary btn-sm btn-make-type-4" data-type="1" data-bs-dismiss="modal") Создать
+

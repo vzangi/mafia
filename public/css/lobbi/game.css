@@ -1,13 +1,43 @@
 .game-item .block {
   box-shadow: 0 0 10px #ccc;
-  background: var(--chat-green);
+  border: 0;
   color: var(--color-white);
+}
+
+.game-type-1 .block {
+  background: var(--chat-green);
   background: linear-gradient(
     180deg,
     rgba(0, 106, 68, 1) 0%,
     rgba(14, 140, 95, 1) 100%
   );
-  border: 0;
+}
+
+.game-type-2 .block {
+  background: var(--bs-red);
+  background: linear-gradient(
+    180deg,
+    rgba(220, 53, 69, 1) 30%,
+    rgba(251, 83, 37, 1) 100%
+  );
+}
+
+.game-type-3 .block {
+  background: var(--bs-blue);
+  background: linear-gradient(
+    180deg,
+    rgba(13, 110, 253, 1) 0%,
+    rgba(85, 154, 255, 1) 100%
+  );
+}
+
+.game-type-4 .block {
+  background: var(--bs-purple);
+  background: linear-gradient(
+    180deg,
+    rgba(111, 66, 193, 1) 0%,
+    rgba(162, 110, 255, 1) 100%
+  );
 }
 
 .game-item .friend-info a {
