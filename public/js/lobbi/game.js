@@ -183,9 +183,9 @@ $(function () {
   // Создание заявки в классическом режиме
   $('.btn-make-type-1').click(function () {
     const typeId = 1
-    const waitingTime = $('#waitingTime').val()
-    const playersCount = $('#gamePlayersCount').val()
-    const description = $('#gameDescription').val()
+    const waitingTime = $('#waitingTime-1').val()
+    const playersCount = $('#gamePlayersCount-1').val()
+    const description = $('#gameDescription-1').val()
 
     // Запрос на создание игры
     lobbiSocket.emit(
@@ -197,11 +197,11 @@ $(function () {
       (res) => {
         console.log(res)
         if (res.status != 0) {
-          if (playersCount > 20) $('#gamePlayersCount').val(20)
-          if (playersCount < 6) $('#gamePlayersCount').val(6)
+          if (playersCount > 20) $('#gamePlayersCount-1').val(20)
+          if (playersCount < 6) $('#gamePlayersCount-1').val(6)
 
-          if (waitingTime > 20) $('#waitingTime').val(20)
-          if (waitingTime < 1) $('#waitingTime').val(1)
+          if (waitingTime > 20) $('#waitingTime-1').val(20)
+          if (waitingTime < 1) $('#waitingTime-1').val(1)
           return alert(res.msg)
         }
 
@@ -214,9 +214,9 @@ $(function () {
   // Создание заявки в режиме перестрелки
   $('.btn-make-type-2').click(function () {
     const typeId = 2
-    const waitingTime = $('#waitingTime').val()
-    const playersCount = $('#gamePlayersCount').val()
-    const description = $('#gameDescription').val()
+    const waitingTime = $('#waitingTime-2').val()
+    const playersCount = $('#gamePlayersCount-2').val()
+    const description = $('#gameDescription-2').val()
 
     // Запрос на создание игры
     lobbiSocket.emit(
@@ -228,11 +228,11 @@ $(function () {
       (res) => {
         console.log(res)
         if (res.status != 0) {
-          if (playersCount > 20) $('#gamePlayersCount').val(20)
-          if (playersCount < 6) $('#gamePlayersCount').val(6)
+          if (playersCount > 20) $('#gamePlayersCount-2').val(20)
+          if (playersCount < 6) $('#gamePlayersCount-2').val(6)
 
-          if (waitingTime > 20) $('#waitingTime').val(20)
-          if (waitingTime < 1) $('#waitingTime').val(1)
+          if (waitingTime > 20) $('#waitingTime-2').val(20)
+          if (waitingTime < 1) $('#waitingTime-2').val(1)
           return alert(res.msg)
         }
 
@@ -249,9 +249,9 @@ $(function () {
   // Создание заявки в мультиролевом режиме
   $('.btn-make-type-4').click(function () {
     const typeId = 4
-    const waitingTime = $('#waitingTime').val()
-    const playersCount = $('#gamePlayersCount').val()
-    const description = $('#gameDescription').val()
+    const waitingTime = $('#waitingTime-4').val()
+    const playersCount = $('#gamePlayersCount-4').val()
+    const description = $('#gameDescription-4').val()
 
     // Запрос на создание игры
     lobbiSocket.emit(
@@ -263,11 +263,11 @@ $(function () {
       (res) => {
         console.log(res)
         if (res.status != 0) {
-          if (playersCount > 20) $('#gamePlayersCount').val(20)
-          if (playersCount < 6) $('#gamePlayersCount').val(6)
+          if (playersCount > 20) $('#gamePlayersCount-4').val(20)
+          if (playersCount < 3) $('#gamePlayersCount-4').val(3)
 
-          if (waitingTime > 20) $('#waitingTime').val(20)
-          if (waitingTime < 1) $('#waitingTime').val(1)
+          if (waitingTime > 20) $('#waitingTime-4').val(20)
+          if (waitingTime < 1) $('#waitingTime-4').val(1)
           return alert(res.msg)
         }
 

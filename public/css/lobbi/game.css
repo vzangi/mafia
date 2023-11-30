@@ -13,6 +13,11 @@
   );
 }
 
+.game-type-1 .friend-avatar.online:after {
+  border: 2px solid var(--chat-green);
+  background: var(--color-white);
+}
+
 .game-type-2 .block {
   background: var(--bs-red);
   background: linear-gradient(
@@ -20,6 +25,11 @@
     rgba(220, 53, 69, 1) 30%,
     rgba(251, 83, 37, 1) 100%
   );
+}
+
+.game-type-2 .friend-avatar.online:after {
+  border: 2px solid var(--bs-red);
+  background: var(--color-white);
 }
 
 .game-type-3 .block {
@@ -31,6 +41,11 @@
   );
 }
 
+.game-type-3 .friend-avatar.online:after {
+  border: 2px solid var(--bs-blue);
+  background: var(--color-white);
+}
+
 .game-type-4 .block {
   background: var(--bs-purple);
   background: linear-gradient(
@@ -38,6 +53,11 @@
     rgba(111, 66, 193, 1) 0%,
     rgba(162, 110, 255, 1) 100%
   );
+}
+
+.game-type-4 .friend-avatar.online:after {
+  border: 2px solid var(--bs-purple);
+  background: var(--color-white);
 }
 
 .game-item .friend-info a {
@@ -51,11 +71,6 @@
 
 .game-item .friend-item:hover {
   background-color: transparent;
-}
-
-.game-item .friend-avatar.online:after {
-  border: 2px solid var(--chat-green);
-  background: var(--color-white);
 }
 
 .inGame .btn-make-game,
