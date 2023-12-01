@@ -19,6 +19,20 @@
 }
 
 .game-type-2 .block {
+  background: var(--chat-blue);
+  background: linear-gradient(
+    180deg,
+    rgba(3, 95, 169, 1) 29%,
+    rgba(7, 132, 233, 1) 100%
+  );
+}
+
+.game-type-2 .friend-avatar.online:after {
+  border: 2px solid var(--chat-blue);
+  background: var(--color-white);
+}
+
+.game-type-3 .block {
   background: var(--bs-red);
   background: linear-gradient(
     180deg,
@@ -27,22 +41,8 @@
   );
 }
 
-.game-type-2 .friend-avatar.online:after {
-  border: 2px solid var(--bs-red);
-  background: var(--color-white);
-}
-
-.game-type-3 .block {
-  background: var(--bs-blue);
-  background: linear-gradient(
-    180deg,
-    rgba(13, 110, 253, 1) 0%,
-    rgba(85, 154, 255, 1) 100%
-  );
-}
-
 .game-type-3 .friend-avatar.online:after {
-  border: 2px solid var(--bs-blue);
+  border: 2px solid var(--bs-red);
   background: var(--color-white);
 }
 

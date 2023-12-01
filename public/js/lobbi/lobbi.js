@@ -85,9 +85,8 @@ $(async function () {
 
       msgs.map((msg) => chat.prepend($('#messageTmpl').tmpl(parseMessage(msg))))
 
-      setTimeout(() => {
-        chat.scrollTop(chat[0].scrollHeight)
-      }, 100)
+      setTimeout(() => scrollToEnd(true), 100)
+      setTimeout(() => scrollToEnd(true), 300)
 
       needScroll && chatFixCheckbox.click()
 
@@ -107,8 +106,9 @@ $(async function () {
   })
 
   // Прокрутка чата до последних сообщений
-  const scrollToEnd = () => {
-    if (needScroll == 0) chat.scrollTop(chat[0].scrollHeight)
+  const scrollToEnd = (scroll = false) => {
+    const height = chat[0].scrollHeight || 100000
+    if (scroll || needScroll == 0) chat.scrollTop(height * 2)
   }
 
   const typing = () => {

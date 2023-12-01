@@ -2,14 +2,17 @@ extends /layouts/two_column_3_9
 
 block main
     h1 Игроки онлайн
-    
+
     div(class="block users-list mt-3 mb-3")
+        div(class="mb-3 p-3")
+            input(type="text" class="form-control w-100" id="filter" placeholder="Поиск по нику...")
         each user in users
-            div(class="friend-box d-flex align-items-center m-3" data-nik=user.username)
-                div(class="friend-avatar online")
-                    img(src="/uploads/"+user.avatar alt=user.username)
-                div(class="friend-links ms-2")
-                    a(href="/profile/"+user.username)= user.username
+            div(class="online-friend-box")
+                div(class="friend-box d-flex align-items-center m-3" data-nik=user.username)
+                    div(class="friend-avatar online")
+                        img(src="/uploads/"+user.avatar alt=user.username)
+                    div(class="friend-links ms-2")
+                        a(href="/profile/"+user.username)= user.username
 
 block scripts 
     include /includes/online-tmpl
