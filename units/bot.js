@@ -21,7 +21,7 @@ bot.on('message', async (msg) => {
 
   if (!account) return
 
-  if (hash != `${account.createdAt}3301`) return
+  if (hash != `${account.id}3301`) return
 
   if (account.telegramChatId) {
     return bot.sendMessage(chat.id, 'Уведомления уже были подключены')
