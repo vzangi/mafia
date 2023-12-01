@@ -12,16 +12,16 @@ bot.on('message', async (msg) => {
 
   if (parts.length != 2) return
 
-  const [username, hash] = parts[1].split('__')
+  const [userid, hash] = parts[1].split('__')
 
-  if (!username) return
+  if (!userid) return
   if (!hash) return
 
-  const account = await Account.findOne({ where: { username } })
+  const account = await Account.findOne({ where: { id: userid } })
 
   if (!account) return
 
-  if (hash != `${account.id}3301`) return
+  if (hash != `${account.createdAt}3301`) return
 
   if (account.telegramChatId) {
     return bot.sendMessage(chat.id, 'Уведомления уже были подключены')

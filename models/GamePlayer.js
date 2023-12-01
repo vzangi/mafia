@@ -1,6 +1,17 @@
 const { DataTypes } = require('sequelize')
 const sequelize = require('../units/db')
 
+const playerStatuses = {
+  WHAITNG: 0,
+  LEAVE: 1,
+  DROPPED: 2,
+  IN_GAME: 3,
+  KILLED: 4,
+  PRISONED: 5,
+  TIMEOUT: 6,
+  FREEZED: 7,
+}
+
 const GamePlayer = sequelize.define('gameplayers', {
   id: {
     type: DataTypes.INTEGER,
@@ -20,6 +31,11 @@ const GamePlayer = sequelize.define('gameplayers', {
     allowNull: false,
     defaultValue: 0,
   },
+  roleId: {
+    type: DataTypes.INTEGER,
+  },
 })
+
+GamePlayer.playerStatuses = playerStatuses
 
 module.exports = GamePlayer

@@ -39,6 +39,19 @@ $(function () {
     })
   }, 1000)
 
+  // Интервал подчищающий зявки, которые не были удалены по какой-либо причине (пропал инет и т.д.)
+  setInterval(() => {
+    $('.game-item').each((_, game) => {
+      const time = $(game).find('.waithing-time').text()
+      if (time == '0 сек.') {
+        if ($(game).hasClass('ingame')) {
+          $('body').removeClass('inGame')
+        }
+        $(game).remove()
+      }
+    })
+  }, 500)
+
   // Загрузка заявок
   lobbiSocket.emit('game.games', (res) => {
     if (res.status != 0) {
@@ -65,6 +78,21 @@ $(function () {
       $('body').removeClass('inGame')
     }
     $(`.game-item[data-id=${id}]`).remove()
+  })
+
+  // Запуск
+  lobbiSocket.on('game.start', (id) => {
+    if (
+      $(`.game-item[data-id=${id}] .player[data-username=${username}]`)
+        .length == 1
+    ) {
+      // $('body').removeClass('inGame')
+    }
+
+    $(`.game-item[data-id=${id}]`).remove()
+
+    alert('ИГРА!')
+    location.href = `/game/${id}`
   })
 
   // Игрок прыгнул в заявку
