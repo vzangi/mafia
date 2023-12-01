@@ -32,12 +32,12 @@
 }
 
 .game-type-2.active {
-  background-color: var(--bs-red);
+  background-color: var(--bs-blue);
   color: var(--color-white);
 }
 
 .game-type-3.active {
-  background-color: var(--bs-blue);
+  background-color: var(--bs-red);
   color: var(--color-white);
 }
 
@@ -80,10 +80,10 @@
   background-color: var(--color-green);
 }
 .game-settings-2 .settings-head {
-  background-color: var(--bs-red);
+  background-color: var(--bs-blue);
 }
 .game-settings-3 .settings-head {
-  background-color: var(--bs-blue);
+  background-color: var(--bs-red);
 }
 .game-settings-4 .settings-head {
   background-color: var(--bs-purple);
