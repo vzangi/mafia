@@ -14,19 +14,31 @@ const getDateFromIso = (isoDate) => {
 }
 
 const getMonthName = (month) => {
-  switch(month) {
-    case 1: return 'янв'
-    case 2: return 'фев'
-    case 3: return 'мар'
-    case 4: return 'апр'
-    case 5: return 'май'
-    case 6: return 'июн'
-    case 7: return 'июл'
-    case 8: return 'авг'
-    case 9: return 'сен'
-    case 10: return 'окт'
-    case 11: return 'ноя'
-    case 12: return 'дек'
+  switch (month) {
+    case 1:
+      return 'янв'
+    case 2:
+      return 'фев'
+    case 3:
+      return 'мар'
+    case 4:
+      return 'апр'
+    case 5:
+      return 'май'
+    case 6:
+      return 'июн'
+    case 7:
+      return 'июл'
+    case 8:
+      return 'авг'
+    case 9:
+      return 'сен'
+    case 10:
+      return 'окт'
+    case 11:
+      return 'ноя'
+    case 12:
+      return 'дек'
   }
   return ''
 }
@@ -57,10 +69,16 @@ const _ = (d) => {
   return `0${d}`
 }
 
+// Получение даты и времени через minutes + seconds
+const deadlineAfter = (minutes, seconds = 0) => {
+  return new Date(new Date().getTime() + (minutes * 60 + seconds) * 1000)
+}
+
 module.exports = {
   getTimeFromIso,
   getDateFromIso,
   getDateTimeFromIso,
   getNowDateTime,
   getCoolDateTime,
+  deadlineAfter,
 }

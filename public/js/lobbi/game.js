@@ -80,18 +80,13 @@ $(function () {
     $(`.game-item[data-id=${id}]`).remove()
   })
 
-  // Запуск
+  // Запуск игры
   lobbiSocket.on('game.start', (id) => {
-    if (
-      $(`.game-item[data-id=${id}] .player[data-username=${username}]`)
-        .length == 1
-    ) {
-      // $('body').removeClass('inGame')
-    }
-
     $(`.game-item[data-id=${id}]`).remove()
+  })
 
-    alert('ИГРА!')
+  // Переход в игру
+  lobbiSocket.on('game.play', (id) => {
     location.href = `/game/${id}`
   })
 

@@ -10,6 +10,7 @@ const playerStatuses = {
   PRISONED: 5,
   TIMEOUT: 6,
   FREEZED: 7,
+  WON: 8,
 }
 
 const GamePlayer = sequelize.define('gameplayers', {
@@ -25,6 +26,9 @@ const GamePlayer = sequelize.define('gameplayers', {
   accountId: {
     type: DataTypes.INTEGER,
     allowNull: false,
+  },
+  username: {
+    type: DataTypes.STRING,
   },
   status: {
     type: DataTypes.INTEGER,

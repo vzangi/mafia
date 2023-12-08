@@ -4,6 +4,7 @@ const {
   io, // сокеты
   sequelize, // база данных
 } = require('./units/init')
+const Games = require('./units/Games')
 
 // Запуск сервера
 ;(async function () {
@@ -12,6 +13,9 @@ const {
     .authenticate()
     .then(async () => {
       console.log('DB connected... ok')
+
+      // Загружаю игры, которые были до старта сервера
+      await Games.loadGames(io)
 
       // Подключаю обработку сокетов
       require('./routes/SocketRouter')(io)

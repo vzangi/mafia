@@ -1,0 +1,414 @@
+const Game = require('../models/Game')
+const GameChat = require('../models/GameChat')
+const GamePlayer = require('../models/GamePlayer')
+const sequelize = require('./db')
+const { deadlineAfter } = require('./helpers')
+const workerInterval = 1000
+
+class GameBase {
+  constructor(io, game) {
+    this.game = game
+    this.io = io
+    this.players = []
+    // По умолчанию время хода - 120 секунд
+    this.periodInterval = 120
+    // По умолчанию на переход даётся 6 секунд
+    this.perehodInterval = 6
+
+    //Сокет комнаты
+    this.room = io.of('/game').to(game.id)
+
+    // Мутекс для воркера
+    this.workerMutex = true
+  }
+
+  // Запуск игры
+  async startGame() {
+    const { game, room } = this
+
+    // Если игра только запускается
+    if (game.status == Game.statuses.WHAITNG) {
+      const prepared = await this.prepare()
+
+      // Если подготовка не удалась - удалаяю заявку
+      if (!prepared) {
+        this.removeGame()
+        return
+      }
+
+      // Загружаю список участников игры
+      this.players = await GamePlayer.findAll({
+        where: {
+          gameId: game.id,
+          status: GamePlayer.playerStatuses.IN_GAME,
+        },
+      })
+
+      // Ставлю статус - игра началась
+      game.status = Game.statuses.STARTED
+
+      // Запоминаю аремя начала игры
+      game.startedAt = new Date().toISOString()
+
+      // Текущий период - Начало игры
+      game.period = Game.periods.START
+
+      // Даю две минуты на знакомство мафии
+      game.deadline = this.deadlineAfter(2)
+
+      // Сохраняю изменения
+      await game.save()
+
+      await this.systemMessage(
+        `Игра началась ${getCoolDateTime(game.startedAt)}`
+      )
+
+      const inGameStr = this.players.map((p) => p.username).join(', ')
+
+      await this.systemMessage(game, `В игре участвуют ${inGameStr}`)
+
+      await this.systemMessage(game, `Раздаём роли.`)
+
+      await this.systemMessage(game, `Дадим мафии время договориться.`)
+    } else {
+      // Игра уже была запущена до этого
+      // Если код пришёл сюда, то скорее всего сервер был перезапущен
+
+      // Загружаю список участников игры
+      this.players = await GamePlayer.findAll({
+        where: {
+          gameId: game.id,
+          status: [
+            GamePlayer.playerStatuses.IN_GAME,
+            GamePlayer.playerStatuses.KILLED,
+            GamePlayer.playerStatuses.PRISONED,
+            GamePlayer.playerStatuses.TIMEOUT,
+            GamePlayer.playerStatuses.FREEZED,
+          ],
+        },
+      })
+    }
+
+    if (game.status == Game.statuses.STARTED) {
+      room.emit('game.start')
+
+      // Запуск воркера контролирующего дедлайны периодов
+      this.workerIntervalId = setInterval(
+        this.periodWorker.bind(this),
+        workerInterval
+      )
+    } else {
+      this.removeGame()
+    }
+  }
+
+  // Подготовка к старту
+  async prepare() {
+    const { game } = this
+    try {
+      // Для игроков, которые были в зявке ставлю статус - в игре
+      await GamePlayer.update(
+        {
+          status: GamePlayer.playerStatuses.IN_GAME,
+        },
+        {
+          where: {
+            gameId: game.id,
+            status: GamePlayer.playerStatuses.WHAITNG,
+          },
+        }
+      )
+
+      // Распределение ролей ...
+      await this.takeRoles(game)
+
+      // Знакомлю мафию и комов
+      await this.meeting(game.id)
+
+      return true
+    } catch (error) {
+      console.log(error)
+      return false
+    }
+  }
+
+  // Распределение ролей ...
+  async takeRoles() {
+    const { game } = this
+    const availableRoles = await this.getAvailableRoles()
+
+    // Раздаю роли
+    for (let k = 0; k < availableRoles.length; k++) {
+      // Беру роль и количество игроков с ней
+      const [roleId, cnt] = availableRoles[k]
+
+      // Беру из заявки cnt случайных игроков без роли и ставлю им роль
+      for (let index = 0; index < cnt; index++) {
+        // Беру игрока из заявки которому ещё не назначена роль
+        const player = await GamePlayer.findOne({
+          where: {
+            gameId: game.id,
+            status: GamePlayer.playerStatuses.IN_GAME,
+            roleId: null,
+          },
+          order: sequelize.random(),
+        })
+
+        if (!player) {
+          throw new Error('Не удалось раздать роли')
+        }
+
+        // Выдаю ему роль
+        player.roleId = roleId
+        await player.save()
+      }
+    }
+
+    // Оставшиеся без ролей игроки - чижи
+    await GamePlayer.update(
+      {
+        roleId: Game.roles.CITIZEN,
+      },
+      {
+        where: {
+          gameId: game.id,
+          status: GamePlayer.playerStatuses.IN_GAME,
+          roleId: null,
+        },
+      }
+    )
+  }
+
+  // Удаление игры
+  async removeGame() {
+    const { game } = this
+
+    // Освобождаю игроков из заявки
+    await GamePlayer.update(
+      {
+        status: GamePlayer.playerStatuses.LEAVE,
+      },
+      {
+        where: {
+          gameId: game.id,
+          status: [
+            GamePlayer.playerStatuses.WHAITNG,
+            GamePlayer.playerStatuses.IN_GAME,
+          ],
+        },
+      }
+    )
+
+    // Ставлю статус - игра не началась
+    game.status = Game.statuses.NOT_STARTED
+    await game.save()
+  }
+
+  // Системное сообщение в игре
+  async systemMessage(message) {
+    const { game, room } = this
+    // Сохраняю сообщение в базу
+    await GameChat.newMessage(game.id, null, message)
+
+    // И отправляю его всем кто подключён к просмотру игры
+    room.emit('game.message', message)
+  }
+
+  // Процедура проверки окончания дедлайна
+  async periodWorker() {
+    const { game, workerMutex } = this
+
+    if (game.period == Game.periods.END) {
+      clearInterval(this.workerIntervalId)
+      return
+    }
+
+    // Если предыдущий период ещё не обработан - выходим из воркера
+    if (!workerMutex) return
+
+    const date = new Date()
+
+    // Проверяю истёк ли дедлайн
+    if (game.deadline < date) {
+      // Ставлю на паузу воркер
+      workerMutex = false
+
+      // Перехожу к следующему периоду
+      await this.nextPeriod()
+
+      // Разрешаю воркеру продолжать работу
+      workerMutex = true
+    }
+  }
+
+  // Установка следующего периода
+  async setPeriod(period, seconds) {
+    const { game, room } = this
+    game.period = period
+    game.deadline = deadlineAfter(Math.floor(seconds / 60), seconds % 60)
+    await game.save()
+
+    // Уведомляю игроков о дедлайне следующего периода
+    room.emit('game.deadline', seconds, period)
+  }
+
+  // Проверка на наличие кома в игре
+  komInGame() {
+    const { players } = this
+    for (let index = 0; index < players.length; index++) {
+      const { roleId, status } = players[index]
+      if (
+        roleId == Game.roles.KOMISSAR &&
+        status == GamePlayer.playerStatuses.IN_GAME
+      )
+        return true
+    }
+    return false
+  }
+
+  // Проверка на окончание игры
+  async isOver() {
+    const { players } = this
+
+    let aliveMafia = 0
+    let aliveCitizens = 0
+    let aliveManiac = 0
+
+    // Считаю какие роли ещё в игре
+    for (let index = 0; index < players.length; index++) {
+      const player = players[index]
+
+      // Если игрок ещё в игре
+      if (
+        player.status == GamePlayer.playerStatuses.IN_GAME ||
+        player.status == GamePlayer.playerStatuses.FREEZED
+      ) {
+        // Роль мафии
+        if (player.roleId == Game.roles.MAFIA) {
+          aliveMafia += 1
+          break
+        }
+
+        // Роль маньяка
+        if (player.roleId == Game.roles.MANIAC) {
+          aliveManiac += 1
+          break
+        }
+
+        // Здесь все остальные роли включая адвоката и проститутку (так как мафия не видит их ролей)
+        aliveCitizens += 1
+      }
+    }
+
+    // Ничья
+    if (aliveCitizens == 0 && aliveMafia == 0 && aliveManiac == 0) {
+      return Game.sides.DRAW
+    }
+
+    // Честные победили
+    if (aliveCitizens > 0 && aliveMafia == 0) {
+      return Game.sides.CITIZENS
+    }
+
+    // Победа мафии
+    if (aliveCitizens == 0 && aliveMafia > 0) {
+      return Game.sides.MAFIA
+    }
+
+    // Победа маньяка
+    if (aliveManiac == 1 && aliveMafia == 0 && aliveCitizens == 0) {
+      return Game.sides.MANIAC
+    }
+
+    // Игра продолжается
+    return null
+  }
+
+  // Игра окончена
+  async gameOver(side) {
+    const { game } = this
+
+    // Завершаю обработку периодов
+    await this.setPeriod(Game.periods.END, 0)
+
+    // Освобождаю победивших игроков из заявки
+    await GamePlayer.update(
+      {
+        status: GamePlayer.playerStatuses.WON,
+      },
+      {
+        where: {
+          gameId: game.id,
+          status: GamePlayer.playerStatuses.IN_GAME,
+        },
+      }
+    )
+
+    // Ставлю статус - игра завершена
+    game.status = Game.statuses.ENDED
+    await game.save()
+
+    if (side == Game.sides.DRAW) {
+      this.systemMessage('Игра окончена. Ничья.')
+    }
+
+    if (side == Game.sides.CITIZENS) {
+      this.systemMessage('Игра окончена. Честные жители победили.')
+    }
+
+    if (side == Game.sides.MAFIA) {
+      this.systemMessage('Игра окончена. Мафия победила.')
+    }
+
+    if (side == Game.sides.MAFIA) {
+      this.systemMessage('Игра окончена. Маньяк победил.')
+    }
+
+    // Запуск процесса раздачи подарков победившей стороне ...
+  }
+
+  getId() {
+    return this.game.id
+  }
+
+  /* ========================================
+     ==== Функции реализуемые в потомках ====
+     ======================================== */
+
+  // Доступные роли в зависимости от режима и количества игроков
+  async getAvailableRoles() {
+    throw new Error('Реализовать в потомках')
+  }
+
+  // Вычисление следующего периода игры
+  async nextPeriod() {
+    throw new Error('Реализовать в потомках')
+  }
+
+  // Первый день
+  async afterStart() {
+    throw new Error('Реализовать в потомках')
+  }
+
+  // После дня
+  async afterDay() {
+    throw new Error('Реализовать в потомках')
+  }
+
+  // После хода кома
+  async afterKom() {
+    throw new Error('Реализовать в потомках')
+  }
+
+  // После ночи
+  async afterNight() {
+    throw new Error('Реализовать в потомках')
+  }
+
+  // После проверки
+  async afterTransition() {
+    throw new Error('Реализовать в потомках')
+  }
+}
+
+module.exports = GameBase

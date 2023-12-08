@@ -1,0 +1,16 @@
+doctype html
+html 
+  head
+    include ../includes/head
+    link(href="/css/grey.css" rel="stylesheet")
+    block head
+  body 
+    div(class="wrapper")
+      div(class="content")
+
+        main
+          block content
+
+  script(src="/js/vendor/notifier.js")
+
+  block scripts 

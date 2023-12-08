@@ -4,7 +4,7 @@ const GameType = require('./GameType')
 const GamePlayer = require('./GamePlayer')
 const Account = require('./Account')
 
-const gameStatuses = {
+const statuses = {
   WHAITNG: 0,
   NOT_STARTED: 1,
   STARTED: 2,
@@ -23,12 +23,21 @@ const roles = {
   CITIZEN: 1,
   MAFIA: 2,
   KOMISSAR: 3,
-  SERGANT: 4,
+  SERGEANT: 4,
   DOCTOR: 5,
   MANIAC: 6,
   CHILD: 7,
   ADVOCATE: 8,
   PROSTITUTE: 9,
+}
+
+const periods = {
+  START: 1,
+  DAY: 2,
+  KOM: 3,
+  NIGHT: 4,
+  TRANSITION: 5,
+  END: 6,
 }
 
 const Game = sequelize.define(
@@ -66,6 +75,9 @@ const Game = sequelize.define(
     deadline: {
       type: DataTypes.DATE,
       allowNull: false,
+    },
+    period: {
+      type: DataTypes.INTEGER,
     },
     competition: {
       type: DataTypes.BOOLEAN,
@@ -136,9 +148,10 @@ const Game = sequelize.define(
   }
 )
 
-Game.gameStatuses = gameStatuses
+Game.statuses = statuses
 Game.sides = sides
 Game.roles = roles
+Game.periods = periods
 
 Game.belongsTo(GameType)
 Game.belongsTo(Account)

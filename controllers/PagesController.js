@@ -1,5 +1,6 @@
-const smiles = require('../units/smiles')
 const Account = require('../models/Account')
+
+const service = require('../services/PagesService')
 
 class PagesController {
   // Главная страница
@@ -8,8 +9,22 @@ class PagesController {
   }
 
   // Лобби
-  lobbi(req, res) {
-    res.render('pages/lobbi', { smiles })
+  async lobbi(req, res, next) {
+    try {
+      const { user } = req
+      const data = await service.lobbi(user)
+
+      // Если пользователь в игре
+      if (data.gameId) {
+        // Переадресовываем его сразу в игру
+        return res.redirect(`/game/${data.gameId}`)
+      }
+
+      res.render('pages/lobbi', data)
+    } catch (error) {
+      console.log(error)
+      next(error)
+    }
   }
 
   // Вход на сайт

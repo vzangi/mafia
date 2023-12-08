@@ -4,7 +4,8 @@ div(class="block mb-4")
   div(class="games")
     div(class="games-head d-flex justify-content-between align-items-center p-4")
       h5(class="m-0") Ожидают игры
-      button(class="btn btn-success btn-make-game") Создать заявку
+      if currentAccount
+        button(class="btn btn-success btn-make-game") Создать заявку
 
 
 div(class="games-list mb-4")

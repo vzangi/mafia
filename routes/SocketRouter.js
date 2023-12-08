@@ -50,4 +50,9 @@ module.exports = (io) => {
     // Роуты лобби
     require('./socket/LobbiRouter')(io, socket)
   })
+
+  io.of('/game').on('connection', (socket) => {
+    // Роуты чата игры
+    require('./socket/game/ChatRouter')(io, socket)
+  })
 }

@@ -1,34 +1,27 @@
 const { DataTypes } = require('sequelize')
 const sequelize = require('../units/db')
+const Account = require('./Account')
 
-const GameRole = sequelize.define(
-  'gameroles',
+const GameChatUsers = sequelize.define(
+  'chatuser',
   {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },
-    gameId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
     accountId: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    playerId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    roleId: {
+    gamechatId: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
   },
-  {
-    timestamps: false,
-  }
+  { timestamps: false }
 )
 
-module.exports = GameRole
+GameChatUsers.belongsTo(Account)
+
+module.exports = GameChatUsers

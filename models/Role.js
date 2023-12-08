@@ -1,6 +1,18 @@
 const { DataTypes } = require('sequelize')
 const sequelize = require('../units/db')
 
+const roles = {
+  CITIZEN: 1,
+  MAFIA: 2,
+  KOMISSAR: 3,
+  SERGEANT: 4,
+  DOCTOR: 5,
+  MANIAC: 6,
+  CHILD: 7,
+  ADVOCATE: 8,
+  WHORE: 9,
+}
+
 const Role = sequelize.define(
   'roles',
   {
@@ -25,5 +37,7 @@ const Role = sequelize.define(
     timestamps: false,
   }
 )
+
+Role.roles = roles
 
 module.exports = Role
