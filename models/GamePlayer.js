@@ -1,5 +1,7 @@
 const { DataTypes } = require('sequelize')
 const sequelize = require('../units/db')
+const Role = require('./Role')
+const Account = require('./Account')
 
 const playerStatuses = {
   WHAITNG: 0,
@@ -38,8 +40,38 @@ const GamePlayer = sequelize.define('gameplayers', {
   roleId: {
     type: DataTypes.INTEGER,
   },
+}, {
+  scopes: {
+    ingame(gameId) {
+      return {
+        where: {
+          gameId,
+          status: [
+            playerStatuses.IN_GAME,
+            playerStatuses.KILLED,
+            playerStatuses.PRISONED,
+            playerStatuses.TIMEOUT,
+            playerStatuses.FREEZED,
+            playerStatuses.WON,
+          ]
+        },
+        attributes: ['status', 'username'],
+        include: [
+          {
+            model: Account,
+            attributes: ['online', 'avatar'],
+          },
+          {
+            model: Role,
+          }
+        ]
+      }
+    },
+  }
 })
 
 GamePlayer.playerStatuses = playerStatuses
+
+GamePlayer.belongsTo(Role)
 
 module.exports = GamePlayer

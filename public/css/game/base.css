@@ -1,0 +1,83 @@
+body {
+    color: var(--color-white);
+}
+header {
+    box-shadow: 0 0 10px #333;
+}
+
+.loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--color-black);
+    z-index: 10;
+    transition: all 0.3s ease;
+}
+
+.game-status-3 .role-name {
+    display: none;
+}
+
+.players-list {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.players-list > div {
+    flex: 0 1 100%;
+}
+
+.player {
+    background-color: var(--color-green);
+    border-radius: var(--border-radius);
+    box-shadow: 0 0 10px var(--color-body-dark) inset;
+    transition: all 0.3s ease;
+}
+
+.player:hover {
+    background-color: var(--color-green);
+    box-shadow: 0 0 5px var(--color-body-dark) inset;
+}
+
+.friend-avatar.online:after {
+    border-color: var(--color-green);
+}
+
+
+.player.role-1 {
+    background-color: var(--color-class-2);
+}
+.player.role-1 .friend-avatar.online:after {
+    border-color: var(--color-class-2);
+}
+
+.player.role-2 {
+    background-color: var(--color-class-4);
+}
+.player.role-2 .friend-avatar.online:after {
+    border-color: var(--color-class-4);
+}
+
+.player.role-3,
+.player.role-4 {
+    background-color: var(--color-class-3);
+}
+.player.role-3 .friend-avatar.online:after,
+.player.role-4 .friend-avatar.online:after {
+    border-color: var(--color-class-3);
+}
+
+.friend-info .role {
+    text-wrap: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+
+@media (min-width: 420px) {
+    .players-list > div {
+        flex: 0 1 50%;
+    }
+}

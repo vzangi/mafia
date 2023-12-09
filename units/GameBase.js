@@ -1,8 +1,9 @@
 const Game = require('../models/Game')
+const GameRole = require('../models/GameRole')
 const GameChat = require('../models/GameChat')
 const GamePlayer = require('../models/GamePlayer')
 const sequelize = require('./db')
-const { deadlineAfter } = require('./helpers')
+const { deadlineAfter, getCoolDateTime } = require('./helpers')
 const workerInterval = 1000
 
 class GameBase {
@@ -11,7 +12,7 @@ class GameBase {
     this.io = io
     this.players = []
     // По умолчанию время хода - 120 секунд
-    this.periodInterval = 120
+    this.periodInterval = 20
     // По умолчанию на переход даётся 6 секунд
     this.perehodInterval = 6
 
@@ -36,7 +37,7 @@ class GameBase {
         return
       }
 
-      // Загружаю список участников игры
+      // Загружаю список участников игры 
       this.players = await GamePlayer.findAll({
         where: {
           gameId: game.id,
@@ -50,14 +51,14 @@ class GameBase {
       // Запоминаю аремя начала игры
       game.startedAt = new Date().toISOString()
 
-      // Текущий период - Начало игры
-      game.period = Game.periods.START
-
-      // Даю две минуты на знакомство мафии
-      game.deadline = this.deadlineAfter(2)
+      // Начало игры / знакомство / нулевой день
+      game.day = 0
 
       // Сохраняю изменения
       await game.save()
+
+      // Даю две минуты на знакомство мафии
+      this.setPeriod(Game.periods.START, this.perehodInterval)
 
       await this.systemMessage(
         `Игра началась ${getCoolDateTime(game.startedAt)}`
@@ -65,11 +66,11 @@ class GameBase {
 
       const inGameStr = this.players.map((p) => p.username).join(', ')
 
-      await this.systemMessage(game, `В игре участвуют ${inGameStr}`)
+      await this.systemMessage(`В игре участвуют ${inGameStr}`)
 
-      await this.systemMessage(game, `Раздаём роли.`)
+      await this.systemMessage(`Раздаём роли.`)
 
-      await this.systemMessage(game, `Дадим мафии время договориться.`)
+      await this.systemMessage(`Дадим мафии время договориться.`)
     } else {
       // Игра уже была запущена до этого
       // Если код пришёл сюда, то скорее всего сервер был перезапущен
@@ -90,7 +91,7 @@ class GameBase {
     }
 
     if (game.status == Game.statuses.STARTED) {
-      room.emit('game.start')
+      room.emit('start')
 
       // Запуск воркера контролирующего дедлайны периодов
       this.workerIntervalId = setInterval(
@@ -120,10 +121,10 @@ class GameBase {
       )
 
       // Распределение ролей ...
-      await this.takeRoles(game)
+      await this.takeRoles()
 
       // Знакомлю мафию и комов
-      await this.meeting(game.id)
+      await this.meeting()
 
       return true
     } catch (error) {
@@ -179,6 +180,89 @@ class GameBase {
     )
   }
 
+  // Знакомлю мафию и комов
+  async meeting() {
+    const { players, game } = this
+
+    // Знакомлю мафию
+    for (let index = 0; index < players.length; index++) {
+      const player = players[index];
+
+      if (player.roleId != Game.roles.MAFIA) continue
+
+      for (let index2 = 0; index2 < players.length; index2++) {
+        const player2 = players[index2];
+
+        if (player2.roleId != Game.roles.MAFIA) continue
+        if (player2.accountId == player.accountId) continue
+
+        await GameRole.create({
+          gameId: game.id,
+          accountId: player.id,
+          playerId: player2.id,
+          roleId: Game.roles.MAFIA,
+        })
+
+        await GameRole.create({
+          gameId: game.id,
+          accountId: player2.id,
+          playerId: player.id,
+          roleId: Game.roles.MAFIA,
+        })
+      }
+    }
+
+    // Знакомлю кома и сержаната (если есть)
+    for (let index = 0; index < players.length; index++) {
+      const player = players[index];
+
+      if (player.roleId != Game.roles.SERGEANT) continue
+
+      for (let index2 = 0; index2 < players.length; index2++) {
+        const player2 = players[index2];
+
+        if (player.roleId != Game.roles.KOMISSAR) continue
+
+        // Ком видит сержанта
+        await GameRole.create({
+          gameId: game.id,
+          accountId: player2.id,
+          playerId: player.id,
+          roleId: Game.roles.SERGEANT,
+        })
+
+        // Сержант видит кома
+        await GameRole.create({
+          gameId: game.id,
+          accountId: player.id,
+          playerId: player2.id,
+          roleId: Game.roles.KOMISSAR,
+        })
+      }
+    }
+
+    // Показываю мафии дитя (если есть)
+    for (let index = 0; index < players.length; index++) {
+      const player = players[index];
+
+      if (player.roleId != Game.roles.CHILD) continue
+      for (let index2 = 0; index2 < players.length; index2++) {
+        const player2 = players[index2];
+        
+        if (player2.roleId != Game.roles.MAFIA) continue
+
+        // Мафия видит дитя
+        await GameRole.create({
+          gameId: game.id,
+          accountId: player2.id,
+          playerId: player.id,
+          roleId: Game.roles.CHILD,
+        })
+      }
+
+    }
+  }
+
   // Удаление игры
   async removeGame() {
     const { game } = this
@@ -211,12 +295,13 @@ class GameBase {
     await GameChat.newMessage(game.id, null, message)
 
     // И отправляю его всем кто подключён к просмотру игры
-    room.emit('game.message', message)
+    room.emit('message', message)
   }
 
   // Процедура проверки окончания дедлайна
   async periodWorker() {
-    const { game, workerMutex } = this
+    const { game } = this
+    let { workerMutex } = this
 
     if (game.period == Game.periods.END) {
       clearInterval(this.workerIntervalId)
@@ -243,13 +328,14 @@ class GameBase {
 
   // Установка следующего периода
   async setPeriod(period, seconds) {
+    console.log('set period', period, seconds);
     const { game, room } = this
     game.period = period
     game.deadline = deadlineAfter(Math.floor(seconds / 60), seconds % 60)
     await game.save()
 
     // Уведомляю игроков о дедлайне следующего периода
-    room.emit('game.deadline', seconds, period)
+    room.emit('deadline', seconds, period)
   }
 
   // Проверка на наличие кома в игре

@@ -51,8 +51,16 @@ module.exports = (io) => {
     require('./socket/LobbiRouter')(io, socket)
   })
 
+  io.of('/game').use(validateTokenInSocket)
+
+  io.of('/game').use((socket, next) => {
+    const { referer } = socket.request.headers
+    socket.gameId = 1 * referer.substr(referer.indexOf('/game/') + 6, 7)
+    next()
+  })
+
   io.of('/game').on('connection', (socket) => {
     // Роуты чата игры
-    require('./socket/game/ChatRouter')(io, socket)
+    require('./socket/game/GameRouter')(io, socket)
   })
 }

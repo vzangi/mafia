@@ -54,12 +54,6 @@
   left: 100%;
 }
 
-.friend-item {
-  display: flex;
-  gap: 1rem;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-}
 
 .friend-item:hover {
   background-color: #ddd;
@@ -67,46 +61,6 @@
 
 .friend-item.active {
   background-color: #fff;
-}
-
-.friend-avatar img {
-  width: 50px;
-  height: 50px;
-  border-radius: 50px;
-}
-
-.friend-avatar {
-  flex: none;
-  position: relative;
-}
-
-.pm-friend-avatar.online:after,
-.friend-avatar.online:after {
-  content: ' ';
-  width: 13px;
-  height: 13px;
-  background-color: #8cc152;
-  display: block;
-  position: absolute;
-  right: 0px;
-  bottom: 0px;
-  border-radius: 10px;
-  border: 2px solid #fff;
-}
-
-.friend-info {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-}
-
-.friend-info {
-  flex: 1;
-  overflow: hidden;
-}
-
-.friend-nik {
-  font-weight: 600;
 }
 
 .last-message {

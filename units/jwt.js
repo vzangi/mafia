@@ -40,6 +40,7 @@ const validateTokenInSocket = (socket, next) => {
     if (!parsedCookie[tokenCookieName]) return next()
 
     socket.user = verify(parsedCookie[tokenCookieName], secretKey)
+
   } catch (error) {
     console.log(error)
   }

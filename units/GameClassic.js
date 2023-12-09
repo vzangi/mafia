@@ -1,7 +1,6 @@
 const Game = require('../models/Game')
 const GamePlayer = require('../models/GamePlayer')
 const GameBase = require('./GameBase')
-const { deadlineAfter } = require('./helpers')
 
 // Игра в классическом режиме
 class GameClassic extends GameBase {
@@ -87,15 +86,7 @@ class GameClassic extends GameBase {
 
   // Первый день
   async afterStart() {
-    const { game, room, periodInterval } = this
-
-    game.day = 1
-    await game.save()
-
-    await this.setPeriod(Game.periods.DAY, periodInterval)
-
-    // Начало голосования
-    room.emit('game.voting.start')
+    await this.nextDay()
   }
 
   // После дня
@@ -103,12 +94,12 @@ class GameClassic extends GameBase {
     const { room, periodInterval } = this
 
     // останавливаю голосование
-    room.emit('game.voting.stop')
+    room.emit('voting.stop')
 
     // Проверяю результаты голосования
     // если голосование не выявило посадку, то наступает новый день и снова идёт голосование
 
-    // если кто-то отправилься в тюрьму, то идёт проверка на конец игры
+    // если кто-то отправился в тюрьму, то идёт проверка на конец игры
 
     // если игра не окончена, то идёт проверка кома (если он есть в игре)
 
@@ -121,13 +112,13 @@ class GameClassic extends GameBase {
       await this.setPeriod(Game.periods.KOM, periodInterval)
 
       // Запускаю ход комиссара
-      room.emit('game.kommissar.start')
+      room.emit('kommissar.start')
     } else {
       // Ход мафии
       await this.setPeriod(Game.periods.NIGHT, periodInterval)
 
       // Запускаю ход мафии
-      room.emit('game.mafia.start')
+      room.emit('mafia.start')
     }
   }
 
@@ -136,20 +127,20 @@ class GameClassic extends GameBase {
     const { room, periodInterval } = this
 
     // Завершаю ход комиссара
-    room.emit('game.kommissar.stop')
+    room.emit('kommissar.stop')
 
     await this.setPeriod(Game.periods.NIGHT, periodInterval)
 
     // Запускаю ход мафии
-    room.emit('game.mafia.start')
+    room.emit('mafia.start')
   }
 
   // После ночи
   async afterNight() {
-    const { room, periodInterval } = this
+    const { room } = this
 
     // Завершаю ход мафии
-    room.emit('game.mafia.stop')
+    room.emit('mafia.stop')
 
     // Проверка на завершение игры
     // если игра не окончена, идём дальше
@@ -161,21 +152,32 @@ class GameClassic extends GameBase {
       // Если он есть, то даю 6 секунд на то, чтобы выдать проверку
       await this.setPeriod(Game.periods.TRANSITION, perehodInterval)
     } else {
-      // Если кома нет, то следующий период - день
-      await this.setPeriod(Game.periods.DAY, periodInterval)
-
-      // Начало голосования
-      room.emit('game.voting.start')
+      await this.nextDay()
     }
   }
 
   // После проверки
   async afterTransition() {
-    const { room, periodInterval } = this
+    await this.nextDay()
+  }
 
+  // Новый день
+  async nextDay() {
+    const { game, room, periodInterval } = this
+
+    // Увеличиваю номер дня
+    game.day += 1
+        
+    console.log('day: ', game.day);
+
+    // Следующий период - день
     await this.setPeriod(Game.periods.DAY, periodInterval)
-
+    
+    this.systemMessage(`День ${game.day}. Игроки ищут мафию.`)
+    
     // Начало голосования
-    room.emit('game.voting.start')
+    room.emit('voting.start', game.day)
   }
 }
+
+module.exports = GameClassic

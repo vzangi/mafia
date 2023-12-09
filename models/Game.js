@@ -41,7 +41,7 @@ const periods = {
 }
 
 const Game = sequelize.define(
-  'games',
+  'games', 
   {
     id: {
       type: DataTypes.INTEGER,
@@ -142,6 +142,32 @@ const Game = sequelize.define(
           'description',
           'createdAt',
           'seconds',
+          'period',
+          'day',
+        ],
+      },
+      active: {
+        where: {
+          status: statuses.STARTED,
+        },
+        include: [
+          { model: GameType },
+          {
+            model: Account,
+            attributes: ['username', 'avatar', 'vip', 'vipTo'],
+          },
+        ],
+        attributes: [
+          'id',
+          'deadline',
+          'playersCount',
+          'status',
+          'waitingTime',
+          'description',
+          'createdAt',
+          'seconds',
+          'period',
+          'day',
         ],
       },
     },

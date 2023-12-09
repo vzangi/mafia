@@ -1,0 +1,11 @@
+header(class="mb-3 game-status-"+game.status)
+  div(class="container-fluid")
+      div(class="d-flex justify-content-between pt-2 pb-2")
+        if game.status == 2
+          div(class="timer" title="Таймер хода" data-bs-toggle="tooltip" data-bs-placement="bottom") 
+            span(class="ion-ios-clock") 
+            span(class="value" data-seconds=seconds data-stamp=Date.now()) 
+        else
+          div Игра окончена
+        div(class="my-role" title="Ваша роль в игре" data-bs-toggle="tooltip" data-bs-placement="bottom") 
+          span(class="role-name")

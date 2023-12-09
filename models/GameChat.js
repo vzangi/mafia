@@ -36,6 +36,7 @@ GameChat.hasMany(GameChatUsers)
 // Получение массива пользователей из присланного сообщения
 const getUsersInMessage = async (message) => {
   const accounts = []
+  console.log(message)
   const matchUsers = [...message.matchAll(/\[([^\]]*)\]/g)] // [username]
   for (let index = 0; index < matchUsers.length; index++) {
     const userNik = matchUsers[index][1]
@@ -55,7 +56,7 @@ GameChat.newMessage = async (gameId, accountId, msg) => {
   if (message.length > 255) {
     message = message.substr(0, 255)
   }
-  const gamechatusers = await getUsersInMessage(msg)
+  const gamechatusers = await getUsersInMessage(message)
   let username = ''
   if (accountId) {
     const account = await Account.findByPk(accountId)

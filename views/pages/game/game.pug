@@ -1,15 +1,21 @@
 extends /layouts/two_column_6_6
 
 block head 
+  link(href="/css/game/base.css" rel="stylesheet")
 
 prepend content 
-  p header
+  include /includes/game/loader
+  include /includes/game/header
 
 block main
   p Chat
 
 block aside 
-  p Players
+  include /includes/game/players
+
 
 
 block scripts 
+  script(src="/js/game/base.js")
+  if game.status == 2
+    script(src="/js/game/timer.js")

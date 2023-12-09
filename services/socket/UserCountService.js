@@ -1,5 +1,7 @@
 const Account = require('../../models/Account')
 const Friend = require('../../models/Friend')
+const Game = require('../../models/Game')
+const GamePlayer = require('../../models/GamePlayer')
 const { getNowDateTime } = require('../../units/helpers')
 const BaseService = require('./BaseService')
 
@@ -32,15 +34,51 @@ class UserCountService extends BaseService {
     // Обновление статуса online у пользователя
     async _online(id, on = true) {
         await Account.update({ online: on }, { where: { id } })
-        const { io } = this
+        const { io, socket } = this
+        const { account } = socket
 
-        const account = await Account.findOne({
-            where: { id },
-            attributes: ['username', 'avatar']
-        })
+        // const account = await Account.findOne({
+        //     where: { id },
+        //     attributes: ['username', 'avatar']
+        // })
 
         const status = on ? 'online' : 'offline'
-        io.of('/online').emit(status, account)
+        io.of('/online').emit(status, {
+            username: account.username,
+            avatar: account.avatar,
+        })
+
+        // Если пользователь находился в игре, 
+        // то уведомляю остальных игроков о том, что статус онлайн изменился
+        GamePlayer.findOne({
+            where: {
+                accountId: id,
+                status: [
+                  GamePlayer.playerStatuses.IN_GAME,
+                  GamePlayer.playerStatuses.KILLED,
+                  GamePlayer.playerStatuses.PRISONED,
+                  GamePlayer.playerStatuses.TIMEOUT,
+                  GamePlayer.playerStatuses.FREEZED,
+                  GamePlayer.playerStatuses.WON,
+                ]
+              },
+              include: [
+                {
+                  model: Game,
+                  where: {
+                    status: [
+                      Game.statuses.STARTED,
+                      Game.statuses.ENDED,
+                      Game.statuses.STOPPED,
+                    ]
+                  }
+                }
+              ]
+        }).then(gp => {
+            if (gp) {
+                io.of('/game').to(gp.gameId).emit(`user.${status}`, account.username)
+            }
+        })
     }
 
     // Меняет количество пользователей онлайн

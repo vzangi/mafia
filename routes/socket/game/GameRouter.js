@@ -1,8 +1,12 @@
 module.exports = (io, socket) => {
-  const controller = require('../../../controllers/socket/game/ChatController')(
+  const controller = require('../../../controllers/socket/game/GameController')(
     io,
     socket
   )
+
+  // Получение роли в игре
+  socket.on('get.role', controller.getRole.bind(controller))
+
 
   // Список последних сообщений
   //socket.on('game.chat.history', controller.chatHistory.bind(controller))

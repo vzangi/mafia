@@ -1,0 +1,17 @@
+div 
+  div(class="players-list")
+    each player in players 
+      -var out = false
+      if player.status != 3 && player.status != 7
+        -var ps = 'player-status-'+player.status
+        -var pr = 'role-'+player.role.id
+        -out = true
+      div(class="p-1")
+        div(class="player "+ps+' '+pr data-username=player.username)
+          div(class="friend-item")
+            div(class="friend-avatar "+(player.account.online?' online':''))
+              img(src="/uploads/"+player.account.avatar)
+            div(class="friend-info")
+              a= player.username
+              if out
+                small(class="role")= player.role.name

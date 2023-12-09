@@ -14,15 +14,11 @@ class Games {
 
   // Загрузка игр и заявок
   static async loadGames(io) {
-    const activeGames = await Game.findAll({
-      where: {
-        status: Game.statuses.STARTED,
-      },
-    })
+    const activeGames = await Game.scope('active').findAll()
 
     // Загрузка текущих игр
     activeGames.forEach((game) => Games.loadActiveGame(io, game))
-    console.log('active games: ', activeGames)
+   // console.log('active games: ', activeGames)
 
     const whatingGames = await Game.scope('def').findAll({
       where: {
@@ -32,7 +28,7 @@ class Games {
 
     // Загрузка заявок
     whatingGames.forEach((game) => (Games.whatingGames[game.id] = game))
-    console.log('whating games: ', whatingGames)
+    //console.log('whating games: ', whatingGames)
 
     // Раз в секунду проверяю заявки с истёкшим сроком дедлайна
     setInterval(Games.checkDeadLine.bind(null, io), deadlineInterval)
@@ -125,7 +121,9 @@ class Games {
   static async loadActiveGame(io, game) {
     let newGame = null
 
-    if (game.gametypeId == 1) {
+    //console.log(game);
+
+    if (game.gametype.id == 1) {
       newGame = new GameClassic(io, game)
     }
 
