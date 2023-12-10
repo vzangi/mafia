@@ -12,7 +12,7 @@ class GameBase {
     this.io = io
     this.players = []
     // По умолчанию время хода - 120 секунд
-    this.periodInterval = 20
+    this.periodInterval = 120
     // По умолчанию на переход даётся 6 секунд
     this.perehodInterval = 6
 
@@ -61,12 +61,19 @@ class GameBase {
       this.setPeriod(Game.periods.START, this.perehodInterval)
 
       await this.systemMessage(
-        `Игра началась ${getCoolDateTime(game.startedAt)}`
+        `Игра началась ${getCoolDateTime(game.startedAt)}.`
       )
 
       const inGameStr = this.players.map((p) => p.username).join(', ')
 
-      await this.systemMessage(`В игре участвуют ${inGameStr}`)
+      await this.systemMessage(`В игре участвуют ${inGameStr}.`)
+
+      if (game.mode == 1) {
+        await this.systemMessage('Режим игры "по большинству" голосов (без добивов)')
+      }
+      if (game.mode == 2) {
+        await this.systemMessage('Режим игры "по количеству" голосов (с добивами)')
+      }
 
       await this.systemMessage(`Раздаём роли.`)
 
@@ -248,7 +255,7 @@ class GameBase {
       if (player.roleId != Game.roles.CHILD) continue
       for (let index2 = 0; index2 < players.length; index2++) {
         const player2 = players[index2];
-        
+
         if (player2.roleId != Game.roles.MAFIA) continue
 
         // Мафия видит дитя
@@ -292,10 +299,10 @@ class GameBase {
   async systemMessage(message) {
     const { game, room } = this
     // Сохраняю сообщение в базу
-    await GameChat.newMessage(game.id, null, message)
+    const msg = await GameChat.newMessage(game.id, null, message)
 
     // И отправляю его всем кто подключён к просмотру игры
-    room.emit('message', message)
+    room.emit('message', msg)
   }
 
   // Процедура проверки окончания дедлайна
@@ -372,13 +379,13 @@ class GameBase {
         // Роль мафии
         if (player.roleId == Game.roles.MAFIA) {
           aliveMafia += 1
-          break
+          continue
         }
 
         // Роль маньяка
         if (player.roleId == Game.roles.MANIAC) {
           aliveManiac += 1
-          break
+          continue
         }
 
         // Здесь все остальные роли включая адвоката и проститутку (так как мафия не видит их ролей)
@@ -432,6 +439,7 @@ class GameBase {
 
     // Ставлю статус - игра завершена
     game.status = Game.statuses.ENDED
+    game.rolesideId = side
     await game.save()
 
     if (side == Game.sides.DRAW) {
@@ -446,7 +454,7 @@ class GameBase {
       this.systemMessage('Игра окончена. Мафия победила.')
     }
 
-    if (side == Game.sides.MAFIA) {
+    if (side == Game.sides.MANIAC) {
       this.systemMessage('Игра окончена. Маньяк победил.')
     }
 
@@ -494,6 +502,12 @@ class GameBase {
   // После проверки
   async afterTransition() {
     throw new Error('Реализовать в потомках')
+  }
+
+  async whait(seconds) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => resolve(), seconds * 1000)
+    })
   }
 }
 

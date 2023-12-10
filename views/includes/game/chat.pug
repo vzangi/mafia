@@ -1,0 +1,43 @@
+include ../switch_mixin
+
+div(class="block chat-box mb-4")
+  
+  div(class="chat-header")
+    span(class="fs-4 me-auto") Чат
+    div(class="chat-settings ms-3")
+      span(class="ion-gear-a gear" title="настройки чата")
+      div(class="chat-settings-box")
+        +settings_item("Расширенный&nbsp;чат", "chat-whide")
+        +settings_item("Зафиксировать&nbsp;чат", "chat-fix")
+        div(class='color-shemes-box')
+          div(class="color-shemes-title") Цветовая схема
+          div(class="color-shemes-items")
+            div(class="color-sheme dark active" data-color="dark" title="Темная") 
+            div(class="color-sheme green" data-color="green" title="Зелёная") 
+            div(class="color-sheme blue" data-color="blue" title="Синяя") 
+            div(class="color-sheme white" data-color="white" title="Светлая") 
+          div(class="color-shemes-title") Размер шрифта
+          div(class="font-size-items")
+            div(class="font-size big" data-font="font-18" title="Крупный") 
+              include ../text_icon
+            div(class="font-size normal" data-font="font-16" title="Средний") 
+              include ../text_icon
+            div(class="font-size small" data-font="font-14" title="Мелкий") 
+              include ../text_icon
+          
+      span(class="ion-arrow-expand expand ms-2" title="на всё окно")
+
+  div(class="chat") 
+  
+  div(class="typing-box") 
+  
+  if currentAccount
+    if game.status == 2
+      div(class="input-box") 
+        input(type="text" maxlength=255 placeholder="Введите сообщение и нажмите Enter" name="chat-input" id="chat-input")
+        div(class="smiles" style="background-image: url(/images/eHehe.svg)") 
+        div(class="all-smiles" style="display:none") 
+          div(class="all-smiles-title mb-1") Смайлы
+          div(class="all-smiles-items")
+            each smile in smiles
+              img(src="/images/e"+ smile +".svg" alt=smile)

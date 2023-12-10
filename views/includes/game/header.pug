@@ -9,3 +9,7 @@ header(class="mb-3 game-status-"+game.status)
           div Игра окончена
         div(class="my-role" title="Ваша роль в игре" data-bs-toggle="tooltip" data-bs-placement="bottom") 
           span(class="role-name")
+        if currentAccount
+          div(class="user-nik hide")= currentAccount.username
+
+div(class="smile-pattern hide")= (smiles.join('|'))

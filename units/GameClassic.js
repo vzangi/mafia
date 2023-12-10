@@ -1,5 +1,6 @@
 const Game = require('../models/Game')
 const GamePlayer = require('../models/GamePlayer')
+const GameStep = require('../models/GameStep')
 const GameBase = require('./GameBase')
 
 // Игра в классическом режиме
@@ -84,29 +85,55 @@ class GameClassic extends GameBase {
     }
   }
 
-  // Первый день
+  // После знакомства
   async afterStart() {
     await this.nextDay()
   }
 
   // После дня
   async afterDay() {
-    const { room, periodInterval } = this
+    const { room, periodInterval, players } = this
 
     // останавливаю голосование
     room.emit('voting.stop')
+    await this.systemMessage('Голосование окончено. Считаем голоса.')
+
 
     // Проверяю результаты голосования
+    const zek = await this.voteResults()
+
     // если голосование не выявило посадку, то наступает новый день и снова идёт голосование
+    if (!zek) {
+      await this.systemMessage('Договориться не удалось. Голосование продолжается.')
+      await this.nextDay()
+      return
+    }
+
+    console.log('zek: ', zek);
+
+    const player = players.filter(p => p.accountId == zek)
+
+    // Меняю статус игрока на "в тюрьме"
+    player[0].status = GamePlayer.playerStatuses.PRISONED
+    await player[0].save()
+
+    const { username } = player[0]
+
+    this.systemMessage(`${username} отправляется в тюрьму.`)
+
+    room.emit("player.prisoned", username)
 
     // если кто-то отправился в тюрьму, то идёт проверка на конец игры
+
+    // Проверка на окончание игры
+    const winnerSide = await this.isOver()
+    if (winnerSide) {
+      return await this.gameOver(winnerSide)
+    }
 
     // если игра не окончена, то идёт проверка кома (если он есть в игре)
 
     // если кома нет, то идёт ночь
-
-    // Следующий период - проверка кома (если он есть в игре),
-    // либо опять день,
 
     if (this.komInGame()) {
       await this.setPeriod(Game.periods.KOM, periodInterval)
@@ -143,6 +170,11 @@ class GameClassic extends GameBase {
     room.emit('mafia.stop')
 
     // Проверка на завершение игры
+    const winnerSide = await this.isOver()
+    if (winnerSide) {
+      return await this.gameOver(winnerSide)
+    }
+
     // если игра не окончена, идём дальше
 
     // Проверяю наличие кома в игре
@@ -167,16 +199,110 @@ class GameClassic extends GameBase {
 
     // Увеличиваю номер дня
     game.day += 1
-        
+
     console.log('day: ', game.day);
 
     // Следующий период - день
     await this.setPeriod(Game.periods.DAY, periodInterval)
-    
+
     this.systemMessage(`День ${game.day}. Игроки ищут мафию.`)
-    
+
     // Начало голосования
     room.emit('voting.start', game.day)
+  }
+
+  // Функция определяет кто отправиться в тюрьму
+  async voteResults() {
+    const { game } = this
+
+    // Беру ходы
+    const steps = await GameStep.findAll({
+      where: {
+        gameId: game.id,
+        day: game.day,
+        stepType: GameStep.stepTypes.DAY,
+      },
+      attributes: ['playerId'],
+    })
+
+    const votes = {}
+    let maxVotes = 0
+
+    // id игрока - претендента на посадку
+    let zekId = null
+
+    // Заполняю массив голосования
+    steps.forEach(step => {
+      if (!votes[step.playerId]) votes[step.playerId] = 0
+      votes[step.playerId] += 1
+      if (votes[step.playerId] > maxVotes) {
+        maxVotes = votes[step.playerId]
+        zekId = step.playerId
+      }
+    })
+
+    // Если нет голосов
+    if (!zekId) return null
+
+    // Количество живых игроков
+    const activePlayers = this.activePlayersCount()
+
+    // Смотрю, есть ли другой игрок с таким же количеством голосов
+    for (const playerId in votes) {
+      if (playerId == zekId) continue
+
+      const votesCount = votes[play]
+
+      if (votesCount == maxVotes) {
+        // Такой игрок найден
+        // Это означает что тут либо омон, либо никто не садиться
+
+        const mafiaCount = this.liveMafiaCount()
+
+        // Все голоса распределены
+        if (activePlayers == steps.length) {
+          // Половина игроков - мафия
+          if (mafiaCount * 2 == activePlayers && votesCount == mafiaCount) {
+            // Тогда посадка определяется слуйчаным образом
+
+            this.systemMessage('Силы равны. Бросаем жребий, чтобы определить, кто отправиться в тюрьму')
+
+            const rnd = Math.floor(Math.random() * activePlayers)
+            return steps[rnd].playerId
+          }
+        }
+
+        this.systemMessage('Равенство голосов. В тюрьму никто не отправляется')
+
+        // Никто не садиться (равенство голосов)
+        return null
+      }
+    }
+
+    // Если режим "по большинству голосов" (без добивов)
+    if (game.mode == 1) {
+      // Количество голосов должно быть больше половины
+      if (maxVotes * 2 <= activePlayers) {
+        this.systemMessage('Ни один из игроков не набрал большинства голосов.')
+        return null
+      }
+    }
+
+    return zekId
+  }
+
+  activePlayersCount() {
+    return this.players.filter(p =>
+      p.status == GamePlayer.playerStatuses.IN_GAME ||
+      p.status == GamePlayer.playerStatuses.FREEZED
+    ).length
+  }
+
+  liveMafiaCount() {
+    return this.players.filter(p =>
+      p.status == GamePlayer.playerStatuses.IN_GAME &&
+      p.roleId == Game.roles.MAFIA
+    ).length
   }
 }
 

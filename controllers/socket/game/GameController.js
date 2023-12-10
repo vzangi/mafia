@@ -3,7 +3,7 @@ const Service = require('../../../services/socket/game/GameService')
 
 class GameController extends BaseSocketController {
 
-  // Список последних сообщений
+  // Получение роли
   async getRole(callback) {
     try {
       const role = await this.service.getRole()
@@ -11,6 +11,26 @@ class GameController extends BaseSocketController {
     } catch (error) {
       console.log(error);
       callback('Ошибка')
+    }
+  }
+
+  // Список последних сообщений
+  async getMessages(callback) {
+    try {
+      const messages = await this.service.getMessages()
+      callback(messages)
+    } catch (error) {
+      console.log(error);
+      callback('Ошибка')
+    }
+  }
+
+  // Пришло сообщение
+  async message(message, isPrivate = false) {
+    try {
+      await this.service.message(message, isPrivate)
+    } catch (error) {
+      console.log(error);
     }
   }
 }

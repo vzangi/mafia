@@ -36,7 +36,6 @@ GameChat.hasMany(GameChatUsers)
 // Получение массива пользователей из присланного сообщения
 const getUsersInMessage = async (message) => {
   const accounts = []
-  console.log(message)
   const matchUsers = [...message.matchAll(/\[([^\]]*)\]/g)] // [username]
   for (let index = 0; index < matchUsers.length; index++) {
     const userNik = matchUsers[index][1]
@@ -51,7 +50,7 @@ const getUsersInMessage = async (message) => {
 }
 
 // Сохраняет новое сообщение в базе и возвращает его
-GameChat.newMessage = async (gameId, accountId, msg) => {
+GameChat.newMessage = async (gameId, accountId, msg, isPrivate = false) => {
   let message = htmlspecialchars(msg)
   if (message.length > 255) {
     message = message.substr(0, 255)
@@ -68,13 +67,35 @@ GameChat.newMessage = async (gameId, accountId, msg) => {
       accountId,
       username,
       message,
+      private: isPrivate,
       gamechatusers,
     },
     {
       include: GameChatUsers,
     }
   )
-  return await GameChat.findOne({ where: { id: newMsg.id } })
+  return await GameChat.findOne({
+    where: {
+      id: newMsg.id
+    },
+    attributes: ['message', 'private', 'createdAt', 'username'],
+    include: [
+      {
+        model: Account,
+        attributes: ['username'],
+        required: false
+      },
+      {
+        model: GameChatUsers,
+        include: [
+          {
+            model: Account,
+            attributes: ['username']
+          }
+        ]
+      }
+    ],
+  })
 }
 
 module.exports = GameChat

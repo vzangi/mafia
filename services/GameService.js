@@ -1,5 +1,6 @@
 const Game = require('../models/Game')
 const GamePlayer = require('../models/GamePlayer')
+const smiles = require('../units/smiles')
 
 class GameService {
   // Страница игры
@@ -23,6 +24,7 @@ class GameService {
     const players = await GamePlayer.scope({ method: ['ingame', gameId] }).findAll()
 
     const data = {
+      smiles,
       game,
       players,
       seconds: seconds < 0 ? 0 : seconds,

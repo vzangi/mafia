@@ -3,7 +3,7 @@ const sequelize = require('../units/db')
 const Account = require('./Account')
 
 const GameChatUsers = sequelize.define(
-  'chatuser',
+  'gamechatusers',
   {
     id: {
       type: DataTypes.INTEGER,

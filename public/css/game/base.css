@@ -1,5 +1,6 @@
 body {
     color: var(--color-white);
+    background: #153;
 }
 header {
     box-shadow: 0 0 10px #333;
