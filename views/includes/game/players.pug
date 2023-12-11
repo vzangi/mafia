@@ -1,10 +1,12 @@
-div 
-  div(class="players-list")
+div(class="mb-3")
+  div(class="players-list"+(steps?' voting':''))
     each player in players 
       -var out = false
+      -var ps = ''
+      -var pr = ''
       if player.status != 3 && player.status != 7
-        -var ps = 'player-status-'+player.status
-        -var pr = 'role-'+player.role.id
+        -ps = 'player-status-'+player.status
+        -pr = 'role-'+player.role.id
         -out = true
       div(class="p-1")
         div(class="player "+ps+' '+pr data-username=player.username)
@@ -12,6 +14,13 @@ div
             div(class="friend-avatar "+(player.account.online?' online':''))
               img(src="/uploads/"+player.account.avatar)
             div(class="friend-info")
-              a= player.username
+              div
+                a(class="username")= player.username
               if out
                 small(class="role")= player.role.name
+            if !out
+              div(class="vote-dot" title="Голосов" data-username=player.username)
+                if !steps
+                  span(class="vote-cnt") 0
+                else 
+                  span(class="vote-cnt")= steps.filter(s => s.player.username == player.username).length

@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize')
 const sequelize = require('../units/db')
+const Account = require('./Account')
 
 // 1 - дневной ход, 2 - выстрел ночью, 3 - проверка роли, 4 - лечение врача, 5 - защита адвоката...
 
@@ -40,5 +41,8 @@ const GameStep = sequelize.define('gamesteps', {
 })
 
 GameStep.stepTypes = stepTypes
+
+GameStep.belongsTo(Account, { as: 'account', foreignKey: 'accountId' })
+GameStep.belongsTo(Account, { as: 'player', foreignKey: 'playerId' })
 
 module.exports = GameStep

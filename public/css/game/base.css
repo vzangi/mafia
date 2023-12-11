@@ -1,84 +1,186 @@
 body {
-    color: var(--color-white);
-    background: #153;
+  color: var(--color-white);
+  background: #153;
+  overflow-x: hidden;
 }
+
 header {
-    box-shadow: 0 0 10px #333;
+  background: #153;
+  box-shadow: 0 0 10px #333;
+  position: fixed;
+  z-index: 1;
+}
+header,
+.header-shadow {
+  width: 100%;
+  height: 40px;
 }
 
 .loader {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: var(--color-black);
-    z-index: 10;
-    transition: all 0.3s ease;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--color-black);
+  z-index: 10;
+  transition: all 0.3s ease;
 }
 
 .game-status-3 .role-name {
-    display: none;
+  display: none;
 }
 
 .players-list {
-    display: flex;
-    flex-wrap: wrap;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .players-list > div {
-    flex: 0 1 100%;
+  flex: 0 1 100%;
 }
 
 .player {
-    background-color: var(--color-green);
-    border-radius: var(--border-radius);
-    box-shadow: 0 0 10px var(--color-body-dark) inset;
-    transition: all 0.3s ease;
+  background-color: var(--color-green);
+  border-radius: var(--border-radius);
+  box-shadow: 0 0 10px var(--color-body-dark) inset;
+  transition: all 0.3s ease;
 }
 
 .player:hover {
-    background-color: var(--color-green);
-    box-shadow: 0 0 5px var(--color-body-dark) inset;
+  background-color: var(--color-green);
+  box-shadow: 0 0 5px var(--color-body-dark) inset;
 }
 
 .friend-avatar.online:after {
-    border-color: var(--color-green);
+  border-color: var(--color-green);
 }
-
 
 .player.role-1 {
-    background-color: var(--color-class-2);
+  background-color: var(--color-class-2);
 }
 .player.role-1 .friend-avatar.online:after {
-    border-color: var(--color-class-2);
+  border-color: var(--color-class-2);
 }
 
 .player.role-2 {
-    background-color: var(--color-class-4);
+  background-color: var(--color-class-4);
 }
 .player.role-2 .friend-avatar.online:after {
-    border-color: var(--color-class-4);
+  border-color: var(--color-class-4);
 }
 
 .player.role-3,
 .player.role-4 {
-    background-color: var(--color-class-3);
+  background-color: var(--color-class-3);
 }
 .player.role-3 .friend-avatar.online:after,
 .player.role-4 .friend-avatar.online:after {
-    border-color: var(--color-class-3);
+  border-color: var(--color-class-3);
 }
 
+.friend-info .username,
 .friend-info .role {
-    text-wrap: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
+  text-wrap: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  color: inherit;
+  text-decoration: none;
 }
 
+.player .username:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
 
 @media (min-width: 420px) {
-    .players-list > div {
-        flex: 0 1 50%;
-    }
+  .players-list > div {
+    flex: 0 1 50%;
+  }
+}
+
+.player-status-4 .friend-avatar:before,
+.player-status-5 .friend-avatar:before,
+.player-status-6 .friend-avatar:before {
+  content: ' ';
+  position: absolute;
+  display: block;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  border-radius: 100px;
+  background-color: rgba(0, 0, 0, 0.1);
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+/* 
+    Игрок убит
+*/
+.player-status-4 .friend-avatar:before {
+  background-color: rgba(200, 50, 50, 0.5);
+  background-image: url(/images/killed.png);
+}
+
+/* 
+    Игрок в тюрьме
+*/
+.player-status-5 .friend-avatar:before {
+  background-image: url(/images/jail.png);
+}
+
+/* 
+    Игрок вышел по таймауту
+*/
+.player-status-6 .friend-avatar:before {
+  background-image: url(/images/timer.png);
+}
+
+.player.player-status-4 .username,
+.player.player-status-5 .username,
+.player.player-status-6 .username {
+  text-decoration: line-through;
+}
+
+.friend-item {
+  position: relative;
+  cursor: initial;
+}
+
+.vote-dot {
+  position: absolute;
+  top: 50%;
+  right: -50px;
+  width: 40px;
+  height: 40px;
+  background: var(--color-white);
+  border-radius: 40px;
+  margin-top: -20px;
+  box-shadow: 0 0 5px #111 inset;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.iam .vote-dot {
+  cursor: initial;
+}
+
+.voting .vote-dot {
+  opacity: 1;
+  right: 15px;
+}
+
+.voting .out .vote-dot {
+  display: none;
+}
+
+.vote-cnt {
+  color: #555;
+  font-weight: bold;
 }

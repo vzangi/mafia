@@ -7,7 +7,7 @@ script(id="userTmpl" type="text/x-jquery-tmpl")
       ]
 
 script(id="messageTmpl" type="text/x-jquery-tmpl")
-  div(class="message-box {{if highlight}}highlight{{/if}} {{if !account}}system-message{{/if}}")
+  div(class="message-box {{if highlight}}highlight{{/if}} {{if username==''}}system-message{{/if}}")
     div(class="message")
       div(class="m-time me-2" title="${date}") ${time}
     span 
@@ -40,3 +40,6 @@ script(id="typingTmpl" type="text/x-jquery-tmpl")
       ...
       </span>
     {{/if}}
+
+script(id="voteResultTmpl" type="text/x-jquery-tmpl")
+  span(class='vote-result') против ${vote}

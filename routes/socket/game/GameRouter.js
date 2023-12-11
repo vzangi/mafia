@@ -13,6 +13,8 @@ module.exports = (io, socket) => {
   // Пришло сообщение
   socket.on('message', controller.message.bind(controller))
 
+  // Голос
+  socket.on('vote', controller.vote.bind(controller))
 
   // Список последних сообщений
   //socket.on('game.chat.history', controller.chatHistory.bind(controller))

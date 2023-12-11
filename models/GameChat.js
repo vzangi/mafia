@@ -76,24 +76,20 @@ GameChat.newMessage = async (gameId, accountId, msg, isPrivate = false) => {
   )
   return await GameChat.findOne({
     where: {
-      id: newMsg.id
+      id: newMsg.id,
     },
     attributes: ['message', 'private', 'createdAt', 'username'],
     include: [
-      {
-        model: Account,
-        attributes: ['username'],
-        required: false
-      },
       {
         model: GameChatUsers,
         include: [
           {
             model: Account,
-            attributes: ['username']
-          }
-        ]
-      }
+            attributes: ['username'],
+          },
+        ],
+        attributes: ['accountId'],
+      },
     ],
   })
 }

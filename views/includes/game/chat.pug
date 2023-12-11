@@ -1,7 +1,7 @@
 include ../switch_mixin
 
 div(class="block chat-box mb-4")
-  
+
   div(class="chat-header")
     span(class="fs-4 me-auto") Чат
     div(class="chat-settings ms-3")
@@ -24,13 +24,13 @@ div(class="block chat-box mb-4")
               include ../text_icon
             div(class="font-size small" data-font="font-14" title="Мелкий") 
               include ../text_icon
-          
+
       span(class="ion-arrow-expand expand ms-2" title="на всё окно")
 
   div(class="chat") 
-  
+
   div(class="typing-box") 
-  
+
   if currentAccount
     if game.status == 2
       div(class="input-box") 

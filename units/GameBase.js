@@ -4,6 +4,7 @@ const GameChat = require('../models/GameChat')
 const GamePlayer = require('../models/GamePlayer')
 const sequelize = require('./db')
 const { deadlineAfter, getCoolDateTime } = require('./helpers')
+const Role = require('../models/Role')
 const workerInterval = 1000
 
 class GameBase {
@@ -37,11 +38,15 @@ class GameBase {
         return
       }
 
-      // Загружаю список участников игры 
+      // Загружаю список участников игры
       this.players = await GamePlayer.findAll({
         where: {
           gameId: game.id,
           status: GamePlayer.playerStatuses.IN_GAME,
+        },
+        include: {
+          model: Role,
+          attributes: ['name'],
         },
       })
 
@@ -58,7 +63,7 @@ class GameBase {
       await game.save()
 
       // Даю две минуты на знакомство мафии
-      this.setPeriod(Game.periods.START, this.perehodInterval)
+      this.setPeriod(Game.periods.START, this.periodInterval)
 
       await this.systemMessage(
         `Игра началась ${getCoolDateTime(game.startedAt)}.`
@@ -69,10 +74,14 @@ class GameBase {
       await this.systemMessage(`В игре участвуют ${inGameStr}.`)
 
       if (game.mode == 1) {
-        await this.systemMessage('Режим игры "по большинству" голосов (без добивов)')
+        await this.systemMessage(
+          'Режим игры "по большинству" голосов (без добивов)'
+        )
       }
       if (game.mode == 2) {
-        await this.systemMessage('Режим игры "по количеству" голосов (с добивами)')
+        await this.systemMessage(
+          'Режим игры "по количеству" голосов (с добивами)'
+        )
       }
 
       await this.systemMessage(`Раздаём роли.`)
@@ -93,6 +102,10 @@ class GameBase {
             GamePlayer.playerStatuses.TIMEOUT,
             GamePlayer.playerStatuses.FREEZED,
           ],
+        },
+        include: {
+          model: Role,
+          attributes: ['name'],
         },
       })
     }
@@ -193,12 +206,12 @@ class GameBase {
 
     // Знакомлю мафию
     for (let index = 0; index < players.length; index++) {
-      const player = players[index];
+      const player = players[index]
 
       if (player.roleId != Game.roles.MAFIA) continue
 
       for (let index2 = 0; index2 < players.length; index2++) {
-        const player2 = players[index2];
+        const player2 = players[index2]
 
         if (player2.roleId != Game.roles.MAFIA) continue
         if (player2.accountId == player.accountId) continue
@@ -221,12 +234,12 @@ class GameBase {
 
     // Знакомлю кома и сержаната (если есть)
     for (let index = 0; index < players.length; index++) {
-      const player = players[index];
+      const player = players[index]
 
       if (player.roleId != Game.roles.SERGEANT) continue
 
       for (let index2 = 0; index2 < players.length; index2++) {
-        const player2 = players[index2];
+        const player2 = players[index2]
 
         if (player.roleId != Game.roles.KOMISSAR) continue
 
@@ -250,11 +263,11 @@ class GameBase {
 
     // Показываю мафии дитя (если есть)
     for (let index = 0; index < players.length; index++) {
-      const player = players[index];
+      const player = players[index]
 
       if (player.roleId != Game.roles.CHILD) continue
       for (let index2 = 0; index2 < players.length; index2++) {
-        const player2 = players[index2];
+        const player2 = players[index2]
 
         if (player2.roleId != Game.roles.MAFIA) continue
 
@@ -266,7 +279,6 @@ class GameBase {
           roleId: Game.roles.CHILD,
         })
       }
-
     }
   }
 
@@ -335,7 +347,7 @@ class GameBase {
 
   // Установка следующего периода
   async setPeriod(period, seconds) {
-    console.log('set period', period, seconds);
+    console.log('set period', period, seconds)
     const { game, room } = this
     game.period = period
     game.deadline = deadlineAfter(Math.floor(seconds / 60), seconds % 60)
@@ -465,6 +477,18 @@ class GameBase {
     return this.game.id
   }
 
+  getPlayerById(id) {
+    const player = this.players.filter((p) => p.accountId == id)
+    if (player.length == 1) return player[0]
+    return null
+  }
+
+  async whait(seconds) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => resolve(), seconds * 1000)
+    })
+  }
+
   /* ========================================
      ==== Функции реализуемые в потомках ====
      ======================================== */
@@ -502,12 +526,6 @@ class GameBase {
   // После проверки
   async afterTransition() {
     throw new Error('Реализовать в потомках')
-  }
-
-  async whait(seconds) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => resolve(), seconds * 1000)
-    })
   }
 }
 

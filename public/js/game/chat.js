@@ -34,8 +34,10 @@ $(function () {
   // Получение сообщений
   gameSocket.emit('get.messages', (messages) => {
     console.log(messages)
-    
-    messages.map((msg) => chat.append($('#messageTmpl').tmpl(parseMessage(msg))))
+
+    messages.map((msg) =>
+      chat.append($('#messageTmpl').tmpl(parseMessage(msg)))
+    )
 
     setTimeout(() => scrollToEnd(true, false), 100)
   })
@@ -48,7 +50,7 @@ $(function () {
         chat[0].scrollBy({
           top: height * 2,
           left: 0,
-          behavior: 'smooth'
+          behavior: 'smooth',
         })
       } else {
         chat.scrollTop(height * 2)
@@ -77,7 +79,6 @@ $(function () {
     chat.append(messageTemplate.tmpl(parseMessage(msg)))
     scrollToEnd()
   })
-
 
   const tmpl = (template, data) => {
     return $.tmpl(template, data).get()[0].outerHTML
@@ -151,7 +152,6 @@ $(function () {
       $(this).parent().removeClass('active')
     })
 
-
   // Открывает высплывающее окно со смайлами
   smilesOpenBtn.click(function () {
     toggleActive(smilesBox)
@@ -164,7 +164,6 @@ $(function () {
   chat.on('click', 'img', function () {
     insertTextToInput(`${$(this).attr('alt')} `)
   })
-
 
   // Вставка текста в поле ввода
   const insertTextToInput = (text) => {
@@ -238,6 +237,12 @@ $(function () {
 
   // Добавляет в чат имя собеседника
   chat.on('click', '.m-nik', function () {
+    const nik = `${userMarkerBegin}${$(this).text()}${userMarkerEnd} `
+    insertTextToInput(nik)
+    return false
+  })
+
+  $('.player .username').click(function () {
     const nik = `${userMarkerBegin}${$(this).text()}${userMarkerEnd} `
     insertTextToInput(nik)
     return false
