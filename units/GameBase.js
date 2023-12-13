@@ -13,7 +13,7 @@ class GameBase {
     this.io = io
     this.players = []
     // По умолчанию время хода - 120 секунд
-    this.periodInterval = 20
+    this.periodInterval = 120
     // По умолчанию на переход даётся 6 секунд
     this.perehodInterval = 6
 
