@@ -104,9 +104,8 @@ $(function () {
     if (player.username == username) {
       $('body').addClass('inGame')
       game.find('.btn-from-game').removeClass('hide')
+      game.find('.btn-from-game').show()
     }
-
-    game.find('.btn-from-game').show()
 
     const cnt = game.find('.player').length
     game.find('.players-count .cnt').text(cnt)

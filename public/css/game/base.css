@@ -1,7 +1,11 @@
 body {
   color: var(--color-white);
-  background: #153;
+  background-color: #153;
   overflow-x: hidden;
+  transition: background-color 0.3s ease;
+}
+body.night {
+  background-color: #020;
 }
 
 header {
@@ -149,7 +153,8 @@ header,
   cursor: initial;
 }
 
-.vote-dot {
+.vote-dot,
+.kill-dot {
   position: absolute;
   top: 50%;
   right: -50px;
@@ -159,9 +164,6 @@ header,
   border-radius: 40px;
   margin-top: -20px;
   box-shadow: 0 0 5px #111 inset;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   transition: all 0.3s ease;
   opacity: 0;
   cursor: pointer;
@@ -171,6 +173,7 @@ header,
   cursor: initial;
 }
 
+.night .kill-dot,
 .voting .vote-dot {
   opacity: 1;
   right: 15px;
@@ -183,4 +186,13 @@ header,
 .vote-cnt {
   color: #555;
   font-weight: bold;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kill-dot.checked {
+  background-color: var(--color-class-4);
 }

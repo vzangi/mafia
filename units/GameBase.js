@@ -13,7 +13,7 @@ class GameBase {
     this.io = io
     this.players = []
     // По умолчанию время хода - 120 секунд
-    this.periodInterval = 120
+    this.periodInterval = 20
     // По умолчанию на переход даётся 6 секунд
     this.perehodInterval = 6
 
@@ -22,6 +22,55 @@ class GameBase {
 
     // Мутекс для воркера
     this.workerMutex = true
+
+    this.typingUsers = []
+  }
+
+  // Пользователь начал что-то печатать в чате
+  typingBegin(userId) {
+    const { room, typingUsers, players } = this
+
+    const player = this.getPlayerById(userId)
+
+    if (!player) return
+
+    const { username } = player
+
+    if (typingUsers[username]) {
+      clearTimeout(typingUsers[username])
+    }
+
+    typingUsers[username] = setTimeout(() => {
+      this._cancelTyping(username)
+    }, 3000)
+
+    room.emit('typing.begin', Object.keys(typingUsers))
+  }
+
+  // Пользователь перестал печатать
+  typingEnd(userId) {
+    const { room, typingUsers, players } = this
+
+    const player = this.getPlayerById(userId)
+
+    if (!player) return
+
+    const { username } = player
+
+    if (typingUsers[username]) {
+      clearTimeout(typingUsers[username])
+    }
+
+    this._cancelTyping(username)
+  }
+
+  // Процедура завершения печати
+  _cancelTyping(username) {
+    const { room, typingUsers } = this
+    if (typingUsers[username]) {
+      delete typingUsers[username]
+    }
+    room.emit('typing.end', Object.keys(typingUsers))
   }
 
   // Запуск игры
@@ -46,7 +95,7 @@ class GameBase {
         },
         include: {
           model: Role,
-          attributes: ['name'],
+          attributes: ['name', 'id'],
         },
       })
 
@@ -105,7 +154,7 @@ class GameBase {
         },
         include: {
           model: Role,
-          attributes: ['name'],
+          attributes: ['name', 'id'],
         },
       })
     }
@@ -431,7 +480,7 @@ class GameBase {
 
   // Игра окончена
   async gameOver(side) {
-    const { game } = this
+    const { game, room } = this
 
     // Завершаю обработку периодов
     await this.setPeriod(Game.periods.END, 0)
@@ -470,6 +519,8 @@ class GameBase {
       this.systemMessage('Игра окончена. Маньяк победил.')
     }
 
+    room.emit('game.over', side)
+
     // Запуск процесса раздачи подарков победившей стороне ...
   }
 
@@ -483,8 +534,8 @@ class GameBase {
     return null
   }
 
-  async whait(seconds) {
-    return new Promise((resolve, reject) => {
+  whait(seconds) {
+    return new Promise((resolve, _) => {
       setTimeout(() => resolve(), seconds * 1000)
     })
   }
