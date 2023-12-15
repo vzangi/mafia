@@ -5,8 +5,8 @@ class GameController {
   async game(req, res, next) {
     try {
       const { id } = req.params
-
-      const data = await service.game(id)
+      const { user } = req
+      const data = await service.game(id, user)
       res.render('pages/game/game', data)
     } catch (error) {
       console.log(error)

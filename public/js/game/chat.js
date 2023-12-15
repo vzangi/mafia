@@ -61,9 +61,7 @@ $(function () {
   const typing = () => {
     gameSocket.emit('typing.begin')
     clearTimeout(timeoutTyping)
-    timeoutTyping = setTimeout(() => {
-      cancelTyping()
-    }, 2500)
+    timeoutTyping = setTimeout(cancelTyping, 2500)
   }
 
   const cancelTyping = () => {
@@ -71,16 +69,8 @@ $(function () {
     gameSocket.emit('typing.end')
   }
 
-  gameSocket.on('typing.begin', (users) => {
-    $('#typingTmpl')
-      .tmpl({
-        users,
-        list: users.slice(0, 2).join(', '),
-      })
-      .appendTo($('.typing-box').empty())
-  })
-
-  gameSocket.on('typing.end', (users) => {
+  // событие печати в чате
+  gameSocket.on('typing', (users) => {
     $('#typingTmpl')
       .tmpl({
         users,

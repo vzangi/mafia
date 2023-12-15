@@ -10,6 +10,7 @@ const statuses = {
   STARTED: 2,
   ENDED: 3,
   STOPPED: 4,
+  STARTING: 5,
 }
 
 const sides = {
@@ -41,7 +42,7 @@ const periods = {
 }
 
 const Game = sequelize.define(
-  'games', 
+  'games',
   {
     id: {
       type: DataTypes.INTEGER,
@@ -121,8 +122,9 @@ const Game = sequelize.define(
           },
           {
             model: GamePlayer,
+            as: 'players',
             where: {
-              status: 0,
+              status: GamePlayer.playerStatuses.WHAITNG,
             },
             attributes: ['status'],
             include: [
@@ -133,22 +135,13 @@ const Game = sequelize.define(
             ],
           },
         ],
-        attributes: [
-          'id',
-          'deadline',
-          'playersCount',
-          'status',
-          'waitingTime',
-          'description',
-          'createdAt',
-          'seconds',
-          'period',
-          'day',
-        ],
+        attributes: {
+          exclude: ['accountId'],
+        },
       },
-      active: {
+      whaiting: {
         where: {
-          status: statuses.STARTED,
+          status: statuses.WHAITNG,
         },
         include: [
           { model: GameType },
@@ -157,6 +150,11 @@ const Game = sequelize.define(
             attributes: ['username', 'avatar', 'vip', 'vipTo'],
           },
         ],
+      },
+      active: {
+        where: {
+          status: statuses.STARTED,
+        },
         attributes: [
           'id',
           'deadline',
@@ -168,6 +166,13 @@ const Game = sequelize.define(
           'seconds',
           'period',
           'day',
+        ],
+        include: [
+          { model: GameType },
+          {
+            model: Account,
+            attributes: ['username', 'avatar', 'vip', 'vipTo'],
+          },
         ],
       },
     },
@@ -181,7 +186,7 @@ Game.periods = periods
 
 Game.belongsTo(GameType)
 Game.belongsTo(Account)
-Game.hasMany(GamePlayer)
+Game.hasMany(GamePlayer, { as: 'players' })
 
 GamePlayer.belongsTo(Game)
 GamePlayer.belongsTo(Account)

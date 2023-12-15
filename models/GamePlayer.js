@@ -15,60 +15,64 @@ const playerStatuses = {
   WON: 8,
 }
 
-const GamePlayer = sequelize.define('gameplayers', {
-  id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
-    primaryKey: true,
+const GamePlayer = sequelize.define(
+  'gameplayers',
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    gameId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    accountId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    username: {
+      type: DataTypes.STRING,
+    },
+    status: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+    },
+    roleId: {
+      type: DataTypes.INTEGER,
+    },
   },
-  gameId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  accountId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  username: {
-    type: DataTypes.STRING,
-  },
-  status: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    defaultValue: 0,
-  },
-  roleId: {
-    type: DataTypes.INTEGER,
-  },
-}, {
-  scopes: {
-    ingame(gameId) {
-      return {
-        where: {
-          gameId,
-          status: [
-            playerStatuses.IN_GAME,
-            playerStatuses.KILLED,
-            playerStatuses.PRISONED,
-            playerStatuses.TIMEOUT,
-            playerStatuses.FREEZED,
-            playerStatuses.WON,
-          ]
-        },
-        attributes: ['status', 'username'],
-        include: [
-          {
-            model: Account,
-            attributes: ['online', 'avatar'],
+  {
+    scopes: {
+      ingame(gameId) {
+        return {
+          where: {
+            gameId,
+            status: [
+              playerStatuses.IN_GAME,
+              playerStatuses.KILLED,
+              playerStatuses.PRISONED,
+              playerStatuses.TIMEOUT,
+              playerStatuses.FREEZED,
+              playerStatuses.WON,
+            ],
           },
-          {
-            model: Role,
-          }
-        ]
-      }
+          attributes: ['id', 'status', 'username', 'accountId'],
+          include: [
+            {
+              model: Account,
+              attributes: ['online', 'avatar'],
+            },
+            {
+              model: Role,
+            },
+          ],
+        }
+      },
     },
   }
-})
+)
 
 GamePlayer.playerStatuses = playerStatuses
 

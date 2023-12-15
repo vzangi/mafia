@@ -33,7 +33,7 @@ script(id="gameItemTmpl" type="text/x-jquery-tmpl")
             span ${gametype.name}
           div(class="players-count d-flex align-items-center gap-1" title="Количество игроков в зявке" data-bs-toggle="tooltip" data-bs-placement="bottom") 
             span(class="ion-ios-people fs-4 ion-icon") 
-            span(class="cnt") ${gameplayers.length} 
+            span(class="cnt") ${players.length} 
             span  / 
             span ${playersCount} 
           div(class="d-flex align-items-center gap-1" title="Время для сбора игроков" data-bs-toggle="tooltip" data-bs-placement="bottom") 
@@ -61,7 +61,7 @@ script(id="gameItemTmpl" type="text/x-jquery-tmpl")
 
 
         . 
-          {{each(i,player) gameplayers}}
+          {{each(i,player) players}}
             {{tmpl({player, id}) '#gamePlayerTmpl'}}
         .   
           {{/each}}

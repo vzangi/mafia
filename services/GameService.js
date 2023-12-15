@@ -6,7 +6,7 @@ const smiles = require('../units/smiles')
 
 class GameService {
   // Страница игры
-  async game(gameId) {
+  async game(gameId, user) {
     if (!gameId) {
       throw new Error('Нет необходимых данных')
     }
@@ -24,6 +24,26 @@ class GameService {
     const data = {
       smiles,
       game,
+    }
+
+    data.isPlayer = false
+
+    if (user) {
+      const inGame = await GamePlayer.findOne({
+        where: {
+          gameId,
+          accountId: user.id,
+          status: [
+            GamePlayer.playerStatuses.IN_GAME,
+            GamePlayer.playerStatuses.FREEZED,
+          ],
+        },
+      })
+
+      if (inGame) {
+        data.isPlayer = true
+        data.isFreezed = inGame.status == GamePlayer.playerStatuses.FREEZED
+      }
     }
 
     const seconds = Math.floor(

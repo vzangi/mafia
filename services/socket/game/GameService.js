@@ -6,7 +6,7 @@ const GamePlayer = require('../../../models/GamePlayer')
 const GameRole = require('../../../models/GameRole')
 const GameStep = require('../../../models/GameStep')
 const Role = require('../../../models/Role')
-const Games = require('../../../units/Games')
+const Games = require('../../../units/GamesManager')
 const sequelize = require('../../../units/db')
 const BaseService = require('../BaseService')
 

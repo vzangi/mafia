@@ -3,37 +3,15 @@ const Account = require('../../models/Account')
 const Friend = require('../../models/Friend')
 const Game = require('../../models/Game')
 const GamePlayer = require('../../models/GamePlayer')
-const { playerStatuses } = GamePlayer
-const { statuses } = Game
 const minCount = 3
-const { getCoolDateTime } = require('../../units/helpers')
-const Games = require('../../units/Games')
-
+const GamesManager = require('../../units/GamesManager')
 const BaseService = require('./BaseService')
 
 class LobbiService extends BaseService {
-  // Рассылаю уведомления ...
-  async _notify(game) {
-    // Уведомляю о начале игры
-    const { io, socket } = this
-    io.of('/lobbi').emit('game.start', game.id)
-
-    // Беру всех участников
-    const players = await GamePlayer.findAll({
-      where: {
-        gameId: game.id,
-        status: playerStatuses.IN_GAME,
-      },
-      attributes: ['accountId'],
-    })
-
-    // Отправляю каждому игроку сообщение с номером заявки
-    players.forEach(async (player) => {
-      const ids = this.getUserSocketIds(player.accountId)
-      ids.forEach((sid) => {
-        socket.broadcast.to(sid).emit('game.start', game.id)
-      })
-    })
+  // Получение текущих заявок
+  async getGames() {
+    const games = await Game.scope('def').findAll()
+    return games
   }
 
   // Новая заявка на игру
@@ -91,7 +69,7 @@ class LobbiService extends BaseService {
     const inGameWaithing = await GamePlayer.findOne({
       where: {
         accountId: user.id,
-        status: playerStatuses.WHAITNG,
+        status: GamePlayer.playerStatuses.WHAITNG,
       },
     })
 
@@ -103,7 +81,10 @@ class LobbiService extends BaseService {
     const inGame = await GamePlayer.findOne({
       where: {
         accountId: user.id,
-        status: [playerStatuses.IN_GAME, playerStatuses.FREEZED],
+        status: [
+          GamePlayer.playerStatuses.IN_GAME,
+          GamePlayer.playerStatuses.FREEZED,
+        ],
       },
     })
 
@@ -144,7 +125,7 @@ class LobbiService extends BaseService {
     const game = await Game.scope('def').findByPk(newGame.id)
 
     // Добавляю её в список ожидающих заявок
-    Games.whatingGames[game.id] = game
+    GamesManager.whatingGames[game.id] = game
 
     // Уведомляю подключённые сокеты о новой заявке
     const { socket } = this
@@ -154,22 +135,13 @@ class LobbiService extends BaseService {
     return game
   }
 
-  // Получение текущих заявок
-  async getGames() {
-    const games = await Game.scope('def').findAll()
-    return games
-  }
-
   // Присоединиться к заявке
   async toGame(gameId) {
-    const { user } = this
-    if (!user) {
+    const { socket } = this
+    const { account } = socket
+    if (!account) {
       throw new Error('Не авторизован')
     }
-
-    const account = await Account.findByPk(user.id, {
-      attributes: ['username', 'avatar', 'online'],
-    })
 
     if (!account) {
       throw new Error('Игрок не найден')
@@ -186,22 +158,22 @@ class LobbiService extends BaseService {
       throw new Error('Заявка не найдена')
     }
 
-    if (game.status != statuses.WHAITNG) {
+    if (game.status != Game.statuses.WHAITNG) {
       throw new Error('К этой заявке уже нельзя присоединиться')
     }
 
-    if (game.playersCount == game.gameplayers.length) {
+    if (game.playersCount == game.players.length) {
       throw new Error('В заявке нет свободных мест')
     }
 
     // Проверяю находится ли игрок в другой заявке
     const inGame = await GamePlayer.count({
       where: {
-        accountId: user.id,
+        accountId: account.id,
         status: [
-          playerStatuses.WHAITNG,
-          playerStatuses.IN_GAME,
-          playerStatuses.FREEZED,
+          GamePlayer.playerStatuses.WHAITNG,
+          GamePlayer.playerStatuses.IN_GAME,
+          GamePlayer.playerStatuses.FREEZED,
         ],
       },
     })
@@ -213,9 +185,9 @@ class LobbiService extends BaseService {
     // Проверяю, был ли игрок удалён из этой заявки
     const wasRemoved = await GamePlayer.count({
       where: {
-        accountId: user.id,
-        status: playerStatuses.DROPPED,
         gameId,
+        accountId: account.id,
+        status: GamePlayer.playerStatuses.DROPPED,
       },
     })
 
@@ -227,8 +199,6 @@ class LobbiService extends BaseService {
     if (game.account.vip) {
       // Проверяю, не находится ли текущий игрок у него в чс
 
-      console.log(game.account.username, user.id)
-
       const acc = await Account.findOne({
         where: { username: game.account.username },
       })
@@ -237,7 +207,7 @@ class LobbiService extends BaseService {
         where: {
           status: -2,
           accountId: acc.id,
-          friendId: user.id,
+          friendId: account.id,
         },
       })
 
@@ -247,19 +217,35 @@ class LobbiService extends BaseService {
     }
 
     // Добавляю игрока в заявку
-    GamePlayer.create({
+    await GamePlayer.create({
       gameId,
-      accountId: user.id,
+      accountId: account.id,
       username: account.username,
     })
 
-    // Отправляю всем информацию об игроке и зявке
+    // Отправляю всем информацию об игроке зашедшем в зявку
     const { io } = this
-    io.of('/lobbi').emit('game.player.add', gameId, account)
+    io.of('/lobbi').emit('game.player.add', gameId, {
+      username: account.username,
+      avatar: account.avatar,
+      online: true,
+    })
 
     // Если набралось требуемое количество игроков
-    if (game.playersCount == game.gameplayers.length + 1) {
-      await Games.start(io, game)
+    if (game.playersCount == game.players.length + 1) {
+      console.log(
+        `В заявке ${gameId} набралось необходимое количество игроков - ${game.playersCount}`
+      )
+
+      // Беру игру
+      try {
+        console.log('Запускаю игру')
+        // Инициирую запуск игры
+        GamesManager.start(io, GamesManager.whatingGames[gameId])
+      } catch (error) {
+        console.log(error)
+        throw new Error(error.message)
+      }
     }
   }
 
@@ -287,7 +273,7 @@ class LobbiService extends BaseService {
       // (админу надо разрешить!)
     }
 
-    if (game.status != statuses.WHAITNG) {
+    if (game.status != Game.statuses.WHAITNG) {
       throw new Error('Эту заявку нельзя удалить')
     }
 
@@ -296,7 +282,7 @@ class LobbiService extends BaseService {
       where: {
         gameId,
         accountId: user.id,
-        status: playerStatuses.WHAITNG,
+        status: GamePlayer.playerStatuses.WHAITNG,
       },
       include: [
         {
@@ -311,7 +297,7 @@ class LobbiService extends BaseService {
     }
 
     // Если всё ок - удаляю заявку
-    await Games.remove(this.io, game)
+    await GamesManager.remove(this.io, game)
   }
 
   // Покинуть заявку
@@ -332,7 +318,7 @@ class LobbiService extends BaseService {
       throw new Error('Заявка не найдена')
     }
 
-    if (game.status != statuses.WHAITNG) {
+    if (game.status != Game.statuses.WHAITNG) {
       throw new Error('Эту заявку нельзя покинуть')
     }
 
@@ -341,7 +327,7 @@ class LobbiService extends BaseService {
       where: {
         gameId,
         accountId: user.id,
-        status: playerStatuses.WHAITNG,
+        status: GamePlayer.playerStatuses.WHAITNG,
       },
       include: [
         {
@@ -356,22 +342,19 @@ class LobbiService extends BaseService {
     }
 
     // Если других игроков в заявке не осталось - удаляю её
-    if (game.gameplayers.length == 1) {
-      await Games.remove(this.io, game)
+    if (game.players.length == 1) {
+      await GamesManager.remove(this.io, game)
       return
     }
 
     // Ставлю статус игрока - 1 (не в заявке)
-    playerInGame.status = playerStatuses.LEAVE
+    playerInGame.status = GamePlayer.playerStatuses.LEAVE
     await playerInGame.save()
 
     // Отправляю всем информацию что игрок покинул заявку
-    const { io } = this
-    io.of('/lobbi').emit(
-      'game.player.leave',
-      gameId,
-      playerInGame.account.username
-    )
+    this.io
+      .of('/lobbi')
+      .emit('game.player.leave', gameId, playerInGame.account.username)
   }
 
   // Удалить из заявки игрока
@@ -392,7 +375,7 @@ class LobbiService extends BaseService {
       throw new Error('Заявка не найдена')
     }
 
-    if (game.status != statuses.WHAITNG) {
+    if (game.status != Game.statuses.WHAITNG) {
       throw new Error('Из этой заявки уже нельзя удалить игрока')
     }
 
@@ -413,7 +396,7 @@ class LobbiService extends BaseService {
       where: {
         gameId,
         accountId: user.id,
-        status: playerStatuses.WHAITNG,
+        status: GamePlayer.playerStatuses.WHAITNG,
       },
       include: [
         {
@@ -438,7 +421,7 @@ class LobbiService extends BaseService {
       where: {
         gameId,
         accountId: account.id,
-        status: playerStatuses.WHAITNG,
+        status: GamePlayer.playerStatuses.WHAITNG,
       },
     })
 
@@ -447,13 +430,13 @@ class LobbiService extends BaseService {
     }
 
     // Если в заявке остался только один игрок - удаляю её
-    if (game.gameplayers.length == 1) {
-      await Games.remove(this.io, game)
+    if (game.players.length == 1) {
+      await GamesManager.remove(this.io, game)
       return
     }
 
     // Ставлю статус игрока - удалён из заявки
-    playerInGame.status = playerStatuses.DROPPED
+    playerInGame.status = GamePlayer.playerStatuses.DROPPED
     await playerInGame.save()
 
     // Отправляю всем информацию что игрок покинул заявку

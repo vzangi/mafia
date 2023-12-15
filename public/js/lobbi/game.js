@@ -116,7 +116,7 @@ $(function () {
     showGame(game)
   })
 
-  // Игрок покинл заявку
+  // Игрок покинул заявку
   lobbiSocket.on('game.player.leave', (gameId, leaveUserName) => {
     const game = $(`.game-item[data-id=${gameId}]`)
     if (!game) return
@@ -156,8 +156,7 @@ $(function () {
     game.my = false
     // Проверяю, находится ли текущий игрок в заявке
     if (
-      game.gameplayers.filter((gp) => gp.account.username == username).length ==
-      1
+      game.players.filter((gp) => gp.account.username == username).length == 1
     ) {
       game.inGame = true
       $('body').addClass('inGame')

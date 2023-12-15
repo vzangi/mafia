@@ -9,7 +9,7 @@ header(class="game-status-"+game.status)
       else
         span Игра окончена
 
-      div(class="to-lobbi "+(game.period!=6?'hide':''))
+      div(class="to-lobbi "+(game.period!=6&&isPlayer?'hide':''))
         a(class="btn btn-sm btn-warning" href="/lobbi") вернуться в лобби
 
       //- div(class="") 

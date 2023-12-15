@@ -129,6 +129,7 @@ class GameClassic extends GameBase {
 
     // Меняю статус игрока на "в тюрьме"
     player.status = GamePlayer.playerStatuses.PRISONED
+    console.log(player)
     await player.save()
 
     const { username, role } = player

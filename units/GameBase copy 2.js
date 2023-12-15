@@ -6,52 +6,79 @@ const sequelize = require('./db')
 const { deadlineAfter, getCoolDateTime } = require('./helpers')
 const Role = require('../models/Role')
 const workerInterval = 1000
-const GamesManager = require('./GamesManager')
-const Account = require('../models/Account')
 
-/*  ==================================
-    Базовый класс для всех режимов игр
-    ================================== */
 class GameBase {
   constructor(io, game) {
-    // Сама игра
     this.game = game
-
     this.io = io
+    this.players = []
+    // По умолчанию время хода - 120 секунд
+    this.periodInterval = 120
+    // По умолчанию на переход даётся 6 секунд
+    this.perehodInterval = 6
 
     //Сокет комнаты
     this.room = io.of('/game').to(game.id)
 
-    // Игроки
-    this.players = []
-
-    // время хода
-    this.periodInterval = 120
-
-    // время перехода для комиссара
-    this.perehodInterval = 6
-
     // Мутекс для воркера
     this.workerMutex = true
 
-    // Игроки пишущие в чате
-    // Ключами являются ники игроков
-    // Значениями по ключу - id таймера сброса печати
-    this.typingUsers = {}
+    this.typingUsers = []
+  }
+
+  // Пользователь начал что-то печатать в чате
+  typingBegin(userId) {
+    const { room, typingUsers, players } = this
+
+    const player = this.getPlayerById(userId)
+
+    if (!player) return
+
+    const { username } = player
+
+    if (typingUsers[username]) {
+      clearTimeout(typingUsers[username])
+    }
+
+    typingUsers[username] = setTimeout(() => {
+      this._cancelTyping(username)
+    }, 3000)
+
+    room.emit('typing.begin', Object.keys(typingUsers))
+  }
+
+  // Пользователь перестал печатать
+  typingEnd(userId) {
+    const { room, typingUsers, players } = this
+
+    const player = this.getPlayerById(userId)
+
+    if (!player) return
+
+    const { username } = player
+
+    if (typingUsers[username]) {
+      clearTimeout(typingUsers[username])
+    }
+
+    this._cancelTyping(username)
+  }
+
+  // Процедура завершения печати
+  _cancelTyping(username) {
+    const { room, typingUsers } = this
+    if (typingUsers[username]) {
+      delete typingUsers[username]
+    }
+    room.emit('typing.end', Object.keys(typingUsers))
   }
 
   // Запуск игры
   async startGame() {
     const { game, room } = this
 
-    // Загружаю список участников игры
-    this.players = await GamePlayer.scope({
-      method: ['ingame', game.id],
-    }).findAll()
-
     // Если игра только запускается
     if (game.status == Game.statuses.WHAITNG) {
-      // Подготавливаю игру к старту
       const prepared = await this.prepare()
 
       // Если подготовка не удалась - удалаяю заявку
@@ -59,6 +86,18 @@ class GameBase {
         this.removeGame()
         return
       }
+
+      // Загружаю список участников игры
+      this.players = await GamePlayer.findAll({
+        where: {
+          gameId: game.id,
+          status: GamePlayer.playerStatuses.IN_GAME,
+        },
+        include: {
+          model: Role,
+          attributes: ['name', 'id'],
+        },
+      })
 
       // Ставлю статус - игра началась
       game.status = Game.statuses.STARTED
@@ -74,11 +113,6 @@ class GameBase {
 
       // Даю две минуты на знакомство мафии
       this.setPeriod(Game.periods.START, this.periodInterval)
-
-      console.log('Рассылаю уведомления о начале игры')
-
-      // Уведомляю игроков о начале игры
-      this.notify()
 
       await this.systemMessage(
         `Игра началась ${getCoolDateTime(game.startedAt)}.`
@@ -102,9 +136,32 @@ class GameBase {
       await this.systemMessage(`Раздаём роли.`)
 
       await this.systemMessage(`Дадим мафии время договориться.`)
+    } else {
+      // Игра уже была запущена до этого
+      // Если код пришёл сюда, то скорее всего сервер был перезапущен
+
+      // Загружаю список участников игры
+      this.players = await GamePlayer.findAll({
+        where: {
+          gameId: game.id,
+          status: [
+            GamePlayer.playerStatuses.IN_GAME,
+            GamePlayer.playerStatuses.KILLED,
+            GamePlayer.playerStatuses.PRISONED,
+            GamePlayer.playerStatuses.TIMEOUT,
+            GamePlayer.playerStatuses.FREEZED,
+          ],
+        },
+        include: {
+          model: Role,
+          attributes: ['name', 'id'],
+        },
+      })
     }
 
     if (game.status == Game.statuses.STARTED) {
+      room.emit('start')
+
       // Запуск воркера контролирующего дедлайны периодов
       this.workerIntervalId = setInterval(
         this.periodWorker.bind(this),
@@ -113,38 +170,6 @@ class GameBase {
     } else {
       this.removeGame()
     }
-  }
-
-  // Нотификация игрокам о начале игры
-  async notify() {
-    const { io, players, game } = this
-    players.forEach(async (player) => {
-      console.log(`Уведомляю ${player.username}`)
-      const ids = this.getUserSocketIds(player.accountId)
-      ids.forEach((sid) => {
-        console.log(`Отправляю уведомление ${player.username} на sid #${sid}`)
-        io.to(sid).emit('game.play', game.id)
-      })
-    })
-  }
-
-  getUserSocketIds(userId) {
-    const { io } = this
-    const ids = []
-    try {
-      // Проходимся по всем сокетам
-      for (const [sid, s] of io.of('/lobbi').sockets) {
-        // Если в сокете нет пользователя (он гость), то пропускаем его
-        if (!s.user) continue
-        // Если в каком-то из сокетов найден нужный игрок
-        if (s.user.id == userId) {
-          ids.push(sid)
-        }
-      }
-    } catch (error) {
-      console.log(error)
-    }
-    return ids
   }
 
   // Подготовка к старту
@@ -513,76 +538,6 @@ class GameBase {
     return new Promise((resolve, _) => {
       setTimeout(() => resolve(), seconds * 1000)
     })
-  }
-
-  /*  ==================================
-      Игрок начал что-то печатать в чате
-      ================================== */
-  typingBegin(userId) {
-    const { typingUsers } = this
-
-    // Беру игрока из списка участвующих в игре
-    const player = this.getPlayerById(userId)
-
-    // Если игрок не найден - выхожу
-    if (!player) return
-
-    // Беру ник игррока
-    const { username } = player
-
-    // Если игрок был в списке печатающих
-    if (typingUsers[username]) {
-      // Очищаю предыдущий интервал удаляющий его оттуда
-      clearTimeout(typingUsers[username])
-    }
-
-    // Ставлю таймер на удаление игрока из списка печатающих через 3 секунды
-    typingUsers[username] = setTimeout(() => {
-      this._cancelTyping(username)
-    }, 3000)
-
-    // Отправка списка печатающих игроков
-    this.room.emit('typing', Object.keys(typingUsers))
-  }
-
-  /*  ==============================
-      Игрок перестал печатать в чате
-      ============================== */
-  typingEnd(userId) {
-    const { typingUsers } = this
-
-    // Беру игрока из списка участвующих в игре
-    const player = this.getPlayerById(userId)
-
-    // Если игрок не найден - выхожу
-    if (!player) return
-
-    // Беру ник игррока
-    const { username } = player
-
-    // Если игрок был в списке печатающих
-    if (typingUsers[username]) {
-      // Очищаю предыдущий интервал удаляющий его оттуда
-      clearTimeout(typingUsers[username])
-    }
-
-    this._cancelTyping(username)
-  }
-
-  /*  ====================================
-      Удаление игрока из списка печатающих
-      ==================================== */
-  _cancelTyping(username) {
-    const { typingUsers } = this
-
-    // Если игрок был в списке печатающих
-    if (typingUsers[username]) {
-      // Удаляю его оттуда
-      delete typingUsers[username]
-    }
-
-    // Отправка списка печатающих игроков
-    this.room.emit('typing', Object.keys(typingUsers))
   }
 
   /* ========================================

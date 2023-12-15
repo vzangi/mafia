@@ -26,15 +26,17 @@ $(function () {
     gameSocket.emit('get.roles', (roles) => {
       console.log('roles', roles)
 
-      roles.forEach((r) => {
-        const { role } = r
-        const player = $(`.player[data-username=${role.username}]`)
-        $(`<span>${role.name}</span>`).appendTo(player.find('.friend-info'))
-        player.addClass(`role-${role.id}`)
-      })
+      if (roles) {
+        roles.forEach((r) => {
+          const { role } = r
+          const player = $(`.player[data-username=${role.username}]`)
+          $(`<span>${role.name}</span>`).appendTo(player.find('.friend-info'))
+          player.addClass(`role-${role.id}`)
+        })
 
-      if (role.id == 2) {
-        $('.player.role-2').find('.kill-dot').remove()
+        if (role.id == 2) {
+          $('.player.role-2').find('.kill-dot').remove()
+        }
       }
 
       // Убираю лоадер
