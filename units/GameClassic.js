@@ -7,13 +7,10 @@ const GameBase = require('./GameBase')
 class GameClassic extends GameBase {
   // Получаю доступные роли
   async getAvailableRoles() {
-    const { game } = this
-    const playersInGame = await GamePlayer.count({
-      where: {
-        gameId: game.id,
-        status: GamePlayer.playerStatuses.IN_GAME,
-      },
-    })
+    const { players } = this
+    const playersInGame = players.length
+
+    console.log('игроков в игре: ${playersInGame}');
 
     // Возвращаю доступные роли в зависимости от количества игроков в партии
     switch (playersInGame) {
@@ -129,14 +126,17 @@ class GameClassic extends GameBase {
 
     // Меняю статус игрока на "в тюрьме"
     player.status = GamePlayer.playerStatuses.PRISONED
-    console.log(player)
     await player.save()
 
-    const { username, role } = player
+    const { username } = player
+    const role = await player.getRole()
 
-    await this.systemMessage(`${username} отправляется в тюрьму.`)
+    await this.systemMessage(`${role.name} <b>${username}</b> отправляется в тюрьму.`)
 
-    room.emit('player.prisoned', username, role)
+    await this.showPlayerRole(player, GamePlayer.playerStatuses.PRISONED)
+
+    // room.emit('player.prisoned', username, role)
+
 
     // если кто-то отправился в тюрьму, то идёт проверка на конец игры
 
@@ -334,6 +334,10 @@ class GameClassic extends GameBase {
       }
     }
 
+    console.log(`mode: ${game.mode}`);
+    console.log(`max votes: ${maxVotes}`);
+    console.log(`active players: ${activePlayers}`);
+
     // Если режим "по большинству голосов" (без добивов)
     if (game.mode == 1) {
       // Количество голосов должно быть больше половины
@@ -371,14 +375,20 @@ class GameClassic extends GameBase {
     killed.status = GamePlayer.playerStatuses.KILLED
     await killed.save()
 
+    const role = await killed.getRole()
+
+    console.log('role of killed: ', role);
+
     await this.systemMessage(
-      `${killed.role.name} ${killed.username} убит мафией.`
+      `${role.name} <b>${killed.username}</b> убит мафией.`
     )
 
-    room.emit('killed', {
-      role: killed.role,
-      username: killed.username,
-    })
+    await this.showPlayerRole(killed, GamePlayer.playerStatuses.KILLED)
+
+    // room.emit('killed', {
+    //   role: role,
+    //   username: killed.username,
+    // })
   }
 
   async missmatch() {

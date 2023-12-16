@@ -8,6 +8,7 @@ const Role = require('../models/Role')
 const workerInterval = 1000
 const GamesManager = require('./GamesManager')
 const Account = require('../models/Account')
+const GameStep = require('../models/GameStep')
 
 /*  ==================================
     Базовый класс для всех режимов игр
@@ -26,7 +27,7 @@ class GameBase {
     this.players = []
 
     // время хода
-    this.periodInterval = 120
+    this.periodInterval = 20
 
     // время перехода для комиссара
     this.perehodInterval = 6
@@ -75,8 +76,6 @@ class GameBase {
       // Даю две минуты на знакомство мафии
       this.setPeriod(Game.periods.START, this.periodInterval)
 
-      console.log('Рассылаю уведомления о начале игры')
-
       // Уведомляю игроков о начале игры
       this.notify()
 
@@ -86,7 +85,7 @@ class GameBase {
 
       const inGameStr = this.players.map((p) => p.username).join(', ')
 
-      await this.systemMessage(`В игре участвуют ${inGameStr}.`)
+      await this.systemMessage(`В игре участвуют <b>${inGameStr}</b>.`)
 
       if (game.mode == 1) {
         await this.systemMessage(
@@ -118,27 +117,27 @@ class GameBase {
   // Нотификация игрокам о начале игры
   async notify() {
     const { io, players, game } = this
-    players.forEach(async (player) => {
-      console.log(`Уведомляю ${player.username}`)
-      const ids = this.getUserSocketIds(player.accountId)
+    players.forEach((player) => {
+      const ids = this.getUserSocketIds(player.accountId, '/lobbi')
       ids.forEach((sid) => {
-        console.log(`Отправляю уведомление ${player.username} на sid #${sid}`)
-        io.to(sid).emit('game.play', game.id)
+        sid.emit('game.play', game.id)
       })
     })
+
+    io.of('/lobbi').emit('game.start', game.id)
   }
 
-  getUserSocketIds(userId) {
+  getUserSocketIds(userId, nsp = '/game') {
     const { io } = this
     const ids = []
     try {
       // Проходимся по всем сокетам
-      for (const [sid, s] of io.of('/lobbi').sockets) {
+      for (const [sid, s] of io.of(nsp).sockets) {
         // Если в сокете нет пользователя (он гость), то пропускаем его
         if (!s.user) continue
         // Если в каком-то из сокетов найден нужный игрок
         if (s.user.id == userId) {
-          ids.push(sid)
+          ids.push(s)
         }
       }
     } catch (error) {
@@ -149,26 +148,20 @@ class GameBase {
 
   // Подготовка к старту
   async prepare() {
-    const { game } = this
+    const { players } = this
     try {
-      // Для игроков, которые были в зявке ставлю статус - в игре
-      await GamePlayer.update(
-        {
-          status: GamePlayer.playerStatuses.IN_GAME,
-        },
-        {
-          where: {
-            gameId: game.id,
-            status: GamePlayer.playerStatuses.WHAITNG,
-          },
-        }
-      )
 
       // Распределение ролей ...
       await this.takeRoles()
 
       // Знакомлю мафию и комов
       await this.meeting()
+
+      // Для игроков в зявке ставлю статус "в игре"
+      for (let index in players) {
+        players[index].status = GamePlayer.playerStatuses.IN_GAME
+        await players[index].save()
+      }
 
       return true
     } catch (error) {
@@ -179,49 +172,51 @@ class GameBase {
 
   // Распределение ролей ...
   async takeRoles() {
-    const { game } = this
+    const { players } = this
     const availableRoles = await this.getAvailableRoles()
+
+    console.log(`Доступные роли: `, availableRoles);
 
     // Раздаю роли
     for (let k = 0; k < availableRoles.length; k++) {
       // Беру роль и количество игроков с ней
       const [roleId, cnt] = availableRoles[k]
 
+      console.log(`Раздаём роль ${cnt} роли ${roleId}`);
+
       // Беру из заявки cnt случайных игроков без роли и ставлю им роль
       for (let index = 0; index < cnt; index++) {
-        // Беру игрока из заявки которому ещё не назначена роль
-        const player = await GamePlayer.findOne({
-          where: {
-            gameId: game.id,
-            status: GamePlayer.playerStatuses.IN_GAME,
-            roleId: null,
-          },
-          order: sequelize.random(),
-        })
+        // Беру игроков из заявки которым ещё не назначена роль
+        const noRolePlayers = players.filter(p => !p.roleId)
 
-        if (!player) {
+        console.log(`Количество игроков без ролей: ${noRolePlayers.length}`);
+
+        // Если всем игрокам разданы роли,
+        // а в пулле ролей ещё есть неразданные - возвращаю ошибку
+        if (noRolePlayers.length == 0) {
           throw new Error('Не удалось раздать роли')
         }
 
+        // беру случайного игрока
+        const randomPlayer = noRolePlayers[
+          Math.floor(Math.random() * noRolePlayers.length)
+        ]
+
+        console.log(`Случайны игрко: ${randomPlayer.username}`);
+
         // Выдаю ему роль
-        player.roleId = roleId
-        await player.save()
+        randomPlayer.roleId = roleId
+        await randomPlayer.save()
       }
     }
 
     // Оставшиеся без ролей игроки - чижи
-    await GamePlayer.update(
-      {
-        roleId: Game.roles.CITIZEN,
-      },
-      {
-        where: {
-          gameId: game.id,
-          status: GamePlayer.playerStatuses.IN_GAME,
-          roleId: null,
-        },
-      }
-    )
+    const citizens = players.filter(p => !p.roleId)
+    for (let index in citizens) {
+      citizens[index].roleId = Game.roles.CITIZEN
+      await citizens[index].save()
+    }
+
   }
 
   // Знакомлю мафию и комов
@@ -335,7 +330,7 @@ class GameBase {
   async systemMessage(message) {
     const { game, room } = this
     // Сохраняю сообщение в базу
-    const msg = await GameChat.newMessage(game.id, null, message)
+    const msg = await GameChat.newMessage(game.id, null, message, false, false)
 
     // И отправляю его всем кто подключён к просмотру игры
     room.emit('message', msg)
@@ -381,6 +376,74 @@ class GameBase {
     room.emit('deadline', seconds, period)
   }
 
+  async showPlayerRole(player, status) {
+    const { room } = this
+    const role = await player.getRole()
+    room.emit('role.show', {
+      role: role,
+      username: player.username,
+      status,
+    })
+  }
+
+  async prova(username) {
+    const player = this.getPlayerByName(username)
+    if (!player) {
+      throw new Error(`Игрок ${username} не найден`)
+    }
+
+    if (player.status != GamePlayer.playerStatuses.IN_GAME || player.status != GamePlayer.playerStatuses.FREEZED) {
+      throw new Error(`Игрок ${username} уже выбыл из игры`)
+    }
+
+    const { players, game } = this
+
+
+    if (game.period != Game.periods.KOM) {
+      throw new Error('Сейчас не ход кома')
+    }
+
+    const komId = this.getKomId()
+
+    // Записываю проверку в базу
+    await GameStep.create({
+      gameId: game.id,
+      accountId: komId,
+      playerId: player.accountId,
+      day: game.day,
+      stepType: GameStep.stepTypes.CHECK
+    })
+
+    const role = await player.getRole()
+
+    // Беру комиссара и сержанта (если есть)
+    const koms = players.filter(p => p.roleId == Game.roles.KOMISSAR || p.roleId == Game.roles.SERGEANT)
+
+    for (const index in koms) {
+      const kom = koms[index]
+
+      // Записываю в базу роль игрока, которую они видят
+      await GameRole.create({
+        gameId: game.id,
+        accountId: kom.accountId,
+        playerId: player.accountId,
+        roleId: player.roleId
+      })
+
+      // Отправляю роль кому по сокету
+      const ids = this.getUserSocketIds(kom.accountId)
+      ids.forEach((sid) => {
+        sid.emit('prova', {
+          username,
+          role,
+        })
+      })
+    }
+
+    // перехожу к следующему периоду
+    game.deadline = 0
+  }
+
   // Проверка на наличие кома в игре
   komInGame() {
     const { players } = this
@@ -395,8 +458,19 @@ class GameBase {
     return false
   }
 
+  getKomId() {
+    const { players } = this
+    for(const index in players) {
+      const player = players[index]
+      if (player.roleId == Game.roles.KOMISSAR)
+        return player.accountId
+    }
+    return null
+  }
+
   // Проверка на окончание игры
   async isOver() {
+    console.log('Проверка на конец игры...');
     const { players } = this
 
     let aliveMafia = 0
@@ -406,12 +480,13 @@ class GameBase {
     // Считаю какие роли ещё в игре
     for (let index = 0; index < players.length; index++) {
       const player = players[index]
-
+      console.log(`Смотрю игрока ${player.username} со статусом ${player.status}`);
       // Если игрок ещё в игре
       if (
         player.status == GamePlayer.playerStatuses.IN_GAME ||
         player.status == GamePlayer.playerStatuses.FREEZED
       ) {
+        console.log(`Игрок ${player.username} ещё в игре с ролью ${player.roleId}`);
         // Роль мафии
         if (player.roleId == Game.roles.MAFIA) {
           aliveMafia += 1
@@ -428,6 +503,8 @@ class GameBase {
         aliveCitizens += 1
       }
     }
+
+    console.log(`Итого: граждан: ${aliveCitizens}, мафии: ${aliveMafia}, маняьк: ${aliveManiac}`)
 
     // Ничья
     if (aliveCitizens == 0 && aliveMafia == 0 && aliveManiac == 0) {
@@ -449,29 +526,29 @@ class GameBase {
       return Game.sides.MANIAC
     }
 
+    console.log('Игра продолжается...')
+
     // Игра продолжается
     return null
   }
 
   // Игра окончена
   async gameOver(side) {
-    const { game, room } = this
+    const { game, room, players } = this
 
     // Завершаю обработку периодов
     await this.setPeriod(Game.periods.END, 0)
 
-    // Освобождаю победивших игроков из заявки
-    await GamePlayer.update(
-      {
-        status: GamePlayer.playerStatuses.WON,
-      },
-      {
-        where: {
-          gameId: game.id,
-          status: GamePlayer.playerStatuses.IN_GAME,
-        },
-      }
-    )
+    // Победившие игроки
+    const winners = players.filter(p => p.status == GamePlayer.playerStatuses.IN_GAME || p.status == GamePlayer.playerStatuses.FREEZED)
+
+    // Освобождаю победивших игроков из заявки и показываю их роли
+    for (const index in winners) {
+      const winner = winners[index]
+      winner.status = GamePlayer.playerStatuses.WON
+      await winner.save()
+      await this.showPlayerRole(winner, GamePlayer.playerStatuses.WON)
+    }
 
     // Ставлю статус - игра завершена
     game.status = Game.statuses.ENDED
@@ -504,7 +581,17 @@ class GameBase {
   }
 
   getPlayerById(id) {
-    const player = this.players.filter((p) => p.accountId == id)
+    const player = this.players.filter((p) => {
+      return p.accountId == id
+    })
+    if (player.length == 1) return player[0]
+    return null
+  }
+
+  getPlayerByName(name) {
+    const player = this.players.filter((p) => {
+      return p.username == name
+    })
     if (player.length == 1) return player[0]
     return null
   }

@@ -61,6 +61,15 @@ class GameController extends BaseSocketController {
     }
   }
 
+  // Проверка
+  async prova(username) {
+    try {
+      await this.service.prova(username)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   // Кто-то печатает
   async typingBegin() {
     try {

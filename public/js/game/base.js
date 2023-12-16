@@ -1,5 +1,7 @@
 // Подключаюсь к сокету игры
 const gameSocket = io('/game')
+const onlineSocket = io('/online')
+
 let myRole = null
 
 $(function () {
@@ -47,11 +49,13 @@ $(function () {
     })
   })
 
-  gameSocket.on('user.online', (username) => {
+  onlineSocket.on('online', (account) => {
+    const { username } = account
     $(`.player[data-username=${username}] .friend-avatar`).addClass('online')
   })
 
-  gameSocket.on('user.offline', (username) => {
+  onlineSocket.on('offline', (account) => {
+    const { username } = account
     $(`.player[data-username=${username}] .friend-avatar`).removeClass('online')
   })
 })

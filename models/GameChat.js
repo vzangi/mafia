@@ -50,8 +50,9 @@ const getUsersInMessage = async (message) => {
 }
 
 // Сохраняет новое сообщение в базе и возвращает его
-GameChat.newMessage = async (gameId, accountId, msg, isPrivate = false) => {
-  let message = htmlspecialchars(msg)
+GameChat.newMessage = async (gameId, accountId, msg, isPrivate = false, chars = true) => {
+  let message = msg
+  if (chars) message = htmlspecialchars(msg)
   if (message.length > 255) {
     message = message.substr(0, 255)
   }

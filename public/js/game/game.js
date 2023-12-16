@@ -1,4 +1,5 @@
 $(function () {
+  // Начало голосвания
   function startVoting() {
     $('.players-list').removeClass('voted')
     $('.player').removeClass('voted')
@@ -10,6 +11,7 @@ $(function () {
     }, 1000)
   }
 
+  // Конец голосования
   function stopVoting() {
     $('.players-list').removeClass('voting')
     $('.vote-result').remove()
@@ -19,6 +21,7 @@ $(function () {
     }, 300)
   }
 
+  // Начало хода мафии
   function nightBegin() {
     $('.kill-dot').removeClass('hide')
     setTimeout(function () {
@@ -26,6 +29,7 @@ $(function () {
     }, 10)
   }
 
+  // Конец хода мафии
   function nightEnd() {
     $('body, .players-list').removeClass('night')
     setTimeout(function () {
@@ -41,28 +45,6 @@ $(function () {
     startVoting()
   })
 
-  gameSocket.on('player.prisoned', (playerUsername, role) => {
-    const player = $(`.player[data-username=${playerUsername}]`)
-    const myNik = $('.player.iam').data().username
-    player.find('.vote-dot').remove()
-    player.find('.kill-dot').remove()
-    player.addClass('player-status-5').addClass(`role-${role.id}`)
-    $(`<span>${role.name}</span>`).appendTo(player.find('.friend-info'))
-
-    // Если посадили текущего игрока
-    if (playerUsername == myNik) {
-      $('.input-box').remove()
-      $('.to-lobbi').removeClass('hide')
-      $('.kill-dot').remove()
-    }
-  })
-
-  gameSocket.on('game.over', (side) => {
-    $('.input-box').remove()
-    $('.vote-dot').remove()
-    $('.to-lobbi').removeClass('hide')
-  })
-
   gameSocket.on('mafia.start', () => {
     nightBegin()
   })
@@ -71,34 +53,53 @@ $(function () {
     nightEnd()
   })
 
-  gameSocket.on('killed', (user) => {
+  // Конец игры
+  gameSocket.on('game.over', (side) => {
+    $('.input-box').remove()
+    $('.vote-dot').remove()
+    $('.to-lobbi').removeClass('hide')
+  })
+
+  // Отображение раскрытой роли 
+  gameSocket.on('role.show', (user) => {
     const player = $(`.player[data-username=${user.username}]`)
-    const myNik = $('.player.iam').data().username
     player.find('.vote-dot').remove()
     player.find('.kill-dot').remove()
+    player.addClass(`player-status-${user.status}`).addClass(`role-${user.role.id}`)
+    $(`<span>${user.role.name}</span>`).appendTo(player.find('.friend-info'))
 
-    player.addClass('player-status-4').addClass(`role-${role.id}`)
-    $(`<span>${role.name}</span>`).appendTo(player.find('.friend-info'))
-
-    // Если убили текущего игрока
-    if (user.username == myNik) {
+    // Если посадили текущего игрока
+    if (user.username == getMyNik()) {
       $('.input-box').remove()
       $('.to-lobbi').removeClass('hide')
       $('.kill-dot').remove()
     }
   })
 
+  // Получение ника текущего игрока   
+  function getMyNik() {
+    const iam = $('.player.iam')
+    if (iam.length != 1) return ''
+    return iam.data().username
+  }
+
   // Голосование
   $('.vote-dot').click(function () {
     const { username } = $(this).data()
-    const myNik = $('.player.iam').data().username
-    if (username == myNik) return
+    if (username == getMyNik()) return
 
     if ($(`.iam.voted`).length == 1) return
 
     gameSocket.emit('vote', username)
   })
 
+  // Проверка
+  $('.prova-dot').click(function () {
+    const { username } = $(this).data()
+    gameSocket.emit('prova', username)
+  })
+
+  // Голос
   gameSocket.on('vote', (voterUsername, playerUsername) => {
     console.log(voterUsername, playerUsername)
 

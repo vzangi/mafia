@@ -50,6 +50,7 @@ const GamePlayer = sequelize.define(
           where: {
             gameId,
             status: [
+              playerStatuses.WHAITNG,
               playerStatuses.IN_GAME,
               playerStatuses.KILLED,
               playerStatuses.PRISONED,

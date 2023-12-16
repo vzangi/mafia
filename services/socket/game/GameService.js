@@ -111,6 +111,9 @@ class ChatService extends BaseService {
   async message(message, isPrivate = false) {
     const { user, io, socket } = this
     const { gameId } = socket
+
+    if (!socket.isPlayer) return    
+
     if (!user) {
       throw new Error('Не авторизован')
     }
@@ -119,6 +122,11 @@ class ChatService extends BaseService {
 
     if (!game) {
       throw new Error('Игра не найдена')
+    }
+
+    const player = game.getPlayerById(user.id)
+    if (player.status != GamePlayer.playerStatuses.IN_GAME) {
+      throw new Error('Вы не можете писать в этой игре')
     }
 
     // Сохраняю сообщение в базу
@@ -213,7 +221,7 @@ class ChatService extends BaseService {
     })
 
     game.systemMessage(
-      `${inGame.username} хочет отправить в тюрьму ${username}`
+      `<b>${inGame.username}</b> хочет отправить в тюрьму <b>${username}</b>`
     )
 
     // Уведомляю всех о голосе
@@ -269,6 +277,7 @@ class ChatService extends BaseService {
     }
   }
 
+  // Получение известных ролей
   async getRoles() {
     const { user, gameId } = this.socket
 
@@ -295,6 +304,7 @@ class ChatService extends BaseService {
     return roles
   }
 
+  // Выстрел
   async shot(username) {
     const { user, gameId } = this.socket
 
@@ -302,17 +312,13 @@ class ChatService extends BaseService {
 
     // проверки...
 
-    const player = await Account.findOne({
-      where: {
-        username,
-      },
-    })
-
     // Беру текущую игру
     const game = Games.getGame(gameId)
 
     // Игра должна быть загружена
     if (!game) throw new Error('Игра не найдена')
+
+    const player = game.getPlayerByName(username)
 
     const { day } = game.game
 
@@ -320,7 +326,7 @@ class ChatService extends BaseService {
       gameId,
       day,
       accountId: user.id,
-      playerId: player.id,
+      playerId: player.accountId,
       stepType: GameStep.stepTypes.NIGHT,
     })
 
@@ -343,6 +349,28 @@ class ChatService extends BaseService {
     }
   }
 
+  async prova(username) {
+    const { user, gameId } = this.socket
+
+    if (!user) return
+
+    // проверки ...
+
+    // Беру текущую игру
+    const game = Games.getGame(gameId)
+
+    if (!game) throw new Error('Игра не найдена')
+
+    const komId = game.getKomId()
+
+    if (komId != user.id) {
+      throw new Error('Проверки может делать только комиссар')
+    }
+
+    // Запускаю процедуру проверки
+    await game.prova(username)
+  }
+
   typingBegin() {
     const { socket } = this
 
@@ -350,9 +378,16 @@ class ChatService extends BaseService {
 
     const { user, gameId } = socket
 
+    if (!user) return
+
     // Беру текущую игру
     const game = Games.getGame(gameId)
 
+    const player = game.getPlayerById(user.id)
+    if (player.status != GamePlayer.playerStatuses.IN_GAME) {
+      throw new Error('Вы не можете писать в этой игре')
+    }
+    
     // Игра должна быть загружена
     if (!game) throw new Error('Игра не найдена')
 
@@ -366,8 +401,15 @@ class ChatService extends BaseService {
 
     const { user, gameId } = socket
 
+    if (!user) return
+
     // Беру текущую игру
     const game = Games.getGame(gameId)
+
+    const player = game.getPlayerById(user.id)
+    if (player.status != GamePlayer.playerStatuses.IN_GAME) {
+      throw new Error('Вы не можете писать в этой игре')
+    }
 
     // Игра должна быть загружена
     if (!game) throw new Error('Игра не найдена')

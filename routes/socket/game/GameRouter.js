@@ -22,21 +22,12 @@ module.exports = (io, socket) => {
   // Выстрел
   socket.on('shot', controller.shot.bind(controller))
 
+  // Прова
+  socket.on('prova', controller.prova.bind(controller))
+
   // Кто-то печатает
   socket.on('typing.begin', controller.typingBegin.bind(controller))
 
   // Кто-то закончил печатать
   socket.on('typing.end', controller.typingEnd.bind(controller))
-
-  // Список последних сообщений
-  //socket.on('game.chat.history', controller.chatHistory.bind(controller))
-
-  // Пришло сообщение
-  //socket.on('game.chat.message', controller.message.bind(controller))
-
-  // Пользователь начал что-то печатать в чате
-  //socket.on('game.chat.typing.begin', controller.typingBegin.bind(controller))
-
-  // Пользователь перестал печатать
-  //socket.on('game.chat.typing.end', controller.typingEnd.bind(controller))
 }
