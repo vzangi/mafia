@@ -237,15 +237,15 @@ class GameBase {
 
         await GameRole.create({
           gameId: game.id,
-          accountId: player.id,
-          playerId: player2.id,
+          accountId: player.accountId,
+          playerId: player2.accountId,
           roleId: Game.roles.MAFIA,
         })
 
         await GameRole.create({
           gameId: game.id,
-          accountId: player2.id,
-          playerId: player.id,
+          accountId: player2.accountId,
+          playerId: player.accountId,
           roleId: Game.roles.MAFIA,
         })
       }
@@ -265,16 +265,16 @@ class GameBase {
         // Ком видит сержанта
         await GameRole.create({
           gameId: game.id,
-          accountId: player2.id,
-          playerId: player.id,
+          accountId: player2.accountId,
+          playerId: player.accountId,
           roleId: Game.roles.SERGEANT,
         })
 
         // Сержант видит кома
         await GameRole.create({
           gameId: game.id,
-          accountId: player.id,
-          playerId: player2.id,
+          accountId: player.accountId,
+          playerId: player2.accountId,
           roleId: Game.roles.KOMISSAR,
         })
       }
@@ -293,8 +293,8 @@ class GameBase {
         // Мафия видит дитя
         await GameRole.create({
           gameId: game.id,
-          accountId: player2.id,
-          playerId: player.id,
+          accountId: player2.accountId,
+          playerId: player.accountId,
           roleId: Game.roles.CHILD,
         })
       }

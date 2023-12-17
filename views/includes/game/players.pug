@@ -5,11 +5,11 @@ div(class="mb-3")
       -var ps = ''
       -var pr = ''
       if player.status != 3 && player.status != 7
-        -ps = 'player-status-'+player.status
-        -pr = 'role-showed role-'+player.role.id
+        -ps = ' player-status-'+player.status
+        -pr = ' role-showed role-'+player.role.id
         -out = true
       div(class="p-1")
-        div(class="player "+ps+' '+pr data-username=player.username)
+        div(class="player"+ps+pr data-username=player.username)
           div(class="friend-item")
             div(class="friend-avatar "+(player.account.online?' online':''))
               img(src="/uploads/"+player.account.avatar)

@@ -43,8 +43,9 @@ $(function () {
       if (roles) {
         roles.forEach((r) => {
           const { role } = r
-          const player = $(`.player[data-username=${role.username}]`)
-          $(`<span>${role.name}</span>`).appendTo(player.find('.friend-info'))
+          const username = r.player.username
+          const player = $(`.player[data-username=${username}]`)
+          $(`<small class='role'>${role.name}</small>`).appendTo(player.find('.friend-info'))
           player.addClass(`role-${role.id}`).addClass('role-showed')
         })
 
