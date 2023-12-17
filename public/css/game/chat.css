@@ -556,3 +556,40 @@ input:checked + .slider:before {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+
+.private-checkbox {
+  aspect-ratio: 1/1;
+  width: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #aaa;
+  border-radius: 6px;
+  margin-right: 2px;
+  cursor: pointer;
+  transition: all 0.3s ease; 
+}
+
+.private-checkbox:hover {
+  box-shadow: 0 0 10px #333 inset;
+}
+
+.private-active .private-checkbox {
+  background-color: #111;
+}
+
+.private-active #chat-input {
+  background-color: #111;
+  color: var(--color-white);
+}
+
+.private-active .input-box {
+  border-color: #222;
+}
+
+.message-box.private-message {
+  background: #111;
+  border-radius: 3px;
+  padding: 1px;
+}

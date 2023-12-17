@@ -27,6 +27,26 @@ class BaseService {
         return ids
     }
 
+    // Получение сокетов конкретного пользователя
+    getUserSockets(userId, nsp = '/') {
+        const { socket } = this
+        const ids = []
+        try {
+            // Проходимся по всем сокетам
+            for (const [sid, s] of socket.server.of(nsp).sockets) {
+                // Если в сокете нет пользователя (он гость), то пропускаем его
+                if (!s.user) continue
+                // Если в каком-то из сокетов найден нужный игрок
+                if (s.user.id == userId) {
+                    ids.push(s)
+                }
+            }
+        } catch (error) {
+            console.log(error)
+        }
+        return ids
+    }
+
     // Новая нотификация
     async notify(accountId, message, level = 0) {
         const { socket } = this

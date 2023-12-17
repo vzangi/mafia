@@ -1,3 +1,4 @@
+const { Op } = require('sequelize')
 const Account = require('../../../models/Account')
 const Game = require('../../../models/Game')
 const GameChat = require('../../../models/GameChat')
@@ -100,11 +101,76 @@ class ChatService extends BaseService {
       ],
     })
 
+    let privateMessages = []
+    let pmForMe = []
+
     if (user) {
-      const privateMessages = []
+      // Приватные сообщения, которые игрок писал сам 
+      privateMessages = await GameChat.findAll({
+        where: {
+          gameId,
+          accountId: user.id,
+          private: true,
+        },
+        attributes: ['message', 'private', 'createdAt', 'username'],
+        include: [
+          {
+            model: Account,
+            attributes: ['username'],
+            required: false,
+          },
+          {
+            model: GameChatUsers,
+            include: [
+              {
+                model: Account,
+                attributes: ['username'],
+              },
+            ],
+          },
+        ],
+      })
+
+      // Приватные сообщения, которые были написаны игроку другим игроком
+      pmForMe = await GameChat.findAll({
+        where: {
+          gameId,
+          accountId: {
+            [Op.ne]: user.id
+          },
+          private: true,
+        },
+        attributes: ['message', 'private', 'createdAt', 'username'],
+        include: [
+          {
+            model: Account,
+            attributes: ['username'],
+            required: false,
+          },
+          {
+            model: GameChatUsers,
+            where: {
+              accountId: user.id,
+            },
+            include: [
+              {
+                model: Account,
+                attributes: ['username'],
+              },
+            ],
+          },
+        ],
+      })
+
     }
 
-    return messages
+    const resultMessages = [...messages, ...privateMessages, ...pmForMe].sort((a, b) => {
+      if (a.createdAt > b.createdAt) return 1
+      if (a.createdAt < b.createdAt) return -1
+      return 0
+    })
+
+    return resultMessages
   }
 
   // Пришло сообщение
@@ -112,7 +178,7 @@ class ChatService extends BaseService {
     const { user, io, socket } = this
     const { gameId } = socket
 
-    if (!socket.isPlayer) return    
+    if (!socket.isPlayer) return
 
     if (!user) {
       throw new Error('Не авторизован')
@@ -137,6 +203,22 @@ class ChatService extends BaseService {
       io.of('/game').to(gameId).emit('message', msg)
     } else {
       console.log(msg.gamechatusers)
+
+      // Отправляю самому игроку
+      const ids = this.getUserSockets(user.id, '/game')
+      ids.forEach(sock => {
+        sock.emit('message', msg)
+      })
+
+      // Отправляю игрокам, которые были выделены в сообщении
+      msg.gamechatusers.forEach(cu => {
+        if (cu.accountId != user.id) {
+          const ids = this.getUserSockets(cu.accountId, '/game')
+          ids.forEach(sock => {
+            sock.emit('message', msg)
+          })
+        }
+      })
     }
   }
 
@@ -309,7 +391,7 @@ class ChatService extends BaseService {
       ],
     })
 
-    const data = { 
+    const data = {
       roles
     }
 
@@ -362,7 +444,7 @@ class ChatService extends BaseService {
     if (player.status != GamePlayer.playerStatuses.IN_GAME) {
       throw new Error('Вы не можете писать в этой игре')
     }
-    
+
     // Игра должна быть загружена
     if (!game) throw new Error('Игра не найдена')
 

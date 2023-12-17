@@ -83,8 +83,10 @@ $(function () {
 
   // Конец игры
   gameSocket.on('game.over', (side) => {
-    $('.input-box').remove()
+    $('.chat-input-box').remove()
     $('.vote-dot').remove()
+    $('.kill-dot').remove()
+    $('.prova-dot').remove()
     $('.to-lobbi').removeClass('hide')
   })
 
@@ -130,7 +132,7 @@ $(function () {
     // Если раскрыта роль текущего игрока
     if (user.username == getMyNik()) {
       $('.to-lobbi').removeClass('hide')
-      $('.input-box').remove()
+      $('.chat-input-box').remove()
       $('.kill-dot').remove()
       $('.prova-dot').remove()
       $('.vote-dot').remove()

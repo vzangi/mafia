@@ -17,6 +17,8 @@ $(function () {
   const userMarkerBegin = '['
   const userMarkerEnd = ']'
   const userNik = $('.user-nik').text()
+  const chatInputBox = $('.chat-input-box')
+  const privateCheckbox = $('.private-checkbox')
 
   const userTemplate = $('#userTmpl')
   const messageTemplate = $('#messageTmpl')
@@ -59,6 +61,7 @@ $(function () {
   }
 
   const typing = () => {
+    if (chatInputBox.hasClass('private-active')) return
     gameSocket.emit('typing.begin')
     clearTimeout(timeoutTyping)
     timeoutTyping = setTimeout(cancelTyping, 2500)
@@ -128,7 +131,8 @@ $(function () {
 
   // Отправка сообщения на сервер
   const sendMessage = (message) => {
-    gameSocket.emit('message', message)
+    const isPrivate = chatInputBox.hasClass('private-active')
+    gameSocket.emit('message', message, isPrivate)
   }
 
   // Отправка сообщения
@@ -245,6 +249,11 @@ $(function () {
 
   // Добавляет в чат имя собеседника
   chat.on('click', '.m-nik', function () {
+    if ($(this).parent().parent().hasClass('private-message')) {
+      if (!chatInputBox.hasClass('private-active')) {
+        privateCheckbox.click()
+      }
+    }
     const nik = `${userMarkerBegin}${$(this).text()}${userMarkerEnd} `
     insertTextToInput(nik)
     return false
@@ -262,6 +271,11 @@ $(function () {
     else chat.removeClass('wide-chat')
     localStorage.setItem('wideChat', chatWhideCheckbox[0].checked ? '1' : '0')
     setTimeout(() => scrollToEnd(), 400)
+  })
+
+  // Переключатель приватного режима
+  privateCheckbox.click(function(){
+    chatInputBox.toggleClass('private-active')
   })
 
   const getTimeFromIso = (isoDate) => {

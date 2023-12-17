@@ -15,11 +15,11 @@ class GameClassic extends GameBase {
     // Возвращаю доступные роли в зависимости от количества игроков в партии
     switch (playersInGame) {
       case 3:
-        return [[Game.roles.MAFIA, 1]]
       case 4:
+        return [[Game.roles.MAFIA, 1]]
       case 5:
         return [
-          [Game.roles.MAFIA, 2],
+          [Game.roles.MAFIA, 1],
           [Game.roles.KOMISSAR, 1],
         ]
       case 6:
@@ -324,6 +324,7 @@ class GameClassic extends GameBase {
 
     // Если режим "по большинству голосов" (без добивов)
     if (game.mode == 1) {
+
       // Количество голосов должно быть больше половины
       if (maxVotes * 2 <= activePlayers) {
         await this.systemMessage(

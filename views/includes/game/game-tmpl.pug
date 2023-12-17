@@ -7,7 +7,7 @@ script(id="userTmpl" type="text/x-jquery-tmpl")
       ]
 
 script(id="messageTmpl" type="text/x-jquery-tmpl")
-  div(class="message-box {{if highlight}}highlight{{/if}} {{if username==''}}system-message{{/if}}")
+  div(class="message-box {{if highlight}}highlight{{/if}} {{if private}}private-message{{/if}} {{if username==''}}system-message{{/if}}")
     div(class="message")
       div(class="m-time me-2" title="${date}") ${time}
     span 
