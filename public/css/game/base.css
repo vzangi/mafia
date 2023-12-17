@@ -7,6 +7,10 @@ body {
 body.night {
   background-color: #020;
 }
+body.dawn,
+body.twilight {
+  background-color: #133;
+}
 
 header {
   background: #153;
@@ -154,6 +158,7 @@ header,
 }
 
 .vote-dot,
+.prova-dot,
 .kill-dot {
   position: absolute;
   top: 50%;
@@ -174,11 +179,14 @@ header,
 }
 
 .night .kill-dot,
+.twilight .prova-dot,
 .voting .vote-dot {
   opacity: 1;
   right: 15px;
 }
 
+.night .out .kill-dot,
+.twilight .out .prova-dot,
 .voting .out .vote-dot {
   display: none;
 }
@@ -195,4 +203,8 @@ header,
 
 .kill-dot.checked {
   background-color: var(--color-class-4);
+}
+
+.prova-dot.checked {
+  background-color: #153;
 }

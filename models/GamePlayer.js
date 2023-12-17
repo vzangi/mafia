@@ -59,7 +59,7 @@ const GamePlayer = sequelize.define(
               playerStatuses.WON,
             ],
           },
-          attributes: ['id', 'status', 'username', 'accountId'],
+          attributes: ['id', 'status', 'username', 'accountId', 'roleId'],
           include: [
             {
               model: Account,

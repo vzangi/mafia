@@ -15,8 +15,8 @@ class GameController extends BaseSocketController {
   // Получение известынх ролей
   async getRoles(callback) {
     try {
-      const roles = await this.service.getRoles()
-      callback(roles)
+      const data = await this.service.getRoles()
+      callback(data)
     } catch (error) {
       console.log(error)
       callback('Ошибка')

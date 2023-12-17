@@ -25,7 +25,19 @@ $(function () {
       $('.kill-dot').remove()
     }
 
+    if (role.id != 3 && role.id != 4) {
+      $('.prova-dot').remove()
+    } else {
+      $('.iam .prova-dot').remove()
+    }
+
+    if (role.id == 4) {
+      $('.prova-dot').hide()
+    }
+
     gameSocket.emit('get.roles', (roles) => {
+      // const { roles } = data
+      // console.log('data', data)
       console.log('roles', roles)
 
       if (roles) {
@@ -33,11 +45,15 @@ $(function () {
           const { role } = r
           const player = $(`.player[data-username=${role.username}]`)
           $(`<span>${role.name}</span>`).appendTo(player.find('.friend-info'))
-          player.addClass(`role-${role.id}`)
+          player.addClass(`role-${role.id}`).addClass('role-showed')
         })
 
         if (role.id == 2) {
-          $('.player.role-2').find('.kill-dot').remove()
+          $('.player.role-2 .kill-dot').remove()
+        }
+
+        if (role.id == 3 || role.id == 4) {
+          $('.player.role-showed .prova-dot').remove()
         }
       }
 

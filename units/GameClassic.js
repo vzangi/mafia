@@ -15,8 +15,8 @@ class GameClassic extends GameBase {
     // Возвращаю доступные роли в зависимости от количества игроков в партии
     switch (playersInGame) {
       case 3:
-      case 4:
         return [[Game.roles.MAFIA, 1]]
+      case 4:
       case 5:
         return [
           [Game.roles.MAFIA, 1],
@@ -57,7 +57,7 @@ class GameClassic extends GameBase {
     const { game, room } = this
 
     if (game.period == Game.periods.START) {
-      await this.afterStart()
+      await this.nextDay()
       return
     }
 
@@ -90,14 +90,29 @@ class GameClassic extends GameBase {
     }
 
     if (game.period == Game.periods.TRANSITION) {
-      await this.afterTransition()
+      await this.afterNight()
       return
     }
   }
 
-  // После знакомства
-  async afterStart() {
-    await this.nextDay()
+  // Новый день
+  async nextDay() {
+    const { game, room, periodInterval } = this
+
+    // Увеличиваю номер дня
+    game.day += 1
+
+    console.log('day: ', game.day)
+
+    await this.systemMessage(`День ${game.day}. Игроки ищут мафию.`)
+
+    //await this.whait(3)
+
+    // Следующий период - день
+    await this.setPeriod(Game.periods.DAY, periodInterval)
+
+    // Начало голосования
+    room.emit('voting.start', game.day)
   }
 
   // После дня
@@ -113,9 +128,7 @@ class GameClassic extends GameBase {
 
     // если голосование не выявило посадку, то наступает новый день и снова идёт голосование
     if (!zek) {
-      await this.systemMessage(
-        'Договориться не удалось. Голосование продолжается.'
-      )
+      await this.systemMessage('Договориться не удалось. Голосование продолжается.')
       await this.nextDay()
       return
     }
@@ -124,21 +137,18 @@ class GameClassic extends GameBase {
 
     const player = this.getPlayerById(zek)
 
+    console.log(`садиться игрок ${player.username} с ролью ${player.roleId}`);
+
     // Меняю статус игрока на "в тюрьме"
     player.status = GamePlayer.playerStatuses.PRISONED
     await player.save()
 
-    const { username } = player
     const role = await player.getRole()
 
-    await this.systemMessage(`${role.name} <b>${username}</b> отправляется в тюрьму.`)
+    await this.systemMessage(`${role.name} <b>${player.username}</b> отправляется в тюрьму.`)
 
+    // Показываю роль посаженного игрока всем
     await this.showPlayerRole(player, GamePlayer.playerStatuses.PRISONED)
-
-    // room.emit('player.prisoned', username, role)
-
-
-    // если кто-то отправился в тюрьму, то идёт проверка на конец игры
 
     // Проверка на окончание игры
     const winnerSide = await this.isOver()
@@ -146,19 +156,18 @@ class GameClassic extends GameBase {
       return await this.gameOver(winnerSide)
     }
 
-    // если игра не окончена, то идёт проверка кома (если он есть в игре)
-
-    // если кома нет, то идёт ночь
-
+    // Если ком ещё в игре
     if (this.komInGame()) {
+      // то идёт проверка кома
       await this.komStep()
     } else {
+      // если кома нет, то сразу идёт ночь
       await this.mafiaStep()
     }
   }
 
   async komStep() {
-    const { perehodInterval } = this
+    const { room, periodInterval } = this
 
     await this.systemMessage('Ход комиссара.')
 
@@ -166,18 +175,6 @@ class GameClassic extends GameBase {
 
     // Запускаю ход комиссара
     room.emit('kommissar.start')
-  }
-
-  async mafiaStep() {
-    const { periodInterval, room } = this
-
-    await this.systemMessage('Наступила ночь. Ход мафии.')
-
-    // Ход мафии
-    await this.setPeriod(Game.periods.NIGHT, periodInterval)
-
-    // Запускаю ход мафии
-    room.emit('mafia.start')
   }
 
   // После хода кома
@@ -188,6 +185,19 @@ class GameClassic extends GameBase {
     room.emit('kommissar.stop')
 
     await this.mafiaStep()
+  }
+
+  // Ход мафии
+  async mafiaStep() {
+    const { periodInterval, room } = this
+
+    await this.systemMessage('Наступила ночь. Ход мафии.')
+
+    // Ход мафии
+    await this.setPeriod(Game.periods.NIGHT, periodInterval)
+
+    // Запускаю ход мафии
+    room.emit('mafia.start')
   }
 
   // После ночи
@@ -235,31 +245,6 @@ class GameClassic extends GameBase {
 
     // если игра не окончена, идём дальше
     await this.nextDay()
-  }
-
-  // После проверки
-  async afterTransition() {
-    await this.nextDay()
-  }
-
-  // Новый день
-  async nextDay() {
-    const { game, room, periodInterval } = this
-
-    // Увеличиваю номер дня
-    game.day += 1
-
-    console.log('day: ', game.day)
-
-    await this.systemMessage(`День ${game.day}. Игроки ищут мафию.`)
-
-    //await this.whait(3)
-
-    // Следующий период - день
-    await this.setPeriod(Game.periods.DAY, periodInterval)
-
-    // Начало голосования
-    room.emit('voting.start', game.day)
   }
 
   // Функция определяет кто отправиться в тюрьму
@@ -334,9 +319,8 @@ class GameClassic extends GameBase {
       }
     }
 
-    console.log(`mode: ${game.mode}`);
-    console.log(`max votes: ${maxVotes}`);
-    console.log(`active players: ${activePlayers}`);
+    // Если все проголосовали, то игрок садиться
+    if (activePlayers == steps.length) return zekId
 
     // Если режим "по большинству голосов" (без добивов)
     if (game.mode == 1) {
@@ -352,22 +336,7 @@ class GameClassic extends GameBase {
     return zekId
   }
 
-  activePlayersCount() {
-    return this.players.filter(
-      (p) =>
-        p.status == GamePlayer.playerStatuses.IN_GAME ||
-        p.status == GamePlayer.playerStatuses.FREEZED
-    ).length
-  }
-
-  liveMafiaCount() {
-    return this.players.filter(
-      (p) =>
-        p.status == GamePlayer.playerStatuses.IN_GAME &&
-        p.roleId == Game.roles.MAFIA
-    ).length
-  }
-
+  // Игрок убит
   async playerKilled(playerId) {
     const { room } = this
     const killed = this.getPlayerById(playerId)
@@ -383,14 +352,11 @@ class GameClassic extends GameBase {
       `${role.name} <b>${killed.username}</b> убит мафией.`
     )
 
+    // Показываю всем роль убитого игрока 
     await this.showPlayerRole(killed, GamePlayer.playerStatuses.KILLED)
-
-    // room.emit('killed', {
-    //   role: role,
-    //   username: killed.username,
-    // })
   }
 
+  // Промах мафии
   async missmatch() {
     await this.systemMessage('Мафия никого не убила.')
   }

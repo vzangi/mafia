@@ -37,6 +37,22 @@ $(function () {
     }, 300)
   }
 
+  // Сумерки (ход кома)
+  function twilightBegin() {
+    $('.prova-dot').removeClass('hide')
+    setTimeout(function () {
+      $('body, .players-list').addClass('twilight')
+    }, 10)
+  }
+
+  // Конец ход кома
+  function twilightEnd() {
+    $('body, .players-list').removeClass('twilight')
+    setTimeout(function () {
+      $('.prova-dot').addClass('hide').removeClass('checked')
+    }, 300)
+  }
+
   gameSocket.on('voting.stop', () => {
     stopVoting()
   })
@@ -53,6 +69,18 @@ $(function () {
     nightEnd()
   })
 
+  gameSocket.on('kommissar.start', () => {
+    twilightBegin()
+  })
+
+  gameSocket.on('kommissar.stop', () => {
+    twilightEnd()
+  })
+
+  gameSocket.on('prova', (user) => {
+    showRole(user, true)
+  })
+
   // Конец игры
   gameSocket.on('game.over', (side) => {
     $('.input-box').remove()
@@ -60,21 +88,54 @@ $(function () {
     $('.to-lobbi').removeClass('hide')
   })
 
+  // Голос
+  gameSocket.on('vote', (voterUsername, playerUsername) => {
+    console.log(voterUsername, playerUsername)
+
+    // Увеличиваю количество голосов
+    const dot = $(`.vote-dot[data-username=${playerUsername}] .vote-cnt`)
+    const cnt = dot.text() * 1
+    dot.text(cnt + 1)
+
+    // Меняю статус голосовавшего
+    const voter = $(`.player[data-username=${voterUsername}]`)
+    voter.addClass('voted')
+    $('#voteResultTmpl')
+      .tmpl({ vote: playerUsername })
+      .appendTo(voter.find('.friend-info'))
+  })
+
   // Отображение раскрытой роли 
   gameSocket.on('role.show', (user) => {
-    const player = $(`.player[data-username=${user.username}]`)
-    player.find('.vote-dot').remove()
-    player.find('.kill-dot').remove()
-    player.addClass(`player-status-${user.status}`).addClass(`role-${user.role.id}`)
-    $(`<span>${user.role.name}</span>`).appendTo(player.find('.friend-info'))
-
-    // Если посадили текущего игрока
-    if (user.username == getMyNik()) {
-      $('.input-box').remove()
-      $('.to-lobbi').removeClass('hide')
-      $('.kill-dot').remove()
-    }
+    showRole(user)
   })
+
+  function showRole(user, isProva = false) {
+    const player = $(`.player[data-username=${user.username}]`)
+    if (!isProva) {
+      player.find('.vote-dot').remove()
+    }
+    player.find('.kill-dot').remove()
+    player.find('.prova-dot').remove()
+    player.addClass(`role-${user.role.id}`).addClass('role-showed')
+
+    if (player.find('.role').length == 0) {
+      $(`<small class='role'>${user.role.name}</small>`).appendTo(player.find('.friend-info'))
+    }
+    
+    if (user.status){
+      player.addClass(`player-status-${user.status}`)
+    }
+
+    // Если раскрыта роль текущего игрока
+    if (user.username == getMyNik()) {
+      $('.to-lobbi').removeClass('hide')
+      $('.input-box').remove()
+      $('.kill-dot').remove()
+      $('.prova-dot').remove()
+      $('.vote-dot').remove()
+    }
+  }
 
   // Получение ника текущего игрока   
   function getMyNik() {
@@ -97,23 +158,6 @@ $(function () {
   $('.prova-dot').click(function () {
     const { username } = $(this).data()
     gameSocket.emit('prova', username)
-  })
-
-  // Голос
-  gameSocket.on('vote', (voterUsername, playerUsername) => {
-    console.log(voterUsername, playerUsername)
-
-    // Увеличиваю количество голосов
-    const dot = $(`.vote-dot[data-username=${playerUsername}] .vote-cnt`)
-    const cnt = dot.text() * 1
-    dot.text(cnt + 1)
-
-    // Меняю статус голосовавшего
-    const voter = $(`.player[data-username=${voterUsername}]`)
-    voter.addClass('voted')
-    $('#voteResultTmpl')
-      .tmpl({ vote: playerUsername })
-      .appendTo(voter.find('.friend-info'))
   })
 
   // Выстрел

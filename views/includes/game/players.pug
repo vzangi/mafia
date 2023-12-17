@@ -1,12 +1,12 @@
 div(class="mb-3")
-  div(class="players-list"+(steps?' voting':''+game.period==4?' night':''))
+  div(class="players-list"+(steps?' voting':''+game.period==4?' night':''+game.period==3?' twilight':''))
     each player in players 
       -var out = false
       -var ps = ''
       -var pr = ''
       if player.status != 3 && player.status != 7
         -ps = 'player-status-'+player.status
-        -pr = 'role-'+player.role.id
+        -pr = 'role-showed role-'+player.role.id
         -out = true
       div(class="p-1")
         div(class="player "+ps+' '+pr data-username=player.username)
@@ -26,3 +26,4 @@ div(class="mb-3")
                   span(class="vote-cnt")= steps.filter(s => s.player.username == player.username).length
 
               div(class="kill-dot"+(game.period==4?'':' hide') title="Выстрелить" data-username=player.username)
+              div(class="prova-dot"+(game.period==3?'':' hide') title="Проверить" data-username=player.username)

@@ -27,7 +27,7 @@ class GameBase {
     this.players = []
 
     // время хода
-    this.periodInterval = 20
+    this.periodInterval = 120
 
     // время перехода для комиссара
     this.perehodInterval = 6
@@ -386,24 +386,80 @@ class GameBase {
     })
   }
 
-  async prova(username) {
+  async shot(username, mafId) {
+    const { game, players } = this
+    const player = this.getPlayerByName(username)
+
+    if (!player) {
+      throw new Error('Игрок не найден')
+    }
+
+    const maf = this.getPlayerById(mafId)
+
+    if (!maf) {
+      throw new Error('Маф не найден в этой игре')
+    }
+
+    if (maf.status != GamePlayer.playerStatuses.IN_GAME) {
+      throw new Error('Вы уже выбыли из игры')
+    }
+
+    const { day } = game
+
+    // Записываю выстрел в базу
+    await GameStep.create({
+      gameId: game.id,
+      day,
+      accountId: mafId,
+      playerId: player.accountId,
+      stepType: GameStep.stepTypes.NIGHT,
+    })
+
+    // беру все выстрелы
+    const shots = await GameStep.findAll({
+      where: {
+        gameId: game.id,
+        day,
+        stepType: GameStep.stepTypes.NIGHT,
+      },
+    })
+
+    // Беру всех мафов, которые ещё в игре
+    const mafiaPlayers = players.filter(
+      (p) =>
+        p.roleId == Game.roles.MAFIA &&
+        p.status == GamePlayer.playerStatuses.IN_GAME
+    )
+
+    // Количество выстрелов равно количеству мафиози
+    if (shots.length == mafiaPlayers.length) {
+      // Завершаю ночь
+      game.deadline = 0
+    }
+  }
+
+  async prova(username, komId) {
     const player = this.getPlayerByName(username)
     if (!player) {
       throw new Error(`Игрок ${username} не найден`)
     }
 
-    if (player.status != GamePlayer.playerStatuses.IN_GAME || player.status != GamePlayer.playerStatuses.FREEZED) {
+    if (komId != this.getKomId()) {
+      throw new Error('Проверки может делать только комиссар')
+    }
+
+    if (
+      player.status != GamePlayer.playerStatuses.IN_GAME && 
+      player.status != GamePlayer.playerStatuses.FREEZED
+    ) {
       throw new Error(`Игрок ${username} уже выбыл из игры`)
     }
 
     const { players, game } = this
 
-
     if (game.period != Game.periods.KOM) {
       throw new Error('Сейчас не ход кома')
     }
-
-    const komId = this.getKomId()
 
     // Записываю проверку в базу
     await GameStep.create({
@@ -466,6 +522,22 @@ class GameBase {
         return player.accountId
     }
     return null
+  }
+
+  activePlayersCount() {
+    return this.players.filter(
+      (p) =>
+        p.status == GamePlayer.playerStatuses.IN_GAME ||
+        p.status == GamePlayer.playerStatuses.FREEZED
+    ).length
+  }
+
+  liveMafiaCount() {
+    return this.players.filter(
+      (p) =>
+        p.status == GamePlayer.playerStatuses.IN_GAME &&
+        p.roleId == Game.roles.MAFIA
+    ).length
   }
 
   // Проверка на окончание игры

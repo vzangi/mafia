@@ -198,7 +198,7 @@ class ChatService extends BaseService {
 
     if (period != Game.periods.DAY) throw new Error('Голосование окончено')
 
-    // Беру свои голоса в этот день
+    // Ищу свой голос в этот день
     const haveVote = await GameStep.findOne({
       where: {
         gameId,
@@ -247,8 +247,13 @@ class ChatService extends BaseService {
       },
     })
 
+    // Количество ходов равно количеству игроков
     if (steps.length == playersInGame.length) {
-      await game.nextPeriod()
+
+      console.log('Количество ходов равно количеству игроков');
+
+      // Завершаю голосование
+      game.game.deadline = 0
       return
     }
 
@@ -268,10 +273,13 @@ class ChatService extends BaseService {
     })
 
     if (maxVotes) {
-      // Если максимальное количество голсов умноженное на 2 больше чем количество игроков
-      // перехожу к следующему периоду
+      // максимальное количество голсов умноженное на 2 больше чем количество игроков
       if (playersInGame.length < maxVotes.get('votesCount') * 2) {
-        await game.nextPeriod()
+
+        console.log('максимальное количество голсов умноженное на 2 больше чем количество игроков');
+
+        // завершаю голосование
+        game.game.deadline = 0
         return
       }
     }
@@ -301,6 +309,10 @@ class ChatService extends BaseService {
       ],
     })
 
+    const data = { 
+      roles
+    }
+
     return roles
   }
 
@@ -310,43 +322,14 @@ class ChatService extends BaseService {
 
     if (!user) return
 
-    // проверки...
-
     // Беру текущую игру
     const game = Games.getGame(gameId)
 
     // Игра должна быть загружена
     if (!game) throw new Error('Игра не найдена')
 
-    const player = game.getPlayerByName(username)
-
-    const { day } = game.game
-
-    await GameStep.create({
-      gameId,
-      day,
-      accountId: user.id,
-      playerId: player.accountId,
-      stepType: GameStep.stepTypes.NIGHT,
-    })
-
-    const shots = await GameStep.findAll({
-      where: {
-        gameId,
-        day,
-        stepType: GameStep.stepTypes.NIGHT,
-      },
-    })
-
-    const players = game.players.filter(
-      (p) =>
-        p.roleId == Game.roles.MAFIA &&
-        p.status == GamePlayer.playerStatuses.IN_GAME
-    )
-
-    if (shots.length == players.length) {
-      await game.nextPeriod()
-    }
+    // Стреляю по игроку
+    await game.shot(username, user.id)
   }
 
   async prova(username) {
@@ -354,21 +337,13 @@ class ChatService extends BaseService {
 
     if (!user) return
 
-    // проверки ...
-
     // Беру текущую игру
     const game = Games.getGame(gameId)
 
     if (!game) throw new Error('Игра не найдена')
 
-    const komId = game.getKomId()
-
-    if (komId != user.id) {
-      throw new Error('Проверки может делать только комиссар')
-    }
-
     // Запускаю процедуру проверки
-    await game.prova(username)
+    await game.prova(username, user.id)
   }
 
   typingBegin() {
