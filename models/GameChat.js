@@ -44,7 +44,8 @@ const getUsersInMessage = async (message) => {
       attributes: ['id'],
     })
     if (!account) continue
-    accounts.push({ accountId: account.id })
+    if (accounts.filter(a => a.accountId == account.id).length == 0) 
+      accounts.push({ accountId: account.id })
   }
   return accounts
 }
