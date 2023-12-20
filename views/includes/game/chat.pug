@@ -32,15 +32,15 @@ div(class="block chat-box mb-4")
   div(class="typing-box") 
 
   if currentAccount && game.status == 2 && isPlayer
-      div(class='d-flex align-items-center chat-input-box')
-        div(class='private-checkbox flex-grow-0' title="Приват" data-bs-toggle="tooltip" data-bs-placement="bottom")
-          div(class="private-image") P
-        div(class="flex-grow-1")
-          div(class="input-box") 
-            input(type="text" maxlength=255 placeholder="Введите сообщение и нажмите Enter" name="chat-input" id="chat-input")
-            div(class="smiles" style="background-image: url(/images/eHehe.svg)") 
-            div(class="all-smiles" style="display:none") 
-              div(class="all-smiles-title mb-1") Смайлы
-              div(class="all-smiles-items")
-                each smile in smiles
-                  img(src="/images/e"+ smile +".svg" alt=smile)
+    div(class='d-flex align-items-center chat-input-box')
+      div(class='private-checkbox flex-grow-0' title="Приват" data-bs-toggle="tooltip" data-bs-placement="bottom")
+        div(class="private-image") P
+      div(class="flex-grow-1")
+        div(class="input-box") 
+          input(type="text" maxlength=255 placeholder="Введите сообщение и нажмите Enter" name="chat-input" id="chat-input")
+          div(class="smiles" style="background-image: url(/images/eHehe.svg)") 
+          div(class="all-smiles" style="display:none") 
+            div(class="all-smiles-title mb-1") Смайлы
+            div(class="all-smiles-items")
+              each smile in smiles
+                img(src="/images/e"+ smile +".svg" alt=smile)

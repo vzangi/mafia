@@ -107,7 +107,7 @@ $(function () {
       .appendTo(voter.find('.friend-info'))
   })
 
-  // Отображение раскрытой роли 
+  // Отображение раскрытой роли
   gameSocket.on('role.show', (user) => {
     showRole(user)
   })
@@ -122,10 +122,10 @@ $(function () {
     player.addClass(`role-${user.role.id}`).addClass('role-showed')
 
     if (player.find('.role').length == 0) {
-      $(`<small class='role'>${user.role.name}</small>`).appendTo(player.find('.friend-info'))
+      $('#playerRoleTmpl').tmpl(user.role).appendTo(player.find('.friend-info'))
     }
-    
-    if (user.status){
+
+    if (user.status) {
       player.addClass(`player-status-${user.status}`)
     }
 
@@ -135,11 +135,10 @@ $(function () {
       $('.chat-input-box').remove()
       $('.kill-dot').remove()
       $('.prova-dot').remove()
-      $('.vote-dot').remove()
     }
   }
 
-  // Получение ника текущего игрока   
+  // Получение ника текущего игрока
   function getMyNik() {
     const iam = $('.player.iam')
     if (iam.length != 1) return ''
@@ -165,6 +164,7 @@ $(function () {
   // Выстрел
   $('.kill-dot').click(function () {
     if (myRole.id != 2) return
+    if ($(this).hasClass('checked')) return
 
     const { username } = $(this).data()
     $(this).addClass('checked')

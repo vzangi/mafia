@@ -74,7 +74,7 @@ class GameBase {
       await game.save()
 
       // Даю две минуты на знакомство мафии
-      this.setPeriod(Game.periods.START, this.periodInterval)
+      await this.setPeriod(Game.periods.START, this.periodInterval)
 
       // Уведомляю игроков о начале игры
       this.notify()
@@ -150,7 +150,6 @@ class GameBase {
   async prepare() {
     const { players } = this
     try {
-
       // Распределение ролей ...
       await this.takeRoles()
 
@@ -175,21 +174,21 @@ class GameBase {
     const { players } = this
     const availableRoles = await this.getAvailableRoles()
 
-    console.log(`Доступные роли: `, availableRoles);
+    console.log(`Доступные роли: `, availableRoles)
 
     // Раздаю роли
     for (let k = 0; k < availableRoles.length; k++) {
       // Беру роль и количество игроков с ней
       const [roleId, cnt] = availableRoles[k]
 
-      console.log(`Раздаём роль ${cnt} роли ${roleId}`);
+      console.log(`Раздаём роль ${cnt} роли ${roleId}`)
 
       // Беру из заявки cnt случайных игроков без роли и ставлю им роль
       for (let index = 0; index < cnt; index++) {
         // Беру игроков из заявки которым ещё не назначена роль
-        const noRolePlayers = players.filter(p => !p.roleId)
+        const noRolePlayers = players.filter((p) => !p.roleId)
 
-        console.log(`Количество игроков без ролей: ${noRolePlayers.length}`);
+        console.log(`Количество игроков без ролей: ${noRolePlayers.length}`)
 
         // Если всем игрокам разданы роли,
         // а в пулле ролей ещё есть неразданные - возвращаю ошибку
@@ -198,11 +197,10 @@ class GameBase {
         }
 
         // беру случайного игрока
-        const randomPlayer = noRolePlayers[
-          Math.floor(Math.random() * noRolePlayers.length)
-        ]
+        const randomPlayer =
+          noRolePlayers[Math.floor(Math.random() * noRolePlayers.length)]
 
-        console.log(`Случайны игрко: ${randomPlayer.username}`);
+        console.log(`Случайны игрко: ${randomPlayer.username}`)
 
         // Выдаю ему роль
         randomPlayer.roleId = roleId
@@ -211,12 +209,11 @@ class GameBase {
     }
 
     // Оставшиеся без ролей игроки - чижи
-    const citizens = players.filter(p => !p.roleId)
+    const citizens = players.filter((p) => !p.roleId)
     for (let index in citizens) {
       citizens[index].roleId = Game.roles.CITIZEN
       await citizens[index].save()
     }
-
   }
 
   // Знакомлю мафию и комов
@@ -406,6 +403,19 @@ class GameBase {
 
     const { day } = game
 
+    const isShooting = await GameStep.findOne({
+      where: {
+        gameId: game.id,
+        day,
+        accountId: mafId,
+        stepType: GameStep.stepTypes.NIGHT,
+      },
+    })
+
+    if (isShooting) {
+      throw new Error('Вы уже стреляли этой ночью')
+    }
+
     // Записываю выстрел в базу
     await GameStep.create({
       gameId: game.id,
@@ -449,7 +459,7 @@ class GameBase {
     }
 
     if (
-      player.status != GamePlayer.playerStatuses.IN_GAME && 
+      player.status != GamePlayer.playerStatuses.IN_GAME &&
       player.status != GamePlayer.playerStatuses.FREEZED
     ) {
       throw new Error(`Игрок ${username} уже выбыл из игры`)
@@ -461,19 +471,34 @@ class GameBase {
       throw new Error('Сейчас не ход кома')
     }
 
+    const isProved = await GameStep.findOne({
+      where: {
+        gameId: game.id,
+        accountId: komId,
+        day: game.day,
+        stepType: GameStep.stepTypes.CHECK,
+      },
+    })
+
+    if (isProved) {
+      throw new Error('Вы уже проверили игрока этой ночью')
+    }
+
     // Записываю проверку в базу
     await GameStep.create({
       gameId: game.id,
       accountId: komId,
       playerId: player.accountId,
       day: game.day,
-      stepType: GameStep.stepTypes.CHECK
+      stepType: GameStep.stepTypes.CHECK,
     })
 
     const role = await player.getRole()
 
     // Беру комиссара и сержанта (если есть)
-    const koms = players.filter(p => p.roleId == Game.roles.KOMISSAR || p.roleId == Game.roles.SERGEANT)
+    const koms = players.filter(
+      (p) => p.roleId == Game.roles.KOMISSAR || p.roleId == Game.roles.SERGEANT
+    )
 
     for (const index in koms) {
       const kom = koms[index]
@@ -483,7 +508,7 @@ class GameBase {
         gameId: game.id,
         accountId: kom.accountId,
         playerId: player.accountId,
-        roleId: player.roleId
+        roleId: player.roleId,
       })
 
       // Отправляю роль кому по сокету
@@ -516,10 +541,9 @@ class GameBase {
 
   getKomId() {
     const { players } = this
-    for(const index in players) {
+    for (const index in players) {
       const player = players[index]
-      if (player.roleId == Game.roles.KOMISSAR)
-        return player.accountId
+      if (player.roleId == Game.roles.KOMISSAR) return player.accountId
     }
     return null
   }
@@ -542,7 +566,7 @@ class GameBase {
 
   // Проверка на окончание игры
   async isOver() {
-    console.log('Проверка на конец игры...');
+    console.log('Проверка на конец игры...')
     const { players } = this
 
     let aliveMafia = 0
@@ -552,13 +576,17 @@ class GameBase {
     // Считаю какие роли ещё в игре
     for (let index = 0; index < players.length; index++) {
       const player = players[index]
-      console.log(`Смотрю игрока ${player.username} со статусом ${player.status}`);
+      console.log(
+        `Смотрю игрока ${player.username} со статусом ${player.status}`
+      )
       // Если игрок ещё в игре
       if (
         player.status == GamePlayer.playerStatuses.IN_GAME ||
         player.status == GamePlayer.playerStatuses.FREEZED
       ) {
-        console.log(`Игрок ${player.username} ещё в игре с ролью ${player.roleId}`);
+        console.log(
+          `Игрок ${player.username} ещё в игре с ролью ${player.roleId}`
+        )
         // Роль мафии
         if (player.roleId == Game.roles.MAFIA) {
           aliveMafia += 1
@@ -576,7 +604,9 @@ class GameBase {
       }
     }
 
-    console.log(`Итого: граждан: ${aliveCitizens}, мафии: ${aliveMafia}, маняьк: ${aliveManiac}`)
+    console.log(
+      `Итого: граждан: ${aliveCitizens}, мафии: ${aliveMafia}, маняьк: ${aliveManiac}`
+    )
 
     // Ничья
     if (aliveCitizens == 0 && aliveMafia == 0 && aliveManiac == 0) {
@@ -612,7 +642,11 @@ class GameBase {
     await this.setPeriod(Game.periods.END, 0)
 
     // Победившие игроки
-    const winners = players.filter(p => p.status == GamePlayer.playerStatuses.IN_GAME || p.status == GamePlayer.playerStatuses.FREEZED)
+    const winners = players.filter(
+      (p) =>
+        p.status == GamePlayer.playerStatuses.IN_GAME ||
+        p.status == GamePlayer.playerStatuses.FREEZED
+    )
 
     // Освобождаю победивших игроков из заявки и показываю их роли
     for (const index in winners) {

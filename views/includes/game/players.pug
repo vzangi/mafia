@@ -25,5 +25,5 @@ div(class="mb-3")
                 else 
                   span(class="vote-cnt")= steps.filter(s => s.player.username == player.username).length
 
-              div(class="kill-dot"+(game.period==4?'':' hide') title="Выстрелить" data-username=player.username)
+              div(class="kill-dot"+(game.period==4?(shoot?(shoot.player.username==player.username?' checked':' hide'):''):' hide') title="Выстрелить" data-username=player.username)
               div(class="prova-dot"+(game.period==3?'':' hide') title="Проверить" data-username=player.username)

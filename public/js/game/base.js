@@ -36,8 +36,6 @@ $(function () {
     }
 
     gameSocket.emit('get.roles', (roles) => {
-      // const { roles } = data
-      // console.log('data', data)
       console.log('roles', roles)
 
       if (roles) {
@@ -45,7 +43,11 @@ $(function () {
           const { role } = r
           const username = r.player.username
           const player = $(`.player[data-username=${username}]`)
-          $(`<small class='role'>${role.name}</small>`).appendTo(player.find('.friend-info'))
+          if (player.find('.role').length == 0) {
+            $('#playerRoleTmpl')
+              .tmpl(role)
+              .appendTo(player.find('.friend-info'))
+          }
           player.addClass(`role-${role.id}`).addClass('role-showed')
         })
 

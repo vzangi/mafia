@@ -10,7 +10,7 @@ class GameClassic extends GameBase {
     const { players } = this
     const playersInGame = players.length
 
-    console.log('игроков в игре: ${playersInGame}');
+    console.log('игроков в игре: ${playersInGame}')
 
     // Возвращаю доступные роли в зависимости от количества игроков в партии
     switch (playersInGame) {
@@ -19,7 +19,7 @@ class GameClassic extends GameBase {
         return [[Game.roles.MAFIA, 1]]
       case 5:
         return [
-          [Game.roles.MAFIA, 1],
+          [Game.roles.MAFIA, 2],
           [Game.roles.KOMISSAR, 1],
         ]
       case 6:
@@ -128,7 +128,9 @@ class GameClassic extends GameBase {
 
     // если голосование не выявило посадку, то наступает новый день и снова идёт голосование
     if (!zek) {
-      await this.systemMessage('Договориться не удалось. Голосование продолжается.')
+      await this.systemMessage(
+        'Договориться не удалось. Голосование продолжается.'
+      )
       await this.nextDay()
       return
     }
@@ -137,7 +139,7 @@ class GameClassic extends GameBase {
 
     const player = this.getPlayerById(zek)
 
-    console.log(`садиться игрок ${player.username} с ролью ${player.roleId}`);
+    console.log(`садиться игрок ${player.username} с ролью ${player.roleId}`)
 
     // Меняю статус игрока на "в тюрьме"
     player.status = GamePlayer.playerStatuses.PRISONED
@@ -145,7 +147,9 @@ class GameClassic extends GameBase {
 
     const role = await player.getRole()
 
-    await this.systemMessage(`${role.name} <b>${player.username}</b> отправляется в тюрьму.`)
+    await this.systemMessage(
+      `${role.name} <b>${player.username}</b> отправляется в тюрьму.`
+    )
 
     // Показываю роль посаженного игрока всем
     await this.showPlayerRole(player, GamePlayer.playerStatuses.PRISONED)
@@ -288,6 +292,7 @@ class GameClassic extends GameBase {
       if (playerId == zekId) continue
 
       const votesCount = votes[playerId]
+      console.log(playerId, votesCount)
 
       if (votesCount == maxVotes) {
         // Такой игрок найден
@@ -324,7 +329,6 @@ class GameClassic extends GameBase {
 
     // Если режим "по большинству голосов" (без добивов)
     if (game.mode == 1) {
-
       // Количество голосов должно быть больше половины
       if (maxVotes * 2 <= activePlayers) {
         await this.systemMessage(
@@ -347,13 +351,14 @@ class GameClassic extends GameBase {
 
     const role = await killed.getRole()
 
-    console.log('role of killed: ', role);
-
     await this.systemMessage(
       `${role.name} <b>${killed.username}</b> убит мафией.`
     )
 
-    // Показываю всем роль убитого игрока 
+    // Если убит комиссар - надо посмотреть есть ли в игре сержант !!!
+    // Если есть, то передаю роль комиссара ему
+
+    // Показываю всем роль убитого игрока
     await this.showPlayerRole(killed, GamePlayer.playerStatuses.KILLED)
   }
 

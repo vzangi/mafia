@@ -166,6 +166,7 @@ const Game = sequelize.define(
           'seconds',
           'period',
           'day',
+          'mode',
         ],
         include: [
           { model: GameType },

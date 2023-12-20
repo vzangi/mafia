@@ -105,7 +105,7 @@ class ChatService extends BaseService {
     let pmForMe = []
 
     if (user) {
-      // Приватные сообщения, которые игрок писал сам 
+      // Приватные сообщения, которые игрок писал сам
       privateMessages = await GameChat.findAll({
         where: {
           gameId,
@@ -136,7 +136,7 @@ class ChatService extends BaseService {
         where: {
           gameId,
           accountId: {
-            [Op.ne]: user.id
+            [Op.ne]: user.id,
           },
           private: true,
         },
@@ -161,14 +161,15 @@ class ChatService extends BaseService {
           },
         ],
       })
-
     }
 
-    const resultMessages = [...messages, ...privateMessages, ...pmForMe].sort((a, b) => {
-      if (a.createdAt > b.createdAt) return 1
-      if (a.createdAt < b.createdAt) return -1
-      return 0
-    })
+    const resultMessages = [...messages, ...privateMessages, ...pmForMe].sort(
+      (a, b) => {
+        if (a.createdAt > b.createdAt) return 1
+        if (a.createdAt < b.createdAt) return -1
+        return 0
+      }
+    )
 
     return resultMessages
   }
@@ -206,15 +207,15 @@ class ChatService extends BaseService {
 
       // Отправляю самому игроку
       const ids = this.getUserSockets(user.id, '/game')
-      ids.forEach(sock => {
+      ids.forEach((sock) => {
         sock.emit('message', msg)
       })
 
       // Отправляю игрокам, которые были выделены в сообщении
-      msg.gamechatusers.forEach(cu => {
+      msg.gamechatusers.forEach((cu) => {
         if (cu.accountId != user.id) {
           const ids = this.getUserSockets(cu.accountId, '/game')
-          ids.forEach(sock => {
+          ids.forEach((sock) => {
             sock.emit('message', msg)
           })
         }
@@ -254,6 +255,13 @@ class ChatService extends BaseService {
       where: {
         gameId,
         username,
+        status: [
+          GamePlayer.playerStatuses.IN_GAME,
+          GamePlayer.playerStatuses.FREEZED,
+          GamePlayer.playerStatuses.KILLED,
+          GamePlayer.playerStatuses.PRISONED,
+          GamePlayer.playerStatuses.TIMEOUT,
+        ],
       },
       attributes: ['accountId', 'status'],
     })
@@ -331,8 +339,7 @@ class ChatService extends BaseService {
 
     // Количество ходов равно количеству игроков
     if (steps.length == playersInGame.length) {
-
-      console.log('Количество ходов равно количеству игроков');
+      console.log('Количество ходов равно количеству игроков')
 
       // Завершаю голосование
       game.game.deadline = 0
@@ -357,8 +364,9 @@ class ChatService extends BaseService {
     if (maxVotes) {
       // максимальное количество голсов умноженное на 2 больше чем количество игроков
       if (playersInGame.length < maxVotes.get('votesCount') * 2) {
-
-        console.log('максимальное количество голсов умноженное на 2 больше чем количество игроков');
+        console.log(
+          'максимальное количество голсов умноженное на 2 больше чем количество игроков'
+        )
 
         // завершаю голосование
         game.game.deadline = 0
@@ -392,7 +400,7 @@ class ChatService extends BaseService {
     })
 
     const data = {
-      roles
+      roles,
     }
 
     return roles

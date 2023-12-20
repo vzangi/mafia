@@ -56,12 +56,12 @@ class GameService {
     }).findAll()
 
     // Если идёт голосование, то достаю текущие голоса
-    if (game.period == 2) {
+    if (game.period == Game.periods.DAY) {
       data.steps = await GameStep.findAll({
         where: {
           gameId,
           day: game.day,
-          stepType: 1,
+          stepType: GameStep.stepTypes.DAY,
         },
         include: [
           {
@@ -69,6 +69,25 @@ class GameService {
             as: 'account',
             attributes: ['username'],
           },
+          {
+            model: Account,
+            as: 'player',
+            attributes: ['username'],
+          },
+        ],
+      })
+    }
+
+    // Если ночь, достаю выстрелы
+    if (game.period == Game.periods.NIGHT) {
+      data.shoot = await GameStep.findOne({
+        where: {
+          gameId,
+          accountId: user.id,
+          day: game.day,
+          stepType: GameStep.stepTypes.NIGHT,
+        },
+        include: [
           {
             model: Account,
             as: 'player',
