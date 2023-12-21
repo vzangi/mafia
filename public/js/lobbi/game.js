@@ -172,7 +172,7 @@ $(function () {
 
   // Создание заявки
   $('.btn-create').click(function () {
-    const typeId = $('#gameType').val()
+    const gametypeId = $('#gameType').val()
     const waitingTime = $('#waitingTime').val()
     const playersCount = $('#gamePlayersCount').val()
     const description = $('#gameDescription').val()
@@ -180,7 +180,7 @@ $(function () {
     // Запрос на создание игры
     lobbiSocket.emit(
       'game.make',
-      typeId,
+      gametypeId,
       playersCount,
       waitingTime,
       description,
@@ -203,26 +203,30 @@ $(function () {
 
   // Создание заявки в классическом режиме
   $('.btn-make-type-1').click(function () {
-    const typeId = 1
-    const waitingTime = $('#waitingTime-1').val()
-    const playersCount = $('#gamePlayersCount-1').val()
+    const gametypeId = 1
+    const waitingTime = $('#waitingTime-1').text()
+    const playersCount = $('#gamePlayersCount-1').text()
+    const mode = $('#mode-1')[0].checked ? 2 : 1
     const description = $('#gameDescription-1').val()
 
     // Запрос на создание игры
     lobbiSocket.emit(
       'game.make',
-      typeId,
-      playersCount,
-      waitingTime,
-      description,
+      {
+        gametypeId,
+        playersCount,
+        waitingTime,
+        mode,
+        description,
+      },
       (res) => {
         console.log(res)
         if (res.status != 0) {
-          if (playersCount > 20) $('#gamePlayersCount-1').val(20)
-          if (playersCount < 6) $('#gamePlayersCount-1').val(6)
+          if (playersCount > 20) $('#gamePlayersCount-1').text(20)
+          if (playersCount < 6) $('#gamePlayersCount-1').text(6)
 
-          if (waitingTime > 20) $('#waitingTime-1').val(20)
-          if (waitingTime < 1) $('#waitingTime-1').val(1)
+          if (waitingTime > 20) $('#waitingTime-1').text(20)
+          if (waitingTime < 1) $('#waitingTime-1').text(1)
           return alert(res.msg)
         }
 
@@ -234,7 +238,7 @@ $(function () {
 
   // Создание заявки в режиме перестрелки
   $('.btn-make-type-2').click(function () {
-    const typeId = 2
+    const gametypeId = 2
     const waitingTime = $('#waitingTime-2').val()
     const playersCount = $('#gamePlayersCount-2').val()
     const description = $('#gameDescription-2').val()
@@ -242,10 +246,13 @@ $(function () {
     // Запрос на создание игры
     lobbiSocket.emit(
       'game.make',
-      typeId,
-      playersCount,
-      waitingTime,
-      description,
+      {
+        gametypeId,
+        playersCount,
+        waitingTime,
+        description,
+        mode: 1,
+      },
       (res) => {
         console.log(res)
         if (res.status != 0) {
@@ -277,10 +284,13 @@ $(function () {
     // Запрос на создание игры
     lobbiSocket.emit(
       'game.make',
-      typeId,
-      playersCount,
-      waitingTime,
-      description,
+      {
+        typeId,
+        playersCount,
+        waitingTime,
+        description,
+        mode: 1,
+      },
       (res) => {
         console.log(res)
         if (res.status != 0) {
@@ -330,6 +340,42 @@ $(function () {
 
     $('.game-type-item').removeClass('active')
     $('.game-types-list').slideDown()
+  })
+
+  // Нажатие на кнопки инпута (больше или меньше)
+  $('.number-input-box .btn').click(function () {
+    const btn = $(this)
+    const input = btn.parent().find('.form-control')
+    const { min, max } = input.data()
+    let val = input.text() * 1
+    if (btn.hasClass('btn-less')) {
+      if (val == min) return
+      val -= 1
+      input.text(val)
+      if (val == min) {
+        btn.removeClass('btn-success').addClass('btn-dark')
+      } else {
+        btn
+          .parent()
+          .find('.btn')
+          .removeClass('btn-dark')
+          .addClass('btn-success')
+      }
+    }
+    if (btn.hasClass('btn-more')) {
+      if (val == max) return
+      val += 1
+      input.text(val)
+      if (val == max) {
+        btn.removeClass('btn-success').addClass('btn-dark')
+      } else {
+        btn
+          .parent()
+          .find('.btn')
+          .removeClass('btn-dark')
+          .addClass('btn-success')
+      }
+    }
   })
 
   // Присоединиться к заявке

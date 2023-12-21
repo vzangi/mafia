@@ -3,14 +3,9 @@ const Service = require('../../services/socket/LobbiService')
 
 class LobbiController extends BaseSocketController {
   // Возвращаю вещь в инвентарь
-  async makeGame(gametypeId, playersCount, waitingTime, description, callback) {
+  async makeGame(settings, callback) {
     try {
-      const game = await this.service.makeGame(
-        gametypeId,
-        playersCount,
-        waitingTime,
-        description
-      )
+      const game = await this.service.makeGame(settings)
       callback({ status: 0, game })
     } catch (error) {
       console.log(error)

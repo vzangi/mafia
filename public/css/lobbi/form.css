@@ -148,3 +148,25 @@
     background-color: transparent;
   }
 }
+
+.number-input-box {
+  display: flex;
+}
+.number-input-box .form-control {
+  border-radius: 0;
+}
+.number-input-box .btn {
+  flex: 0;
+  width: 100px;
+  min-width: auto;
+  padding: 0 12px;
+}
+.number-input-box .btn:first-child {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.number-input-box .btn:last-child {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}

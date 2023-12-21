@@ -2,12 +2,8 @@ const Game = require('../models/Game')
 const GameRole = require('../models/GameRole')
 const GameChat = require('../models/GameChat')
 const GamePlayer = require('../models/GamePlayer')
-const sequelize = require('./db')
 const { deadlineAfter, getCoolDateTime } = require('./helpers')
-const Role = require('../models/Role')
 const workerInterval = 1000
-const GamesManager = require('./GamesManager')
-const Account = require('../models/Account')
 const GameStep = require('../models/GameStep')
 
 /*  ==================================
@@ -27,7 +23,7 @@ class GameBase {
     this.players = []
 
     // время хода
-    this.periodInterval = 120
+    this.periodInterval = 20
 
     // время перехода для комиссара
     this.perehodInterval = 6
@@ -174,21 +170,15 @@ class GameBase {
     const { players } = this
     const availableRoles = await this.getAvailableRoles()
 
-    console.log(`Доступные роли: `, availableRoles)
-
     // Раздаю роли
     for (let k = 0; k < availableRoles.length; k++) {
       // Беру роль и количество игроков с ней
       const [roleId, cnt] = availableRoles[k]
 
-      console.log(`Раздаём роль ${cnt} роли ${roleId}`)
-
       // Беру из заявки cnt случайных игроков без роли и ставлю им роль
       for (let index = 0; index < cnt; index++) {
         // Беру игроков из заявки которым ещё не назначена роль
         const noRolePlayers = players.filter((p) => !p.roleId)
-
-        console.log(`Количество игроков без ролей: ${noRolePlayers.length}`)
 
         // Если всем игрокам разданы роли,
         // а в пулле ролей ещё есть неразданные - возвращаю ошибку
@@ -199,8 +189,6 @@ class GameBase {
         // беру случайного игрока
         const randomPlayer =
           noRolePlayers[Math.floor(Math.random() * noRolePlayers.length)]
-
-        console.log(`Случайны игрко: ${randomPlayer.username}`)
 
         // Выдаю ему роль
         randomPlayer.roleId = roleId
@@ -363,7 +351,6 @@ class GameBase {
 
   // Установка следующего периода
   async setPeriod(period, seconds) {
-    console.log('set period', period, seconds)
     const { game, room } = this
     game.period = period
     game.deadline = deadlineAfter(Math.floor(seconds / 60), seconds % 60)
@@ -373,6 +360,7 @@ class GameBase {
     room.emit('deadline', seconds, period)
   }
 
+  // Показывает роль выбывшего игрока
   async showPlayerRole(player, status) {
     const { room } = this
     const role = await player.getRole()
@@ -383,6 +371,7 @@ class GameBase {
     })
   }
 
+  // Выстрел
   async shot(username, mafId) {
     const { game, players } = this
     const player = this.getPlayerByName(username)
@@ -448,6 +437,7 @@ class GameBase {
     }
   }
 
+  // Прова
   async prova(username, komId) {
     const player = this.getPlayerByName(username)
     if (!player) {
@@ -525,48 +515,8 @@ class GameBase {
     game.deadline = 0
   }
 
-  // Проверка на наличие кома в игре
-  komInGame() {
-    const { players } = this
-    for (let index = 0; index < players.length; index++) {
-      const { roleId, status } = players[index]
-      if (
-        roleId == Game.roles.KOMISSAR &&
-        status == GamePlayer.playerStatuses.IN_GAME
-      )
-        return true
-    }
-    return false
-  }
-
-  getKomId() {
-    const { players } = this
-    for (const index in players) {
-      const player = players[index]
-      if (player.roleId == Game.roles.KOMISSAR) return player.accountId
-    }
-    return null
-  }
-
-  activePlayersCount() {
-    return this.players.filter(
-      (p) =>
-        p.status == GamePlayer.playerStatuses.IN_GAME ||
-        p.status == GamePlayer.playerStatuses.FREEZED
-    ).length
-  }
-
-  liveMafiaCount() {
-    return this.players.filter(
-      (p) =>
-        p.status == GamePlayer.playerStatuses.IN_GAME &&
-        p.roleId == Game.roles.MAFIA
-    ).length
-  }
-
   // Проверка на окончание игры
   async isOver() {
-    console.log('Проверка на конец игры...')
     const { players } = this
 
     let aliveMafia = 0
@@ -576,17 +526,11 @@ class GameBase {
     // Считаю какие роли ещё в игре
     for (let index = 0; index < players.length; index++) {
       const player = players[index]
-      console.log(
-        `Смотрю игрока ${player.username} со статусом ${player.status}`
-      )
       // Если игрок ещё в игре
       if (
         player.status == GamePlayer.playerStatuses.IN_GAME ||
         player.status == GamePlayer.playerStatuses.FREEZED
       ) {
-        console.log(
-          `Игрок ${player.username} ещё в игре с ролью ${player.roleId}`
-        )
         // Роль мафии
         if (player.roleId == Game.roles.MAFIA) {
           aliveMafia += 1
@@ -603,10 +547,6 @@ class GameBase {
         aliveCitizens += 1
       }
     }
-
-    console.log(
-      `Итого: граждан: ${aliveCitizens}, мафии: ${aliveMafia}, маняьк: ${aliveManiac}`
-    )
 
     // Ничья
     if (aliveCitizens == 0 && aliveMafia == 0 && aliveManiac == 0) {
@@ -627,8 +567,6 @@ class GameBase {
     if (aliveManiac == 1 && aliveMafia == 0 && aliveCitizens == 0) {
       return Game.sides.MANIAC
     }
-
-    console.log('Игра продолжается...')
 
     // Игра продолжается
     return null
@@ -682,10 +620,58 @@ class GameBase {
     // Запуск процесса раздачи подарков победившей стороне ...
   }
 
+  // Проверка на наличие кома в игре
+  komInGame() {
+    const { players } = this
+    for (let index = 0; index < players.length; index++) {
+      const { roleId, status } = players[index]
+      if (
+        roleId == Game.roles.KOMISSAR &&
+        status == GamePlayer.playerStatuses.IN_GAME
+      )
+        return true
+    }
+    return false
+  }
+
+  // Получает Id кома или null, если его уже нет в игре
+  getKomId() {
+    const { players } = this
+    for (const index in players) {
+      const player = players[index]
+      if (
+        player.roleId == Game.roles.KOMISSAR &&
+        player.status == GamePlayer.playerStatuses.IN_GAME
+      )
+        return player.accountId
+    }
+    return null
+  }
+
+  // Количество активных игроков (которые ещё не выбыли из игры)
+  activePlayersCount() {
+    return this.players.filter(
+      (p) =>
+        p.status == GamePlayer.playerStatuses.IN_GAME ||
+        p.status == GamePlayer.playerStatuses.FREEZED
+    ).length
+  }
+
+  // Количество активных мафиози (которые ещё не выбыли из игры)
+  liveMafiaCount() {
+    return this.players.filter(
+      (p) =>
+        p.status == GamePlayer.playerStatuses.IN_GAME &&
+        p.roleId == Game.roles.MAFIA
+    ).length
+  }
+
+  // Получение id buh
   getId() {
     return this.game.id
   }
 
+  // Получение игрока по id
   getPlayerById(id) {
     const player = this.players.filter((p) => {
       return p.accountId == id
@@ -694,18 +680,13 @@ class GameBase {
     return null
   }
 
+  // Получение игрока по нику
   getPlayerByName(name) {
     const player = this.players.filter((p) => {
       return p.username == name
     })
     if (player.length == 1) return player[0]
     return null
-  }
-
-  whait(seconds) {
-    return new Promise((resolve, _) => {
-      setTimeout(() => resolve(), seconds * 1000)
-    })
   }
 
   /*  ==================================
@@ -776,45 +757,6 @@ class GameBase {
 
     // Отправка списка печатающих игроков
     this.room.emit('typing', Object.keys(typingUsers))
-  }
-
-  /* ========================================
-     ==== Функции реализуемые в потомках ====
-     ======================================== */
-
-  // Доступные роли в зависимости от режима и количества игроков
-  async getAvailableRoles() {
-    throw new Error('Реализовать в потомках')
-  }
-
-  // Вычисление следующего периода игры
-  async nextPeriod() {
-    throw new Error('Реализовать в потомках')
-  }
-
-  // Первый день
-  async afterStart() {
-    throw new Error('Реализовать в потомках')
-  }
-
-  // После дня
-  async afterDay() {
-    throw new Error('Реализовать в потомках')
-  }
-
-  // После хода кома
-  async afterKom() {
-    throw new Error('Реализовать в потомках')
-  }
-
-  // После ночи
-  async afterNight() {
-    throw new Error('Реализовать в потомках')
-  }
-
-  // После проверки
-  async afterTransition() {
-    throw new Error('Реализовать в потомках')
   }
 }
 

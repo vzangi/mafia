@@ -10,190 +10,189 @@ let usersCount = 0
 const userTimers = {}
 
 class UserCountService extends BaseService {
-    // Проверяет, был ли подключен пользователь ранее (true) или это его первый сокет (false)
-    _hasAnySockets() {
-        const { socket } = this
+  // Проверяет, был ли подключен пользователь ранее (true) или это его первый сокет (false)
+  _hasAnySockets() {
+    const { socket } = this
 
-        try {
-            // Проходимся по всем сокетам
-            for (const [sid, s] of socket.server.of('/').sockets) {
-                // Если в сокете нет пользователя (он гость), то пропускаем его
-                if (!s.user) continue
-                // Если Id сокета не совпадает с текущим
-                // а Id пользователей совпадают,
-                // То возвращаем true (у пользователя есть другие открытые сокеты)
-                if (sid != socket.id && s.user.id == socket.user.id) return true
-            }
-        } catch (e) {
-            console.log(e)
-        }
-        // другие сокеты у пользователя не найдены (текущий сокет был единственным)
-        return false
+    try {
+      // Проходимся по всем сокетам
+      for (const [sid, s] of socket.server.of('/').sockets) {
+        // Если в сокете нет пользователя (он гость), то пропускаем его
+        if (!s.user) continue
+        // Если Id сокета не совпадает с текущим
+        // а Id пользователей совпадают,
+        // То возвращаем true (у пользователя есть другие открытые сокеты)
+        if (sid != socket.id && s.user.id == socket.user.id) return true
+      }
+    } catch (e) {
+      console.log(e)
     }
+    // другие сокеты у пользователя не найдены (текущий сокет был единственным)
+    return false
+  }
 
-    // Обновление статуса online у пользователя
-    async _online(id, on = true) {
-        await Account.update({ online: on }, { where: { id } })
-        const { io, socket } = this
-        const { account } = socket
+  // Обновление статуса online у пользователя
+  async _online(id, on = true) {
+    await Account.update({ online: on }, { where: { id } })
+    const { io, socket } = this
+    const { account } = socket
 
-        // const account = await Account.findOne({
-        //     where: { id },
-        //     attributes: ['username', 'avatar']
-        // })
+    // const account = await Account.findOne({
+    //     where: { id },
+    //     attributes: ['username', 'avatar']
+    // })
 
-        const status = on ? 'online' : 'offline'
-        io.of('/online').emit(status, {
-            username: account.username,
-            avatar: account.avatar,
+    const status = on ? 'online' : 'offline'
+    io.of('/online').emit(status, {
+      username: account.username,
+      avatar: account.avatar,
+    })
+
+    // Если пользователь находился в игре,
+    // то уведомляю остальных игроков о том, что статус онлайн изменился
+    GamePlayer.findOne({
+      where: {
+        accountId: id,
+        status: [
+          GamePlayer.playerStatuses.IN_GAME,
+          GamePlayer.playerStatuses.KILLED,
+          GamePlayer.playerStatuses.PRISONED,
+          GamePlayer.playerStatuses.TIMEOUT,
+          GamePlayer.playerStatuses.FREEZED,
+          GamePlayer.playerStatuses.WON,
+        ],
+      },
+      include: [
+        {
+          model: Game,
+          where: {
+            status: [
+              Game.statuses.STARTED,
+              Game.statuses.ENDED,
+              Game.statuses.STOPPED,
+            ],
+          },
+        },
+      ],
+    }).then((gp) => {
+      if (gp) {
+        io.of('/game').to(gp.gameId).emit(`user.${status}`, account.username)
+      }
+    })
+  }
+
+  // Меняет количество пользователей онлайн
+  _changeUserCount(npr) {
+    const { io } = this
+    usersCount += npr
+    io.emit('online.count', usersCount)
+  }
+
+  // Нотификация друзьям о статусе "онлайн" игрока
+  async _notifyFriendsAboutMyOnlineStatus(online = true) {
+    const { user, socket } = this
+    if (!user) return
+
+    // Береу инфу из профиля
+    const profile = await Account.findByPk(user.id, {
+      attributes: ['id', 'username', 'gender', 'updatedAt', 'avatar'],
+    })
+
+    // Беру список друзей
+    const friends = await Friend.scope({
+      method: ['friends', user.id],
+    }).findAll()
+
+    // Прохожу по каждому игроку
+    friends.forEach((f) => {
+      const { friend } = f
+
+      // Если друг онлайн
+      if (friend.online) {
+        const friendIds = this.getUserSocketIds(friend.id)
+
+        // Отправляю ему нотификацию
+        friendIds.forEach((sid) => {
+          if (online) {
+            socket.broadcast.to(sid).emit('friend.online', profile)
+          } else {
+            socket.broadcast.to(sid).emit('friend.offline', profile)
+          }
         })
+      }
+    })
+  }
 
-        // Если пользователь находился в игре, 
-        // то уведомляю остальных игроков о том, что статус онлайн изменился
-        GamePlayer.findOne({
-            where: {
-                accountId: id,
-                status: [
-                  GamePlayer.playerStatuses.IN_GAME,
-                  GamePlayer.playerStatuses.KILLED,
-                  GamePlayer.playerStatuses.PRISONED,
-                  GamePlayer.playerStatuses.TIMEOUT,
-                  GamePlayer.playerStatuses.FREEZED,
-                  GamePlayer.playerStatuses.WON,
-                ]
-              },
-              include: [
-                {
-                  model: Game,
-                  where: {
-                    status: [
-                      Game.statuses.STARTED,
-                      Game.statuses.ENDED,
-                      Game.statuses.STOPPED,
-                    ]
-                  }
-                }
-              ]
-        }).then(gp => {
-            if (gp) {
-                io.of('/game').to(gp.gameId).emit(`user.${status}`, account.username)
-            }
-        })
+  // Количество подключенных пользователей
+  count() {
+    return usersCount
+  }
+
+  // Подключение сокета
+  connect() {
+    const { user } = this
+
+    if (!user) {
+      console.log('a user connected', getNowDateTime())
+      this._changeUserCount(+1)
+      return
     }
 
-    // Меняет количество пользователей онлайн
-    _changeUserCount(npr) {
-        const { io } = this
-        usersCount += npr
-        io.emit('online.count', usersCount)
+    // Если пользователь есть в списке таймеров
+    // то удаляем его оттуда
+    if (userTimers[user.id]) {
+      clearTimeout(userTimers[user.id])
+      delete userTimers[user.id]
+      return
     }
 
-    // Нотификация друзьям о статусе "онлайн" игрока
-    async _notifyFriendsAboutMyOnlineStatus(online = true) {
-        const { user, socket } = this
-        if (!user) return
+    // Если у пользователя открыт только один сокет
+    // увеличиваю количество подключенных пользователей
+    if (!this._hasAnySockets()) {
+      this._changeUserCount(+1)
 
-        // Береу инфу из профиля
-        const profile = await Account.findByPk(user.id, {
-            attributes: ['id', 'username', 'gender', 'updatedAt', 'avatar'],
-        })
+      // Сообщаю друзьям, что игрок появился в сети
+      this._notifyFriendsAboutMyOnlineStatus()
 
-        // Беру список друзей
-        const friends = await Friend.scope({
-            method: ['friends', user.id],
-        }).findAll()
+      // Обновляю статус online
+      this._online(user.id)
+      console.log(`${user.id} connected`, getNowDateTime())
+    }
+  }
 
-        // Прохожу по каждому игроку
-        friends.forEach((f) => {
-            const { friend } = f
+  // Закрытие сокета
+  disconnect() {
+    const { user } = this
 
-            // Если друг онлайн
-            if (friend.online) {
-                const friendIds = this.getUserSocketIds(friend.id)
-
-                // Отправляю ему нотификацию
-                friendIds.forEach((sid) => {
-                    if (online) {
-                        socket.broadcast.to(sid).emit('friend.online', profile)
-                    } else {
-                        socket.broadcast.to(sid).emit('friend.offline', profile)
-                    }
-                })
-            }
-        })
+    // Если вышел неавторизванный пользователь
+    if (!user) {
+      console.log(`socket disconnect (noname)`, getNowDateTime())
+      this._changeUserCount(-1)
+      return
     }
 
-    // Количество подключенных пользователей
-    count() {
-        return usersCount
+    // Выходим если есть другие сессии этого пользователя
+    if (this._hasAnySockets()) {
+      return
     }
 
-    // Подключение сокета
-    connect() {
-        const { user } = this
+    // Устанавливаю таймер выхода с сайта
+    // нужно чтобы статус пользователя не менялся
+    // на оффлайн при переходе между страницами
+    userTimers[user.id] = setTimeout(async () => {
+      delete userTimers[user.id]
 
-        if (!user) {
-            console.log('a user connected', getNowDateTime())
-            this._changeUserCount(+1)
-            return
-        }
+      console.log(`${user.id} disconnected`, getNowDateTime())
 
-        // Если пользователь есть в списке таймеров
-        // то удаляем его оттуда
-        if (userTimers[user.id]) {
-            clearTimeout(userTimers[user.id])
-            delete userTimers[user.id]
-            return
-        }
+      this._changeUserCount(-1)
 
-        // Если у пользователя открыт только один сокет
-        // увеличиваю количество подключенных пользователей
-        if (!this._hasAnySockets()) {
-            this._changeUserCount(+1)
+      // обновлем статус пользователя в базе на offline
+      await this._online(user.id, false)
 
-            // Сообщаю друзьям, что игрок появился в сети
-            this._notifyFriendsAboutMyOnlineStatus()
-
-            // Обновляю статус online
-            this._online(user.id)
-            console.log(`${user.id} connected`, getNowDateTime())
-        }
-    }
-
-    // Закрытие сокета
-    disconnect() {
-        const { user } = this
-
-        // Если вышел неавторизванный пользователь
-        if (!user) {
-            console.log(`socket disconnect (noname)`, getNowDateTime())
-            this._changeUserCount(-1)
-            return
-        }
-
-        // Выходим если есть другие сессии этого пользователя
-        if (this._hasAnySockets()) {
-            return
-        }
-
-        // Устанавливаю таймер выхода с сайта
-        // нужно чтобы статус пользователя не менялся 
-        // на оффлайн при переходе между страницами
-        userTimers[user.id] = setTimeout(async () => {
-            delete userTimers[user.id]
-
-            console.log(`${user.id} disconnected`, getNowDateTime())
-
-            this._changeUserCount(-1)
-
-            // обновлем статус пользователя в базе на offline
-            await this._online(user.id, false)
-
-            // Сообщаю друзьям что игрок покинул сайт
-            this._notifyFriendsAboutMyOnlineStatus(false)
-        }, 3000)
-    }
-
+      // Сообщаю друзьям что игрок покинул сайт
+      this._notifyFriendsAboutMyOnlineStatus(false)
+    }, 5000)
+  }
 }
 
 module.exports = UserCountService

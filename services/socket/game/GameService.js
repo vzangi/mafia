@@ -203,8 +203,6 @@ class ChatService extends BaseService {
       // Рассылаю сообщение всем подключенным пользователям
       io.of('/game').to(gameId).emit('message', msg)
     } else {
-      console.log(msg.gamechatusers)
-
       // Отправляю самому игроку
       const ids = this.getUserSockets(user.id, '/game')
       ids.forEach((sock) => {
@@ -339,8 +337,6 @@ class ChatService extends BaseService {
 
     // Количество ходов равно количеству игроков
     if (steps.length == playersInGame.length) {
-      console.log('Количество ходов равно количеству игроков')
-
       // Завершаю голосование
       game.game.deadline = 0
       return
@@ -364,10 +360,6 @@ class ChatService extends BaseService {
     if (maxVotes) {
       // максимальное количество голсов умноженное на 2 больше чем количество игроков
       if (playersInGame.length < maxVotes.get('votesCount') * 2) {
-        console.log(
-          'максимальное количество голсов умноженное на 2 больше чем количество игроков'
-        )
-
         // завершаю голосование
         game.game.deadline = 0
         return

@@ -2,7 +2,7 @@ const { Op } = require('sequelize')
 const smiles = require('../../units/smiles')
 const Account = require('../../models/Account')
 const AccountName = require('../../models/AccountName')
-const AccountThing = require('../../models/AccountThing')
+const GamePlayer = require('../../models/GamePlayer')
 const Friend = require('../../models/Friend')
 const Thing = require('../../models/Thing')
 const Trade = require('../../models/Trade')
@@ -40,6 +40,12 @@ class ApiService extends BaseService {
       throw new Error('Не авторизован')
     }
 
+    const inGame = await this._inGame(user)
+
+    if (inGame) {
+      throw new Error('Нельзя менять это поле во время игры')
+    }
+
     if (gender != 0 && gender != 1 && gender != 2) {
       throw new Error('Неверное значение поля gender')
     }
@@ -61,6 +67,12 @@ class ApiService extends BaseService {
     const { user, socket } = this
     if (!user) {
       throw new Error('Не авторизован')
+    }
+
+    const inGame = await this._inGame(user)
+
+    if (inGame) {
+      throw new Error('Нельзя менять ник во время игры')
     }
 
     const nik = newnik.trim()
@@ -170,6 +182,26 @@ class ApiService extends BaseService {
     })
 
     return friends
+  }
+
+  async _inGame(user) {
+    if (!user) {
+      throw new Error('Не авторизован')
+    }
+
+    const inGame = await GamePlayer.findOne({
+      where: {
+        accountId: user.id,
+        status: [
+          GamePlayer.playerStatuses.IN_GAME,
+          GamePlayer.playerStatuses.FREEZED,
+        ],
+      },
+    })
+
+    if (inGame) return true
+
+    return false
   }
 }
 

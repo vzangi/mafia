@@ -6,5 +6,8 @@ mixin switch(cls)
 
 mixin settings_item(name, cls)
   div(class="setting-item")
-    div(class="me-2")!= name
+    div(class="me-2")
+      span!= name 
+      if block 
+        block
     +switch(cls)

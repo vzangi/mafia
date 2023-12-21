@@ -1,8 +1,22 @@
+mixin numberInput(name, min, max, defValue)
+  div(class="number-input-box")
+    button(class="btn btn-success btn-less")
+      span(class="ion-chevron-left")
+    div(class="form-control" data-min=min data-max=max id=name)= defValue
+    button(class="btn btn-success btn-more")
+      span(class="ion-chevron-right")
+
+mixin gameFormRow(desc)
+  div(class="mb-3")
+    div(class="d-flex flex-column gap-1")
+      label(class="text-secondary") 
+        small= desc
+      if block 
+        block
+
 div(class="modal fade" id="makeForm" tabindex="-1")
   div(class="modal-dialog modal-dialog-centered")
     div(class="modal-content")
-
-
 
       div(class="game-form")
 
@@ -39,23 +53,19 @@ div(class="modal fade" id="makeForm" tabindex="-1")
             p(class="text-secondary")
               small Роли доступные в этом режиме: #[b честный житель], #[b мафия], #[b комиссар], #[b сержант].
 
-            div(class="mb-3")
-              div(class="d-flex flex-column gap-1")
-                label(class="text-secondary") 
-                  small Количество игроков (6 - 20 игроков)
-                input(class="form-control" type="number" placeholder="Количество игроков" min="6" max="20" value="7" id="gamePlayersCount-1" name="gamePlayersCount-1" width="100" required)
+            +gameFormRow('Количество игроков (6 - 20 игроков)')
+              +numberInput("gamePlayersCount-1", 3, 20, 7)
 
-            div(class="mb-3")
-              div(class="d-flex flex-column gap-1")
-                label(class="text-secondary") 
-                  small Время на сбор (1 - 20 минут)
-                input(class="form-control" type="number" placeholder="Время на сбор" min="1" max="20" value="20" id="waitingTime-1" name="waitingTime-1" required)
+            +gameFormRow('Время на сбор (1 - 20 минут)')
+              +numberInput("waitingTime-1", 1, 20, 10)
 
-            div(class="mb-3")
-              div(class="d-flex flex-column gap-1")
-                label(class="text-secondary") 
-                  small Подпись к заявке
-                input(class="form-control" type="text" placeholder="Подпись к заявке" maxlength="69" id="gameDescription-1" name="gameDescription-1")
+            +gameFormRow('')
+              +settings_item('С добивами', 'mode-1')
+                | 
+                span(class="ion-ios-help-outline" title="В режиме с добивами в тюрьму отправляется игрок набравший наибольшее количество голосов за день" data-bs-toggle="tooltip" data-bs-placement="bottom" )
+
+            +gameFormRow('Подпись к заявке')
+              input(class="form-control" type="text" placeholder="Подпись к заявке" maxlength="69" id="gameDescription-1" name="gameDescription-1")
 
             div(class="text-center mt-4")
               button(type="button" class="btn btn-primary btn-sm btn-make-type-1" data-type="1" data-bs-dismiss="modal") Создать
@@ -90,7 +100,6 @@ div(class="modal fade" id="makeForm" tabindex="-1")
 
             div(class="text-center mt-4")
               button(type="button" class="btn btn-primary btn-sm btn-make-type-2" data-type="1" data-bs-dismiss="modal") Создать
-
 
 
           div(class="game-settings game-settings-3" data-id="3")
@@ -135,4 +144,3 @@ div(class="modal fade" id="makeForm" tabindex="-1")
 
             div(class="text-center mt-4")
               button(type="button" class="btn btn-primary btn-sm btn-make-type-4" data-type="1" data-bs-dismiss="modal") Создать
-

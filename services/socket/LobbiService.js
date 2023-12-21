@@ -15,7 +15,9 @@ class LobbiService extends BaseService {
   }
 
   // Новая заявка на игру
-  async makeGame(gametypeId, playersCount, waitingTime, description = '') {
+  async makeGame(settings) {
+    let { gametypeId, playersCount, waitingTime, description, mode } = settings
+
     const { user } = this
     if (!user) {
       throw new Error('Не авторизован')
@@ -112,6 +114,7 @@ class LobbiService extends BaseService {
       waitingTime,
       description,
       deadline,
+      mode,
     })
 
     // Добавляю в неё игрока
@@ -233,13 +236,8 @@ class LobbiService extends BaseService {
 
     // Если набралось требуемое количество игроков
     if (game.playersCount == game.players.length + 1) {
-      console.log(
-        `В заявке ${gameId} набралось необходимое количество игроков - ${game.playersCount}`
-      )
-
       // Беру игру
       try {
-        console.log('Запускаю игру')
         // Инициирую запуск игры
         GamesManager.start(io, GamesManager.whatingGames[gameId])
       } catch (error) {

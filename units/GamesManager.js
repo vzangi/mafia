@@ -41,6 +41,9 @@ class GamesManager {
 
     // Запускаю интервал проверяющий дедлайны текущих заявок
     setInterval(GamesManager.checkDeadLine.bind(null, io), deadlineInterval)
+
+    // Запускаю интервал проверяющий завершённые игры
+    setInterval(GamesManager.checkEndedGames, 1000 * 60)
   }
 
   /*  ====================================
@@ -76,6 +79,18 @@ class GamesManager {
 
         // Если игроков не хватает или игру не удалось запустить - удаляю её
         await GamesManager.remove(io, game)
+      }
+    }
+  }
+
+  /*  ======================================
+      Исключение завершившихся игр из буфера
+      ====================================== */
+  static checkEndedGames() {
+    for (let gameId in GamesManager.activeGames) {
+      const ag = GamesManager.activeGames[gameId]
+      if (ag.game.status == Game.statuses.ENDED) {
+        GamesManager.removeGame(gameId)
       }
     }
   }
@@ -130,19 +145,13 @@ class GamesManager {
       throw new Error('Игра этого типа пока не поддерживается')
     }
 
-    console.log('Создаю воркер для новой игры')
-
     // Создаю воркер для новой игры
     const newGame = new gameTypeClass(io, game)
-
-    console.log('Помещаю его в буфер текущих игр')
 
     // Помещаю его в буфер текущих игр
     GamesManager.activeGames[game.id] = newGame
 
     try {
-      console.log('Запускаю процесс игры')
-
       // Запускаю процесс игры
       await newGame.startGame()
     } catch (error) {

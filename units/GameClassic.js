@@ -10,8 +10,6 @@ class GameClassic extends GameBase {
     const { players } = this
     const playersInGame = players.length
 
-    console.log('игроков в игре: ${playersInGame}')
-
     // Возвращаю доступные роли в зависимости от количества игроков в партии
     switch (playersInGame) {
       case 3:
@@ -102,11 +100,7 @@ class GameClassic extends GameBase {
     // Увеличиваю номер дня
     game.day += 1
 
-    console.log('day: ', game.day)
-
     await this.systemMessage(`День ${game.day}. Игроки ищут мафию.`)
-
-    //await this.whait(3)
 
     // Следующий период - день
     await this.setPeriod(Game.periods.DAY, periodInterval)
@@ -135,11 +129,7 @@ class GameClassic extends GameBase {
       return
     }
 
-    console.log('zek: ', zek)
-
     const player = this.getPlayerById(zek)
-
-    console.log(`садиться игрок ${player.username} с ролью ${player.roleId}`)
 
     // Меняю статус игрока на "в тюрьме"
     player.status = GamePlayer.playerStatuses.PRISONED
@@ -170,6 +160,7 @@ class GameClassic extends GameBase {
     }
   }
 
+  // Ход кома
   async komStep() {
     const { room, periodInterval } = this
 
@@ -292,7 +283,6 @@ class GameClassic extends GameBase {
       if (playerId == zekId) continue
 
       const votesCount = votes[playerId]
-      console.log(playerId, votesCount)
 
       if (votesCount == maxVotes) {
         // Такой игрок найден
