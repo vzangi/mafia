@@ -1,0 +1,11 @@
+extends /layouts/two_column_8_4
+
+block head 
+  link(href="/css/lobbi/game.css" rel="stylesheet")
+
+
+block main
+  h1(class="mb-3") Текущие игры
+  include /includes/games/current/list
+
+block aside 

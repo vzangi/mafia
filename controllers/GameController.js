@@ -13,6 +13,17 @@ class GameController {
       next(error)
     }
   }
+
+  // Текущие игры
+  async current(req, res, next) {
+    try {
+      const games = await service.current()
+      res.render('pages/game/current', { games })
+    } catch (error) {
+      console.log(error)
+      next(error)
+    }
+  }
 }
 
 module.exports = new GameController()

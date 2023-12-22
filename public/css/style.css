@@ -463,6 +463,18 @@ a.anchor:before {
   background-color: var(--color-gold);
 }
 
+.show-md {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .hidden-md {
+    display: none;
+  }
+  .show-md {
+    display: initial;
+  }
+}
 @media (max-width: 576px) {
   .hidden-xs {
     display: none;

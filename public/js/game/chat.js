@@ -35,8 +35,6 @@ $(function () {
 
   // Получение сообщений
   gameSocket.emit('get.messages', (messages) => {
-    console.log(messages)
-
     messages.map((msg) =>
       chat.append($('#messageTmpl').tmpl(parseMessage(msg)))
     )
@@ -274,7 +272,7 @@ $(function () {
   })
 
   // Переключатель приватного режима
-  privateCheckbox.click(function(){
+  privateCheckbox.click(function () {
     chatInputBox.toggleClass('private-active')
   })
 

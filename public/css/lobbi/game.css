@@ -1,3 +1,7 @@
+a.game-item {
+  text-decoration: none;
+}
+
 .game-item .block {
   box-shadow: 0 0 10px #ccc;
   border: 0;

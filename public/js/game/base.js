@@ -10,7 +10,6 @@ $(function () {
 
   // Получение роли
   gameSocket.emit('get.role', (role) => {
-    console.log(role)
     roleName.text(role.name)
 
     myRole = role
@@ -36,8 +35,6 @@ $(function () {
     }
 
     gameSocket.emit('get.roles', (roles) => {
-      console.log('roles', roles)
-
       if (roles) {
         roles.forEach((r) => {
           const { role } = r
@@ -86,5 +83,5 @@ $(function () {
         location.reload()
       })
     })
-  }, 200)
+  }, 5000)
 })

@@ -57,7 +57,7 @@ $(async function () {
         location.reload()
       })
     })
-  }, 200)
+  }, 5000)
 
   socket.emit('friends.online', (status, res) => {
     if (status == 1) {

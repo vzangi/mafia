@@ -2,6 +2,7 @@ const Account = require('../models/Account')
 const Game = require('../models/Game')
 const GamePlayer = require('../models/GamePlayer')
 const GameStep = require('../models/GameStep')
+const GameType = require('../models/GameType')
 const smiles = require('../units/smiles')
 
 class GameService {
@@ -98,6 +99,30 @@ class GameService {
     }
 
     return data
+  }
+
+  // Текущие игры
+  async current() {
+    const games = await Game.findAll({
+      where: {
+        status: Game.statuses.STARTED,
+      },
+      include: [
+        { model: GameType },
+        {
+          model: GamePlayer,
+          as: 'players',
+          include: [
+            {
+              model: Account,
+              attributes: ['username', 'avatar', 'online'],
+            },
+          ],
+        },
+      ],
+    })
+
+    return games
   }
 }
 
