@@ -81,6 +81,18 @@ $(function () {
     showRole(user, true)
   })
 
+  gameSocket.on('role.update', (data) => {
+    const { role } = data
+
+    $('.role-name').text(role.name)
+
+    // Стал комиссаром
+    if (role.id == 3) {
+      // Даю возможность проверки
+      $('.prova-dot').show()
+    }
+  })
+
   // Конец игры
   gameSocket.on('game.over', (side) => {
     $('.chat-input-box').remove()
@@ -135,6 +147,10 @@ $(function () {
       $('.chat-input-box').remove()
       $('.kill-dot').remove()
       $('.prova-dot').remove()
+
+      if ($('.role-name').text() == 'Комиссар') {
+        $('.player.role-4 .role').text('Комиссар')
+      }
     }
   }
 

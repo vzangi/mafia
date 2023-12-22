@@ -17,7 +17,7 @@ class GameClassic extends GameBase {
         return [[Game.roles.MAFIA, 1]]
       case 5:
         return [
-          [Game.roles.MAFIA, 2],
+          [Game.roles.MAFIA, 1],
           [Game.roles.KOMISSAR, 1],
         ]
       case 6:
@@ -140,6 +140,10 @@ class GameClassic extends GameBase {
     await this.systemMessage(
       `${role.name} <b>${player.username}</b> отправляется в тюрьму.`
     )
+
+    // Если посажен комиссар - надо посмотреть есть ли в игре сержант
+    // Если есть, то передаю роль комиссара ему
+    if (role.id == Game.roles.KOMISSAR) await this.updateSergeant()
 
     // Показываю роль посаженного игрока всем
     await this.showPlayerRole(player, GamePlayer.playerStatuses.PRISONED)
@@ -345,11 +349,33 @@ class GameClassic extends GameBase {
       `${role.name} <b>${killed.username}</b> убит мафией.`
     )
 
-    // Если убит комиссар - надо посмотреть есть ли в игре сержант !!!
+    // Если убит комиссар - надо посмотреть есть ли в игре сержант
     // Если есть, то передаю роль комиссара ему
+    if (role.id == Game.roles.KOMISSAR) await this.updateSergeant()
 
     // Показываю всем роль убитого игрока
     await this.showPlayerRole(killed, GamePlayer.playerStatuses.KILLED)
+  }
+
+  async updateSergeant() {
+    const serg = this.getSergeant()
+
+    if (!serg) return
+
+    serg.roleId = Game.roles.KOMISSAR
+    await serg.save()
+
+    const role = await serg.getRole()
+
+    this.systemMessage('Полномочия коммисара переходят сержанту.')
+
+    // Сообщаю сержанту о его новой роли
+    const ids = this.getUserSocketIds(serg.accountId)
+    ids.forEach((sid) => {
+      sid.emit('role.update', {
+        role,
+      })
+    })
   }
 
   // Промах мафии

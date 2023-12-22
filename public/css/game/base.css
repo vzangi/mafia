@@ -90,6 +90,7 @@ header,
 .friend-info .username,
 .friend-info .role {
   text-wrap: nowrap;
+  white-space: -moz-pre-space;
   text-overflow: ellipsis;
   overflow: hidden;
   color: inherit;
@@ -104,6 +105,7 @@ header,
 @media (min-width: 420px) {
   .players-list > div {
     flex: 0 1 50%;
+    max-width: 50%;
   }
 }
 

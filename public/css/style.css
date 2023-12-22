@@ -578,6 +578,7 @@ a.anchor:before {
 .ellipsis {
   text-overflow: ellipsis;
   text-wrap: nowrap;
+  white-space: -moz-pre-space;
   overflow: hidden;
 }
 
@@ -660,7 +661,6 @@ ul.aside-menu li a.active {
 .thing-class-5 {
   background-color: var(--color-class-5) !important;
 }
-
 
 .friend-item {
   display: flex;

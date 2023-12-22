@@ -49,6 +49,16 @@ $(async function () {
     })
   })
 
+  setTimeout(() => {
+    socket.on('connect', () => {
+      alert(
+        'Соединение было утеряно. Необходимо обновить страницу для получения актуальных данных'
+      ).then(() => {
+        location.reload()
+      })
+    })
+  }, 200)
+
   socket.emit('friends.online', (status, res) => {
     if (status == 1) {
       // Не авторизован

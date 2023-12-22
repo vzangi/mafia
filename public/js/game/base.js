@@ -77,4 +77,14 @@ $(function () {
     const { username } = account
     $(`.player[data-username=${username}] .friend-avatar`).removeClass('online')
   })
+
+  setTimeout(() => {
+    gameSocket.on('connect', () => {
+      alert(
+        'Соединение было утеряно. Необходимо обновить страницу для получения актуальных данных'
+      ).then(() => {
+        location.reload()
+      })
+    })
+  }, 200)
 })

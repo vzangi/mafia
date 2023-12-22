@@ -11,10 +11,11 @@ div(class="mb-3")
       div(class="p-1")
         div(class="player"+ps+pr data-username=player.username)
           div(class="friend-item")
-            div(class="friend-avatar "+(player.account.online?' online':''))
-              img(src="/uploads/"+player.account.avatar)
+            div
+              div(class="friend-avatar "+(player.account.online?' online':''))
+                img(src="/uploads/"+player.account.avatar)
             div(class="friend-info")
-              div
+              div(class="ellipsis")
                 a(class="username")= player.username
               if out
                 small(class="role")= player.role.name

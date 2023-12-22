@@ -23,7 +23,7 @@ class GameBase {
     this.players = []
 
     // время хода
-    this.periodInterval = 20
+    this.periodInterval = 120
 
     // время перехода для комиссара
     this.perehodInterval = 6
@@ -245,8 +245,7 @@ class GameBase {
       for (let index2 = 0; index2 < players.length; index2++) {
         const player2 = players[index2]
 
-        if (player.roleId != Game.roles.KOMISSAR) continue
-
+        if (player2.roleId != Game.roles.KOMISSAR) continue
         // Ком видит сержанта
         await GameRole.create({
           gameId: game.id,
@@ -644,6 +643,20 @@ class GameBase {
         player.status == GamePlayer.playerStatuses.IN_GAME
       )
         return player.accountId
+    }
+    return null
+  }
+
+  // Получает сержанта или null, если его нет в игре
+  getSergeant() {
+    const { players } = this
+    for (const index in players) {
+      const player = players[index]
+      if (
+        player.roleId == Game.roles.SERGEANT &&
+        player.status == GamePlayer.playerStatuses.IN_GAME
+      )
+        return player
     }
     return null
   }
