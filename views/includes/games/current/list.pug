@@ -3,7 +3,7 @@ if !games || games.length == 0
 else
 
   each game in games 
-    a(class="game-item game-type-"+game.gametype.id data-id=game.id href="/game/"+game.id)
+    a(class="game-item old-game-type-"+game.gametype.id data-id=game.id href="/game/"+game.id)
       div(class="block p-4 mb-3")
         div(class="game-info mb-3")
           div(class="d-flex justify-content-between align-items-center gap-1")

@@ -1,6 +1,13 @@
+:root {
+  --color-bg: #333;
+  --color-bg-light: #444;
+  --color-bg-player: #777;
+  --color-bg-player-hover: #666;
+}
+
 body {
   color: var(--color-white);
-  background-color: #153;
+  background-color: var(--color-bg-light);
   overflow-x: hidden;
   transition: background-color 0.3s ease;
 }
@@ -13,7 +20,7 @@ body.twilight {
 }
 
 header {
-  background: #153;
+  background: var(--color-bg);
   box-shadow: 0 0 10px #333;
   position: fixed;
   z-index: 1;
@@ -49,15 +56,15 @@ header,
 }
 
 .player {
-  background-color: var(--color-green);
+  background-color: var(--color-bg-player);
   border-radius: var(--border-radius);
-  box-shadow: 0 0 10px var(--color-body-dark) inset;
+  box-shadow: 0 0 10px var(--color-bg) inset;
   transition: all 0.3s ease;
 }
 
 .player:hover {
-  background-color: var(--color-green);
-  box-shadow: 0 0 5px var(--color-body-dark) inset;
+  background-color: var(--color-bg-player-hover);
+  box-shadow: 0 0 5px var(--color-bg) inset;
 }
 
 .friend-avatar.online:after {

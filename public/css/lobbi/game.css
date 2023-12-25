@@ -2,10 +2,17 @@ a.game-item {
   text-decoration: none;
 }
 
-.game-item .block {
+/* .game-item .block {
   box-shadow: 0 0 10px #ccc;
   border: 0;
   color: var(--color-white);
+} */
+
+.game-item .block {
+  box-shadow: 0 0 10px #ccc;
+  border: 0;
+  color: #222;
+  background: #ccc;
 }
 
 .game-type-1 .block {
@@ -96,6 +103,7 @@ a.game-item {
 
 .game-action-btn.btn-to-game {
   color: var(--color-gold);
+  color: var(--chat-green);
 }
 
 .game-action-btn.btn-from-game:hover {

@@ -19,6 +19,11 @@ div(class="mb-3")
                 a(class="username")= player.username
               if out
                 small(class="role")= player.role.name
+              else 
+                if steps && steps.filter(s => s.account.username == player.username).length == 1
+                  small(class='vote-result') 
+                    span против 
+                    span= steps.filter(s => s.account.username == player.username)[0].player.username
             if !out
               div(class="vote-dot "+(steps?'':'hide') title="Голосов" data-username=player.username)
                 if !steps

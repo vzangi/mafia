@@ -5,7 +5,7 @@ header(class="game-status-"+game.status)
       if game.status == 2
         div(class="timer" title="Таймер хода" data-bs-toggle="tooltip" data-bs-placement="bottom") 
           span(class="ion-ios-clock") 
-          span(class="value" data-seconds=seconds data-stamp=Date.now()) 
+          span(class="value" data-seconds=seconds data-stamp=0) 
       else
         span Игра окончена
 

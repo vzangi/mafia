@@ -4,6 +4,8 @@ $(function () {
   // Элемент таймера на странице
   const time = $('.timer .value')
 
+  $(time).data().stamp = Date.now()
+
   // Фунцкия для добавления ведущего нуля
   const _0 = (d) => (d < 0 ? '00' : d > 9 ? d : `0${d}`)
 
