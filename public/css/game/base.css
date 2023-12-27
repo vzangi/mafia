@@ -153,6 +153,7 @@ header,
 */
 .player-status-6 .friend-avatar:before {
   background-image: url(/images/timer.png);
+  background-color: rgba(250,250,250, 0.5);
 }
 
 .player.player-status-4 .username,
@@ -216,4 +217,8 @@ header,
 
 .prova-dot.checked {
   background-color: #153;
+}
+
+.modal-body {
+  color: #333;
 }

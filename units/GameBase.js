@@ -4,7 +4,9 @@ const GameChat = require('../models/GameChat')
 const GamePlayer = require('../models/GamePlayer')
 const { deadlineAfter, getCoolDateTime } = require('./helpers')
 const workerInterval = 1000
+const timeoutSeconds = 120
 const GameStep = require('../models/GameStep')
+const Account = require('../models/Account')
 
 /*  ==================================
     Базовый класс для всех режимов игр
@@ -105,8 +107,61 @@ class GameBase {
         this.periodWorker.bind(this),
         workerInterval
       )
+
+      // Запуск воркера контролирующего вышедших по тайму игроков
+      this.timeoutIntervalId = setInterval(
+        this.timeoutWorker.bind(this),
+        (this.periodInterval + 5) * 1000
+      )
     } else {
       this.removeGame()
+    }
+  }
+
+  // Воркер контролирующий вышедших по тайму игроков
+  async timeoutWorker() {
+    const { players, game, room } = this
+
+    // Прохожу по каждому игроку
+    for (let index = 0; index < players.length; index++) {
+      const player = players[index]
+
+      // если игрок не в игре - беру следующего
+      if (player.status != GamePlayer.playerStatuses.IN_GAME &&
+        player.status != GamePlayer.playerStatuses.FREEZED) continue
+
+      const playerInBase = await Account.findOne({
+        where: {
+          id: player.accountId
+        },
+        attibutes: ['online', 'updatedAt', 'gender']
+      })
+
+      if (!playerInBase) continue
+
+      if (playerInBase.online) continue
+
+      const seconds = Math.floor(
+        Date.now() * 1 / 1000 - (new Date(playerInBase.updatedAt) * 1) / 1000 
+      )
+
+      if (seconds < timeoutSeconds) continue
+
+      player.status = GamePlayer.playerStatuses.TIMEOUT
+      await player.save()
+
+      const role = await player.getRole()
+
+      this.systemMessage(`${role.name} <b>${player.username}</b> ${playerInBase.gender == 2?'вышла':'вышел'} из партии по таймауту`)
+
+      await this.showPlayerRole(player, GamePlayer.playerStatuses.TIMEOUT)
+      
+    }
+
+    // Проверка на завершение игры
+    const winnerSide = await this.isOver()
+    if (winnerSide) {
+      return await this.gameOver(winnerSide)
     }
   }
 
@@ -327,6 +382,7 @@ class GameBase {
 
     if (game.period == Game.periods.END) {
       clearInterval(this.workerIntervalId)
+      clearInterval(this.timeoutIntervalId)
       return
     }
 

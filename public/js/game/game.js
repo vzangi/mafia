@@ -107,12 +107,12 @@ $(function () {
     console.log(voterUsername, playerUsername)
 
     // Увеличиваю количество голосов
-    const dot = $(`.vote-dot[data-username=${playerUsername}] .vote-cnt`)
+    const dot = $(`.vote-dot[data-username='${playerUsername}'] .vote-cnt`)
     const cnt = dot.text() * 1
     dot.text(cnt + 1)
 
     // Меняю статус голосовавшего
-    const voter = $(`.player[data-username=${voterUsername}]`)
+    const voter = $(`.player[data-username='${voterUsername}']`)
     voter.addClass('voted')
     $('#voteResultTmpl')
       .tmpl({ vote: playerUsername })
@@ -125,7 +125,7 @@ $(function () {
   })
 
   function showRole(user, isProva = false) {
-    const player = $(`.player[data-username=${user.username}]`)
+    const player = $(`.player[data-username='${user.username}']`)
     if (!isProva) {
       player.find('.vote-dot').remove()
     }

@@ -29,6 +29,7 @@ class GameClassic extends GameBase {
         return [
           [Game.roles.MAFIA, 2],
           [Game.roles.KOMISSAR, 1],
+          [Game.roles.SERGEANT, 1],
         ]
       case 12:
       case 13:

@@ -15,7 +15,7 @@ $(function () {
     myRole = role
 
     if (role.username != '') {
-      $(`.player[data-username=${role.username}]`)
+      $(`.player[data-username='${role.username}']`)
         .addClass(`role-${role.id}`)
         .addClass('iam')
     }
@@ -39,7 +39,7 @@ $(function () {
         roles.forEach((r) => {
           const { role } = r
           const username = r.player.username
-          const player = $(`.player[data-username=${username}]`)
+          const player = $(`.player[data-username='${username}']`)
           if (player.find('.role').length == 0) {
             $('#playerRoleTmpl')
               .tmpl(role)
@@ -67,12 +67,12 @@ $(function () {
 
   onlineSocket.on('online', (account) => {
     const { username } = account
-    $(`.player[data-username=${username}] .friend-avatar`).addClass('online')
+    $(`.player[data-username='${username}'] .friend-avatar`).addClass('online')
   })
 
   onlineSocket.on('offline', (account) => {
     const { username } = account
-    $(`.player[data-username=${username}] .friend-avatar`).removeClass('online')
+    $(`.player[data-username='${username}'] .friend-avatar`).removeClass('online')
   })
 
   setTimeout(() => {
