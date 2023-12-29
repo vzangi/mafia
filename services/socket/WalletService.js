@@ -4,6 +4,7 @@ const Thing = require('../../models/Thing')
 const WalletEvent = require('../../models/WalletEvents')
 const bot = require('../../units/bot')
 const BaseService = require('./BaseService')
+const htmlspecialchars = require('htmlspecialchars')
 
 const minPaymentSumm = 50
 const maxPaymentSumm = 15000
@@ -48,7 +49,7 @@ class WalletService extends BaseService {
   }
 
   // Перевод
-  async transfer(username, count) {
+  async transfer(username, count, comment) {
     const { user } = this
     if (!user) {
       throw new Error('Не авторизован')
@@ -88,11 +89,16 @@ class WalletService extends BaseService {
       throw new Error('На счету не хватает средств для совершения перевода')
     }
 
-    await WalletEvent.transfer(user.id, recipient.id, count)
+    comment = htmlspecialchars(comment)
+    if (comment.length > 255) {
+      comment = comment.substr(0, 255)
+    }
+
+    await WalletEvent.transfer(user.id, recipient.id, count, comment)
 
     const notifyText = `${account.username} ${
       account.gender == Account.genders.FEMALE ? 'перевела' : 'перевёл'
-    } вам ${count} рублей`
+    } вам ${count} рублей c комментарием: ${comment}`
 
     // Отправляю уведомление другу
     this.notify(recipient.id, notifyText)

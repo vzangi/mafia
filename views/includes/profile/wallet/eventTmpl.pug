@@ -42,6 +42,10 @@ script(id="eventTmpl" type="text/x-jquery-tmpl")
       img(src="/images/eMoney.svg")
       . 
         {{/if}}
+        {{if eventType == 10}}
+      img(src="/images/eMoney.svg")
+      . 
+        {{/if}}
         {{if eventType == 5}}
       img(src="/uploads/thing/${thing.picture}" alt="${thing.name}" title="${thing.name}")
       . 
@@ -77,6 +81,9 @@ script(id="eventTmpl" type="text/x-jquery-tmpl")
         {{else eventType == 9}}
       div Перевод
       .
+        {{else eventType == 10}}
+      div Входящий перевод
+      .
         {{else eventType == 5}}
       div Продажа на маркете
       .
@@ -85,6 +92,12 @@ script(id="eventTmpl" type="text/x-jquery-tmpl")
       . 
         {{else}}
       div Что-то другое
+      .
+        {{/if}} 
+
+      . 
+        {{if comment && comment != ''}}
+      small Комментарий: ${comment}
       .
         {{/if}} 
 
@@ -113,6 +126,9 @@ script(id="eventTmpl" type="text/x-jquery-tmpl")
       .
         {{else eventType == 9}}
       span(class="minus") ${value}
+      .
+        {{else eventType == 10}}
+      span(class="plus") +${value}
       .
         {{else eventType == 5}}
       span(class="plus") +${value}

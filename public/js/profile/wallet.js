@@ -62,6 +62,8 @@ $(function () {
 
     const username = $(this).find('[name=username]').val().trim()
     const count = $(this).find('[name=count]').val() * 1
+    const comment = $(this).find('[name=comment]').val().trim()
+
     if (username == '') {
       return alert('Введите ник получателя перевода')
     }
@@ -69,7 +71,7 @@ $(function () {
       return alert('Переводить можно суммы от 1 до 5000 за раз')
     }
 
-    socket.emit('transfer', username, count, (res) => {
+    socket.emit('transfer', username, count, comment, (res) => {
       if (res.status != 0) return alert(res.msg)
       location.reload()
     })

@@ -24,9 +24,9 @@ class WalletController extends BaseSocketController {
   }
 
   // Перевод
-  async transfer(username, count, callback) {
+  async transfer(username, count, comment, callback) {
     try {
-      await this.service.transfer(username, count)
+      await this.service.transfer(username, count, comment)
       callback({ status: 0 })
     } catch (error) {
       callback({ status: 1, msg: error.message })

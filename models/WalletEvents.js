@@ -15,6 +15,7 @@ const events = {
   GIFT: 7, // Подарок
   NEWNIK: 8, // Смена ника
   TRANSFER: 9, // Перевод
+  TRANSFER_IN: 10, // Получение перевода
 }
 
 const transferRate = 1.1
@@ -40,6 +41,9 @@ const WalletEvent = sequelize.define('walletevents', {
   thingId: {
     type: DataTypes.INTEGER,
   },
+  comment: {
+    type: DataTypes.STRING,
+  },
   coolDate: {
     type: DataTypes.VIRTUAL(DataTypes.STRING),
     get() {
@@ -63,7 +67,13 @@ WalletEvent.belongsTo(Thing)
 WalletEvent.belongsTo(Account)
 
 // Транзакция
-const transaction = async (eventType, accountId, value, thingId = null) => {
+const transaction = async (
+  eventType,
+  accountId,
+  value,
+  thingId = null,
+  comment = ''
+) => {
   const t = await sequelize.transaction()
   try {
     value = value.toFixed(2)
@@ -73,6 +83,7 @@ const transaction = async (eventType, accountId, value, thingId = null) => {
         eventType,
         value,
         thingId,
+        comment,
       },
       { transaction: t }
     )
@@ -134,7 +145,12 @@ WalletEvent.divorce = async (userId) => {
 }
 
 // Перевод
-WalletEvent.transfer = async (userId, recipientId, transferCount) => {
+WalletEvent.transfer = async (
+  userId,
+  recipientId,
+  transferCount,
+  comment = ''
+) => {
   // Списываю средства у отправителя
   await transaction(
     WalletEvent.events.TRANSFER,
@@ -142,7 +158,13 @@ WalletEvent.transfer = async (userId, recipientId, transferCount) => {
     -transferCount * transferRate
   )
   // Зачисляю их получателю
-  await transaction(WalletEvent.events.PAYMENT, recipientId, transferCount)
+  await transaction(
+    WalletEvent.events.TRANSFER_IN,
+    recipientId,
+    transferCount,
+    null,
+    comment
+  )
 }
 
 // Покупка вещи на маркете
