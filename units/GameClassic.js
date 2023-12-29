@@ -287,11 +287,30 @@ class GameClassic extends GameBase {
       }
     })
 
-    // Если нет голосов
-    if (!zekId) return null
-
     // Количество живых игроков
     const activePlayers = this.activePlayersCount()
+
+    // Если нет голосов
+    if (!zekId) {
+      // смотрю, не осталось ли в игре всего двух игроков
+      // тогда посадка автоматический выбирается из них
+
+      if (activePlayers > 2) return null
+
+      for (let index in this.players) {
+        const player = this.players[index]
+
+        if (
+          player.status != GamePlayer.playerStatuses.IN_GAME &&
+          player.status != GamePlayer.playerStatuses.FREEZED
+        )
+          continue
+        player.playerId = player.accountId
+        steps.push(player)
+        votes[player.accountId] = 1
+      }
+      maxVotes = 1
+    }
 
     // Смотрю, есть ли другой игрок с таким же количеством голосов
     for (const playerId in votes) {
