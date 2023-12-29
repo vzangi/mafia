@@ -157,8 +157,18 @@ class GameClassic extends GameBase {
 
     // Если ком ещё в игре
     if (this.komInGame()) {
-      // то идёт проверка кома
-      await this.komStep()
+      const hasUnlooked = await this.hasUnlookedPlayers()
+
+      // Если есть непроверенные игроки
+      if (hasUnlooked) {
+        // то идёт проверка кома
+        await this.komStep()
+      } else {
+        this.systemMessage('Комиссар окончил своё расследование.')
+
+        // Ход мафии
+        await this.mafiaStep()
+      }
     } else {
       // если кома нет, то сразу идёт ночь
       await this.mafiaStep()
@@ -358,6 +368,7 @@ class GameClassic extends GameBase {
     await this.showPlayerRole(killed, GamePlayer.playerStatuses.KILLED)
   }
 
+  // Передача роли комиссара сержанту
   async updateSergeant() {
     const serg = this.getSergeant()
 

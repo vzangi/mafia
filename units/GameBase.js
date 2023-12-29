@@ -127,14 +127,17 @@ class GameBase {
       const player = players[index]
 
       // если игрок не в игре - беру следующего
-      if (player.status != GamePlayer.playerStatuses.IN_GAME &&
-        player.status != GamePlayer.playerStatuses.FREEZED) continue
+      if (
+        player.status != GamePlayer.playerStatuses.IN_GAME &&
+        player.status != GamePlayer.playerStatuses.FREEZED
+      )
+        continue
 
       const playerInBase = await Account.findOne({
         where: {
-          id: player.accountId
+          id: player.accountId,
         },
-        attibutes: ['online', 'updatedAt', 'gender']
+        attibutes: ['online', 'updatedAt', 'gender'],
       })
 
       if (!playerInBase) continue
@@ -142,7 +145,7 @@ class GameBase {
       if (playerInBase.online) continue
 
       const seconds = Math.floor(
-        Date.now() * 1 / 1000 - (new Date(playerInBase.updatedAt) * 1) / 1000 
+        (Date.now() * 1) / 1000 - (new Date(playerInBase.updatedAt) * 1) / 1000
       )
 
       if (seconds < timeoutSeconds) continue
@@ -152,10 +155,13 @@ class GameBase {
 
       const role = await player.getRole()
 
-      this.systemMessage(`${role.name} <b>${player.username}</b> ${playerInBase.gender == 2?'вышла':'вышел'} из партии по таймауту`)
+      this.systemMessage(
+        `${role.name} <b>${player.username}</b> ${
+          playerInBase.gender == 2 ? 'вышла' : 'вышел'
+        } из партии по таймауту`
+      )
 
       await this.showPlayerRole(player, GamePlayer.playerStatuses.TIMEOUT)
-      
     }
 
     // Проверка на завершение игры
@@ -715,6 +721,47 @@ class GameBase {
         return player
     }
     return null
+  }
+
+  // Проверка на наличие непроверенных игроков
+  // для отпределения требуется ли хода кома
+  async hasUnlookedPlayers() {
+    const { players, game } = this
+    const komId = this.getKomId()
+    if (!komId) return false
+
+    // игроки, роли которых ком видит
+    const looked = await GameRole.findAll({
+      where: {
+        gameId: game.id,
+        accountId: komId,
+      },
+    })
+
+    // Прохожу по игрокам в партии
+    for (const index in players) {
+      const player = players[index]
+
+      // Кома пропускаю
+      if (player.accountId == komId) continue
+
+      // Если игрок ещё в партии
+      if (
+        player.status == GamePlayer.playerStatuses.IN_GAME ||
+        player.status == GamePlayer.playerStatuses.FREEZED
+      ) {
+        // Если игрок в списке проверенных комом - пропускаю
+        if (looked.filter((p) => p.playerId == player.accountId).length == 1) {
+          continue
+        }
+
+        // найден не проверенный игрок
+        return true
+      }
+    }
+
+    // непроверенных игроков нет
+    return false
   }
 
   // Количество активных игроков (которые ещё не выбыли из игры)
