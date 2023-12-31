@@ -120,7 +120,9 @@ class GameBase {
 
   // Воркер контролирующий вышедших по тайму игроков
   async timeoutWorker() {
-    const { players, game, room } = this
+    const { players } = this
+
+    let komIsOut = false
 
     // Прохожу по каждому игроку
     for (let index = 0; index < players.length; index++) {
@@ -155,6 +157,14 @@ class GameBase {
 
       const role = await player.getRole()
 
+      if (player.roleId == Game.roles.KOMISSAR) {
+        komIsOut = true
+      }
+
+      if (player.roleId == Game.roles.KOMISSAR) {
+        komIsOut = true
+      }
+
       this.systemMessage(
         `${role.name} <b>${player.username}</b> ${
           playerInBase.gender == 2 ? 'вышла' : 'вышел'
@@ -162,6 +172,12 @@ class GameBase {
       )
 
       await this.showPlayerRole(player, GamePlayer.playerStatuses.TIMEOUT)
+    }
+
+    // Если комиссар вышел в тайм
+    if (komIsOut) {
+        // Передаю роль кома сержанту
+        await this.updateSergeant()
     }
 
     // Проверка на завершение игры
@@ -762,6 +778,28 @@ class GameBase {
 
     // непроверенных игроков нет
     return false
+  }
+
+  // Передача роли комиссара сержанту
+  async updateSergeant() {
+    const serg = this.getSergeant()
+
+    if (!serg) return
+
+    serg.roleId = Game.roles.KOMISSAR
+    await serg.save()
+
+    const role = await serg.getRole()
+
+    this.systemMessage('Полномочия коммисара переходят сержанту.')
+
+    // Сообщаю сержанту о его новой роли
+    const ids = this.getUserSocketIds(serg.accountId)
+    ids.forEach((sid) => {
+      sid.emit('role.update', {
+        role,
+      })
+    })
   }
 
   // Количество активных игроков (которые ещё не выбыли из игры)

@@ -387,28 +387,6 @@ class GameClassic extends GameBase {
     await this.showPlayerRole(killed, GamePlayer.playerStatuses.KILLED)
   }
 
-  // Передача роли комиссара сержанту
-  async updateSergeant() {
-    const serg = this.getSergeant()
-
-    if (!serg) return
-
-    serg.roleId = Game.roles.KOMISSAR
-    await serg.save()
-
-    const role = await serg.getRole()
-
-    this.systemMessage('Полномочия коммисара переходят сержанту.')
-
-    // Сообщаю сержанту о его новой роли
-    const ids = this.getUserSocketIds(serg.accountId)
-    ids.forEach((sid) => {
-      sid.emit('role.update', {
-        role,
-      })
-    })
-  }
-
   // Промах мафии
   async missmatch() {
     await this.systemMessage('Мафия никого не убила.')
