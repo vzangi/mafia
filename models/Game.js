@@ -3,6 +3,7 @@ const sequelize = require('../units/db')
 const GameType = require('./GameType')
 const GamePlayer = require('./GamePlayer')
 const Account = require('./Account')
+const { getCoolDateTime } = require('../units/helpers')
 
 const statuses = {
   WHAITNG: 0,
@@ -96,6 +97,16 @@ const Game = sequelize.define(
     },
     startedAt: {
       type: DataTypes.DATE,
+    },
+
+    coolStarted: {
+      type: DataTypes.VIRTUAL(DataTypes.STRING),
+      get() {
+        return getCoolDateTime(this.startedAt)
+      },
+      set() {
+        throw new Error('Do not try to set this value!')
+      },
     },
 
     seconds: {

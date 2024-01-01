@@ -1,9 +1,11 @@
+const { Op } = require('sequelize')
 const Account = require('../models/Account')
 const Game = require('../models/Game')
 const GamePlayer = require('../models/GamePlayer')
 const GameStep = require('../models/GameStep')
 const GameType = require('../models/GameType')
 const smiles = require('../units/smiles')
+const { getDateFromIso } = require('../units/helpers')
 
 class GameService {
   // Страница игры
@@ -123,6 +125,69 @@ class GameService {
     })
 
     return games
+  }
+
+  // Архив игр
+  async archive(year, month, day) {
+    const date = new Date()
+    if (!year && !month && !day) {
+      year = date.getFullYear()
+      month = date.getMonth() + 1
+      day = date.getDate()
+    } 
+    if (month < 10) month = `0${month*1}` 
+    if (day < 10) day = `0${day*1}` 
+
+    if (!this.testDate(year, month, day)) {
+      throw new Error("Неверный формат даты")
+    }
+
+    const games = await Game.findAll({
+      where: {
+        status: [
+          Game.statuses.ENDED,
+          Game.statuses.STOPPED,
+        ],
+        startedAt: {
+          [Op.startsWith]: `${year}-${month}-${day}`
+        }
+      },
+      include: [
+        { model: GameType },
+        {
+          model: GamePlayer,
+          as: 'players',
+          include: [
+            {
+              model: Account,
+              attributes: ['username', 'avatar', 'online'],
+            },
+          ],
+        },
+      ],
+    })
+
+    const data = {
+      games,
+      year,
+      month,
+      day,
+    }
+
+    return data
+  }
+
+  testDate(year, month, day) {
+    console.log(year, month, day);
+    if(!/^\d{4}$/.test(year)) return false
+    if(!/^\d{2}$/.test(month)) return false
+    if(!/^\d{2}$/.test(day)) return false
+
+    if (year < 2023 || year > 2030) return false
+    if (month < 1 || month > 12) return false
+    if (day < 1 || day > 31) return false
+
+    return true
   }
 }
 

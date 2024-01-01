@@ -1,13 +1,16 @@
-mixin switch(cls)
+mixin switch(cls, checked)
   div
     label(class="switch")
-      input(type="checkbox" class=cls name=cls id=cls)
+      if (checked)
+        input(type="checkbox" class=cls name=cls id=cls checked="checked")
+      else  
+        input(type="checkbox" class=cls name=cls id=cls)
       span(class="slider round")
 
-mixin settings_item(name, cls)
+mixin settings_item(name, cls, checked=false)
   div(class="setting-item")
     div(class="me-2")
       span!= name 
       if block 
         block
-    +switch(cls)
+    +switch(cls, checked)

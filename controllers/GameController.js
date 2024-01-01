@@ -24,6 +24,18 @@ class GameController {
       next(error)
     }
   }
+
+  // Архив игр
+  async archive(req, res, next) {
+    try {
+      const { year, month, day } = req.params
+      const data = await service.archive(year, month, day)
+      res.render('pages/game/archive', data)
+    } catch (error) {
+      console.log(error)
+      next(error)
+    }
+  }
 }
 
 module.exports = new GameController()
