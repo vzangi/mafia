@@ -18,6 +18,8 @@ $(function () {
       $(`.player[data-username='${role.username}']`)
         .addClass(`role-${role.id}`)
         .addClass('iam')
+
+      roleName.prev().removeClass('d-hidden')
     }
 
     if (role.id != 2) {
@@ -72,7 +74,9 @@ $(function () {
 
   onlineSocket.on('offline', (account) => {
     const { username } = account
-    $(`.player[data-username='${username}'] .friend-avatar`).removeClass('online')
+    $(`.player[data-username='${username}'] .friend-avatar`).removeClass(
+      'online'
+    )
   })
 
   setTimeout(() => {

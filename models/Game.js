@@ -39,7 +39,8 @@ const periods = {
   KOM: 3,
   NIGHT: 4,
   TRANSITION: 5,
-  END: 6,
+  ADVOCATE: 6,
+  END: 10,
 }
 
 const Game = sequelize.define(

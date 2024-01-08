@@ -4,7 +4,7 @@ const GameStep = require('../models/GameStep')
 const GameBase = require('./GameBase')
 
 // Игра в классическом режиме
-class GameClassic extends GameBase {
+class GameMulti extends GameBase {
   // Получаю доступные роли
   async getAvailableRoles() {
     const { players } = this
@@ -19,16 +19,27 @@ class GameClassic extends GameBase {
         return [
           [Game.roles.MAFIA, 1],
           [Game.roles.KOMISSAR, 1],
+          [Game.roles.CHILD, 1],
         ]
       case 6:
       case 7:
       case 8:
       case 9:
+        return [
+          [Game.roles.MAFIA, 2],
+          [Game.roles.KOMISSAR, 1],
+          [Game.roles.CHILD, 1],
+          [Game.roles.MANIAC, 1],
+          [Game.roles.SERGEANT, 1],
+        ]
       case 10:
       case 11:
         return [
           [Game.roles.MAFIA, 2],
           [Game.roles.KOMISSAR, 1],
+          [Game.roles.CHILD, 1],
+          [Game.roles.MANIAC, 1],
+          [Game.roles.DOCTOR, 1],
           [Game.roles.SERGEANT, 1],
         ]
       case 12:
@@ -40,6 +51,10 @@ class GameClassic extends GameBase {
           [Game.roles.MAFIA, 3],
           [Game.roles.KOMISSAR, 1],
           [Game.roles.SERGEANT, 1],
+          [Game.roles.CHILD, 1],
+          [Game.roles.MANIAC, 1],
+          [Game.roles.DOCTOR, 1],
+          [Game.roles.ADVOCATE, 1],
         ]
     }
 
@@ -48,6 +63,11 @@ class GameClassic extends GameBase {
       [Game.roles.MAFIA, 4],
       [Game.roles.KOMISSAR, 1],
       [Game.roles.SERGEANT, 1],
+      [Game.roles.CHILD, 1],
+      [Game.roles.MANIAC, 1],
+      [Game.roles.DOCTOR, 1],
+      [Game.roles.ADVOCATE, 1],
+      [Game.roles.PROSTITUTE, 1],
     ]
   }
 
@@ -56,7 +76,12 @@ class GameClassic extends GameBase {
     const { game } = this
 
     if (game.period == Game.periods.START) {
-      await this.nextDay()
+      await this.afterStart()
+      return
+    }
+
+    if (game.period == Game.periods.ADVOCATE) {
+      await this.afterAdvokat()
       return
     }
 
@@ -81,6 +106,42 @@ class GameClassic extends GameBase {
     }
   }
 
+  // После старата
+  async afterStart() {
+    // Беру адвоката
+    const advocate = this.hasRoleInGame(Game.roles.ADVOCATE)
+
+    if (advocate && advocate.status != GamePlayer.playerStatuses.FREEZED) {
+      // Если есть адвокат и он не в заморозке - запускается его ход
+      await this.advocateStep()
+    } else {
+      // Иначе новый день
+      await this.nextDay()
+    }
+  }
+
+  // Ход адвоката
+  async advocateStep() {
+    const { room, periodInterval } = this
+
+    await this.systemMessage('Ход адвоката.')
+
+    await this.setPeriod(Game.periods.ADVOCATE, periodInterval)
+
+    // Запускаю ход адвоката
+    room.emit('advokat.start')
+  }
+
+  // После хода адвоката
+  async afterAdvokat() {
+    const { room } = this
+
+    // Завершаю ход адвоката
+    room.emit('advokat.stop')
+
+    await this.nextDay()
+  }
+
   // Новый день
   async nextDay() {
     const { game, room, periodInterval } = this
@@ -88,7 +149,6 @@ class GameClassic extends GameBase {
     // Увеличиваю номер дня
     game.day += 1
 
-    await this.systemMessage(`<hr>`)
     await this.systemMessage(`День ${game.day}. Игроки ищут мафию.`)
 
     // Следующий период - день
@@ -117,6 +177,11 @@ class GameClassic extends GameBase {
       await this.nextDay()
       return
     }
+
+    // Тут надо проверить, есть ли в игре адвокат
+    // если есть, то узнать кого он защищал
+    // если он защитил игрока, которого хотят посадить - он не садиться,
+    // и запускается ход кома
 
     const player = this.getPlayerById(zek)
 
@@ -189,7 +254,6 @@ class GameClassic extends GameBase {
   async mafiaStep() {
     const { periodInterval, room } = this
 
-    await this.systemMessage('<hr>')
     await this.systemMessage('Наступила ночь. Ход мафии.')
 
     // Ход мафии
@@ -384,9 +448,7 @@ class GameClassic extends GameBase {
     const role = await killed.getRole()
 
     await this.systemMessage(
-      `${role.name} <b>${killed.username}</b> ${
-        killed.account.gender == 2 ? 'убита' : 'убит'
-      } мафией.`
+      `${role.name} <b>${killed.username}</b> убит мафией.`
     )
 
     // Если убит комиссар - надо посмотреть есть ли в игре сержант
@@ -403,4 +465,4 @@ class GameClassic extends GameBase {
   }
 }
 
-module.exports = GameClassic
+module.exports = GameMulti

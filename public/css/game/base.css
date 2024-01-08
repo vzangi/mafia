@@ -46,10 +46,14 @@ header,
   display: none;
 }
 
-.players-list {
-  display: flex;
-  flex-wrap: wrap;
+.d-hidden {
+  display: none !important;
 }
+
+/*.players-list {
+   display: flex;
+  flex-wrap: wrap; 
+}*/
 
 .players-list > div {
   flex: 0 1 100%;
@@ -68,7 +72,7 @@ header,
 }
 
 .friend-avatar.online:after {
-  border-color: var(--color-green);
+  border-color: var(--color-bg-player);
 }
 
 .player.role-1 {
@@ -111,9 +115,14 @@ header,
 
 @media (min-width: 420px) {
   .players-list > div {
-    flex: 0 1 50%;
-    max-width: 50%;
+    /* flex: 0 1 50%;
+    max-width: 50%; */
+    max-width: 500px;
   }
+}
+
+.mw-50 {
+  min-width: 50px;
 }
 
 .player-status-4 .friend-avatar:before,
@@ -153,7 +162,7 @@ header,
 */
 .player-status-6 .friend-avatar:before {
   background-image: url(/images/timer.png);
-  background-color: rgba(250,250,250, 0.5);
+  background-color: rgba(250, 250, 250, 0.5);
 }
 
 .player.player-status-4 .username,

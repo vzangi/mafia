@@ -74,6 +74,18 @@ const deadlineAfter = (minutes, seconds = 0) => {
   return new Date(new Date().getTime() + (minutes * 60 + seconds) * 1000)
 }
 
+const isCorrectDate = (year, month, day) => {
+  if (!/^\d{4}$/.test(year)) return false
+  if (!/^\d{2}$/.test(month)) return false
+  if (!/^\d{2}$/.test(day)) return false
+
+  if (year < 2023 || year > 2030) return false
+  if (month < 1 || month > 12) return false
+  if (day < 1 || day > 31) return false
+
+  return true
+}
+
 module.exports = {
   getTimeFromIso,
   getDateFromIso,
@@ -81,4 +93,5 @@ module.exports = {
   getNowDateTime,
   getCoolDateTime,
   deadlineAfter,
+  isCorrectDate,
 }

@@ -41,7 +41,7 @@ class GameBase {
 
   // Запуск игры
   async startGame() {
-    const { game, room } = this
+    const { game } = this
 
     // Загружаю список участников игры
     this.players = await GamePlayer.scope({
@@ -87,12 +87,12 @@ class GameBase {
 
       if (game.mode == 1) {
         await this.systemMessage(
-          'Режим игры "по большинству" голосов (без добивов)'
+          'Режим игры "по большинству голосов" (без добивов)'
         )
       }
       if (game.mode == 2) {
         await this.systemMessage(
-          'Режим игры "по количеству" голосов (с добивами)'
+          'Режим игры "по количеству голосов" (с добивами)'
         )
       }
 
@@ -161,10 +161,6 @@ class GameBase {
         komIsOut = true
       }
 
-      if (player.roleId == Game.roles.KOMISSAR) {
-        komIsOut = true
-      }
-
       this.systemMessage(
         `${role.name} <b>${player.username}</b> ${
           playerInBase.gender == 2 ? 'вышла' : 'вышел'
@@ -176,8 +172,8 @@ class GameBase {
 
     // Если комиссар вышел в тайм
     if (komIsOut) {
-        // Передаю роль кома сержанту
-        await this.updateSergeant()
+      // Передаю роль кома сержанту
+      await this.updateSergeant()
     }
 
     // Проверка на завершение игры
@@ -676,6 +672,8 @@ class GameBase {
     game.rolesideId = side
     await game.save()
 
+    await this.systemMessage(`<hr>`)
+
     if (side == Game.sides.DRAW) {
       this.systemMessage('Игра окончена. Ничья.')
     }
@@ -733,6 +731,20 @@ class GameBase {
       if (
         player.roleId == Game.roles.SERGEANT &&
         player.status == GamePlayer.playerStatuses.IN_GAME
+      )
+        return player
+    }
+    return null
+  }
+
+  hasRoleInGame(roleId) {
+    const { players } = this
+    for (const index in players) {
+      const player = players[index]
+      if (
+        player.roleId == roleId &&
+        (player.status == GamePlayer.playerStatuses.IN_GAME ||
+          player.status == GamePlayer.playerStatuses.FREEZED)
       )
         return player
     }

@@ -63,7 +63,7 @@ const GamePlayer = sequelize.define(
           include: [
             {
               model: Account,
-              attributes: ['online', 'avatar'],
+              attributes: ['online', 'avatar', 'gender'],
             },
             {
               model: Role,

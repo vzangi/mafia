@@ -5,7 +5,7 @@ const GamePlayer = require('../models/GamePlayer')
 const GameStep = require('../models/GameStep')
 const GameType = require('../models/GameType')
 const smiles = require('../units/smiles')
-const { getDateFromIso } = require('../units/helpers')
+const { getDateFromIso, isCorrectDate } = require('../units/helpers')
 
 class GameService {
   // Страница игры
@@ -134,23 +134,20 @@ class GameService {
       year = date.getFullYear()
       month = date.getMonth() + 1
       day = date.getDate()
-    } 
-    if (month < 10) month = `0${month*1}` 
-    if (day < 10) day = `0${day*1}` 
+    }
+    if (month < 10) month = `0${month * 1}`
+    if (day < 10) day = `0${day * 1}`
 
-    if (!this.testDate(year, month, day)) {
-      throw new Error("Неверный формат даты")
+    if (!isCorrectDate(year, month, day)) {
+      throw new Error('Неверный формат даты')
     }
 
     const games = await Game.findAll({
       where: {
-        status: [
-          Game.statuses.ENDED,
-          Game.statuses.STOPPED,
-        ],
+        status: [Game.statuses.ENDED, Game.statuses.STOPPED],
         startedAt: {
-          [Op.startsWith]: `${year}-${month}-${day}`
-        }
+          [Op.startsWith]: `${year}-${month}-${day}`,
+        },
       },
       include: [
         { model: GameType },
@@ -175,19 +172,6 @@ class GameService {
     }
 
     return data
-  }
-
-  testDate(year, month, day) {
-    console.log(year, month, day);
-    if(!/^\d{4}$/.test(year)) return false
-    if(!/^\d{2}$/.test(month)) return false
-    if(!/^\d{2}$/.test(day)) return false
-
-    if (year < 2023 || year > 2030) return false
-    if (month < 1 || month > 12) return false
-    if (day < 1 || day > 31) return false
-
-    return true
   }
 }
 

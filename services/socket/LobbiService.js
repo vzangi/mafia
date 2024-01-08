@@ -23,14 +23,6 @@ class LobbiService extends BaseService {
       throw new Error('Не авторизован')
     }
 
-    const account = await Account.findByPk(user.id, {
-      attributes: ['username'],
-    })
-
-    if (!account) {
-      throw new Error('Игрок не найден')
-    }
-
     if (!gametypeId || !playersCount || !waitingTime) {
       throw new Error('Нет необходимых данных')
     }
@@ -65,6 +57,14 @@ class LobbiService extends BaseService {
       throw new Error('Максимальное время для заявки - 20 минут')
     }
 
+    const account = await Account.findByPk(user.id, {
+      attributes: ['username'],
+    })
+
+    if (!account) {
+      throw new Error('Игрок не найден')
+    }
+
     // Проверяю, может ли игрок создать заявку:
 
     // 1. не находится в другой заявке
@@ -97,7 +97,7 @@ class LobbiService extends BaseService {
     // 3. Нет запрета на создание заявки ...
 
     // Устанавливаю дедлайн - время когда заявка удалиться,
-    // если нуное количество игроков не соберётся
+    // если нужное количество игроков не соберётся
     const dt = new Date()
     const deadline = new Date(dt.getTime() + waitingTime * 60000)
 

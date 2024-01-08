@@ -147,6 +147,7 @@ $(function () {
       $('.chat-input-box').remove()
       $('.kill-dot').remove()
       $('.prova-dot').remove()
+      $('.role-name').parent().remove()
 
       if ($('.role-name').text() == 'Комиссар') {
         $('.player.role-4 .role').text('Комиссар')

@@ -1,21 +1,26 @@
 header(class="game-status-"+game.status)
   div(class="container-fluid h-100")
-    div(class="d-flex justify-content-between align-items-center h-100")
+    div(class="d-flex justify-content-between align-items-center h-100 header-items")
 
       if game.status == 2
         div(class="timer" title="Таймер хода" data-bs-toggle="tooltip" data-bs-placement="bottom") 
           span(class="ion-ios-clock") 
           span(class="value" data-seconds=seconds data-stamp=0) 
       else
-        span Игра окончена
+        div
+          span Игра окончена
 
-      div(class="to-lobbi "+(game.period!=6&&isPlayer?'hide':''))
-        a(class="btn btn-sm btn-warning" href="/lobbi") вернуться в лобби
+      div(class="text-center")
+        small(class="d-md-inline1 d-none1 d-hidden") Ваша роль в игре: 
+        span(class="role-name" title="Ваша роль в игре" data-bs-toggle="tooltip" data-bs-placement="bottom")
 
-      span(class="role-name" title="Ваша роль в игре" data-bs-toggle="tooltip" data-bs-placement="bottom")
+      div
+        div(class="to-lobbi text-end "+(game.period!=10&&isPlayer?'hide':''))
+          a(class="btn btn-sm btn-warning" href="/lobbi") вернуться в лобби
 
-      if currentAccount
-        span(class="user-nik hide")= currentAccount.username
+
+if currentAccount
+  div(class="user-nik hide")= currentAccount.username
 
 div(class="header-shadow mb-3")
 div(class="smile-pattern hide")= (smiles.join('|'))
