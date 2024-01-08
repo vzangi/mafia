@@ -167,6 +167,7 @@ class GameClassic extends GameBase {
   async komStep() {
     const { room, periodInterval } = this
 
+    await this.systemMessage('<hr>')
     await this.systemMessage('Ход комиссара.')
 
     await this.setPeriod(Game.periods.KOM, periodInterval)
