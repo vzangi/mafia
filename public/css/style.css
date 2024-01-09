@@ -708,7 +708,10 @@ ul.aside-menu li a.active {
   bottom: 0px;
   border-radius: 10px;
   border: 2px solid #fff;
-  border-color: #ccc;
+}
+
+.game-item .friend-avatar.online:after {
+  border: 2px solid #ccc;
 }
 
 .friend-info {
