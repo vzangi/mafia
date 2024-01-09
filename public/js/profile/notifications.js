@@ -23,8 +23,6 @@ $(function () {
         $('.btn-more').remove()
       }
 
-      console.log(notifies)
-
       $('#notifyTmpl').tmpl(notifies).appendTo($('.notify-list table'))
     })
   })
