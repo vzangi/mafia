@@ -76,6 +76,10 @@ a {
   color: var(--color-link);
 }
 
+td {
+  vertical-align: middle;
+}
+
 .wrapper {
   display: flex;
   flex-direction: column;
@@ -704,6 +708,7 @@ ul.aside-menu li a.active {
   bottom: 0px;
   border-radius: 10px;
   border: 2px solid #fff;
+  border-color: #ccc;
 }
 
 .friend-info {

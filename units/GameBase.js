@@ -7,6 +7,7 @@ const workerInterval = 1000
 const timeoutSeconds = 120
 const GameStep = require('../models/GameStep')
 const Account = require('../models/Account')
+const bot = require('./bot')
 
 /*  ==================================
     Базовый класс для всех режимов игр
@@ -191,6 +192,21 @@ class GameBase {
       ids.forEach((sid) => {
         sid.emit('game.play', game.id)
       })
+
+      // Если игрока нет в лобби
+      if (ids.length == 0) {
+        // Отправляю нотификацию в телегу
+
+        if (player.account.telegramChatId) {
+          bot.sendMessage(
+            player.account.telegramChatId,
+            `<a href="${process.env.APP_HOST}/game/${game.id}">Игра началась!</a>`,
+            {
+              parse_mode: 'HTML',
+            }
+          )
+        }
+      }
     })
 
     io.of('/lobbi').emit('game.start', game.id)

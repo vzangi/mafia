@@ -63,6 +63,22 @@ class ApiController extends BaseSocketController {
       callback(1, error.message)
     }
   }
+
+  // Получение нотификаций
+  async getNotifies(lastId, callback) {
+    try {
+      const notifies = await this.service.getNotifies(lastId)
+      callback({
+        status: 0,
+        notifies,
+      })
+    } catch (error) {
+      callback({
+        status: 1,
+        msg: error.message,
+      })
+    }
+  }
 }
 
 module.exports = (io, socket) => {

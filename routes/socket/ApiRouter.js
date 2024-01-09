@@ -21,4 +21,7 @@ module.exports = (io, socket) => {
 
   // Смена ника
   socket.on('nik.change', controller.changeNik.bind(controller))
+
+  // Получение нотификаций
+  socket.on('notifies.get', controller.getNotifies.bind(controller))
 }

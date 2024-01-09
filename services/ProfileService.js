@@ -284,6 +284,7 @@ class ProfileService {
       where: {
         accountId: account.id,
       },
+      limit: 10,
       order: [['id', 'DESC']],
     })
 

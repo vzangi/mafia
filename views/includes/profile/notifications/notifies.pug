@@ -1,15 +1,18 @@
 h3 Уведомления
 
-div(class="block users-list mb-3 p-3")
+div(class="block notify-list mb-3 p-3")
   if notifies.length == 0
     p Нет уведомлений
   else
-  table(class="table mb-0")
-    each notify in notifies
-      tr(class=""+notify.level==1?'table-warning': notify.level==2?'table-danger': notify.level==3?'table-info':'table-success')
-        td= notify.message 
-        td= notify.coolDate 
-        td 
-          form(method="post")
-            input(type="hidden" name="notifyId" value=notify.id)
-            button(type="submit" class="btn btn-sm btn-danger ion-trash-b" title="Удалить")
+    table(class="table mb-0")
+      each notify in notifies
+        tr(data-id=notify.id class=""+notify.level==1?'table-warning': notify.level==2?'table-danger': notify.level==3?'table-info':'table-success')
+          td= notify.message 
+          td= notify.coolDate 
+          td 
+            form(method="post")
+              input(type="hidden" name="notifyId" value=notify.id)
+              button(type="submit" class="btn btn-sm btn-danger ion-trash-b" title="Удалить")
+    if notifies.length == 10
+      center
+        button(class="btn btn-warning btn-sm mt-3 btn-more") Загрузить ещё...

@@ -4,10 +4,8 @@ const Account = require('../../models/Account')
 const AccountName = require('../../models/AccountName')
 const GamePlayer = require('../../models/GamePlayer')
 const Friend = require('../../models/Friend')
-const Thing = require('../../models/Thing')
-const Trade = require('../../models/Trade')
+const Notification = require('../../models/Notification')
 const WalletEvents = require('../../models/WalletEvents')
-const sequelize = require('../../units/db')
 const BaseService = require('./BaseService')
 
 class ApiService extends BaseService {
@@ -202,6 +200,26 @@ class ApiService extends BaseService {
     if (inGame) return true
 
     return false
+  }
+
+  async getNotifies(lastId) {
+    const { user } = this
+    if (!user) {
+      throw new Error('Не авторизован')
+    }
+
+    const notifies = await Notification.findAll({
+      where: {
+        accountId: user.id,
+        id: {
+          [Op.lt]: lastId,
+        },
+      },
+      limit: 10,
+      order: [['id', 'DESC']],
+    })
+
+    return notifies
   }
 }
 
