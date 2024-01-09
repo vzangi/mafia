@@ -276,20 +276,21 @@ $(function () {
 
   // Создание заявки в мультиролевом режиме
   $('.btn-make-type-4').click(function () {
-    const typeId = 4
-    const waitingTime = $('#waitingTime-4').val()
-    const playersCount = $('#gamePlayersCount-4').val()
+    const gametypeId = 4
+    const waitingTime = $('#waitingTime-4').text()
+    const playersCount = $('#gamePlayersCount-4').text()
+    const mode = $('#mode-4')[0].checked ? 2 : 1
     const description = $('#gameDescription-4').val()
 
     // Запрос на создание игры
     lobbiSocket.emit(
       'game.make',
       {
-        typeId,
+        gametypeId,
         playersCount,
         waitingTime,
+        mode,
         description,
-        mode: 1,
       },
       (res) => {
         console.log(res)

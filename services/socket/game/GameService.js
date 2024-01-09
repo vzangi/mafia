@@ -45,7 +45,10 @@ class ChatService extends BaseService {
         where: {
           gameId,
           accountId: user.id,
-          status: [GamePlayer.playerStatuses.IN_GAME],
+          status: [
+            GamePlayer.playerStatuses.IN_GAME,
+            GamePlayer.playerStatuses.FREEZED,
+          ],
         },
         include: [
           { model: Role },
@@ -57,6 +60,18 @@ class ChatService extends BaseService {
       })
 
       if (player) {
+        // Если роль "Дитя"
+        if (player.role.id == Game.roles.CHILD) {
+          const citizen = await Role.findOne({
+            where: { id: Game.roles.CITIZEN },
+          })
+          // Показываю игроку, что он честный житель
+          return {
+            username: player.account.username,
+            name: citizen.name,
+            id: citizen.id,
+          }
+        }
         return {
           username: player.account.username,
           name: player.role.name,
@@ -309,7 +324,7 @@ class ChatService extends BaseService {
     })
 
     game.systemMessage(
-      `<b>${inGame.username}</b> хочет отправить в тюрьму <b>${username}</b>`
+      `<b>${inGame.username} хочет отправить в тюрьму ${username}</b>`
     )
 
     // Уведомляю всех о голосе

@@ -122,25 +122,22 @@ div(class="modal fade" id="makeForm" tabindex="-1")
               h5 Мультиролевая игра
 
             p(class="text-secondary")
-              small В этом режиме вы можете настроить какие роли, кроме честных жителей и мафии будут присутствовать в игре.
+              small В этом режиме, кроме честных жителей и мафии в игре также могут присутствовать #[b маньяк], #[b дитя], #[b врач], #[b путана] и #[b адвокат].
 
-            div(class="mb-3")
-              div(class="d-flex flex-column gap-1")
-                label(class="text-secondary") 
-                  small Количество игроков (3 - 20 игроков)
-                input(class="form-control" type="number" placeholder="Количество игроков" min="3" max="20" value="7" id="gamePlayersCount-4" name="gamePlayersCount-4" width="100" required)
+            +gameFormRow('Количество игроков (9 - 20 игроков)')
+              +numberInput("gamePlayersCount-4", 3, 20, 9)
 
-            div(class="mb-3")
-              div(class="d-flex flex-column gap-1")
-                label(class="text-secondary") 
-                  small Время на сбор (1 - 20 минут)
-                input(class="form-control" type="number" placeholder="Время на сбор" min="1" max="20" value="20" id="waitingTime-4" name="waitingTime-4" required)
 
-            div(class="mb-3")
-              div(class="d-flex flex-column gap-1")
-                label(class="text-secondary") 
-                  small Подпись к заявке
-                input(class="form-control" type="text" placeholder="Подпись к заявке" maxlength="69" id="gameDescription-4" name="gameDescription-4")
+            +gameFormRow('Время на сбор (1 - 20 минут)')
+              +numberInput("waitingTime-4", 1, 20, 10)
+
+            +gameFormRow('')
+              +settings_item('С добивами', 'mode-4', true)
+                | 
+                span(class="ion-ios-help-outline" title="В режиме с добивами в тюрьму отправляется игрок набравший наибольшее количество голосов за день" data-bs-toggle="tooltip" data-bs-placement="bottom" )
+
+            +gameFormRow('Подпись к заявке')
+              input(class="form-control" type="text" placeholder="Подпись к заявке" maxlength="69" id="gameDescription-4" name="gameDescription-4")
 
             div(class="text-center mt-4")
-              button(type="button" class="btn btn-primary btn-sm btn-make-type-4" data-type="1" data-bs-dismiss="modal") Создать
+              button(type="button" class="btn btn-primary btn-sm btn-make-type-4" data-type="4" data-bs-dismiss="modal") Создать

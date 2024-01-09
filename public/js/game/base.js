@@ -52,6 +52,7 @@ $(function () {
 
         if (role.id == 2) {
           $('.player.role-2 .kill-dot').remove()
+          $('.player.role-7 .kill-dot').remove()
         }
 
         if (role.id == 3 || role.id == 4) {

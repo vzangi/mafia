@@ -14,7 +14,10 @@ class GameMulti extends GameBase {
     switch (playersInGame) {
       case 3:
       case 4:
-        return [[Game.roles.MAFIA, 1]]
+        return [
+          [Game.roles.MAFIA, 1],
+          [Game.roles.CHILD, 1],
+        ]
       case 5:
         return [
           [Game.roles.MAFIA, 1],
@@ -149,6 +152,7 @@ class GameMulti extends GameBase {
     // Увеличиваю номер дня
     game.day += 1
 
+    await this.systemMessage('<hr>')
     await this.systemMessage(`День ${game.day}. Игроки ищут мафию.`)
 
     // Следующий период - день
@@ -192,7 +196,7 @@ class GameMulti extends GameBase {
     const role = await player.getRole()
 
     await this.systemMessage(
-      `${role.name} <b>${player.username}</b> отправляется в тюрьму.`
+      `<b>${role.name} ${player.username} отправляется в тюрьму.</b>`
     )
 
     // Если посажен комиссар - надо посмотреть есть ли в игре сержант
@@ -232,6 +236,7 @@ class GameMulti extends GameBase {
   async komStep() {
     const { room, periodInterval } = this
 
+    await this.systemMessage('<hr>')
     await this.systemMessage('Ход комиссара.')
 
     await this.setPeriod(Game.periods.KOM, periodInterval)
@@ -254,6 +259,7 @@ class GameMulti extends GameBase {
   async mafiaStep() {
     const { periodInterval, room } = this
 
+    await this.systemMessage('<hr>')
     await this.systemMessage('Наступила ночь. Ход мафии.')
 
     // Ход мафии
@@ -270,6 +276,7 @@ class GameMulti extends GameBase {
     // Завершаю ход мафии
     room.emit('mafia.stop')
 
+    await this.systemMessage('<hr>')
     await this.systemMessage('Внимание! Считаем трупы на рассвете.')
 
     // Проверяю наличие кома в игре
@@ -448,7 +455,9 @@ class GameMulti extends GameBase {
     const role = await killed.getRole()
 
     await this.systemMessage(
-      `${role.name} <b>${killed.username}</b> убит мафией.`
+      `<b>${role.name} ${killed.username} ${
+        killed.account.gender == 2 ? 'убита' : 'убит'
+      } мафией.</b>`
     )
 
     // Если убит комиссар - надо посмотреть есть ли в игре сержант

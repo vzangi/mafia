@@ -75,10 +75,12 @@ header,
   border-color: var(--color-bg-player);
 }
 
-.player.role-1 {
+.player.role-1,
+.player.role-7 {
   background-color: var(--color-class-2);
 }
-.player.role-1 .friend-avatar.online:after {
+.player.role-1 .friend-avatar.online:after,
+.player.role-7 .friend-avatar.online:after {
   border-color: var(--color-class-2);
 }
 

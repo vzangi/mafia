@@ -469,6 +469,10 @@ class GameBase {
       throw new Error('Игрок не найден')
     }
 
+    if (game.period != Game.periods.NIGHT) {
+      throw new Error('Не время стрелять')
+    }
+
     const maf = this.getPlayerById(mafId)
 
     if (!maf) {
@@ -531,6 +535,10 @@ class GameBase {
     const player = this.getPlayerByName(username)
     if (!player) {
       throw new Error(`Игрок ${username} не найден`)
+    }
+
+    if (game.period != Game.periods.KOM) {
+      throw new Error('Не время проверять')
     }
 
     if (komId != this.getKomId()) {

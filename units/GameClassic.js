@@ -88,7 +88,7 @@ class GameClassic extends GameBase {
     // Увеличиваю номер дня
     game.day += 1
 
-    await this.systemMessage(`<hr>`)
+    await this.systemMessage('<hr>')
     await this.systemMessage(`День ${game.day}. Игроки ищут мафию.`)
 
     // Следующий период - день
@@ -127,7 +127,7 @@ class GameClassic extends GameBase {
     const role = await player.getRole()
 
     await this.systemMessage(
-      `${role.name} <b>${player.username}</b> отправляется в тюрьму.`
+      `<b>${role.name} ${player.username} отправляется в тюрьму.</b>`
     )
 
     // Если посажен комиссар - надо посмотреть есть ли в игре сержант
@@ -207,6 +207,7 @@ class GameClassic extends GameBase {
     // Завершаю ход мафии
     room.emit('mafia.stop')
 
+    await this.systemMessage('<hr>')
     await this.systemMessage('Внимание! Считаем трупы на рассвете.')
 
     // Проверяю наличие кома в игре
@@ -385,9 +386,9 @@ class GameClassic extends GameBase {
     const role = await killed.getRole()
 
     await this.systemMessage(
-      `${role.name} <b>${killed.username}</b> ${
+      `<b>${role.name} ${killed.username} ${
         killed.account.gender == 2 ? 'убита' : 'убит'
-      } мафией.`
+      } мафией.</b>`
     )
 
     // Если убит комиссар - надо посмотреть есть ли в игре сержант
