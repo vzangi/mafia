@@ -542,6 +542,8 @@ class GameBase {
       throw new Error(`Игрок ${username} не найден`)
     }
 
+    const { players, game } = this
+
     if (game.period != Game.periods.KOM) {
       throw new Error('Не время проверять')
     }
@@ -556,8 +558,6 @@ class GameBase {
     ) {
       throw new Error(`Игрок ${username} уже выбыл из игры`)
     }
-
-    const { players, game } = this
 
     if (game.period != Game.periods.KOM) {
       throw new Error('Сейчас не ход кома')

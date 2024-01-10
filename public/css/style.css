@@ -728,3 +728,7 @@ ul.aside-menu li a.active {
 .friend-nik {
   font-weight: 600;
 }
+
+.ratio1_1 {
+  aspect-ratio: 1/1;
+}
