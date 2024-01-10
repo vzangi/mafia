@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize')
 const sequelize = require('../units/db')
+const RoleSide = require('./RoleSide')
 
 const roles = {
   CITIZEN: 1,
@@ -39,5 +40,7 @@ const Role = sequelize.define(
 )
 
 Role.roles = roles
+
+Role.belongsTo(RoleSide)
 
 module.exports = Role

@@ -8,6 +8,11 @@ const timeoutSeconds = 120
 const GameStep = require('../models/GameStep')
 const Account = require('../models/Account')
 const bot = require('./bot')
+const Role = require('../models/Role')
+const Thing = require('../models/Thing')
+const AccountThing = require('../models/AccountThing')
+const sequelize = require('./db')
+const Notification = require('../models/Notification')
 
 /*  ==================================
     Базовый класс для всех режимов игр
@@ -26,7 +31,7 @@ class GameBase {
     this.players = []
 
     // время хода
-    this.periodInterval = 120
+    this.periodInterval = 10
 
     // время перехода для комиссара
     this.perehodInterval = 6
@@ -717,6 +722,124 @@ class GameBase {
     room.emit('game.over', side)
 
     // Запуск процесса раздачи подарков победившей стороне ...
+    await this.prizes(side)
+  }
+
+  // Раздача призов
+  async prizes(side) {
+    if (side == Game.sides.DRAW) return
+
+    const { players, game } = this
+
+    // Значение шанса определяет с какой веротностью будут раздоваться призы
+    // и зависит от количества игроков в партии
+    let chanceToPriz = (players.length * 4) / 100
+
+    // Если шанс больше случайного числа, то призы не раздаются
+    //if (chanceToPriz < Math.random()) return
+
+    // Беру игроков выигравшей стороны
+    const winPLayers = await GamePlayer.findAll({
+      where: {
+        gameId: game.id,
+      },
+      include: {
+        model: Role,
+        where: {
+          rolesideId: side,
+        },
+      },
+    })
+
+    // Смотрю каждого игрока
+    for (const gpId in winPLayers) {
+      const player = winPLayers[gpId]
+
+      // Вышедшим в тайм игрокам призы не даю
+      if (player.status == GamePlayer.playerStatuses.TIMEOUT) continue
+
+      // Шанс для выбывшего игрока
+      chanceToPriz = 0.25
+
+      // Шанс для игрока оставшегося в игре
+      if (player.status == GamePlayer.playerStatuses.WON) {
+        chanceToPriz = 0.5
+      }
+
+      // Если шанс меньше случайной величины - игрок не получает приз
+      if (chanceToPriz < Math.random()) continue
+
+      // Выдаю приз
+      await this.takePrize(player.accountId)
+    }
+  }
+
+  // Дать приз игроку
+  async takePrize(accountId) {
+    const rnd = Math.random()
+
+    // По умолчанию игрок получает кейс
+    let thingtypeId = 4
+
+    // Обчного класса
+    let thingclassId = 1
+
+    // Приз - кейс
+    if (rnd > 0.5) {
+      thingtypeId = 4
+    }
+
+    // Приз - вещь
+    if (rnd > 0.8) {
+      thingtypeId = 1
+
+      if (rnd > 0.89 && rnd < 0.9) {
+        // Вещь второго класса
+        thingclassId = 2
+      }
+    }
+
+    // Приз - подарочный набор
+    if (rnd > 0.9) {
+      thingtypeId = 3
+    }
+
+    // Приз - ключ
+    if (rnd > 0.99) {
+      thingtypeId = 5
+    }
+
+    // Беру приз
+    const winThing = await Thing.findOne({
+      where: {
+        thingtypeId,
+        thingclassId,
+      },
+      order: [sequelize.random()],
+    })
+
+    // Дарю игроку
+    await AccountThing.create({
+      accountId,
+      thingId: winThing.id,
+    })
+
+    // Уведомить игрока о получении приза
+    const message = `Вы получили приз за победу в партии: ${winThing.name}`
+    const newNotify = await Notification.create({
+      accountId,
+      message,
+      level: 0,
+    })
+
+    const ids = this.getUserSocketIds(accountId, '/')
+    ids.forEach((sid) => {
+      sid.emit('notify', {
+        id: newNotify.id,
+        message: newNotify.message,
+        level: newNotify.level,
+      })
+    })
   }
 
   // Проверка на наличие кома в игре
