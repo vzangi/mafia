@@ -13,6 +13,9 @@ module.exports = (io, socket) => {
   // Получение сообщений
   socket.on('get.messages', controller.getMessages.bind(controller))
 
+  // Лог игры
+  socket.on('get.log', controller.getLog.bind(controller))
+
   // Пришло сообщение
   socket.on('message', controller.message.bind(controller))
 

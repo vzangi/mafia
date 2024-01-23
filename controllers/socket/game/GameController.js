@@ -34,6 +34,17 @@ class GameController extends BaseSocketController {
     }
   }
 
+  // Лог игры
+  async getLog(callback) {
+    try {
+      const log = await this.service.getLog()
+      callback(log)
+    } catch (error) {
+      console.log(error)
+      callback('Ошибка')
+    }
+  }
+
   // Пришло сообщение
   async message(message, isPrivate = false) {
     try {

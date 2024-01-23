@@ -13,6 +13,7 @@ const Thing = require('../models/Thing')
 const AccountThing = require('../models/AccountThing')
 const sequelize = require('./db')
 const Notification = require('../models/Notification')
+const GameLog = require('../models/GameLog')
 
 /*  ==================================
     Базовый класс для всех режимов игр
@@ -31,7 +32,7 @@ class GameBase {
     this.players = []
 
     // время хода
-    this.periodInterval = 120
+    this.periodInterval = 20
 
     // время перехода для комиссара
     this.perehodInterval = 6
@@ -86,25 +87,31 @@ class GameBase {
       await this.systemMessage(
         `Игра началась ${getCoolDateTime(game.startedAt)}.`
       )
+      this.systemLog(`Игра началась ${getCoolDateTime(game.startedAt)}.`)
 
       const inGameStr = this.players.map((p) => p.username).join(', ')
 
       await this.systemMessage(`В игре участвуют <b>${inGameStr}</b>.`)
+      this.systemLog(`В игре участвуют <b>${inGameStr}</b>.`)
 
       if (game.mode == 1) {
         await this.systemMessage(
           'Режим игры "по большинству голосов" (без добивов)'
         )
+        this.systemLog('Режим игры "по большинству голосов" (без добивов)')
       }
       if (game.mode == 2) {
         await this.systemMessage(
           'Режим игры "по количеству голосов" (с добивами)'
         )
+        this.systemLog('Режим игры "по количеству голосов" (с добивами)')
       }
 
       await this.systemMessage(`Раздаём роли.`)
+      this.systemLog(`Раздаём роли.`)
 
       await this.systemMessage(`Дадим мафии время договориться.`)
+      this.systemLog(`Дадим мафии время договориться.`)
     }
 
     if (game.status == Game.statuses.STARTED) {
@@ -414,6 +421,20 @@ class GameBase {
     room.emit('message', msg)
   }
 
+  systemLog(message, type = 1, hidden = false) {
+    const { game, room } = this
+
+    GameLog.create({
+      gameId: game.id,
+      message,
+      hidden,
+      type,
+    }).then((logItem) => {
+      if (hidden) return
+      room.emit('log', logItem)
+    })
+  }
+
   // Процедура проверки окончания дедлайна
   async periodWorker() {
     const { game } = this
@@ -512,6 +533,12 @@ class GameBase {
       stepType: GameStep.stepTypes.NIGHT,
     })
 
+    this.systemLog(
+      `<b>Мафия ${maf.username} стреляет в ${username}</b>`,
+      GameLog.types.MAF,
+      true
+    )
+
     // беру все выстрелы
     const shots = await GameStep.findAll({
       where: {
@@ -584,6 +611,14 @@ class GameBase {
       day: game.day,
       stepType: GameStep.stepTypes.CHECK,
     })
+
+    const komis = this.getPlayerById(komId)
+
+    this.systemLog(
+      `<b>Комиссар ${komis.username} проверил игрока ${username}</b>`,
+      GameLog.types.KOM,
+      true
+    )
 
     const role = await player.getRole()
 
@@ -702,21 +737,26 @@ class GameBase {
     await game.save()
 
     await this.systemMessage(`<hr>`)
+    this.systemLog(`<hr>`)
 
     if (side == Game.sides.DRAW) {
       this.systemMessage('Игра окончена. Ничья.')
+      this.systemLog('Игра окончена. Ничья.')
     }
 
     if (side == Game.sides.CITIZENS) {
       this.systemMessage('Игра окончена. Честные жители победили.')
+      this.systemLog('Игра окончена. Честные жители победили.')
     }
 
     if (side == Game.sides.MAFIA) {
       this.systemMessage('Игра окончена. Мафия победила.')
+      this.systemLog('Игра окончена. Мафия победила.')
     }
 
     if (side == Game.sides.MANIAC) {
       this.systemMessage('Игра окончена. Маньяк победил.')
+      this.systemLog('Игра окончена. Маньяк победил.')
     }
 
     room.emit('game.over', side)
@@ -951,6 +991,7 @@ class GameBase {
     const role = await serg.getRole()
 
     this.systemMessage('Полномочия коммисара переходят сержанту.')
+    this.systemLog('Полномочия коммисара переходят сержанту.')
 
     // Сообщаю сержанту о его новой роли
     const ids = this.getUserSocketIds(serg.accountId)

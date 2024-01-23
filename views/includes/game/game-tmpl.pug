@@ -27,6 +27,12 @@ script(id="messageTmpl" type="text/x-jquery-tmpl")
         {{/if}}
       span(class="m-message") {{html message}}
 
+
+script(id="logTmpl" type="text/x-jquery-tmpl")
+  div(class="log-box log-type-${type}")
+    span {{html message}}
+
+
 script(id="smileTmpl" type="text/x-jquery-tmpl")
   img(src='/images/e${smile}.svg' alt='${smile}')
 

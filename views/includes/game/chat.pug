@@ -3,7 +3,10 @@ include ../switch_mixin
 div(class="block chat-box mb-4")
 
   div(class="chat-header")
-    span(class="fs-4 me-auto") Чат
+    span(class="fs-4 me-auto chat-log-checker") 
+      a(class="checker-item checked") Чат
+      span  | 
+      a(class="checker-item") Лог 
     div(class="chat-settings ms-3")
       span(class="ion-gear-a gear" title="настройки чата")
       div(class="chat-settings-box")
@@ -28,6 +31,7 @@ div(class="block chat-box mb-4")
       span(class="ion-arrow-expand expand ms-2" title="на всё окно")
 
   div(class="chat") 
+  div(class="log" style="display:none") 
 
   div(class="typing-box") 
 

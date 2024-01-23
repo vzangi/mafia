@@ -1,4 +1,5 @@
 const Game = require('../models/Game')
+const GameLog = require('../models/GameLog')
 const GamePlayer = require('../models/GamePlayer')
 const GameStep = require('../models/GameStep')
 const GameBase = require('./GameBase')
@@ -91,6 +92,8 @@ class GameClassic extends GameBase {
     await this.systemMessage('<hr>')
     await this.systemMessage(`День ${game.day}. Игроки ищут мафию.`)
 
+    this.systemLog(`<hr>День ${game.day}. Игроки ищут мафию.`)
+
     // Следующий период - день
     await this.setPeriod(Game.periods.DAY, periodInterval)
 
@@ -105,6 +108,7 @@ class GameClassic extends GameBase {
     // останавливаю голосование
     room.emit('voting.stop')
     await this.systemMessage('Голосование окончено. Считаем голоса.')
+    this.systemLog('Голосование окончено. Считаем голоса.')
 
     // Проверяю результаты голосования
     const zek = await this.voteResults()
@@ -128,6 +132,10 @@ class GameClassic extends GameBase {
 
     await this.systemMessage(
       `<b>${role.name} ${player.username} отправляется в тюрьму.</b>`
+    )
+    this.systemLog(
+      `<b>${role.name} ${player.username} отправляется в тюрьму.</b>`,
+      GameLog.types.STEP
     )
 
     // Если посажен комиссар - надо посмотреть есть ли в игре сержант
@@ -153,6 +161,7 @@ class GameClassic extends GameBase {
         await this.komStep()
       } else {
         this.systemMessage('Комиссар окончил своё расследование.')
+        this.systemLog('Комиссар окончил своё расследование.')
 
         // Ход мафии
         await this.mafiaStep()
@@ -169,6 +178,8 @@ class GameClassic extends GameBase {
 
     await this.systemMessage('<hr>')
     await this.systemMessage('Ход комиссара.')
+
+    this.systemLog('<hr>Ход комиссара.')
 
     await this.setPeriod(Game.periods.KOM, periodInterval)
 
@@ -193,6 +204,8 @@ class GameClassic extends GameBase {
     await this.systemMessage('<hr>')
     await this.systemMessage('Наступила ночь. Ход мафии.')
 
+    this.systemLog('<hr>Наступила ночь. Ход мафии.')
+
     // Ход мафии
     await this.setPeriod(Game.periods.NIGHT, periodInterval)
 
@@ -209,6 +222,8 @@ class GameClassic extends GameBase {
 
     await this.systemMessage('<hr>')
     await this.systemMessage('Внимание! Считаем трупы на рассвете.')
+
+    this.systemLog('<hr>Внимание! Считаем трупы на рассвете.')
 
     // Проверяю наличие кома в игре
     if (this.komInGame()) {
@@ -344,6 +359,9 @@ class GameClassic extends GameBase {
             await this.systemMessage(
               'Силы равны. Бросаем жребий, чтобы определить, кто отправиться в тюрьму'
             )
+            this.systemLog(
+              'Силы равны. Бросаем жребий, чтобы определить, кто отправиться в тюрьму'
+            )
 
             const rnd = Math.floor(Math.random() * activePlayers)
             return steps[rnd].playerId
@@ -353,6 +371,7 @@ class GameClassic extends GameBase {
         await this.systemMessage(
           'Равенство голосов. В тюрьму никто не отправляется'
         )
+        this.systemLog('Равенство голосов. В тюрьму никто не отправляется')
 
         // Никто не садиться (равенство голосов)
         return null
@@ -369,6 +388,7 @@ class GameClassic extends GameBase {
         await this.systemMessage(
           'Ни один из игроков не набрал большинства голосов.'
         )
+        this.systemLog('Ни один из игроков не набрал большинства голосов.')
         return null
       }
     }
@@ -385,11 +405,13 @@ class GameClassic extends GameBase {
 
     const role = await killed.getRole()
 
-    await this.systemMessage(
-      `<b>${role.name} ${killed.username} ${
-        killed.account.gender == 2 ? 'убита' : 'убит'
-      } мафией.</b>`
-    )
+    const msg = `<b>${role.name} ${killed.username} ${
+      killed.account.gender == 2 ? 'убита' : 'убит'
+    } мафией.</b>`
+
+    await this.systemMessage(msg)
+
+    this.systemLog(msg)
 
     // Если убит комиссар - надо посмотреть есть ли в игре сержант
     // Если есть, то передаю роль комиссара ему
@@ -402,6 +424,7 @@ class GameClassic extends GameBase {
   // Промах мафии
   async missmatch() {
     await this.systemMessage('Мафия никого не убила.')
+    this.systemLog('Мафия никого не убила.')
   }
 }
 

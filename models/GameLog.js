@@ -1,6 +1,13 @@
 const { DataTypes, Sequelize } = require('sequelize')
 const sequelize = require('../units/db')
 
+const types = {
+  TEXT: 1,
+  STEP: 2,
+  MAF: 3,
+  KOM: 4,
+}
+
 const GameLog = sequelize.define('gamelogs', {
   id: {
     type: DataTypes.INTEGER,
@@ -24,5 +31,7 @@ const GameLog = sequelize.define('gamelogs', {
     defaultValue: 1,
   },
 })
+
+GameLog.types = types
 
 module.exports = GameLog

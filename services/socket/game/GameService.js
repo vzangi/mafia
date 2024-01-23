@@ -7,6 +7,7 @@ const GamePlayer = require('../../../models/GamePlayer')
 const GameRole = require('../../../models/GameRole')
 const GameStep = require('../../../models/GameStep')
 const Role = require('../../../models/Role')
+const GameLog = require('../../../models/GameLog')
 const Games = require('../../../units/GamesManager')
 const sequelize = require('../../../units/db')
 const BaseService = require('../BaseService')
@@ -189,6 +190,27 @@ class ChatService extends BaseService {
     return resultMessages
   }
 
+  // Получение лога игры
+  async getLog() {
+    const { socket, user } = this
+    const { gameId } = socket
+
+    const where = { gameId }
+
+    const game = await Game.findByPk(gameId)
+
+    if (game.status == Game.periods.STARTED) {
+      where.hidden = false
+    }
+
+    const log = await GameLog.findAll({
+      where,
+      attributes: ['message', 'type'],
+    })
+
+    return log
+  }
+
   // Пришло сообщение
   async message(message, isPrivate = false) {
     const { user, io, socket } = this
@@ -325,6 +347,10 @@ class ChatService extends BaseService {
 
     game.systemMessage(
       `<b>${inGame.username} хочет отправить в тюрьму ${username}</b>`
+    )
+    game.systemLog(
+      `<b>${inGame.username} хочет отправить в тюрьму ${username}</b>`,
+      GameLog.types.STEP
     )
 
     // Уведомляю всех о голосе

@@ -7,6 +7,7 @@ $(function () {
   const chatExpandButton = $('.chat-settings > span.expand')
   const chatBox = $('.chat-box')
   const chat = $('.chat')
+  const log = $('.log')
   const smilesOpenBtn = $('.smiles')
   const smilesBox = $('.all-smiles')
   const chatSettingsBox = $('.chat-settings-box')
@@ -22,6 +23,7 @@ $(function () {
 
   const userTemplate = $('#userTmpl')
   const messageTemplate = $('#messageTmpl')
+  const logTemplate = $('#logTmpl')
   const smileTemplate = $('#smileTmpl')
   const linkTemplate = $('#linkTmpl')
 
@@ -40,6 +42,17 @@ $(function () {
     )
 
     setTimeout(() => scrollToEnd(true, false), 100)
+  })
+
+  // Получение лога
+  gameSocket.emit('get.log', (logMessages) => {
+    console.log(logMessages)
+
+    logTemplate.tmpl(logMessages).appendTo(log)
+  })
+
+  gameSocket.on('log', (logItem) => {
+    logTemplate.tmpl(logItem).appendTo(log)
   })
 
   // Прокрутка чата до последних сообщений
@@ -263,10 +276,25 @@ $(function () {
     return false
   })
 
+  // переключение между логом и чатом
+  $('.checker-item').click(function () {
+    if ($(this).hasClass('checked')) return
+
+    $(this).parent().find('.checker-item').toggleClass('checked')
+
+    log.toggle()
+    chat.toggle()
+  })
+
   // При нажатии на иконку настроек в чате
   chatWhideCheckbox.click(function () {
-    if (chatWhideCheckbox[0].checked) chat.addClass('wide-chat')
-    else chat.removeClass('wide-chat')
+    if (chatWhideCheckbox[0].checked) {
+      chat.addClass('wide-chat')
+      log.addClass('wide-chat')
+    } else {
+      chat.removeClass('wide-chat')
+      log.removeClass('wide-chat')
+    }
     localStorage.setItem('wideChat', chatWhideCheckbox[0].checked ? '1' : '0')
     setTimeout(() => scrollToEnd(), 400)
   })
