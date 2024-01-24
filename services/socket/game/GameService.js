@@ -5,11 +5,9 @@ const GameChat = require('../../../models/GameChat')
 const GameChatUsers = require('../../../models/GameChatUsers')
 const GamePlayer = require('../../../models/GamePlayer')
 const GameRole = require('../../../models/GameRole')
-const GameStep = require('../../../models/GameStep')
 const Role = require('../../../models/Role')
 const GameLog = require('../../../models/GameLog')
 const Games = require('../../../units/GamesManager')
-const sequelize = require('../../../units/db')
 const BaseService = require('../BaseService')
 
 class ChatService extends BaseService {
@@ -18,6 +16,7 @@ class ChatService extends BaseService {
 
     const { user, gameId } = socket
 
+    // Подключение сокета к комнате игры
     socket.join(gameId)
 
     if (user) {
@@ -264,54 +263,8 @@ class ChatService extends BaseService {
     const { user, gameId, isPlayer } = socket
 
     if (!user) throw new Error('Не авторизован')
-
     if (!isPlayer) throw new Error('Вы не можете голосовать в этой игре')
-
     if (!username || !gameId) throw new Error('Нет необходимых данных')
-
-    // Текущий игрок в партии
-    const inGame = await GamePlayer.findOne({
-      where: {
-        gameId,
-        accountId: user.id,
-        status: [GamePlayer.playerStatuses.IN_GAME],
-      },
-    })
-
-    // Игрок должен быть в игре
-    if (!inGame) throw new Error('Вас нет в этой игре')
-
-    // Игрок должен иметь активный статус (в игре)
-    if (inGame.status != GamePlayer.playerStatuses.IN_GAME)
-      throw new Error('Вы не можете голосовать в этой игре')
-
-    // Игрок за которого голосуют
-    const player = await GamePlayer.findOne({
-      where: {
-        gameId,
-        username,
-        status: [
-          GamePlayer.playerStatuses.IN_GAME,
-          GamePlayer.playerStatuses.FREEZED,
-          GamePlayer.playerStatuses.KILLED,
-          GamePlayer.playerStatuses.PRISONED,
-          GamePlayer.playerStatuses.TIMEOUT,
-        ],
-      },
-      attributes: ['accountId', 'status'],
-    })
-
-    if (!player) throw new Error('Игрок не найден в этой игре')
-
-    const playerId = player.accountId
-
-    if (playerId == user.id) throw new Error('Нельзя голосовать против себя')
-
-    if (
-      player.status != GamePlayer.playerStatuses.IN_GAME &&
-      player.status != GamePlayer.playerStatuses.FREEZED
-    )
-      throw new Error('Нельза голосовать в выбывшего игрока')
 
     // Беру текущую игру
     const game = Games.getGame(gameId)
@@ -319,93 +272,8 @@ class ChatService extends BaseService {
     // Игра должна быть загружена
     if (!game) throw new Error('Игра не найдена')
 
-    const { period, day } = game.game
-
-    if (period != Game.periods.DAY) throw new Error('Голосование окончено')
-
-    // Ищу свой голос в этот день
-    const haveVote = await GameStep.findOne({
-      where: {
-        gameId,
-        accountId: user.id,
-        day: day,
-        stepType: GameStep.stepTypes.DAY,
-      },
-    })
-
-    // Если уже голосовал
-    if (haveVote) throw new Error('Вы уже проголосовали')
-
-    // Записываю голос в базу
-    await GameStep.create({
-      gameId,
-      accountId: user.id,
-      playerId,
-      day: day,
-      stepType: GameStep.stepTypes.DAY,
-    })
-
-    game.systemMessage(
-      `<b>${inGame.username} хочет отправить в тюрьму ${username}</b>`
-    )
-    game.systemLog(
-      `<b>${inGame.username} хочет отправить в тюрьму ${username}</b>`,
-      GameLog.types.STEP
-    )
-
-    // Уведомляю всех о голосе
-    io.of('/game').to(gameId).emit('vote', inGame.username, username)
-
-    // Проверяю, можно ли завершать голосование
-
-    const steps = await GameStep.findAll({
-      where: {
-        gameId,
-        day,
-        stepType: 1,
-      },
-    })
-
-    const playersInGame = await GamePlayer.findAll({
-      where: {
-        gameId,
-        status: [
-          GamePlayer.playerStatuses.IN_GAME,
-          GamePlayer.playerStatuses.FREEZED,
-        ],
-      },
-    })
-
-    // Количество ходов равно количеству игроков
-    if (steps.length == playersInGame.length) {
-      // Завершаю голосование
-      game.game.deadline = 0
-      return
-    }
-
-    // Беру игрока с максимальным количеством голосов
-    const maxVotes = await GameStep.findOne({
-      where: {
-        gameId,
-        day,
-      },
-      group: 'playerId',
-      attributes: [
-        'playerId',
-        [sequelize.fn('COUNT', sequelize.col('*')), 'votesCount'],
-      ],
-      order: [['votesCount', 'DESC']],
-      limit: 1,
-    })
-
-    if (maxVotes) {
-      // максимальное количество голсов умноженное на 2 больше чем количество игроков
-      if (playersInGame.length < maxVotes.get('votesCount') * 2) {
-        // завершаю голосование
-        game.game.deadline = 0
-        return
-      }
-    }
+    // Голосую
+    await game.vote(username, user.id)
   }
 
   // Получение известных ролей
@@ -455,6 +323,7 @@ class ChatService extends BaseService {
     await game.shot(username, user.id)
   }
 
+  // Прова кома
   async prova(username) {
     const { user, gameId } = this.socket
 
@@ -469,6 +338,7 @@ class ChatService extends BaseService {
     await game.prova(username, user.id)
   }
 
+  // Начал писать сообщение
   typingBegin() {
     const { socket } = this
 
@@ -492,6 +362,7 @@ class ChatService extends BaseService {
     game.typingBegin(user.id)
   }
 
+  // Завершил писать соощение
   typingEnd() {
     const { socket } = this
 

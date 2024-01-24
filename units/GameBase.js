@@ -32,7 +32,7 @@ class GameBase {
     this.players = []
 
     // время хода
-    this.periodInterval = 20
+    this.periodInterval = 120
 
     // время перехода для комиссара
     this.perehodInterval = 6
@@ -484,6 +484,117 @@ class GameBase {
       username: player.username,
       status,
     })
+  }
+
+  async vote(username, voterId) {
+    const voter = this.getPlayerById(voterId)
+
+    if (!voter) {
+      throw new Error('Вас нет в этой игре')
+    }
+
+    // Игрок должен иметь активный статус (в игре)
+    if (voter.status != GamePlayer.playerStatuses.IN_GAME) {
+      throw new Error('Вы не можете голосовать в этой игре')
+    }
+
+    const player = this.getPlayerByName(username)
+
+    if (!player) {
+      throw new Error('Игрок не найден в этой игре')
+    }
+
+    if (
+      player.status != GamePlayer.playerStatuses.IN_GAME &&
+      player.status != GamePlayer.playerStatuses.FREEZED
+    ) {
+      throw new Error('Нельза голосовать в выбывшего игрока')
+    }
+
+    const { game, room } = this
+    const { period, day } = game
+
+    if (period != Game.periods.DAY) {
+      throw new Error('Голосование окончено')
+    }
+
+    // Ищу свой голос в этот день
+    const haveVote = await GameStep.findOne({
+      where: {
+        gameId: game.id,
+        accountId: voterId,
+        day: day,
+        stepType: GameStep.stepTypes.DAY,
+      },
+    })
+
+    // Если уже голосовал
+    if (haveVote) {
+      throw new Error('Вы уже проголосовали')
+    }
+
+    // Записываю голос в базу
+    await GameStep.create({
+      gameId: game.id,
+      accountId: voterId,
+      playerId: player.accountId,
+      day: day,
+      stepType: GameStep.stepTypes.DAY,
+    })
+
+    this.systemMessage(
+      `<b>${voter.username} хочет отправить в тюрьму ${username}</b>`
+    )
+    this.systemLog(
+      `<b>${voter.username} хочет отправить в тюрьму ${username}</b>`,
+      GameLog.types.STEP
+    )
+
+    // Уведомляю всех о голосе
+    room.emit('vote', voter.username, username)
+
+    // Проверяю, можно ли завершать голосование
+
+    const steps = await GameStep.findAll({
+      where: {
+        gameId: game.id,
+        day,
+        stepType: GameStep.stepTypes.DAY,
+      },
+    })
+
+    const playersInGame = this.activePlayersCount()
+
+    // Количество ходов равно количеству игроков
+    if (steps.length == playersInGame) {
+      // Завершаю голосование
+      game.deadline = 0
+      return
+    }
+
+    // Беру игрока с максимальным количеством голосов
+    const maxVotes = await GameStep.findOne({
+      where: {
+        gameId: game.id,
+        day,
+      },
+      group: 'playerId',
+      attributes: [
+        'playerId',
+        [sequelize.fn('COUNT', sequelize.col('*')), 'votesCount'],
+      ],
+      order: [['votesCount', 'DESC']],
+      limit: 1,
+    })
+
+    if (maxVotes) {
+      // максимальное количество голсов умноженное на 2 больше чем количество игроков
+      if (playersInGame < maxVotes.get('votesCount') * 2) {
+        // завершаю голосование
+        game.deadline = 0
+        return
+      }
+    }
   }
 
   // Выстрел

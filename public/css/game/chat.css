@@ -626,7 +626,7 @@ input:checked + .slider:before {
 .log-box.log-type-3,
 .log-box.log-type-4 {
   text-decoration: underline;
-  font-weight: bold;
+  font-weight: 400;
 }
 
 .log-box.log-type-2 {
