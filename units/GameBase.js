@@ -174,11 +174,13 @@ class GameBase {
         komIsOut = true
       }
 
-      this.systemMessage(
-        `${role.name} <b>${player.username}</b> ${
-          playerInBase.gender == 2 ? 'вышла' : 'вышел'
-        } из партии по таймауту`
-      )
+      const msg = `${role.name} <b>${player.username}</b> ${
+        playerInBase.gender == 2 ? 'вышла' : 'вышел'
+      } из партии по таймауту`
+
+      this.systemMessage(msg)
+
+      this.systemLog(msg)
 
       await this.showPlayerRole(player, GamePlayer.playerStatuses.TIMEOUT)
     }
