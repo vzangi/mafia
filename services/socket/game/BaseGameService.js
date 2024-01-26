@@ -10,7 +10,7 @@ const GameLog = require('../../../models/GameLog')
 const Games = require('../../../units/GamesManager')
 const BaseService = require('../BaseService')
 
-class ChatService extends BaseService {
+class BaseGameService extends BaseService {
   constructor(io, socket) {
     super(io, socket)
 
@@ -85,6 +85,37 @@ class ChatService extends BaseService {
       name: 'Зритель',
       id: 0,
     }
+  }
+
+  // Получение известных ролей
+  async getRoles() {
+    const { user, gameId } = this.socket
+
+    if (!user) return
+
+    const roles = GameRole.findAll({
+      where: {
+        gameId,
+        accountId: user.id,
+      },
+      include: [
+        {
+          model: Role,
+          attributes: ['name', 'id'],
+        },
+        {
+          model: Account,
+          as: 'player',
+          attributes: ['username'],
+        },
+      ],
+    })
+
+    const data = {
+      roles,
+    }
+
+    return roles
   }
 
   // История сообщений
@@ -191,13 +222,14 @@ class ChatService extends BaseService {
 
   // Получение лога игры
   async getLog() {
-    const { socket, user } = this
+    const { socket } = this
     const { gameId } = socket
 
     const where = { gameId }
 
     const game = await Game.findByPk(gameId)
 
+    // Если игра ещё идёт, то не показываю скрытые записи лога
     if (game.status == Game.periods.STARTED) {
       where.hidden = false
     }
@@ -259,7 +291,7 @@ class ChatService extends BaseService {
 
   // Голос
   async vote(username) {
-    const { socket, io } = this
+    const { socket } = this
     const { user, gameId, isPlayer } = socket
 
     if (!user) throw new Error('Не авторизован')
@@ -274,37 +306,6 @@ class ChatService extends BaseService {
 
     // Голосую
     await game.vote(username, user.id)
-  }
-
-  // Получение известных ролей
-  async getRoles() {
-    const { user, gameId } = this.socket
-
-    if (!user) return
-
-    const roles = GameRole.findAll({
-      where: {
-        gameId,
-        accountId: user.id,
-      },
-      include: [
-        {
-          model: Role,
-          attributes: ['name', 'id'],
-        },
-        {
-          model: Account,
-          as: 'player',
-          attributes: ['username'],
-        },
-      ],
-    })
-
-    const data = {
-      roles,
-    }
-
-    return roles
   }
 
   // Выстрел
@@ -387,4 +388,4 @@ class ChatService extends BaseService {
   }
 }
 
-module.exports = ChatService
+module.exports = BaseGameService

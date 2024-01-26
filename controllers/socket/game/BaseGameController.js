@@ -1,7 +1,6 @@
 const BaseSocketController = require('../BaseSocketController')
-const Service = require('../../../services/socket/game/GameService')
 
-class GameController extends BaseSocketController {
+class BaseGameController extends BaseSocketController {
   // Получение роли
   async getRole(callback) {
     try {
@@ -12,6 +11,7 @@ class GameController extends BaseSocketController {
       callback('Ошибка')
     }
   }
+
   // Получение известынх ролей
   async getRoles(callback) {
     try {
@@ -100,6 +100,4 @@ class GameController extends BaseSocketController {
   }
 }
 
-module.exports = (io, socket) => {
-  return new GameController(io, socket, Service)
-}
+module.exports = BaseGameController

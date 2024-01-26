@@ -1,5 +1,6 @@
 const { validateTokenInSocket } = require('../units/jwt')
 const { userToSocket } = require('../middlewares/AuthMiddleware')
+const Game = require('../models/Game')
 
 module.exports = (io) => {
   // Пытаюсь получить пользователя по токену jwt
@@ -53,14 +54,26 @@ module.exports = (io) => {
 
   io.of('/game').use(validateTokenInSocket)
 
-  io.of('/game').use((socket, next) => {
+  io.of('/game').use(async (socket, next) => {
     const { referer } = socket.request.headers
     socket.gameId = 1 * referer.substr(referer.indexOf('/game/') + 6, 7)
+    socket.game = await Game.findByPk(socket.gameId)
     next()
   })
 
   io.of('/game').on('connection', (socket) => {
-    // Роуты чата игры
-    require('./socket/game/GameRouter')(io, socket)
+    const { game } = socket
+
+    if (game) {
+      // Роуты классического режима
+      if (game.gametypeId == 1) {
+        require('./socket/game/ClassicGameRouter')(io, socket)
+      }
+
+      // Роуты мультирежима
+      if (game.gametypeId == 4) {
+        require('./socket/game/MultiGameRouter')(io, socket)
+      }
+    }
   })
 }

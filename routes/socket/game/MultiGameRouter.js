@@ -1,8 +1,6 @@
 module.exports = (io, socket) => {
-  const controller = require('../../../controllers/socket/game/GameController')(
-    io,
-    socket
-  )
+  const controller =
+    require('../../../controllers/socket/game/MultiGameController')(io, socket)
 
   // Получение роли в игре
   socket.on('get.role', controller.getRole.bind(controller))

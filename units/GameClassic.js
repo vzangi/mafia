@@ -118,6 +118,8 @@ class GameClassic extends GameBase {
       await this.systemMessage(
         'Договориться не удалось. Голосование продолжается.'
       )
+      this.systemLog('Договориться не удалось. Голосование продолжается.')
+
       await this.nextDay()
       return
     }

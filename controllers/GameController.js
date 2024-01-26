@@ -7,7 +7,12 @@ class GameController {
       const { id } = req.params
       const { user } = req
       const data = await service.game(id, user)
-      res.render('pages/game/game', data)
+      if (data.game.gametypeId == 1) {
+        return res.render('pages/game/game', data)
+      }
+      if (data.game.gametypeId == 4) {
+        return res.render('pages/game/gameMulti', data)
+      }
     } catch (error) {
       console.log(error)
       next(error)

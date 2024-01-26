@@ -1,4 +1,5 @@
 const Game = require('../models/Game')
+const GameLog = require('../models/GameLog')
 const GamePlayer = require('../models/GamePlayer')
 const GameStep = require('../models/GameStep')
 const GameBase = require('./GameBase')
@@ -17,12 +18,14 @@ class GameMulti extends GameBase {
         return [
           [Game.roles.MAFIA, 1],
           [Game.roles.CHILD, 1],
+          [Game.roles.MANIAC, 1],
         ]
       case 5:
         return [
           [Game.roles.MAFIA, 1],
           [Game.roles.KOMISSAR, 1],
           [Game.roles.CHILD, 1],
+          [Game.roles.MANIAC, 1],
         ]
       case 6:
       case 7:
@@ -182,6 +185,8 @@ class GameMulti extends GameBase {
       await this.systemMessage(
         'Договориться не удалось. Голосование продолжается.'
       )
+      this.systemLog('Договориться не удалось. Голосование продолжается.')
+
       await this.nextDay()
       return
     }
@@ -343,6 +348,19 @@ class GameMulti extends GameBase {
       await this.missmatch()
     }
 
+    // Беру выстрел маньяка
+    const manShot = await GameStep.findOne({
+      where: {
+        gameId: game.id,
+        day: game.day,
+        stepType: GameStep.stepTypes.KILLING,
+      },
+    })
+
+    if (manShot) {
+      await this.playerKilledByManiac(manShot.playerId)
+    }
+
     // Проверка на завершение игры
     const winnerSide = await this.isOver()
     if (winnerSide) {
@@ -492,10 +510,174 @@ class GameMulti extends GameBase {
     await this.showPlayerRole(killed, GamePlayer.playerStatuses.KILLED)
   }
 
+  // Игрок убит
+  async playerKilledByManiac(playerId) {
+    const killed = this.getPlayerById(playerId)
+
+    killed.status = GamePlayer.playerStatuses.KILLED
+    await killed.save()
+
+    const role = await killed.getRole()
+
+    const msg = `<b>${role.name} ${killed.username} ${
+      killed.account.gender == 2 ? 'убита' : 'убит'
+    } маньяком.</b>`
+    await this.systemMessage(msg)
+
+    this.systemLog(msg)
+
+    // Если убит комиссар - надо посмотреть есть ли в игре сержант
+    // Если есть, то передаю роль комиссара ему
+    if (role.id == Game.roles.KOMISSAR) await this.updateSergeant()
+
+    // Показываю всем роль убитого игрока
+    await this.showPlayerRole(killed, GamePlayer.playerStatuses.KILLED)
+  }
+
   // Промах мафии
   async missmatch() {
     await this.systemMessage('Мафия никого не убила.')
     this.systemLog('Мафия никого не убила.')
+  }
+
+  // Выстрел мафии / маньяка
+  async shot(username, mafId) {
+    const { game } = this
+    const player = this.getPlayerByName(username)
+
+    if (!player) {
+      throw new Error('Игрок не найден')
+    }
+
+    if (game.period != Game.periods.NIGHT) {
+      throw new Error('Не время стрелять')
+    }
+
+    const shooter = this.getPlayerById(mafId)
+
+    if (!shooter) {
+      throw new Error('Такого стрелка нет в игре')
+    }
+
+    if (shooter.status != GamePlayer.playerStatuses.IN_GAME) {
+      throw new Error('Вы уже выбыли из игры')
+    }
+
+    // Стрелок - маф
+    if (shooter.roleId == Game.roles.MAFIA) {
+      await this.mafiaShot(player, shooter)
+    }
+
+    // Стрелок - маньяк
+    if (shooter.roleId == Game.roles.MANIAC) {
+      await this.maniacShot(player, shooter)
+    }
+  }
+
+  // Выстрел мафии
+  async mafiaShot(player, maf) {
+    const { game } = this
+    const { day } = game
+
+    const isShooting = await GameStep.findOne({
+      where: {
+        gameId: game.id,
+        day,
+        accountId: maf.accountId,
+        stepType: GameStep.stepTypes.NIGHT,
+      },
+    })
+
+    if (isShooting) {
+      throw new Error('Вы уже стреляли этой ночью')
+    }
+
+    // Записываю выстрел в базу
+    await GameStep.create({
+      gameId: game.id,
+      day,
+      accountId: maf.accountId,
+      playerId: player.accountId,
+      stepType: GameStep.stepTypes.NIGHT,
+    })
+
+    this.systemLog(
+      `<b>Мафия ${maf.username} стреляет в ${player.username}</b>`,
+      GameLog.types.MAF,
+      true
+    )
+
+    // Смотрю все ли мафы стреляли
+    await this.nightIsOver()
+  }
+
+  // Проверка на окончание ночи
+  async nightIsOver() {
+    const { game, players } = this
+    const { day } = game
+
+    // беру все выстрелы
+    const shots = await GameStep.findAll({
+      where: {
+        gameId: game.id,
+        day,
+        stepType: GameStep.stepTypes.NIGHT,
+      },
+    })
+
+    // Беру всех мафов, которые ещё в игре
+    const mafiaPlayers = players.filter(
+      (p) =>
+        p.roleId == Game.roles.MAFIA &&
+        p.status == GamePlayer.playerStatuses.IN_GAME
+    )
+
+    // Количество выстрелов равно количеству мафиози
+    if (shots.length == mafiaPlayers.length) {
+      // Здесь можно посмотреть, есть ли в игре маньяк
+      // Если есть, то ждать его ход тоже
+
+      // Завершаю ночь
+      game.deadline = 0
+    }
+  }
+
+  // Выстрел маньяка
+  async maniacShot(player, maniac) {
+    const { game, players } = this
+    const { day } = game
+
+    const isShooting = await GameStep.findOne({
+      where: {
+        gameId: game.id,
+        day,
+        accountId: maniac.accountId,
+        stepType: GameStep.stepTypes.KILLING,
+      },
+    })
+
+    if (isShooting) {
+      throw new Error('Вы уже убивали этой ночью')
+    }
+
+    // Записываю выстрел в базу
+    await GameStep.create({
+      gameId: game.id,
+      day,
+      accountId: maniac.accountId,
+      playerId: player.accountId,
+      stepType: GameStep.stepTypes.KILLING,
+    })
+
+    this.systemLog(
+      `<b>Маньяк ${maniac.username} покушается на ${player.username}</b>`,
+      GameLog.types.MAF,
+      true
+    )
+
+    // Если буду делать ситауцию,
+    // когда игра ожидает ход маньяка,
+    // то вызываю nigthIsOver
   }
 }
 

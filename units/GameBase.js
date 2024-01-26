@@ -32,7 +32,7 @@ class GameBase {
     this.players = []
 
     // время хода
-    this.periodInterval = 120
+    this.periodInterval = 20
 
     // время перехода для комиссара
     this.perehodInterval = 6
@@ -809,7 +809,7 @@ class GameBase {
     }
 
     // Победа мафии
-    if (aliveCitizens == 0 && aliveMafia > 0) {
+    if (aliveCitizens == 0 && aliveManiac == 0 && aliveMafia > 0) {
       return Game.sides.MAFIA
     }
 
@@ -1011,11 +1011,17 @@ class GameBase {
 
   // Получает Id кома или null, если его уже нет в игре
   getKomId() {
+    const kom = this.getPlayerByRoleId(Game.roles.KOMISSAR)
+    if (!kom) return null
+    return kom.accountId
+  }
+
+  getPlayerByRoleId(roleId) {
     const { players } = this
     for (const index in players) {
       const player = players[index]
       if (
-        player.roleId == Game.roles.KOMISSAR &&
+        player.roleId == roleId &&
         player.status == GamePlayer.playerStatuses.IN_GAME
       )
         return player.accountId
