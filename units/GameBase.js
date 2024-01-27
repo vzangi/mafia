@@ -971,6 +971,8 @@ class GameBase {
 			order: [sequelize.random()],
 		})
 
+		if (!winThing) return
+
 		// Дарю игроку
 		await AccountThing.create({
 			accountId,
@@ -1013,7 +1015,7 @@ class GameBase {
 	getKomId() {
 		const kom = this.getPlayerByRoleId(Game.roles.KOMISSAR)
 		if (!kom) return null
-		return kom.accountId
+		return kom
 	}
 
 	getPlayerByRoleId(roleId) {
@@ -1062,6 +1064,7 @@ class GameBase {
 	async hasUnlookedPlayers() {
 		const { players, game } = this
 		const komId = this.getKomId()
+
 		if (!komId) return false
 
 		// игроки, роли которых ком видит
@@ -1093,6 +1096,8 @@ class GameBase {
 				return true
 			}
 		}
+
+		console.log('kom is over')
 
 		// непроверенных игроков нет
 		return false

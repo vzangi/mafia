@@ -19,7 +19,7 @@ class GameMulti extends GameBase {
 					[Game.roles.MAFIA, 1],
 					[Game.roles.CHILD, 1],
 					[Game.roles.MANIAC, 1],
-					// [Game.roles.DOCTOR, 1],
+					[Game.roles.DOCTOR, 1],
 				]
 			case 5:
 				return [
@@ -27,7 +27,7 @@ class GameMulti extends GameBase {
 					[Game.roles.KOMISSAR, 1],
 					[Game.roles.CHILD, 1],
 					[Game.roles.MANIAC, 1],
-					// [Game.roles.DOCTOR, 1],
+					[Game.roles.DOCTOR, 1],
 				]
 			case 6:
 			case 7:
@@ -357,9 +357,12 @@ class GameMulti extends GameBase {
 			if (goodShots.length == shots.length) {
 				// Ищу спасение игрока врачом
 				const wasProtected = await GameStep.findOne({
-					gameId: game.id,
-					day: game.day,
-					playerId: shots[0].playerId,
+					where: {
+						gameId: game.id,
+						day: game.day,
+						playerId: shots[0].playerId,
+						stepType: GameStep.stepTypes.PROTECTION,
+					},
 				})
 
 				if (!wasProtected) {
