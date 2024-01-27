@@ -19,7 +19,7 @@ class GameMulti extends GameBase {
 					[Game.roles.MAFIA, 1],
 					[Game.roles.CHILD, 1],
 					[Game.roles.MANIAC, 1],
-					[Game.roles.DOCTOR, 1],
+					// [Game.roles.DOCTOR, 1],
 				]
 			case 5:
 				return [
@@ -27,7 +27,7 @@ class GameMulti extends GameBase {
 					[Game.roles.KOMISSAR, 1],
 					[Game.roles.CHILD, 1],
 					[Game.roles.MANIAC, 1],
-					[Game.roles.DOCTOR, 1],
+					// [Game.roles.DOCTOR, 1],
 				]
 			case 6:
 			case 7:
