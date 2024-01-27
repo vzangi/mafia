@@ -99,6 +99,7 @@ $(function () {
 		$('.chat-input-box').remove()
 		$('.vote-dot').remove()
 		$('.kill-dot').remove()
+		$('.doc-dot').remove()
 		$('.prova-dot').remove()
 		$('.to-lobbi').removeClass('hide')
 	})
@@ -131,6 +132,7 @@ $(function () {
 			player.find('.vote-dot').remove()
 		}
 		player.find('.kill-dot').remove()
+		player.find('.doc-dot').remove()
 		player.find('.prova-dot').remove()
 		player.addClass(`role-${user.role.id}`).addClass('role-showed')
 

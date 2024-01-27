@@ -638,7 +638,7 @@ class GameMulti extends GameBase {
 			throw new Error('Вы вне игры')
 		}
 
-		if (shooter.roleId != Game.roles.DOCTOR) {
+		if (doc.roleId != Game.roles.DOCTOR) {
 			throw new Error('Вы не врач')
 		}
 
@@ -649,7 +649,7 @@ class GameMulti extends GameBase {
 		const isProtect = await GameStep.findOne({
 			where: {
 				gameId: game.id,
-				day,
+				day: game.day,
 				accountId: doc.accountId,
 				stepType: GameStep.stepTypes.PROTECTION,
 			},
@@ -662,7 +662,7 @@ class GameMulti extends GameBase {
 		// Записываю ход врача в базу
 		await GameStep.create({
 			gameId: game.id,
-			day,
+			day: game.day,
 			accountId: doc.accountId,
 			playerId: player.accountId,
 			stepType: GameStep.stepTypes.PROTECTION,
