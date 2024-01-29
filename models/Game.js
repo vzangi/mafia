@@ -39,7 +39,6 @@ const periods = {
   KOM: 3,
   NIGHT: 4,
   TRANSITION: 5,
-  ADVOCATE: 6,
   END: 10,
 }
 
