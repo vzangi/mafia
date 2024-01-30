@@ -87,12 +87,14 @@ header,
 }
 
 .player.role-2,
-.player.role-8 {
+.player.role-8,
+.player.role-9 {
   background-color: var(--color-class-4);
 }
 
 .player.role-2 .friend-avatar.online:after,
-.player.role-8 .friend-avatar.online:after {
+.player.role-8 .friend-avatar.online:after,
+.player.role-9 .friend-avatar.online:after {
   border-color: var(--color-class-4);
 }
 

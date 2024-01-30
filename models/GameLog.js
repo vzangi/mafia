@@ -8,6 +8,7 @@ const types = {
   KOM: 4,
   DOC: 5,
   ADV: 6,
+  FREEZ: 7,
 }
 
 const GameLog = sequelize.define('gamelogs', {

@@ -26,7 +26,7 @@ class GameMulti extends GameBase {
           [Game.roles.MAFIA, 1],
           [Game.roles.KOMISSAR, 1],
           [Game.roles.CHILD, 1],
-          [Game.roles.MANIAC, 1],
+          [Game.roles.PROSTITUTE, 1],
           [Game.roles.ADVOCATE, 1],
         ]
       case 6:
@@ -200,6 +200,11 @@ class GameMulti extends GameBase {
       // Если есть, то передаю роль комиссара ему
       if (role.id == Game.roles.KOMISSAR) await this.updateSergeant()
 
+      // Если посажена путана, то размораживаю игрока
+      if (role.id == Game.roles.PROSTITUTE) {
+        await this.unfreez()
+      }
+
       // Показываю роль посаженного игрока всем
       await this.showPlayerRole(player, GamePlayer.playerStatuses.PRISONED)
 
@@ -255,6 +260,16 @@ class GameMulti extends GameBase {
     room.emit('kommissar.start')
   }
 
+  async unfreez() {
+    for (const index in this.players) {
+      const player = this.players[index]
+      if (player.status == GamePlayer.playerStatuses.FREEZED) {
+        player.status = GamePlayer.playerStatuses.IN_GAME
+        await player.save()
+      }
+    }
+  }
+
   // После хода кома
   async afterKom() {
     const { room } = this
@@ -292,10 +307,22 @@ class GameMulti extends GameBase {
       rolesInNight += ', адвоката'
     }
 
+    // Смотрю, есть ли в игре путана
+    const puatanaInGame = this.getPlayerByRoleId(Game.roles.PROSTITUTE)
+    if (
+      puatanaInGame &&
+      puatanaInGame.status != GamePlayer.playerStatuses.FREEZED
+    ) {
+      rolesInNight += ', путаны'
+    }
+
     await this.systemMessage('<hr>')
     await this.systemMessage(`Наступила ночь. ${rolesInNight}.`)
 
     this.systemLog(`<hr>Наступила ночь. ${rolesInNight}.`)
+
+    // Если был замороженный путаной игрок, то размораживаю его
+    await this.unfreez()
 
     // Ход мафии
     await this.setPeriod(Game.periods.NIGHT, periodInterval)
@@ -573,7 +600,7 @@ class GameMulti extends GameBase {
     this.systemLog('Мафия никого не убила.')
   }
 
-  // Выстрел мафии / маньяка / адвоката
+  // Выстрел мафии / маньяка / адвоката / путаны
   async shot(username, mafId) {
     const { game } = this
     const player = this.getPlayerByName(username)
@@ -614,6 +641,48 @@ class GameMulti extends GameBase {
     if (shooter.roleId == Game.roles.ADVOCATE) {
       await this.protection(player, shooter)
     }
+
+    // Ход путаны
+    if (shooter.roleId == Game.roles.PROSTITUTE) {
+      await this.freezing(player, shooter)
+    }
+  }
+
+  // Заморозка игрока
+  async freezing(player, putana) {
+    const { game } = this
+
+    const isFreezing = await GameStep.findOne({
+      where: {
+        gameId: game.id,
+        day: game.day,
+        accountId: putana.accountId,
+        stepType: GameStep.stepTypes.FREEZING,
+      },
+    })
+
+    if (isFreezing) {
+      throw new Error('Вы уже ходили этой ночью')
+    }
+
+    // Записываю ход путаны в базу
+    await GameStep.create({
+      gameId: game.id,
+      day: game.day,
+      accountId: putana.accountId,
+      playerId: player.accountId,
+      stepType: GameStep.stepTypes.FREEZING,
+    })
+
+    // Ставлю игроку статус - заморожен
+    player.status = GamePlayer.playerStatuses.FREEZED
+    await player.save()
+
+    this.systemLog(
+      `<b>Путана ${putana.username} отвлекает ${player.username}</b>`,
+      GameLog.types.FREEZ,
+      true
+    )
   }
 
   // Защита адвоката

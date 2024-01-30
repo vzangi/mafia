@@ -183,7 +183,8 @@ $(function () {
 
   // Выстрел
   $('.kill-dot').click(function () {
-    if (myRole.id != 2 && myRole.id != 6 && myRole.id != 8) return
+    if (myRole.id != 2 && myRole.id != 6 && myRole.id != 8 && myRole.id != 9)
+      return
     if ($(this).hasClass('checked')) return
 
     const { username } = $(this).data()

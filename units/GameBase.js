@@ -1119,8 +1119,6 @@ class GameBase {
       }
     }
 
-    console.log('kom is over')
-
     // непроверенных игроков нет
     return false
   }
@@ -1200,6 +1198,9 @@ class GameBase {
 
     // Если игрок не найден - выхожу
     if (!player) return
+
+    // Если игрок заморожен - выхожу
+    if (player.status == GamePlayer.playerStatuses.FREEZED) return
 
     // Беру ник игррока
     const { username } = player

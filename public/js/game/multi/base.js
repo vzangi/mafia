@@ -22,14 +22,15 @@ $(function () {
       roleName.prev().removeClass('d-hidden')
     }
 
-    // не маф, не адвокат и не адвокат
-    if (role.id != 2 && role.id != 6 && role.id != 8) {
+    // не маф, не адвокат и не адвокат и не путана
+    if (role.id != 2 && role.id != 6 && role.id != 8 && role.id != 9) {
       $('.kill-dot').remove()
     }
 
     // Маньяк не может убить себя
     // А адвокат защищать
-    if (role.id == 6 || role.id == 8) {
+    // путана морозить
+    if (role.id == 6 || role.id == 8 || role.id == 9) {
       $('.iam .kill-dot').remove()
     }
 

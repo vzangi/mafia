@@ -260,6 +260,10 @@ class BaseGameService extends BaseService {
     }
 
     const player = game.getPlayerById(user.id)
+    if (player.status == GamePlayer.playerStatuses.FREEZED) {
+      throw new Error('Путана заманила вас в свои сети')
+    }
+
     if (player.status != GamePlayer.playerStatuses.IN_GAME) {
       throw new Error('Вы не можете писать в этой игре')
     }

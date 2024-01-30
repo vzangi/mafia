@@ -626,6 +626,7 @@ input:checked + .slider:before {
 .log-box.log-type-3,
 .log-box.log-type-4,
 .log-box.log-type-6,
+.log-box.log-type-7,
 .log-box.log-type-5 {
   text-decoration: underline;
   font-weight: 400;
@@ -648,6 +649,10 @@ input:checked + .slider:before {
 }
 
 .log-box.log-type-6 {
+  color: #f968d5;
+}
+
+.log-box.log-type-7 {
   color: #f968d5;
 }
 
