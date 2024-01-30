@@ -66,10 +66,12 @@ class BaseGameController extends BaseSocketController {
   }
 
   // Выстрел
-  async shot(username) {
+  async shot(username, callback) {
     try {
       await this.service.shot(username)
+      if (callback) callback({ status: 0 })
     } catch (error) {
+      if (callback) callback({ status: 1, msg: error.message })
       console.log(error)
     }
   }

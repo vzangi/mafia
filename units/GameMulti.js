@@ -624,11 +624,18 @@ class GameMulti extends GameBase {
 
     // Стрелок - маньяк
     if (shooter.roleId == Game.roles.MANIAC) {
+      if (shooter.status == GamePlayer.playerStatuses.FREEZED) {
+        throw new Error('Путана заманила вас в свои сети')
+      }
+
       await this.maniacShot(player, shooter)
     }
 
     // Ход адвоката
     if (shooter.roleId == Game.roles.ADVOCATE) {
+      if (shooter.status == GamePlayer.playerStatuses.FREEZED) {
+        throw new Error('Путана заманила вас в свои сети')
+      }
       await this.protection(player, shooter)
     }
 

@@ -266,6 +266,11 @@ input:checked + .slider:before {
   color: var(--color-black);
 }
 
+.input-box input:disabled {
+  background: #aaa;
+  color: #f5f5f5;
+}
+
 /* БЛОК СМАЙЛОВ */
 
 .smiles {

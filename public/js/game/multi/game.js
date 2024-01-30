@@ -203,7 +203,10 @@ $(function () {
     const { username } = $(this).data()
     $(this).addClass('checked')
 
-    gameSocket.emit('shot', username)
+    gameSocket.emit('shot', username, (res) => {
+      const { status, msg } = res
+      if (status != 0) alert(msg)
+    })
 
     $('.kill-dot:not(.checked)').addClass('hide')
   })
