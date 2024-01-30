@@ -1,4 +1,6 @@
 $(function () {
+  const chatInput = $('.input-box input')
+
   // Начало голосвания
   function startVoting() {
     $('.players-list').removeClass('voted')
@@ -126,6 +128,14 @@ $(function () {
     showRole(user)
   })
 
+  gameSocket.on('freez', () => {
+    chatInput.attr('disabled', '')
+  })
+
+  gameSocket.on('unfreez', () => {
+    chatInput.removeAttr('disabled')
+  })
+
   function showRole(user, isProva = false) {
     const player = $(`.player[data-username='${user.username}']`)
     if (!isProva) {
@@ -172,7 +182,10 @@ $(function () {
 
     if ($(`.iam.voted`).length == 1) return
 
-    gameSocket.emit('vote', username)
+    gameSocket.emit('vote', username, (res) => {
+      const { status, msg } = res
+      if (status != 0) alert(msg)
+    })
   })
 
   // Проверка

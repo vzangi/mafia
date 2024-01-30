@@ -169,7 +169,10 @@ $(function () {
 
     if ($(`.iam.voted`).length == 1) return
 
-    gameSocket.emit('vote', username)
+    gameSocket.emit('vote', username, (res) => {
+      const { status, msg } = res
+      if (status != 0) alert(msg)
+    })
   })
 
   // Проверка

@@ -495,9 +495,17 @@ class GameBase {
       throw new Error('Вас нет в этой игре')
     }
 
+    // Если игрока отвлекает путана
+    if (voter.status == GamePlayer.playerStatuses.FREEZED) {
+      throw new Error(
+        'Путана заманила вас в свои сети и не даёт возможности проголосовать'
+      )
+    }
+
     // Игрок должен иметь активный статус (в игре)
     if (voter.status != GamePlayer.playerStatuses.IN_GAME) {
-      throw new Error('Вы не можете голосовать в этой игре')
+      return
+      //throw new Error('Вы не можете голосовать в этой игре')
     }
 
     const player = this.getPlayerByName(username)

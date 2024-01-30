@@ -260,16 +260,6 @@ class GameMulti extends GameBase {
     room.emit('kommissar.start')
   }
 
-  async unfreez() {
-    for (const index in this.players) {
-      const player = this.players[index]
-      if (player.status == GamePlayer.playerStatuses.FREEZED) {
-        player.status = GamePlayer.playerStatuses.IN_GAME
-        await player.save()
-      }
-    }
-  }
-
   // После хода кома
   async afterKom() {
     const { room } = this
@@ -674,15 +664,39 @@ class GameMulti extends GameBase {
       stepType: GameStep.stepTypes.FREEZING,
     })
 
-    // Ставлю игроку статус - заморожен
-    player.status = GamePlayer.playerStatuses.FREEZED
-    await player.save()
+    // Если игрок не мафия
+    if (player.roleId != Game.roles.MAFIA) {
+      // Ставлю игроку статус - заморожен
+      player.status = GamePlayer.playerStatuses.FREEZED
+      await player.save()
+
+      const sockets = this.getUserSocketIds(player.accountId, '/game')
+      sockets.forEach((socket) => {
+        socket.emit('freez')
+      })
+    }
 
     this.systemLog(
       `<b>Путана ${putana.username} отвлекает ${player.username}</b>`,
       GameLog.types.FREEZ,
       true
     )
+  }
+
+  // Разморозка игрока
+  async unfreez() {
+    for (const index in this.players) {
+      const player = this.players[index]
+      if (player.status == GamePlayer.playerStatuses.FREEZED) {
+        player.status = GamePlayer.playerStatuses.IN_GAME
+        await player.save()
+
+        const sockets = this.getUserSocketIds(player.accountId, '/game')
+        sockets.forEach((socket) => {
+          socket.emit('unfreez')
+        })
+      }
+    }
   }
 
   // Защита адвоката
