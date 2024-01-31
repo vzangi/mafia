@@ -18,27 +18,28 @@ class GameMulti extends GameBase {
         return [
           [Game.roles.MAFIA, 1],
           [Game.roles.CHILD, 1],
-          [Game.roles.MANIAC, 1],
-          [Game.roles.DOCTOR, 1],
         ]
       case 5:
         return [
           [Game.roles.MAFIA, 1],
-          [Game.roles.KOMISSAR, 1],
           [Game.roles.CHILD, 1],
-          [Game.roles.PROSTITUTE, 1],
-          [Game.roles.ADVOCATE, 1],
+          [Game.roles.KOMISSAR, 1],
         ]
       case 6:
+        return [
+          [Game.roles.MAFIA, 2],
+          [Game.roles.CHILD, 1],
+          [Game.roles.KOMISSAR, 1],
+          [Game.roles.MANIAC, 1],
+        ]
       case 7:
       case 8:
       case 9:
         return [
           [Game.roles.MAFIA, 2],
-          [Game.roles.KOMISSAR, 1],
           [Game.roles.CHILD, 1],
+          [Game.roles.KOMISSAR, 1],
           [Game.roles.MANIAC, 1],
-          [Game.roles.SERGEANT, 1],
           [Game.roles.DOCTOR, 1],
           [Game.roles.ADVOCATE, 1],
         ]
@@ -50,8 +51,8 @@ class GameMulti extends GameBase {
           [Game.roles.CHILD, 1],
           [Game.roles.MANIAC, 1],
           [Game.roles.DOCTOR, 1],
-          [Game.roles.SERGEANT, 1],
           [Game.roles.ADVOCATE, 1],
+          [Game.roles.SERGEANT, 1],
         ]
       case 12:
       case 13:
@@ -66,6 +67,7 @@ class GameMulti extends GameBase {
           [Game.roles.MANIAC, 1],
           [Game.roles.DOCTOR, 1],
           [Game.roles.ADVOCATE, 1],
+          [Game.roles.PROSTITUTE, 1],
         ]
     }
 
