@@ -230,7 +230,7 @@ class BaseGameService extends BaseService {
     const game = await Game.findByPk(gameId)
 
     // Если игра ещё идёт, то не показываю скрытые записи лога
-    if (game.status == Game.periods.STARTED) {
+    if (game.status == Game.statuses.STARTED) {
       where.hidden = false
     }
 
