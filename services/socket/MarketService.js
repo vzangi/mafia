@@ -1,4 +1,4 @@
-const { where, Op } = require('sequelize')
+const { Op } = require('sequelize')
 const Account = require('../../models/Account')
 const AccountThing = require('../../models/AccountThing')
 const Thing = require('../../models/Thing')
@@ -36,7 +36,7 @@ const setTradesCancelled = async (thing) => {
   // Отмняю все обмены с этой вещью
   items.forEach(async (item) => {
     // 4 - отменён системой
-    item.trade.status = 4
+    item.trade.status = Trade.statuses.SYS_DECLINE
     await item.trade.save()
   })
 }
@@ -94,8 +94,6 @@ class MarketService extends BaseService {
     } у вас на маркете ${thing.thing.name} за ${(
       thing.marketPrice * WalletEvent.sellingRate
     ).toFixed(2)} р.`
-
-    console.log(notifyMessage)
 
     // Передаю лот покупателю
     thing.accountId = user.id

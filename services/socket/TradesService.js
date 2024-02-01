@@ -169,11 +169,11 @@ class TradesService extends BaseService {
       throw new Error('Нельзя отменить чужой обмен')
     }
 
-    if (trade.status != 0) {
+    if (trade.status != Trade.statuses.SENDED) {
       throw new Error('Нельзя отменить неактивный обмен')
     }
 
-    trade.status = 3
+    trade.status = Trade.statuses.DECLINE
     await trade.save()
   }
 
@@ -208,12 +208,12 @@ class TradesService extends BaseService {
       throw new Error('Нельзя принять чужой обмен')
     }
 
-    if (trade.status != 0) {
+    if (trade.status != Trade.statuses.SENDED) {
       throw new Error('Нельзя принять завершённый обмен')
     }
 
     // Помечаю обмен принятым
-    trade.status = 2
+    trade.status = Trade.statuses.ACCEPTED
     await trade.save()
 
     const { fromId, toId } = trade
@@ -388,11 +388,11 @@ class TradesService extends BaseService {
       throw new Error('Нельзя отзывать чужой обмен')
     }
 
-    if (trade.status != 0) {
+    if (trade.status != Trade.statuses.SENDED) {
       throw new Error('Нельзя отменить неактивный обмен')
     }
 
-    trade.status = 1
+    trade.status = Trade.statuses.CANCELLED
     await trade.save()
   }
 }

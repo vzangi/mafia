@@ -5,6 +5,14 @@ const TradeItem = require('./TradeItem')
 const AccountThing = require('./AccountThing')
 const { getCoolDateTime } = require('../units/helpers')
 
+const statuses = {
+  SENDED: 0,
+  CANCELLED: 1,
+  ACCEPTED: 2,
+  DECLINE: 3,
+  SYS_DECLINE: 4,
+}
+
 const Trade = sequelize.define('trades', {
   id: {
     type: DataTypes.INTEGER,
@@ -34,6 +42,8 @@ const Trade = sequelize.define('trades', {
     },
   },
 })
+
+Trade.statuses = statuses
 
 Trade.belongsTo(Account, { as: 'from', foreignKey: 'fromId' })
 Trade.belongsTo(Account, { as: 'to', foreignKey: 'toId' })

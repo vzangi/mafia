@@ -133,7 +133,6 @@ class UserCountService extends BaseService {
     const { user } = this
 
     if (!user) {
-      console.log('a user connected', getNowDateTime())
       this._changeUserCount(+1)
       return
     }
@@ -156,7 +155,6 @@ class UserCountService extends BaseService {
 
       // Обновляю статус online
       this._online(user.id)
-      console.log(`${user.id} connected`, getNowDateTime())
     }
   }
 
@@ -166,7 +164,6 @@ class UserCountService extends BaseService {
 
     // Если вышел неавторизванный пользователь
     if (!user) {
-      console.log(`socket disconnect (noname)`, getNowDateTime())
       this._changeUserCount(-1)
       return
     }
@@ -181,8 +178,6 @@ class UserCountService extends BaseService {
     // на оффлайн при переходе между страницами
     userTimers[user.id] = setTimeout(async () => {
       delete userTimers[user.id]
-
-      console.log(`${user.id} disconnected`, getNowDateTime())
 
       this._changeUserCount(-1)
 
