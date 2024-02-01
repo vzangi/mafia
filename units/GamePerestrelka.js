@@ -1,7 +1,10 @@
+const AccountThing = require('../models/AccountThing')
 const Game = require('../models/Game')
+const GameLife = require('../models/GameLife')
 const GameLog = require('../models/GameLog')
 const GamePlayer = require('../models/GamePlayer')
 const GameStep = require('../models/GameStep')
+const Thing = require('../models/Thing')
 const GameBase = require('./GameBase')
 
 // Игра в классическом режиме
@@ -110,8 +113,78 @@ class GamePerestrelka extends GameBase {
     }
   }
 
+  // Перегружаю базовую функцию подготовки
+  async prepare() {
+    // Вызываю подготовку из базового класса
+    const parentPrepare = await super.prepare()
+
+    // Если подготовка не удалась - выхожу
+    if (!parentPrepare) return false
+
+    const hasManiac = this.getPlayerByRoleId(Game.roles.MANIAC)
+
+    try {
+      const { players } = this
+      // Добавляю дневные и ночные статы каждому игроку
+      for (const index in players) {
+        const player = players[index]
+        // Дневные жизни
+        await GameLife.create({
+          gameplayerId: player.id,
+          type: GameLife.types.DAY,
+        })
+
+        // Ночные жизни для выстрелов мафии
+        await GameLife.create({
+          gameplayerId: player.id,
+          type: GameLife.types.NIGHT,
+        })
+
+        // Если в игре есть маньяк
+        if (hasManiac) {
+          // Создаю ночные жизни для выстрелов маньяка
+          await GameLife.create({
+            gameplayerId: player.id,
+            type: GameLife.types.MANIAC,
+          })
+        }
+
+        // Загружаю вещи, которые игрок взял в игру
+        const takedThings = AccountThing.findAll({
+          where: {
+            accountId: player.accountId,
+            taked: true,
+          },
+          include: [
+            {
+              model: Thing,
+              where: {
+                thingtypeId: 1, // Вещи
+              },
+            },
+          ],
+          limit: 5,
+        })
+
+        // Рассчитываю силу урона игрока
+        player.power = 0
+        for (const thingIndex in takedThings) {
+          const thing = takedThings[thingIndex]
+          if (thing.thingclassId == 5) {
+            player.power += 20
+            continue
+          }
+          player.power += thing.thingclassId * 5
+        }
+      }
+      return true
+    } catch (error) {
+      console.log(error)
+      return false
+    }
+  }
+
   // Новый день
-  // ========================= ПЕРЕПИСАТЬ !!! ===================
   async nextDay() {
     const { game, room, periodInterval } = this
 
@@ -130,6 +203,111 @@ class GamePerestrelka extends GameBase {
     room.emit('voting.start', game.day)
   }
 
+  // Перегружаю функцию голосования
+  async vote(username, voterId) {
+    const voter = this.getPlayerById(voterId)
+    if (!voter) {
+      throw new Error('Вас нет в этой игре')
+    }
+
+    // Если игрока отвлекает путана
+    if (voter.status == GamePlayer.playerStatuses.FREEZED) {
+      throw new Error(
+        'Путана заманила вас в свои сети и не даёт возможности проголосовать'
+      )
+    }
+
+    // Игрок должен иметь активный статус (в игре)
+    if (voter.status != GamePlayer.playerStatuses.IN_GAME) {
+      return
+    }
+
+    const player = this.getPlayerByName(username)
+
+    if (!player) {
+      throw new Error('Игрок не найден в этой игре')
+    }
+
+    if (
+      player.status != GamePlayer.playerStatuses.IN_GAME &&
+      player.status != GamePlayer.playerStatuses.FREEZED
+    ) {
+      throw new Error('Нельза голосовать в выбывшего игрока')
+    }
+
+    const { game, room } = this
+    const { period, day } = game
+
+    if (period != Game.periods.DAY) {
+      throw new Error('Голосование окончено')
+    }
+
+    // Ищу свой голос в этот день
+    const haveVote = await GameStep.findOne({
+      where: {
+        gameId: game.id,
+        accountId: voterId,
+        day: day,
+        stepType: GameStep.stepTypes.DAY,
+      },
+    })
+
+    // Если уже голосовал
+    if (haveVote) {
+      throw new Error('Вы уже проголосовали')
+    }
+
+    // Записываю голос в базу
+    await GameStep.create({
+      gameId: game.id,
+      accountId: voterId,
+      playerId: player.accountId,
+      day: day,
+      stepType: GameStep.stepTypes.DAY,
+    })
+
+    // Расчитываю урон
+    const uron = Math.ceil((100 + voter.power - player.power) / 4)
+
+    const playerLife = await GameLife.findOne({
+      where: {
+        gameplayerId: player.id,
+        type: GameLife.types.DAY,
+      },
+    })
+
+    // Отнимаю урон у игрока
+    playerLife.life -= uron
+    if (playerLife.life < 0) player.life = 0
+    playerLife.save()
+
+    const msg = `<b>${voter.username} нанёс ${username} урон -${uron}</b>`
+    this.systemMessage(msg)
+    this.systemLog(msg, GameLog.types.STEP)
+
+    // Уведомляю всех о голосе
+    room.emit('vote', voter.username, username)
+
+    // Проверяю, можно ли завершать голосование
+
+    const steps = await GameStep.findAll({
+      where: {
+        gameId: game.id,
+        day,
+        stepType: GameStep.stepTypes.DAY,
+      },
+    })
+
+    const playersInGame = this.activePlayersCount()
+
+    // Количество ходов равно количеству игроков
+    if (steps.length == playersInGame) {
+      // Завершаю голосование
+      game.deadline = 0
+      return
+    }
+  }
+
   // После дня
   async afterDay() {
     const { room } = this
@@ -140,47 +318,61 @@ class GamePerestrelka extends GameBase {
 
     this.systemLog('Перестрелка окончена.')
 
-    // Проверяю результаты голосования
-    const killed = await this.voteResults()
+    // Беру выбывших игроков
+    const deadPlayers = await GamePlayer.findAll({
+      where: {
+        gameId: game.id,
+        status: [
+          GamePlayer.playerStatuses.IN_GAME,
+          GamePlayer.playerStatuses.FREEZED,
+        ],
+        include: [
+          {
+            model: GameLife,
+            where: {
+              type: GameLife.types.DAY,
+              life: 0,
+            },
+          },
+        ],
+      },
+    })
 
-    // если голосование не выявило посадку, то наступает новый день и снова идёт голосование
-    if (killed) {
-      // Показываю роли игроков, которые убиты в перестрелке
+    // Прохожу по каждому выбывшему игроку
+    for (const index in deadPlayers) {
+      const player = this.getPlayerById(deadPlayers[index].accountId)
+
+      // Меняю статус игрока на "в тюрьме"
+      player.status = GamePlayer.playerStatuses.PRISONED
+      await player.save()
+
+      const role = await player.getRole()
+
+      await this.systemMessage(
+        `<b>${role.name} ${player.username} отправляется в госпиталь.</b>`
+      )
+      this.systemLog(
+        `<b>${role.name} ${player.username} отправляется в госпиталь.</b>`
+      )
+
+      // Если посажен комиссар - надо посмотреть есть ли в игре сержант
+      // Если есть, то передаю роль комиссара ему
+      if (role.id == Game.roles.KOMISSAR) await this.updateSergeant()
+
+      // Если посажена путана, то размораживаю игрока
+      if (role.id == Game.roles.PROSTITUTE) {
+        await this.unfreez()
+      }
+
+      // Показываю роль посаженного игрока всем
+      await this.showPlayerRole(player, GamePlayer.playerStatuses.PRISONED)
+
+      // Проверка на окончание игры
+      const winnerSide = await this.isOver()
+      if (winnerSide) {
+        return await this.gameOver(winnerSide)
+      }
     }
-
-    // const player = this.getPlayerById(zek)
-
-    //   // Меняю статус игрока на "в тюрьме"
-    //   player.status = GamePlayer.playerStatuses.PRISONED
-    //   await player.save()
-
-    //   const role = await player.getRole()
-
-    //   await this.systemMessage(
-    //     `<b>${role.name} ${player.username} отправляется в тюрьму.</b>`
-    //   )
-
-    //   this.systemLog(
-    //     `<b>${role.name} ${player.username} отправляется в тюрьму.</b>`
-    //   )
-
-    //   // Если посажен комиссар - надо посмотреть есть ли в игре сержант
-    //   // Если есть, то передаю роль комиссара ему
-    //   if (role.id == Game.roles.KOMISSAR) await this.updateSergeant()
-
-    //   // Если посажена путана, то размораживаю игрока
-    //   if (role.id == Game.roles.PROSTITUTE) {
-    //     await this.unfreez()
-    //   }
-
-    //   // Показываю роль посаженного игрока всем
-    //   await this.showPlayerRole(player, GamePlayer.playerStatuses.PRISONED)
-
-    //   // Проверка на окончание игры
-    //   const winnerSide = await this.isOver()
-    //   if (winnerSide) {
-    //     return await this.gameOver(winnerSide)
-    //   }
 
     // Если ком ещё в игре
     if (this.komInGame()) {
@@ -246,10 +438,7 @@ class GamePerestrelka extends GameBase {
 
     // Смотрю, есть ли в игре путана
     const puatanaInGame = this.getPlayerByRoleId(Game.roles.PROSTITUTE)
-    if (
-      puatanaInGame &&
-      puatanaInGame.status != GamePlayer.playerStatuses.FREEZED
-    ) {
+    if (puatanaInGame) {
       rolesInNight += ', путаны'
     }
 
@@ -266,6 +455,104 @@ class GamePerestrelka extends GameBase {
 
     // Запускаю ход мафии
     room.emit('mafia.start')
+  }
+
+  // Выстрел
+  async shot(username, mafId) {
+    const { game, players } = this
+    const { day } = game
+    const player = this.getPlayerByName(username)
+
+    if (!player) {
+      throw new Error('Игрок не найден')
+    }
+
+    if (game.period != Game.periods.NIGHT) {
+      throw new Error('Не время стрелять')
+    }
+
+    const maf = this.getPlayerById(mafId)
+
+    if (!maf) {
+      throw new Error('Маф не найден в этой игре')
+    }
+
+    if (maf.status != GamePlayer.playerStatuses.IN_GAME) {
+      throw new Error('Вы уже выбыли из игры')
+    }
+
+    const isShooting = await GameStep.findOne({
+      where: {
+        gameId: game.id,
+        day,
+        accountId: mafId,
+        stepType: GameStep.stepTypes.NIGHT,
+      },
+    })
+
+    if (isShooting) {
+      throw new Error('Вы уже стреляли этой ночью')
+    }
+
+    // Записываю выстрел в базу
+    await GameStep.create({
+      gameId: game.id,
+      day,
+      accountId: mafId,
+      playerId: player.accountId,
+      stepType: GameStep.stepTypes.NIGHT,
+    })
+
+    // Рассчитываю урон
+    const uron = Math.ceil((100 + maf.power - player.power) / 2)
+
+    const playerLife = await GameLife.findOne({
+      where: {
+        gameplayerId: player.id,
+        type: GameLife.types.NIGHT,
+      },
+    })
+
+    // Отнимаю урон у игрока
+    playerLife.life -= uron
+    if (playerLife.life < 0) player.life = 0
+    playerLife.save()
+
+    const msg = `<b>Мафия ${maf.username} наносит ${username} урон -${uron}</b>`
+    this.systemLog(msg, GameLog.types.MAF, true)
+
+    // Уведомляю всех мафов об уроне
+    for (const index in players) {
+      const plr = players[index]
+      if (plr.roleId == Game.roles.MAFIA) {
+        const sockets = this.getUserSocketIds(plr.accountId)
+        sockets.forEach((socket) => {
+          socket.emit('shot', username, playerLife.life)
+        })
+      }
+    }
+
+    // беру все выстрелы
+    const shots = await GameStep.findAll({
+      where: {
+        gameId: game.id,
+        day,
+        stepType: GameStep.stepTypes.NIGHT,
+      },
+    })
+
+    // Беру всех мафов, которые ещё в игре
+    const mafiaPlayers = players.filter(
+      (p) =>
+        p.roleId == Game.roles.MAFIA &&
+        p.status == GamePlayer.playerStatuses.IN_GAME
+    )
+
+    // Количество выстрелов равно количеству мафиози
+    if (shots.length == mafiaPlayers.length) {
+      // Завершаю ночь
+      game.deadline = 0
+    }
   }
 
   // Переход после хода мафии
@@ -294,7 +581,7 @@ class GamePerestrelka extends GameBase {
   async afterNight() {
     const { game } = this
 
-    // Беру все выстрелы
+    // Беру все выстрелы мафов
     const shots = await GameStep.findAll({
       where: {
         gameId: game.id,
@@ -303,40 +590,29 @@ class GamePerestrelka extends GameBase {
       },
     })
 
-    // Беру всех мафиози, которые ещё в игре
-    const mafiaPlayers = this.players.filter(
-      (p) =>
-        p.roleId == Game.roles.MAFIA &&
-        p.status == GamePlayer.playerStatuses.IN_GAME
-    )
+    // Прохожусь по игрокам, в которых были выстрелы мафов
+    for (const index in shots) {
+      const shot = shots[index]
 
-    // количество выстрелов равно количеству мафиози
-    if (shots.length == mafiaPlayers.length) {
-      // Количество выстрелов в первого игрока
-      const goodShots = shots.filter((s) => s.playerId == shots[0].playerId)
+      const player = this.getPlayerById(shot.playerId)
 
-      // Все мафиози выстрелили в одгого игрока - игрок убит
-      if (goodShots.length == shots.length) {
-        // Ищу спасение игрока врачом
-        const wasProtected = await GameStep.findOne({
+      // Смотрю ночные жизни игрока
+      const playerLife = await GameLife.findOne({
+        where: {
+          gameplayerId: player.id,
+          type: GameLife.types.NIGHT,
+        },
+      })
+
+      // Игрок убит
+      if (playerLife.life == 0) {
+        await this.playerKilled(player.accountId)
+      } else {
+        const manUronLife = await GameLife.findOne({
           where: {
-            gameId: game.id,
-            day: game.day,
-            playerId: shots[0].playerId,
-            stepType: GameStep.stepTypes.THERAPY,
+            gameplayerId: player.id,
           },
         })
-
-        if (!wasProtected) {
-          // Врач не спас игрока - он убит
-          await this.playerKilled(shots[0].playerId)
-        } else {
-          // Врач спас игрока
-          await this.systemMessage(
-            'Мафия покушалась на игрока, но врач спас его.'
-          )
-          this.systemLog('Мафия покушалась на игрока, но врач спас его.')
-        }
       }
     }
 
@@ -350,7 +626,25 @@ class GamePerestrelka extends GameBase {
     })
 
     if (manShot) {
-      await this.playerKilledByManiac(manShot.playerId)
+      // Смотрю ночные жизни игрока
+      const playerMLife = await GameLife.findOne({
+        where: {
+          gameplayerId: shot.playerId,
+          type: GameLife.types.MANIAC,
+        },
+        include: [
+          {
+            model: GamePlayer,
+          },
+        ],
+      })
+
+      // Игрок убит маньяком
+      if (playerMLife.life == 0) {
+        await this.playerKilledByManiac(playerMLife.gameplayer.accountId)
+      } else {
+        // const mafUronLife = await
+      }
     }
 
     // Проверка на завершение игры
@@ -363,120 +657,60 @@ class GamePerestrelka extends GameBase {
     await this.nextDay()
   }
 
-  // Функция определяет кто погиб в перестрелке
-  // ========================= ПЕРЕПИСАТЬ !!! ===================
-  async voteResults() {
-    const { game } = this
+  // Игрок убит мафией
+  async playerKilled(playerId) {
+    const killed = this.getPlayerById(playerId)
 
-    // Беру ходы
-    const steps = await GameStep.findAll({
-      where: {
-        gameId: game.id,
-        day: game.day,
-        stepType: GameStep.stepTypes.DAY,
-      },
-      attributes: ['playerId'],
-    })
+    killed.status = GamePlayer.playerStatuses.KILLED
+    await killed.save()
 
-    const votes = {}
-    let maxVotes = 0
+    const role = await killed.getRole()
 
-    // id игрока - претендента на посадку
-    let zekId = null
+    const msg = `<b>${role.name} ${killed.username} ${
+      killed.account.gender == 2 ? 'убита' : 'убит'
+    } мафией.</b>`
+    await this.systemMessage(msg)
 
-    // Заполняю массив голосования
-    steps.forEach((step) => {
-      if (!votes[step.playerId]) votes[step.playerId] = 0
-      votes[step.playerId] += 1
-      if (votes[step.playerId] > maxVotes) {
-        maxVotes = votes[step.playerId]
-        zekId = step.playerId
-      }
-    })
+    this.systemLog(msg)
 
-    // Количество живых игроков
-    const activePlayers = this.activePlayersCount()
+    // Если убит комиссар - надо посмотреть есть ли в игре сержант
+    // Если есть, то передаю роль комиссара ему
+    if (role.id == Game.roles.KOMISSAR) await this.updateSergeant()
 
-    // Если нет голосов
-    if (!zekId) {
-      // смотрю, не осталось ли в игре всего двух игроков
-      // тогда посадка автоматический выбирается из них
+    // Показываю всем роль убитого игрока
+    await this.showPlayerRole(killed, GamePlayer.playerStatuses.KILLED)
+  }
 
-      if (activePlayers > 2) return null
+  // Игрок убит маньяком
+  async playerKilledByManiac(playerId) {
+    const killed = this.getPlayerById(playerId)
 
-      for (let index in this.players) {
-        const player = this.players[index]
-
-        if (
-          player.status != GamePlayer.playerStatuses.IN_GAME &&
-          player.status != GamePlayer.playerStatuses.FREEZED
-        )
-          continue
-        player.playerId = player.accountId
-        steps.push(player)
-        votes[player.accountId] = 1
-      }
-      maxVotes = 1
+    // Если игрок уже выбыл - выхожу
+    if (
+      killed.status != GamePlayer.playerStatuses.IN_GAME &&
+      killed.status != GamePlayer.playerStatuses.FREEZED
+    ) {
+      return
     }
 
-    // Смотрю, есть ли другой игрок с таким же количеством голосов
-    for (const playerId in votes) {
-      if (playerId == zekId) continue
+    killed.status = GamePlayer.playerStatuses.KILLED
+    await killed.save()
 
-      const votesCount = votes[playerId]
+    const role = await killed.getRole()
 
-      if (votesCount == maxVotes) {
-        // Такой игрок найден
-        // Это означает что тут либо омон, либо никто не садиться
+    const msg = `<b>${role.name} ${killed.username} ${
+      killed.account.gender == 2 ? 'убита' : 'убит'
+    } маньяком.</b>`
+    await this.systemMessage(msg)
 
-        const mafiaCount = this.liveMafiaCount()
+    this.systemLog(msg)
 
-        // Все голоса распределены
-        if (activePlayers == steps.length) {
-          // Половина игроков - мафия
-          if (mafiaCount * 2 == activePlayers && votesCount == mafiaCount) {
-            // Тогда посадка определяется слуйчаным образом
+    // Если убит комиссар - надо посмотреть есть ли в игре сержант
+    // Если есть, то передаю роль комиссара ему
+    if (role.id == Game.roles.KOMISSAR) await this.updateSergeant()
 
-            await this.systemMessage(
-              'Силы равны. Бросаем жребий, чтобы определить, кто отправиться в тюрьму.'
-            )
-
-            this.systemLog(
-              'Силы равны. Бросаем жребий, чтобы определить, кто отправиться в тюрьму.'
-            )
-
-            const rnd = Math.floor(Math.random() * activePlayers)
-            return steps[rnd].playerId
-          }
-        }
-
-        await this.systemMessage(
-          'Равенство голосов. В тюрьму никто не отправляется.'
-        )
-
-        this.systemLog('Равенство голосов. В тюрьму никто не отправляется.')
-
-        // Никто не садиться (равенство голосов)
-        return null
-      }
-    }
-
-    // Если все проголосовали, то игрок садиться
-    if (activePlayers == steps.length) return zekId
-
-    // Если режим "по большинству голосов" (без добивов)
-    if (game.mode == 1) {
-      // Количество голосов должно быть больше половины
-      if (maxVotes * 2 <= activePlayers) {
-        await this.systemMessage(
-          'Ни один из игроков не набрал большинства голосов.'
-        )
-        this.systemLog('Ни один из игроков не набрал большинства голосов.')
-        return null
-      }
-    }
-
-    return zekId
+    // Показываю всем роль убитого игрока
+    await this.showPlayerRole(killed, GamePlayer.playerStatuses.KILLED)
   }
 
   // Игрок убит мафией

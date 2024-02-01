@@ -94,17 +94,27 @@ class GameBase {
       await this.systemMessage(`В игре участвуют <b>${inGameStr}</b>.`)
       this.systemLog(`В игре участвуют <b>${inGameStr}</b>.`)
 
-      if (game.mode == 1) {
-        await this.systemMessage(
-          'Режим игры "по большинству голосов" (без добивов)'
-        )
-        this.systemLog('Режим игры "по большинству голосов" (без добивов)')
+      // Классика или мульти
+      if (game.gametypeId == 1 || game.gametypeId == 4) {
+        if (game.mode == 1) {
+          await this.systemMessage(
+            'Режим игры "по большинству голосов" (без добивов)'
+          )
+          this.systemLog('Режим игры "по большинству голосов" (без добивов)')
+        }
+        if (game.mode == 2) {
+          await this.systemMessage(
+            'Режим игры "по количеству голосов" (с добивами)'
+          )
+          this.systemLog('Режим игры "по количеству голосов" (с добивами)')
+        }
       }
-      if (game.mode == 2) {
-        await this.systemMessage(
-          'Режим игры "по количеству голосов" (с добивами)'
-        )
-        this.systemLog('Режим игры "по количеству голосов" (с добивами)')
+
+      // Перестрелка
+      if (game.gametypeId == 2) {
+        // Сделать настройку с режимами:
+        // 1 - ожидание всех голосов
+        // 2 - большинство голосов
       }
 
       await this.systemMessage(`Раздаём роли.`)
