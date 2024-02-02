@@ -70,6 +70,11 @@ module.exports = (io) => {
         require('./socket/game/ClassicGameRouter')(io, socket)
       }
 
+      // Роуты перестрелки
+      if (game.gametypeId == 2) {
+        require('./socket/game/PerestrelkaGameRouter')(io, socket)
+      }
+
       // Роуты мультирежима
       if (game.gametypeId == 4) {
         require('./socket/game/MultiGameRouter')(io, socket)

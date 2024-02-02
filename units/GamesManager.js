@@ -2,6 +2,7 @@ const Game = require('../models/Game')
 const GamePlayer = require('../models/GamePlayer')
 const GameClassic = require('./GameClassic')
 const GameMulti = require('./GameMulti')
+const GamePerestrelka = require('./GamePerestrelka')
 const deadlineInterval = 1000
 const minCount = 3
 
@@ -136,6 +137,11 @@ class GamesManager {
     // Классический режим
     if (game.gametype.id == 1) {
       gameTypeClass = GameClassic
+    }
+
+    // Перестрелка
+    if (game.gametype.id == 2) {
+      gameTypeClass = GamePerestrelka
     }
 
     // Мультирежим

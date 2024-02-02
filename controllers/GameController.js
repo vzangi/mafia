@@ -10,6 +10,9 @@ class GameController {
       if (data.game.gametypeId == 1) {
         return res.render('pages/game/game', data)
       }
+      if (data.game.gametypeId == 2) {
+        return res.render('pages/game/gamePerestrelka', data)
+      }
       if (data.game.gametypeId == 4) {
         return res.render('pages/game/gameMulti', data)
       }

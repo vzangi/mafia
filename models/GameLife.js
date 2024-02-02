@@ -37,6 +37,6 @@ const GameLife = sequelize.define(
 GameLife.types = types
 
 GameLife.belongsTo(GamePlayer)
-GamePlayer.hasMany(GameLife)
+//GamePlayer.hasMany(GameLife)
 
 module.exports = GameLife

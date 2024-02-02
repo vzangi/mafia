@@ -239,8 +239,8 @@ $(function () {
   // Создание заявки в режиме перестрелки
   $('.btn-make-type-2').click(function () {
     const gametypeId = 2
-    const waitingTime = $('#waitingTime-2').val()
-    const playersCount = $('#gamePlayersCount-2').val()
+    const waitingTime = $('#waitingTime-2').text()
+    const playersCount = $('#gamePlayersCount-2').text()
     const description = $('#gameDescription-2').val()
 
     // Запрос на создание игры
@@ -256,11 +256,11 @@ $(function () {
       (res) => {
         console.log(res)
         if (res.status != 0) {
-          if (playersCount > 20) $('#gamePlayersCount-2').val(20)
-          if (playersCount < 6) $('#gamePlayersCount-2').val(6)
+          if (playersCount > 20) $('#gamePlayersCount-2').text(20)
+          if (playersCount < 6) $('#gamePlayersCount-2').text(6)
 
-          if (waitingTime > 20) $('#waitingTime-2').val(20)
-          if (waitingTime < 1) $('#waitingTime-2').val(1)
+          if (waitingTime > 20) $('#waitingTime-2').text(20)
+          if (waitingTime < 1) $('#waitingTime-2').text(1)
           return alert(res.msg)
         }
 
