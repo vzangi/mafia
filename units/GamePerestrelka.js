@@ -337,12 +337,12 @@ class GamePerestrelka extends GameBase {
 
       // Показываю роль посаженного игрока всем
       await this.showPlayerRole(player, GamePlayer.playerStatuses.PRISONED)
+    }
 
-      // Проверка на окончание игры
-      const winnerSide = await this.isOver()
-      if (winnerSide) {
-        return await this.gameOver(winnerSide)
-      }
+    // Проверка на окончание игры
+    const winnerSide = await this.isOver()
+    if (winnerSide) {
+      return await this.gameOver(winnerSide)
     }
 
     // Если ком ещё в игре
