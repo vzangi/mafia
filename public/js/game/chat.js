@@ -46,8 +46,6 @@ $(function () {
 
   // Получение лога
   gameSocket.emit('get.log', (logMessages) => {
-    console.log(logMessages)
-
     logTemplate.tmpl(logMessages).appendTo(log)
   })
 

@@ -123,6 +123,11 @@ class ProfileService {
     } else {
       profile = await Account.findOne({ where: { id: user.id } })
     }
+
+    if (!profile) {
+      throw new Error(`Профиль по нику ${nik} не найден`)
+    }
+
     const data = await this.profileInfo(profile, user)
     return data
   }

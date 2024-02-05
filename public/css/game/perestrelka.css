@@ -1,0 +1,37 @@
+.lifes-box {
+  display: flex;
+}
+.player-life {
+  width: 100%;
+  padding: 10px 10px 0;
+  display: flex;
+  align-items: center;
+}
+.life-box {
+  width: 100%;
+  height: 10px;
+  border: 1px solid #888;
+  border-radius: 10px;
+}
+.life-value {
+  height: 100%;
+  transition: all 0.3s ease;
+  border-radius: 10px;
+}
+
+.life-digit-box {
+  width: 70px;
+  text-align: center;
+  font-size: 12px;
+  line-height: 10px;
+}
+
+.day-life .life-value {
+  background: #77f17a;
+}
+.night-life .life-value {
+  background: #f17777;
+}
+.man-life .life-value {
+  background: #edf177;
+}

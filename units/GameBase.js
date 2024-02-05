@@ -32,7 +32,7 @@ class GameBase {
     this.players = []
 
     // время хода
-    this.periodInterval = 20
+    this.periodInterval = 120
 
     // время перехода для комиссара
     this.perehodInterval = 6
@@ -869,6 +869,9 @@ class GameBase {
 
     // Завершаю обработку периодов
     await this.setPeriod(Game.periods.END, 0)
+
+    // Если игра уже была завершена
+    if (game.status == Game.statuses.ENDED) return
 
     // Победившие игроки
     const winners = players.filter(

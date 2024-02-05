@@ -4,6 +4,7 @@ const Game = require('../models/Game')
 const GamePlayer = require('../models/GamePlayer')
 const GameStep = require('../models/GameStep')
 const GameType = require('../models/GameType')
+const GameLife = require('../models/GameLife')
 const smiles = require('../units/smiles')
 const { getDateFromIso, isCorrectDate } = require('../units/helpers')
 
@@ -100,7 +101,54 @@ class GameService {
       })
     }
 
+    // Если перестрелка
+    if (game.gametypeId == 2) {
+      const playerIds = data.players.map((pl) => pl.id)
+
+      // Достаю текущие уровни жизней
+      data.daylifes = await GameLife.findAll({
+        where: {
+          gameplayerId: playerIds,
+          type: GameLife.types.DAY,
+        },
+      })
+
+      // Если игрок в партии
+      if (user) {
+        // и роль игрока - мафия
+        const { roleId } = data.players.filter((p) => p.accountId == user.id)[0]
+
+        if (roleId) {
+          if (roleId == Game.roles.MAFIA) {
+            data.nightlifes = await GameLife.findAll({
+              where: {
+                gameplayerId: playerIds,
+                type: GameLife.types.NIGHT,
+              },
+            })
+          }
+
+          if (roleId == Game.roles.MANIAC) {
+            data.manlifes = await GameLife.findAll({
+              where: {
+                gameplayerId: playerIds,
+                type: GameLife.types.MANIAC,
+              },
+            })
+          }
+        }
+      }
+    }
+
     return data
+  }
+
+  async getLifes(gameId, user) {
+    if (!gameId) {
+      throw new Error('Нет необходимых данных')
+    }
+
+    const game = await Game.findByPk(gameId)
   }
 
   // Текущие игры

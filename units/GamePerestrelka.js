@@ -18,12 +18,16 @@ class GamePerestrelka extends GameBase {
     switch (playersInGame) {
       case 3:
       case 4:
-        return [[Game.roles.MAFIA, 1]]
+        return [
+          [Game.roles.MAFIA, 1],
+          [Game.roles.MANIAC, 1],
+        ]
       case 5:
         return [
           [Game.roles.MAFIA, 1],
           [Game.roles.CHILD, 1],
           [Game.roles.KOMISSAR, 1],
+          [Game.roles.MANIAC, 1],
         ]
       case 6:
         return [
@@ -528,7 +532,7 @@ class GamePerestrelka extends GameBase {
       if (plr.roleId == Game.roles.MAFIA) {
         const sockets = this.getUserSocketIds(plr.accountId)
         sockets.forEach((socket) => {
-          socket.emit('shot', player.username, playerLife.life)
+          socket.emit('nightlife', player.username, playerLife.life)
         })
       }
     }

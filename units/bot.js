@@ -33,6 +33,8 @@ bot.on('message', async (msg) => {
   bot.sendMessage(chat.id, 'Уведомления в telegram успешно подключены!')
 })
 
-bot.on('polling_error', (msg) => console.log(msg))
+bot.on('polling_error', (msg) => {
+  //console.log(msg)
+})
 
 module.exports = bot

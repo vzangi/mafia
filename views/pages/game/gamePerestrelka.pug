@@ -3,6 +3,7 @@ extends /layouts/two_column_6_6
 block head 
   link(href="/css/game/base.css" rel="stylesheet")
   link(href="/css/game/chat.css" rel="stylesheet")
+  link(href="/css/game/perestrelka.css" rel="stylesheet")
 
 prepend content 
   include /includes/game/loader
@@ -12,14 +13,14 @@ block main
   include /includes/game/chat
 
 block aside 
-  include /includes/game/multi/players
+  include /includes/game/perestrelka/players
 
 
 
 block scripts 
   include /includes/game/game-tmpl
-  script(src="/js/game/multi/base.js")
+  script(src="/js/game/perestrelka/base.js")
   script(src="/js/game/chat.js")
   if game.status == 2
     script(src="/js/game/timer.js")
-    script(src="/js/game/multi/game.js")
+    script(src="/js/game/perestrelka/game.js")
