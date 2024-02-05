@@ -17,6 +17,7 @@ class GamePerestrelka extends GameBase {
     // Возвращаю доступные роли в зависимости от количества игроков в партии
     switch (playersInGame) {
       case 3:
+        return [[Game.roles.MAFIA, 1]]
       case 4:
         return [
           [Game.roles.MAFIA, 1],
