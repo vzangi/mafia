@@ -50,12 +50,14 @@ div(class="container")
             span(class="ion-flash text-secondary") 
             span= power
       if partner 
-        div(class="partner mt-3") 
-          if profile.gender == 1
-            span(class="ion-android-favorite text-secondary" title="Супруга" data-bs-toggle="tooltip" data-bs-placement="bottom") 
-          else if profile.gender == 2
-            span(class="ion-android-favorite text-secondary" title="Супруг" data-bs-toggle="tooltip" data-bs-placement="bottom") 
-          else  
-            span(class="ion-android-favorite text-secondary" title="Партнёр" data-bs-toggle="tooltip" data-bs-placement="bottom") 
-          a(href="/profile/" + partner.friend.username)= partner.friend.username
+        -var pName='Партнёр'
+        if profile.gender == 1
+          - pName='Супруга'
+        if profile.gender == 2
+          - pName='Супруг'
+
+        div(class="partner mt-3 fs-5") 
+          span(data-bs-toggle="tooltip" data-bs-placement="bottom" title=pName)
+            span(class="ion-android-favorite text-secondary") 
+            a(class="text-decoration-none" href="/profile/" + partner.friend.username)= partner.friend.username
 
