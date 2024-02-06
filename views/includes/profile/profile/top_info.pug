@@ -47,15 +47,15 @@ div(class="container")
       if power 
         div(class="power mt-3 fs-4") 
           span(title="Сила в режиме «Перестрелка»" data-bs-toggle="tooltip" data-bs-placement="bottom")
-            span(class="ion-flash") 
+            span(class="ion-flash text-secondary") 
             span= power
       if partner 
         div(class="partner mt-3") 
           if profile.gender == 1
-            span Супруга - 
+            span(class="ion-android-favorite text-secondary" title="Супруга" data-bs-toggle="tooltip" data-bs-placement="bottom") 
           else if profile.gender == 2
-            span Супруг - 
+            span(class="ion-android-favorite text-secondary" title="Супруг" data-bs-toggle="tooltip" data-bs-placement="bottom") 
           else  
-            span Партнёр - 
+            span(class="ion-android-favorite text-secondary" title="Партнёр" data-bs-toggle="tooltip" data-bs-placement="bottom") 
           a(href="/profile/" + partner.friend.username)= partner.friend.username
 
