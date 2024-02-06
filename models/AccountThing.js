@@ -138,12 +138,12 @@ AccountThing.getPower = async (playerId) => {
   // Рассчитываю силу урона игрока
   let power = 0
   for (const thingIndex in takedThings) {
-    const thing = takedThings[thingIndex]
+    const { thing } = takedThings[thingIndex]
     if (thing.thingclassId == 5) {
       power += 20
       continue
     }
-    power += thing.thing.thingclassId * 5
+    power += thing.thingclassId * 5
   }
 
   return power

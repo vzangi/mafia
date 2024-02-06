@@ -25,6 +25,8 @@ class WalletService extends BaseService {
       throw new Error('Неверная сумма')
     }
 
+    throw new Error('Лафа кончилась)')
+
     await WalletEvent.payment(user.id, sum)
   }
 
