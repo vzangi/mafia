@@ -40,7 +40,7 @@ div(class="mb-3")
           div(class="friend-item")
 
             div
-              div(class="friend-avatar "+(player.account.online?' online':''))
+              div(class="friend-avatar "+(player.account.online?' online':'') title="Сила: "+power[player.accountId]  data-bs-toggle="tooltip" data-bs-placement="bottom")
                 img(src="/uploads/"+player.account.avatar)
 
             div(class="friend-info")

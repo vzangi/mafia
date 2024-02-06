@@ -106,6 +106,8 @@ class ProfileService {
       order: [['id', 'desc']],
     })
 
+    data.power = await AccountThing.getPower(profile.id)
+
     return data
   }
 

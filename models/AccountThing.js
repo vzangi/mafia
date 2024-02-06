@@ -2,7 +2,6 @@ const { DataTypes, Op } = require('sequelize')
 const sequelize = require('../units/db')
 const Account = require('./Account')
 const Thing = require('./Thing')
-const NaborThing = require('./NaborThing')
 
 const AccountThing = sequelize.define(
   'accountthings',
@@ -115,6 +114,39 @@ AccountThing.getThingList = async (thingId) => {
     order: [['marketPrice', 'ASC']],
   })
   return offers
+}
+
+// Суммарная сила игрока в перестрелке
+AccountThing.getPower = async (playerId) => {
+  // Загружаю вещи, которые игрок взял в игру
+  const takedThings = await AccountThing.findAll({
+    where: {
+      accountId: playerId,
+      taked: true,
+    },
+    include: [
+      {
+        model: Thing,
+        where: {
+          thingtypeId: 1, // Вещи
+        },
+      },
+    ],
+    limit: 5,
+  })
+
+  // Рассчитываю силу урона игрока
+  let power = 0
+  for (const thingIndex in takedThings) {
+    const thing = takedThings[thingIndex]
+    if (thing.thingclassId == 5) {
+      power += 20
+      continue
+    }
+    power += thing.thing.thingclassId * 5
+  }
+
+  return power
 }
 
 module.exports = AccountThing

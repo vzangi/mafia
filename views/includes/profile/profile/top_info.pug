@@ -17,32 +17,38 @@ div(class="container")
       div(class="profile-avatar-image" style="background-image:url(/uploads/" + profile.avatar + ")" data-bs-toggle="tooltip" data-bs-placement="top" title=profile.online ? '' : 'Последний раз в онлайне - ' + prettyDate(profile.updatedAt))
     div(class="profile-top-info-main")
       div(class="profile-top-info-main-nick")
-        span(class="nick" data-bs-toggle="tooltip" data-bs-placement="top" title='Дата регистрации - ' + prettyDate(profile.createdAt))=profile.username
+        span(class="nick" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title='Дата регистрации <br>' + prettyDate(profile.createdAt))=profile.username
       div(class="profile-top-info-main-rank")
         if profile.rank == 0
           div(class="image" style="background-image:url(/images/0.svg)")
           div(class="text") Нет ранга
         else if profile.rank < 1500
           div(class="image" style="background-image:url(/images/1.svg)")
-          div(class="text f-mon")= profile.rank
+          div(class="text f-mon" title="Ранг" data-bs-toggle="tooltip" data-bs-placement="right")= profile.rank
         else if profile.rank < 2500
           div(class="image" style="background-image:url(/images/2.svg)")
-          div(class="text f-mon")= profile.rank
+          div(class="text f-mon" title="Ранг" data-bs-toggle="tooltip" data-bs-placement="right")= profile.rank
         else if profile.rank < 3000
           div(class="image" style="background-image:url(/images/3.svg)")
-          div(class="text f-mon")= profile.rank
+          div(class="text f-mon" title="Ранг" data-bs-toggle="tooltip" data-bs-placement="right")= profile.rank
         else if profile.rank < 3500
           div(class="image" style="background-image:url(/images/4.svg)")
-          div(class="text f-mon")= profile.rank
+          div(class="text f-mon" title="Ранг" data-bs-toggle="tooltip" data-bs-placement="right")= profile.rank
         else if profile.rank < 4000
           div(class="image" style="background-image:url(/images/5.svg)")
-          div(class="text f-mon")= profile.rank
+          div(class="text f-mon" title="Ранг" data-bs-toggle="tooltip" data-bs-placement="right")= profile.rank
         else
           div(class="image" style="background-image:url(/images/6.svg)")
           div(class="text f-mon")= profile.rank
       if profile.vip
         div(class="profile-top-info-main-vip mt-3")
           span(class='vip-user' data-bs-toggle="tooltip" data-bs-placement="right" title='до ' + prettyDate(profile.vipTo)) VIP игрок
+
+      if power 
+        div(class="power mt-3 fs-4") 
+          span(title="Сила в режиме «Перестрелка»" data-bs-toggle="tooltip" data-bs-placement="bottom")
+            span(class="ion-flash") 
+            span= power
       if partner 
         div(class="partner mt-3") 
           if profile.gender == 1

@@ -240,8 +240,8 @@ class GamePerestrelka extends GameBase {
       stepType: GameStep.stepTypes.DAY,
     })
 
-    const voterPower = await this.getPower(voter)
-    const playerPower = await this.getPower(player)
+    const voterPower = await AccountThing.getPower(voter.accountId)
+    const playerPower = await AccountThing.getPower(player.accountId)
 
     // Расчитываю урон
     const uron = Math.ceil((100 + voterPower - playerPower) / 4)
@@ -506,8 +506,8 @@ class GamePerestrelka extends GameBase {
       stepType: GameStep.stepTypes.NIGHT,
     })
 
-    const mafPower = await this.getPower(maf)
-    const playerPower = await this.getPower(player)
+    const mafPower = await AccountThing.getPower(maf.accountId)
+    const playerPower = await AccountThing.getPower(player.accountId)
 
     // Рассчитываю урон
     const uron = Math.ceil((100 + mafPower - playerPower) / 2)
@@ -583,8 +583,8 @@ class GamePerestrelka extends GameBase {
     // Записываю выстрел в базу
     await GameStep.create(data)
 
-    const maniacPower = await this.getPower(maniac)
-    const playerPower = await this.getPower(player)
+    const maniacPower = await AccountThing.getPower(maniac.accountId)
+    const playerPower = await AccountThing.getPower(player.accountId)
 
     // Рассчитываю урон
     const uron = Math.ceil((100 + maniacPower - playerPower) / 2)
@@ -904,39 +904,6 @@ class GamePerestrelka extends GameBase {
       GameLog.types.DOC,
       true
     )
-  }
-
-  // Вычисление мощности удара игрока
-  async getPower(player) {
-    // Загружаю вещи, которые игрок взял в игру
-    const takedThings = await AccountThing.findAll({
-      where: {
-        accountId: player.accountId,
-        taked: true,
-      },
-      include: [
-        {
-          model: Thing,
-          where: {
-            thingtypeId: 1, // Вещи
-          },
-        },
-      ],
-      limit: 5,
-    })
-
-    // Рассчитываю силу урона игрока
-    let power = 0
-    for (const thingIndex in takedThings) {
-      const thing = takedThings[thingIndex]
-      if (thing.thingclassId == 5) {
-        power += 20
-        continue
-      }
-      power += thing.thing.thingclassId * 5
-    }
-
-    return power
   }
 }
 

@@ -1,5 +1,6 @@
 const { Op } = require('sequelize')
 const Account = require('../models/Account')
+const AccountThing = require('../models/AccountThing')
 const Game = require('../models/Game')
 const GamePlayer = require('../models/GamePlayer')
 const GameStep = require('../models/GameStep')
@@ -112,6 +113,13 @@ class GameService {
           type: GameLife.types.DAY,
         },
       })
+
+      data.power = {}
+      for (const i in data.players) {
+        data.power[data.players[i].accountId] = await AccountThing.getPower(
+          data.players[i].accountId
+        )
+      }
 
       // Если игрок в партии
       if (user) {
