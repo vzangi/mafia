@@ -146,10 +146,6 @@ class LobbiService extends BaseService {
       throw new Error('Не авторизован')
     }
 
-    if (!account) {
-      throw new Error('Игрок не найден')
-    }
-
     if (!gameId) {
       throw new Error('Нет необходимых данных')
     }
@@ -167,22 +163,6 @@ class LobbiService extends BaseService {
 
     if (game.playersCount == game.players.length) {
       throw new Error('В заявке нет свободных мест')
-    }
-
-    // Проверяю находится ли игрок в другой заявке
-    const inGame = await GamePlayer.count({
-      where: {
-        accountId: account.id,
-        status: [
-          GamePlayer.playerStatuses.WHAITNG,
-          GamePlayer.playerStatuses.IN_GAME,
-          GamePlayer.playerStatuses.FREEZED,
-        ],
-      },
-    })
-
-    if (inGame) {
-      throw new Error('Вы всё ещё в другой заявке')
     }
 
     // Проверяю, был ли игрок удалён из этой заявки
@@ -217,6 +197,22 @@ class LobbiService extends BaseService {
       if (isBlocked) {
         throw new Error('Вы в ЧС у создателя заявки')
       }
+    }
+
+    // Проверяю находится ли игрок в другой заявке
+    const inGame = await GamePlayer.count({
+      where: {
+        accountId: account.id,
+        status: [
+          GamePlayer.playerStatuses.WHAITNG,
+          GamePlayer.playerStatuses.IN_GAME,
+          GamePlayer.playerStatuses.FREEZED,
+        ],
+      },
+    })
+
+    if (inGame) {
+      throw new Error('Вы всё ещё в другой заявке')
     }
 
     // Добавляю игрока в заявку

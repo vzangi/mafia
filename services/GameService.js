@@ -124,10 +124,10 @@ class GameService {
       // Если игрок в партии
       if (user) {
         // и роль игрока - мафия
-        const { roleId } = data.players.filter((p) => p.accountId == user.id)[0]
+        const userInGame = data.players.filter((p) => p.accountId == user.id)
 
-        if (roleId) {
-          if (roleId == Game.roles.MAFIA) {
+        if (userInGame.length == 1 && userInGame[0].roleId) {
+          if (userInGame[0].roleId == Game.roles.MAFIA) {
             data.nightlifes = await GameLife.findAll({
               where: {
                 gameplayerId: playerIds,
@@ -136,7 +136,7 @@ class GameService {
             })
           }
 
-          if (roleId == Game.roles.MANIAC) {
+          if (userInGame[0].roleId == Game.roles.MANIAC) {
             data.manlifes = await GameLife.findAll({
               where: {
                 gameplayerId: playerIds,
@@ -170,6 +170,16 @@ class GameService {
         {
           model: GamePlayer,
           as: 'players',
+          where: {
+            status: [
+              GamePlayer.playerStatuses.IN_GAME,
+              GamePlayer.playerStatuses.KILLED,
+              GamePlayer.playerStatuses.PRISONED,
+              GamePlayer.playerStatuses.TIMEOUT,
+              GamePlayer.playerStatuses.FREEZED,
+              GamePlayer.playerStatuses.WON,
+            ],
+          },
           include: [
             {
               model: Account,
@@ -210,6 +220,16 @@ class GameService {
         {
           model: GamePlayer,
           as: 'players',
+          where: {
+            status: [
+              GamePlayer.playerStatuses.IN_GAME,
+              GamePlayer.playerStatuses.KILLED,
+              GamePlayer.playerStatuses.PRISONED,
+              GamePlayer.playerStatuses.TIMEOUT,
+              GamePlayer.playerStatuses.FREEZED,
+              GamePlayer.playerStatuses.WON,
+            ],
+          },
           include: [
             {
               model: Account,

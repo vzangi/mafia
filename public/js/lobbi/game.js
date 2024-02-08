@@ -382,9 +382,15 @@ $(function () {
   // Присоединиться к заявке
   gamesList.on('click', '.btn-to-game', function () {
     const btn = this
+
+    if ($(btn).hasClass('disabled')) return
+    $(btn).addClass('disabled')
+
     setTimeout(() => $(btn).tooltip('hide'))
 
-    const { id } = $(this).data()
+    setTimeout(() => $(btn).removeClass('disabled'), 1000)
+
+    const { id } = $(btn).data()
     lobbiSocket.emit('game.to', id, (res) => {
       if (res.status != 0) {
         return alert(res.msg)
