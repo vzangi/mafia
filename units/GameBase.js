@@ -32,7 +32,7 @@ class GameBase {
     this.players = []
 
     // время хода
-    this.periodInterval = 120
+    this.periodInterval = 20
 
     // время перехода для комиссара
     this.perehodInterval = 6

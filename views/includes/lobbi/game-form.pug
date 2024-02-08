@@ -86,6 +86,11 @@ div(class="modal fade" id="makeForm" tabindex="-1")
             +gameFormRow('Время на сбор (1 - 20 минут)')
               +numberInput("waitingTime-2", 1, 20, 10)
 
+            +gameFormRow('')
+              +settings_item('Ждать все ходы', 'mode-2', true)
+                | 
+                span(class="ion-ios-help-outline" title="С этой опцией день будет завершаться, когда все игроки сделают ход" data-bs-toggle="tooltip" data-bs-placement="bottom" )
+
             +gameFormRow('Подпись к заявке')
               input(class="form-control" type="text" placeholder="Подпись к заявке" maxlength="69" id="gameDescription-2" name="gameDescription-2")
 

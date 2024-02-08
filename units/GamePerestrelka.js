@@ -6,6 +6,7 @@ const GamePlayer = require('../models/GamePlayer')
 const GameStep = require('../models/GameStep')
 const Thing = require('../models/Thing')
 const GameBase = require('./GameBase')
+const sequelize = require('./db')
 
 // Игра в классическом режиме
 class GamePerestrelka extends GameBase {
@@ -282,6 +283,27 @@ class GamePerestrelka extends GameBase {
       // Завершаю голосование
       game.deadline = 0
       return
+    }
+
+    const maxVotes = await GameStep.findOne({
+      where: {
+        gameId: game.id,
+        day,
+        stepType: GameStep.stepTypes.DAY,
+      },
+      attributes: [[sequelize.fn('count', 'id'), 'cnt'], 'playerId'],
+      group: ['playerId'],
+      order: [['cnt', 'desc']],
+    })
+
+    // Если режим, в котором игроки не ждут всех ходов
+    if (game.mode == 1) {
+      // Количество сделавших ход игроков больше половины оставшихся в игре
+      if (maxVotes.get('cnt') * 2 > playersInGame) {
+        // Завершаю голосование
+        game.deadline = 0
+        return
+      }
     }
   }
 

@@ -242,6 +242,7 @@ $(function () {
     const waitingTime = $('#waitingTime-2').text()
     const playersCount = $('#gamePlayersCount-2').text()
     const description = $('#gameDescription-2').val()
+    const mode = $('#mode-2')[0].checked ? 2 : 1
 
     // Запрос на создание игры
     lobbiSocket.emit(
@@ -251,7 +252,7 @@ $(function () {
         playersCount,
         waitingTime,
         description,
-        mode: 1,
+        mode,
       },
       (res) => {
         console.log(res)
