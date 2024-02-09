@@ -90,7 +90,6 @@ $(function () {
   })
 
   function showThing(thing) {
-    console.log(thing)
     // распаршиваю описание на отдельные строки
     thing.lines = thing.thing.description.split('\r\n')
     // console.log(thing)
