@@ -32,7 +32,7 @@ class GameBase {
     this.players = []
 
     // время хода
-    this.periodInterval = 20
+    this.periodInterval = 120
 
     // время перехода для комиссара
     this.perehodInterval = 6
@@ -98,23 +98,28 @@ class GameBase {
       if (game.gametypeId == 1 || game.gametypeId == 4) {
         if (game.mode == 1) {
           await this.systemMessage(
-            'Режим игры "по большинству голосов" (без добивов)'
+            'Режим игры «по большинству голосов»  (без добивов)'
           )
-          this.systemLog('Режим игры "по большинству голосов" (без добивов)')
+          this.systemLog('Режим игры «по большинству голосов»  (без добивов)')
         }
         if (game.mode == 2) {
           await this.systemMessage(
-            'Режим игры "по количеству голосов" (с добивами)'
+            'Режим игры «по количеству голосов»  (с добивами)'
           )
-          this.systemLog('Режим игры "по количеству голосов" (с добивами)')
+          this.systemLog('Режим игры «по количеству голосов»  (с добивами)')
         }
       }
 
       // Перестрелка
       if (game.gametypeId == 2) {
-        // Сделать настройку с режимами:
-        // 1 - ожидание всех голосов
-        // 2 - большинство голосов
+        if (game.mode == 1) {
+          await this.systemMessage('Режим игры «По большинству голосов» ')
+          this.systemLog('Режим игры «По большинству голосов» ')
+        }
+        if (game.mode == 2) {
+          await this.systemMessage('Режим игры «Ожидание всех голосов» ')
+          this.systemLog('Режим игры «Ожидание всех голосов» ')
+        }
       }
 
       await this.systemMessage(`Раздаём роли.`)

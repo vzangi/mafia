@@ -18,7 +18,7 @@ div(class="mb-3")
               -var daylife = daylifes.filter(dl => dl.gameplayerId == player.id)[0].life
               div(class="life-digit-box")
                 span(class="life-digit")= daylife
-              div(class="life-box")
+              div(class="life-box" title="Уровень дневной жизни" data-bs-toggle="tooltip" data-bs-placement="bottom")
                 div(class="life-value" style="width:"+daylife+"%")
 
             if nightlifes && player.role.id != 2
@@ -26,7 +26,7 @@ div(class="mb-3")
                 -var nightlife = nightlifes.filter(dl => dl.gameplayerId == player.id)[0].life
                 div(class="life-digit-box")
                   span(class="life-digit")= nightlife
-                div(class="life-box")
+                div(class="life-box" title="Уровень ночной жизни" data-bs-toggle="tooltip" data-bs-placement="bottom")
                   div(class="life-value" style="width:"+nightlife+"%")
 
             if manlifes && player.accountId != currentAccount.id
@@ -34,7 +34,7 @@ div(class="mb-3")
                 -var manlife = manlifes.filter(dl => dl.gameplayerId == player.id)[0].life
                 div(class="life-digit-box")
                   span(class="life-digit")= manlife
-                div(class="life-box")
+                div(class="life-box" title="Уровень ночной жизни" data-bs-toggle="tooltip" data-bs-placement="bottom")
                   div(class="life-value" style="width:"+manlife+"%")
 
           div(class="friend-item")

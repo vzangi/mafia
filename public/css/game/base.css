@@ -12,7 +12,7 @@ body {
   transition: background-color 0.3s ease;
 }
 body.night {
-  background-color: #020;
+  background-color: #111;
 }
 body.dawn,
 body.twilight {

@@ -259,7 +259,9 @@ class GamePerestrelka extends GameBase {
     if (playerLife.life < 0) playerLife.life = 0
     playerLife.save()
 
-    const msg = `<b>${voter.username} нанёс ${username} урон -${uron}</b>`
+    const msg = `<b>${voter.username} ${
+      voter.account.gender == 2 ? 'нанесла' : 'нанёс'
+    } ${username} урон -${uron}</b>`
     this.systemMessage(msg)
     this.systemLog(msg, GameLog.types.STEP)
 

@@ -12,6 +12,7 @@
   height: 10px;
   border: 1px solid #888;
   border-radius: 10px;
+  background: rgba(55, 55, 55, 0.15);
 }
 .life-value {
   height: 100%;
