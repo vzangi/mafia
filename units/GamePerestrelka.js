@@ -799,6 +799,11 @@ class GamePerestrelka extends GameBase {
 	async playerKilled(playerId) {
 		const killed = this.getPlayerById(playerId)
 
+		// Если игрок уже убит - выхожу
+		if (killed.status == GamePlayer.playerStatuses.KILLED) {
+			return
+		}
+
 		killed.status = GamePlayer.playerStatuses.KILLED
 		await killed.save()
 
