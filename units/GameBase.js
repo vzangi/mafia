@@ -32,7 +32,7 @@ class GameBase {
     this.players = []
 
     // время хода
-    this.periodInterval = 120
+    this.periodInterval = 20
 
     // время перехода для комиссара
     this.perehodInterval = 6
@@ -89,41 +89,35 @@ class GameBase {
       )
       this.systemLog(`Игра началась ${getCoolDateTime(game.startedAt)}.`)
 
+      let gameTypeMsg = ''
+
+      // Классика или мульти
+      if (game.gametypeId == 1 || game.gametypeId == 4) {
+        if (game.gametypeId == 1) gameTypeMsg = 'Классический режим игры'
+        if (game.gametypeId == 4) gameTypeMsg = 'Мультиролевой режим игры'
+        if (game.mode == 1)
+          gameTypeMsg += ` «По большинству голосов»  (без добивов)`
+        if (game.mode == 2)
+          gameTypeMsg += ` «По количеству голосов»  (с добивами)`
+      }
+
+      // Перестрелка
+      if (game.gametypeId == 2) {
+        gameTypeMsg = 'Перестрелка'
+        if (game.mode == 1) gameTypeMsg += ' в режиме «По большинству голосов»'
+        if (game.mode == 2) gameTypeMsg += ' в режиме «Ожидание всех голосов»'
+      }
+      await this.systemMessage(gameTypeMsg)
+      this.systemLog(gameTypeMsg)
+
       const inGameStr = this.players.map((p) => p.username).join(', ')
 
       await this.systemMessage(`В игре участвуют <b>${inGameStr}</b>.`)
       this.systemLog(`В игре участвуют <b>${inGameStr}</b>.`)
 
-      // Классика или мульти
-      if (game.gametypeId == 1 || game.gametypeId == 4) {
-        if (game.mode == 1) {
-          await this.systemMessage(
-            'Режим игры «по большинству голосов»  (без добивов)'
-          )
-          this.systemLog('Режим игры «по большинству голосов»  (без добивов)')
-        }
-        if (game.mode == 2) {
-          await this.systemMessage(
-            'Режим игры «по количеству голосов»  (с добивами)'
-          )
-          this.systemLog('Режим игры «по количеству голосов»  (с добивами)')
-        }
-      }
-
-      // Перестрелка
-      if (game.gametypeId == 2) {
-        if (game.mode == 1) {
-          await this.systemMessage('Режим игры «По большинству голосов» ')
-          this.systemLog('Режим игры «По большинству голосов» ')
-        }
-        if (game.mode == 2) {
-          await this.systemMessage('Режим игры «Ожидание всех голосов» ')
-          this.systemLog('Режим игры «Ожидание всех голосов» ')
-        }
-      }
-
-      await this.systemMessage(`Раздаём роли.`)
-      this.systemLog(`Раздаём роли.`)
+      const names = await this.getRoleNames()
+      await this.systemMessage(`Раздаём роли: ${names}.`)
+      this.systemLog(`Раздаём роли: ${names}.`)
 
       await this.systemMessage(`Дадим мафии время договориться.`)
       this.systemLog(`Дадим мафии время договориться.`)
@@ -144,6 +138,28 @@ class GameBase {
     } else {
       this.removeGame()
     }
+  }
+
+  async getRoleNames() {
+    const roles = await this.getAvailableRoles()
+    const names = []
+    for (const index in roles) {
+      const name = await Role.findByPk(roles[index][0])
+      if (!name) {
+        console.log('Не найдена роль', roles[index][0])
+        continue
+      }
+      names.push([name.name, roles[index][1]])
+    }
+
+    const playersCount = this.activePlayersCount()
+    if (names.length < playersCount) {
+      // Остальные честные
+      const name = await Role.findByPk(Game.roles.CITIZEN)
+      names.push([name.name, playersCount - names.length])
+    }
+
+    return names.map((n) => `<b>${n[0]}</b> x ${n[1]}`).join(', ')
   }
 
   // Воркер контролирующий вышедших по тайму игроков
