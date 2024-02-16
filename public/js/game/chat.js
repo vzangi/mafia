@@ -35,6 +35,12 @@ $(function () {
   let colorSheme = localStorage.getItem('colorSheme') || 'dark'
   let fontSize = localStorage.getItem('fontSize') || 'font-16'
 
+  const lastInput = localStorage.getItem('input')
+  if (lastInput) {
+    chatInput.val(lastInput)
+    localStorage.setItem('input', '')
+  }
+
   // Получение сообщений
   gameSocket.emit('get.messages', (messages) => {
     messages.map((msg) =>

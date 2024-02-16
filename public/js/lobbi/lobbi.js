@@ -165,11 +165,16 @@ $(async function () {
 
     sendMessage(message)
     chatInput.val('')
+    localStorage.setItem('input', '')
 
     if (smilesBox.css('display') == 'block') {
       smilesBox.removeClass('active')
       setTimeout(() => smilesBox.css('display', 'none'), 300)
     }
+  })
+
+  chatInput.keyup(function (event) {
+    localStorage.setItem('input', chatInput.val())
   })
 
   // Вставка текста в поле ввода
@@ -180,6 +185,7 @@ $(async function () {
     input.selectionStart = pos + text.length
     input.focus()
     typing()
+    localStorage.setItem('input', chatInput.val())
   }
 
   const tmpl = (template, data) => {
