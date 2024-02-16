@@ -33,6 +33,9 @@ const Role = sequelize.define(
     picture: {
       type: DataTypes.STRING,
     },
+    description: {
+      type: DataTypes.TEXT,
+    },
   },
   {
     timestamps: false,

@@ -7,12 +7,23 @@ let myRole = null
 $(function () {
   // Элемент с именем роли на странице
   const roleName = $('.role-name')
+  const roleForm = $('#roleForm')
 
   // Получение роли
   gameSocket.emit('get.role', (role) => {
     roleName.text(role.name)
 
     myRole = role
+
+    if (roleForm.length > 0 && myRole.id > 0) {
+      if (myRole.picture)
+        $(`<img src=${myRole.picture} alt="${myRole.name}">`).appendTo(
+          roleForm.find('.rolePicture')
+        )
+      roleForm.find('.roleName').text(myRole.name)
+      roleForm.find('.roleDesc').text(myRole.description)
+      roleForm.modal('show')
+    }
 
     if (role.username != '') {
       $(`.player[data-username='${role.username}']`)

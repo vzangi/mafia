@@ -35,6 +35,8 @@ $(async function () {
   let colorSheme = localStorage.getItem('colorSheme') || 'dark'
   let fontSize = localStorage.getItem('fontSize') || 'font-16'
 
+  localStorage.setItem('input', '')
+
   chat.addClass(fontSize)
   $(`.font-size[data-font=${fontSize}]`).addClass('active')
 

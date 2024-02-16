@@ -68,14 +68,12 @@ class BaseGameService extends BaseService {
           // Показываю игроку, что он честный житель
           return {
             username: player.account.username,
-            name: citizen.name,
-            id: citizen.id,
+            ...citizen.toJSON(),
           }
         }
         return {
           username: player.account.username,
-          name: player.role.name,
-          id: player.role.id,
+          ...player.role.toJSON(),
         }
       }
     }

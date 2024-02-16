@@ -254,3 +254,42 @@ header,
 .modal-body {
   color: #333;
 }
+
+#roleForm .modal-dialog {
+  max-width: 300px;
+  margin: auto;
+}
+.rolePicture img {
+  width: 200px;
+  margin: auto;
+  display: block;
+}
+
+#roleForm .modal-content {
+  background-color: #333;
+}
+
+#roleForm .modal-body {
+  background-color: #444;
+  color: #aaa;
+}
+
+#roleForm .modal-header {
+  border-bottom-color: #555;
+}
+#roleForm .modal-title {
+  color: #666;
+  opacity: 0.9;
+  text-shadow: 0 0 4px #222;
+}
+
+#roleForm .modal-footer {
+  border-top-color: #555;
+}
+
+#roleForm .roleName {
+  color: #bbb;
+  text-transform: uppercase;
+  font-family: monospace;
+  text-align: center;
+}

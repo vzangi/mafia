@@ -13,6 +13,9 @@ const RoleSide = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    picture: {
+      type: DataTypes.STRING,
+    },
   },
   {
     timestamps: false,
