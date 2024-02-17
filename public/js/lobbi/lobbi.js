@@ -190,9 +190,10 @@ $(async function () {
 		localStorage.setItem('input', chatInput.val())
 	}
 
-	$('.friends-online').on('click', '.friend-info a', function () {
+	$('.friends-online').on('click', '.friend-info a', function (event) {
+		event.preventDefault()
 		const username = $(this).text()
-		insertTextToInput(`[${username}]`)
+		insertTextToInput(`[${username}] `)
 		return false
 	})
 
@@ -207,7 +208,7 @@ $(async function () {
 
 		// Имена пользователей - на ссылки в профиль
 		msg.chatusers.map((cu) => {
-			msg.message = msg.message.replaceAll(`[${cu.account.username}] `, () => {
+			msg.message = msg.message.replaceAll(`[${cu.account.username}]`, () => {
 				if (cu.account.username == userNik) {
 					msg.highlight = true
 				}
