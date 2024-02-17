@@ -190,7 +190,7 @@ $(async function () {
 		localStorage.setItem('input', chatInput.val())
 	}
 
-	$('.friends-online').on('click', '.friend-info a', function (event) {
+	$('.friends-online').on('click', '.friend-info span', function (event) {
 		event.preventDefault()
 		const username = $(this).text()
 		insertTextToInput(`[${username}] `)
