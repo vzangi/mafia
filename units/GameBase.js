@@ -161,7 +161,7 @@ class GameBase {
     if (names.length < playersCount) {
       // Остальные честные
       const name = await Role.findByPk(Game.roles.CITIZEN)
-      names.push([name.name, playersCount - names.length])
+      names.push([name.name, playersCount - names.length - 1])
     }
 
     return names.map((n) => `<b>${n[0]}</b> x ${n[1]}`).join(', ')
