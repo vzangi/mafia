@@ -16,6 +16,9 @@ class GameController {
       if (data.game.gametypeId == 4) {
         return res.render('pages/game/gameMulti', data)
       }
+      if (data.game.gametypeId == 5) {
+        return res.render('pages/game/gameMulti', data)
+      }
     } catch (error) {
       console.log(error)
       next(error)

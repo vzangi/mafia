@@ -46,6 +46,11 @@
   color: var(--color-white);
 }
 
+.game-type-5.active {
+  background-color: var(--bs-yellow);
+  color: var(--color-white);
+}
+
 .game-type-item h4 {
   font-size: 1.2rem;
   font-weight: 700;
@@ -87,6 +92,9 @@
 }
 .game-settings-4 .settings-head {
   background-color: var(--bs-purple);
+}
+.game-settings-5 .settings-head {
+  background-color: var(--bs-yellow);
 }
 
 .game-settings .settings-head h5 {

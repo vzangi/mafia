@@ -3,6 +3,7 @@ const GamePlayer = require('../models/GamePlayer')
 const GameClassic = require('./GameClassic')
 const GameMulti = require('./GameMulti')
 const GamePerestrelka = require('./GamePerestrelka')
+const GameConstructor = require('./GameConstructor')
 const deadlineInterval = 1000
 const minCount = 3
 
@@ -113,7 +114,7 @@ class GamesManager {
     if (playersInGame >= minCount) return true
 
     // Если мультирежим
-    if (game.gametypeId == 4) {
+    if (game.gametypeId == 5) {
       // Игроков должно быть больше, чем задано ролей
     }
 
@@ -147,6 +148,11 @@ class GamesManager {
     // Мультирежим
     if (game.gametype.id == 4) {
       gameTypeClass = GameMulti
+    }
+
+    // Конструктор
+    if (game.gametype.id == 5) {
+      gameTypeClass = GameConstructor
     }
 
     // Если тип игры не определён

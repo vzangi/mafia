@@ -310,6 +310,84 @@ $(function () {
     )
   })
 
+  // Создание заявки в конструкторе
+  $('.btn-make-type-5').click(function () {
+    const data = {}
+    data.gametypeId = 5
+    data.waitingTime = $('#waitingTime-5').text() * 1
+    data.playersCount = $('#gamePlayersCount-5').text() * 1
+    data.mode = $('#mode-5')[0].checked ? 2 : 1
+    data.description = $('#gameDescription-5').val()
+
+    data.roles = []
+
+    // Мафия
+    const mafiaCount = $('#mafiaCount-5').text() * 1
+    data.roles.push([2, mafiaCount])
+
+    // Комиссар
+    if ($('#komissar-5')[0].checked) {
+      data.roles.push([3, 1])
+    }
+
+    // Сержант
+    if ($('#sergeant-5')[0].checked) {
+      if (!$('#komissar-5')[0].checked) {
+        return alert('Сержант не может быть в игре без комиссара')
+      }
+
+      data.roles.push([4, 1])
+    }
+
+    // Доктор
+    if ($('#doctor-5')[0].checked) {
+      data.roles.push([5, 1])
+    }
+
+    // Маньяк
+    const maniacCount = $('#maniacCount-5').text() * 1
+    if (maniacCount != 0) {
+      data.roles.push([6, maniacCount])
+    }
+
+    // Дитя
+    if ($('#child-5')[0].checked) {
+      data.roles.push([7, 1])
+    }
+
+    // Адвокат
+    if ($('#advocate-5')[0].checked) {
+      data.roles.push([8, 1])
+    }
+
+    // Любовница
+    if ($('#lover-5')[0].checked) {
+      data.roles.push([9, 1])
+    }
+
+    const totalRolesCount = data.roles.reduce((a, b) => a + b[1], 0)
+
+    if (totalRolesCount > data.playersCount) {
+      return alert('Количество ролей больше количества игроков')
+    }
+
+    // Запрос на создание игры
+    lobbiSocket.emit('game.make', data, (res) => {
+      console.log(res)
+      if (res.status != 0) {
+        if (data.playersCount > 20) $('#gamePlayersCount-5').val(20)
+        if (data.playersCount < 3) $('#gamePlayersCount-5').val(3)
+
+        if (data.waitingTime > 20) $('#waitingTime-5').val(20)
+        if (data.waitingTime < 1) $('#waitingTime-5').val(1)
+        return alert(res.msg)
+      }
+
+      const { game } = res
+      showGame(game)
+    })
+  })
+
   // Выбор режима
   $('.game-type-item').click(function () {
     if ($(this).hasClass('active')) return

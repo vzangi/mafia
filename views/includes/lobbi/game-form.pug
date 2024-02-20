@@ -37,6 +37,12 @@ div(class="modal fade" id="makeForm" tabindex="-1")
             h4 Мультиролевая игра
             p Режим игры с расширенным набором ролей
 
+          div(class="game-type-item game-type-5" data-id="5")
+            h4 
+              span Конструктор 
+              span(class="ion-android-star" title="Режим доступен только VIP-игрокам" data-bs-toggle="tooltip" data-bs-placement="bottom")
+            p Режим игры с настраиваемым набором ролей
+
         div(class="game-settings-list")
 
           div(class="welkome-game flex-grow-1")
@@ -137,3 +143,55 @@ div(class="modal fade" id="makeForm" tabindex="-1")
 
             div(class="text-center mt-4")
               button(type="button" class="btn btn-primary btn-sm btn-make-type-4" data-type="4" data-bs-dismiss="modal") Создать
+
+
+          div(class="game-settings game-settings-5" data-id="5")
+            div(class="settings-head d-flex align-items-center mb-3 mt-2")
+              div 
+                span(class="ion-chevron-left back gs-back")
+              h5 Конструктор
+
+            p(class="text-secondary")
+              small Набор ролей, который будет в игре настраивается создателем партии.
+
+            +gameFormRow('Количество игроков (3 - 20 игроков)')
+              +numberInput("gamePlayersCount-5", 3, 20, 7)
+
+
+            +gameFormRow('Время на сбор (1 - 20 минут)')
+              +numberInput("waitingTime-5", 1, 20, 10)
+
+            +gameFormRow('')
+              +settings_item('С добивами', 'mode-5', true)
+                | 
+                span(class="ion-ios-help-outline" title="В режиме с добивами в тюрьму отправляется игрок набравший наибольшее количество голосов за день" data-bs-toggle="tooltip" data-bs-placement="bottom" )
+
+            +gameFormRow('Количество мафиози (1 - 4 игроков)')
+              +numberInput("mafiaCount-5", 1, 4, 2)
+
+            +gameFormRow('Количество маньяков (0 - 4 игроков)')
+              +numberInput("maniacCount-5", 0, 4, 1)
+
+            +gameFormRow('')
+              +settings_item('Дитя', 'child-5', true)
+
+            +gameFormRow('')
+              +settings_item('Комиссар', 'komissar-5', true)
+
+            +gameFormRow('')
+              +settings_item('Сержант', 'sergeant-5', false)
+
+            +gameFormRow('')
+              +settings_item('Врач', 'doctor-5', false)
+
+            +gameFormRow('')
+              +settings_item('Адвокат', 'advocate-5', false)
+
+            +gameFormRow('')
+              +settings_item('Любовница', 'lover-5', false)
+
+            +gameFormRow('Подпись к заявке')
+              input(class="form-control" type="text" placeholder="Подпись к заявке" maxlength="69" id="gameDescription-5" name="gameDescription-5")
+
+            div(class="text-center mt-4")
+              button(type="button" class="btn btn-primary btn-sm btn-make-type-5" data-type="5" data-bs-dismiss="modal") Создать

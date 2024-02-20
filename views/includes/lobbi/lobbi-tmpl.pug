@@ -32,7 +32,7 @@ script(id="gameItemTmpl" type="text/x-jquery-tmpl")
             span(class="ion-ios-game-controller-b fs-5 ion-icon") 
             span ${gametype.name}
             . 
-              {{if mode == 2 && (gametype.id == 1 || gametype.id == 4)}}
+              {{if mode == 2 && (gametype.id == 1 || gametype.id == 4 || gametype.id == 5)}}
             span(class="ion-flash" title="с добивами" data-bs-toggle="tooltip" data-bs-placement="right")
             .               
               {{/if}}

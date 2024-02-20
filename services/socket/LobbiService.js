@@ -3,6 +3,7 @@ const Account = require('../../models/Account')
 const Friend = require('../../models/Friend')
 const Game = require('../../models/Game')
 const GamePlayer = require('../../models/GamePlayer')
+const GameInitRole = require('../../models/GameInitRole')
 const minCount = 3
 const GamesManager = require('../../units/GamesManager')
 const BaseService = require('./BaseService')
@@ -27,7 +28,7 @@ class LobbiService extends BaseService {
       throw new Error('Нет необходимых данных')
     }
 
-    if (gametypeId < 1 || gametypeId > 4) {
+    if (gametypeId < 1 || gametypeId > 5) {
       throw new Error('Нет у нас таких режимов')
     }
 
@@ -55,6 +56,22 @@ class LobbiService extends BaseService {
 
     if (waitingTime > 20) {
       throw new Error('Максимальное время для заявки - 20 минут')
+    }
+
+    if (gametypeId == 5) {
+      const { roles } = settings
+
+      if (!roles) {
+        throw new Error('Не указаны роли')
+      }
+
+      // Проверка на корректность ролей
+      this._checkRoles(roles)
+
+      const totalRolesCount = roles.reduce((a, b) => a + b[1], 0)
+      if (totalRolesCount > playersCount) {
+        throw new Error('Количество ролей больше количества игроков')
+      }
     }
 
     const account = await Account.findByPk(user.id, {
@@ -127,6 +144,21 @@ class LobbiService extends BaseService {
     // Получаю новую заявку
     const game = await Game.scope('def').findByPk(newGame.id)
 
+    // Если конструктор - добавляю в базу список ролей
+    if (gametypeId == 5) {
+      const { roles } = settings
+      for (const index in roles) {
+        const [roleId, cnt] = roles[index]
+        if (cnt == 0) continue
+
+        await GameInitRole.create({
+          gameId: newGame.id,
+          roleId,
+          cnt,
+        })
+      }
+    }
+
     // Добавляю её в список ожидающих заявок
     GamesManager.whatingGames[game.id] = game
 
@@ -136,6 +168,90 @@ class LobbiService extends BaseService {
 
     // и возвращаю её
     return game
+  }
+
+  // Проверка ролей на корректность
+  _checkRoles(roles) {
+    // Наличие мафии
+    const mafia = roles.filter((role) => role[0] == Game.roles.MAFIA)
+    if (mafia.length != 1) {
+      throw new Error('В списке ролей должна быть мафия')
+    }
+    if (mafia[0][1] < 1) {
+      throw new Error('В партии должен быть хотя бы один мафиози')
+    }
+    if (mafia[0][1] > 4) {
+      throw new Error('В партии не может быть больше 4 мафиози')
+    }
+
+    const komissar = roles.filter((role) => role[0] == Game.roles.KOMISSAR)
+    if (komissar.length > 1) {
+      throw new Error('В партии может быть только один комиссар')
+    }
+    if (komissar.length > 0 && komissar[0][1] != 1) {
+      throw new Error('В партии может быть только один комиссар')
+    }
+
+    const sergeant = roles.filter((role) => role[0] == Game.roles.SERGEANT)
+    if (sergeant.length > 1) {
+      throw new Error('В партии может быть только один сержант')
+    }
+    if (sergeant.length > 0 && sergeant[0][1] != 1) {
+      throw new Error('В партии может быть только один сержант')
+    }
+    if (sergeant.length == 1) {
+      if (komissar.length == 0) {
+        throw new Error('Сержант не может быть в партии без комиссара')
+      }
+    }
+
+    const doctor = roles.filter((role) => role[0] == Game.roles.DOCTOR)
+    if (doctor.length > 1) {
+      throw new Error('В партии может быть только один доктор')
+    }
+    if (doctor.length > 0 && doctor[0][1] != 1) {
+      throw new Error('В партии может быть только один доктор')
+    }
+
+    const maniac = roles.filter((role) => role[0] == Game.roles.MANIAC)
+    if (maniac.length > 0) {
+      if (maniac[0][1] < 0) {
+        throw new Error('Неверный формат ролей')
+      }
+      if (maniac[0][1] > 4) {
+        throw new Error('В партии не может быть больше 4 маньяков')
+      }
+    }
+
+    const child = roles.filter((role) => role[0] == Game.roles.CHILD)
+    if (child.length > 1) {
+      throw new Error('В партии может быть только одино дитя')
+    }
+    if (child.length > 0 && child[0][1] != 1) {
+      throw new Error('В партии может быть только одино дитя')
+    }
+
+    const advocate = roles.filter((role) => role[0] == Game.roles.ADVOCATE)
+    if (advocate.length > 1) {
+      throw new Error('В партии может быть только один адвокат')
+    }
+    if (advocate.length > 0 && advocate[0][1] != 1) {
+      throw new Error('В партии может быть только один адвокат')
+    }
+
+    const lover = roles.filter((role) => role[0] == Game.roles.PROSTITUTE)
+    if (lover.length > 1) {
+      throw new Error('В партии может быть только одина любовница')
+    }
+    if (lover.length > 0 && lover[0][1] != 1) {
+      throw new Error('В партии может быть только одина любовница')
+    }
+
+    // Других ролей быть не должно
+    const others = roles.filter((role) => role[0] > Game.roles.PROSTITUTE)
+    if (others.length != 0) {
+      throw new Error('Неизвестная роль')
+    }
   }
 
   // Присоединиться к заявке

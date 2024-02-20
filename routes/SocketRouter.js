@@ -79,6 +79,11 @@ module.exports = (io) => {
       if (game.gametypeId == 4) {
         require('./socket/game/MultiGameRouter')(io, socket)
       }
+
+      // Роуты конструктра
+      if (game.gametypeId == 5) {
+        require('./socket/game/ConstructorGameRouter')(io, socket)
+      }
     }
   })
 }
