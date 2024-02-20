@@ -10,9 +10,10 @@ header(class="game-status-"+game.status+ " game-period-"+game.period)
         div
           span Игра окончена
 
-      div(class="text-center")
-        small(class="d-md-inline1 d-none1 d-hidden") Ваша роль в игре: 
-        span(class="role-name" title="Ваша роль в игре" data-bs-toggle="tooltip" data-bs-placement="bottom")
+      div(class="text-center d-flex align-items-center")
+        small(class="d-md-inline d-none d-hidden") Ваша роль в игре: 
+        span(class="role-name ms-1" title="Ваша роль в игре" data-bs-toggle="tooltip" data-bs-placement="bottom")
+        span(class="role-icon ms-1")
 
       div
         div(class="to-lobbi text-end "+(game.period!=10&&isPlayer?'hide':''))
