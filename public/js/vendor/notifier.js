@@ -122,6 +122,11 @@
         notification.parentNode.removeChild(notification)
       }, 600)
 
+      if (document.querySelectorAll('.notifier').length == 1) {
+        if (document.querySelector('.notifier-hide-all'))
+          document.querySelector('.notifier-hide-all').remove()
+      }
+
       return true
     } else {
       return false
