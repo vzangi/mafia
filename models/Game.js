@@ -30,7 +30,7 @@ const roles = {
   MANIAC: 6,
   CHILD: 7,
   ADVOCATE: 8,
-  PROSTITUTE: 9,
+  LOVER: 9,
 }
 
 const periods = {

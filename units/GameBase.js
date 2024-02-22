@@ -531,10 +531,10 @@ class GameBase {
       throw new Error('Вас нет в этой игре')
     }
 
-    // Если игрока отвлекает путана
+    // Если игрока отвлекает любовница
     if (voter.status == GamePlayer.playerStatuses.FREEZED) {
       throw new Error(
-        'Путана заманила вас в свои сети и не даёт возможности проголосовать'
+        'Любовница заманила вас в свои сети и не даёт возможности проголосовать'
       )
     }
 
@@ -845,7 +845,7 @@ class GameBase {
         }
 
         // Роль путаны
-        if (player.roleId == Game.roles.PROSTITUTE) {
+        if (player.roleId == Game.roles.LOVER) {
           aliveOtherMafia += 1
           continue
         }

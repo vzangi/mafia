@@ -11,7 +11,7 @@ const roles = {
   MANIAC: 6,
   CHILD: 7,
   ADVOCATE: 8,
-  WHORE: 9,
+  LOVER: 9,
 }
 
 const Role = sequelize.define(

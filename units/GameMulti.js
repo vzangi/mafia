@@ -72,7 +72,7 @@ class GameMulti extends GameBase {
           [Game.roles.MANIAC, 1],
           [Game.roles.DOCTOR, 1],
           [Game.roles.ADVOCATE, 1],
-          [Game.roles.PROSTITUTE, 1],
+          [Game.roles.LOVER, 1],
         ]
     }
 
@@ -85,7 +85,7 @@ class GameMulti extends GameBase {
       [Game.roles.MANIAC, 1],
       [Game.roles.DOCTOR, 1],
       [Game.roles.ADVOCATE, 1],
-      [Game.roles.PROSTITUTE, 1],
+      [Game.roles.LOVER, 1],
     ]
   }
 
@@ -207,8 +207,8 @@ class GameMulti extends GameBase {
       // Если есть, то передаю роль комиссара ему
       if (role.id == Game.roles.KOMISSAR) await this.updateSergeant()
 
-      // Если посажена путана, то размораживаю игрока
-      if (role.id == Game.roles.PROSTITUTE) {
+      // Если посажена любовница, то размораживаю игрока
+      if (role.id == Game.roles.LOVER) {
         await this.unfreez()
       }
 
@@ -304,8 +304,8 @@ class GameMulti extends GameBase {
       rolesInNight += ', адвоката'
     }
 
-    // Смотрю, есть ли в игре путана
-    const puatanaInGame = this.getPlayerByRoleId(Game.roles.PROSTITUTE)
+    // Смотрю, есть ли в игре любовница
+    const puatanaInGame = this.getPlayerByRoleId(Game.roles.LOVER)
     if (
       puatanaInGame &&
       puatanaInGame.status != GamePlayer.playerStatuses.FREEZED
@@ -563,6 +563,11 @@ class GameMulti extends GameBase {
     // Если есть, то передаю роль комиссара ему
     if (role.id == Game.roles.KOMISSAR) await this.updateSergeant()
 
+    // Если убита любовница, то размораживаю игрока
+    if (role.id == Game.roles.LOVER) {
+      await this.unfreez()
+    }
+
     // Показываю всем роль убитого игрока
     await this.showPlayerRole(killed, GamePlayer.playerStatuses.KILLED)
   }
@@ -586,6 +591,11 @@ class GameMulti extends GameBase {
     // Если убит комиссар - надо посмотреть есть ли в игре сержант
     // Если есть, то передаю роль комиссара ему
     if (role.id == Game.roles.KOMISSAR) await this.updateSergeant()
+
+    // Если убита любовница, то размораживаю игрока
+    if (role.id == Game.roles.LOVER) {
+      await this.unfreez()
+    }
 
     // Показываю всем роль убитого игрока
     await this.showPlayerRole(killed, GamePlayer.playerStatuses.KILLED)
@@ -632,7 +642,7 @@ class GameMulti extends GameBase {
     // Стрелок - маньяк
     if (shooter.roleId == Game.roles.MANIAC) {
       if (shooter.status == GamePlayer.playerStatuses.FREEZED) {
-        throw new Error('Путана заманила вас в свои сети')
+        throw new Error('Любовница заманила вас в свои сети')
       }
 
       await this.maniacShot(player, shooter)
@@ -641,13 +651,13 @@ class GameMulti extends GameBase {
     // Ход адвоката
     if (shooter.roleId == Game.roles.ADVOCATE) {
       if (shooter.status == GamePlayer.playerStatuses.FREEZED) {
-        throw new Error('Путана заманила вас в свои сети')
+        throw new Error('Любовница заманила вас в свои сети')
       }
       await this.protection(player, shooter)
     }
 
     // Ход путаны
-    if (shooter.roleId == Game.roles.PROSTITUTE) {
+    if (shooter.roleId == Game.roles.LOVER) {
       await this.freezing(player, shooter)
     }
   }
@@ -691,7 +701,7 @@ class GameMulti extends GameBase {
     }
 
     this.systemLog(
-      `<b>Путана ${putana.username} отвлекает ${player.username}</b>`,
+      `<b>Любовница ${putana.username} отвлекает ${player.username}</b>`,
       GameLog.types.FREEZ,
       true
     )

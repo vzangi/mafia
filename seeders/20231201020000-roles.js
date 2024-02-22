@@ -37,7 +37,7 @@ module.exports = {
         rolesideId: 3,
       },
       {
-        name: 'Путана',
+        name: 'Любовница',
         rolesideId: 3,
       },
     ])

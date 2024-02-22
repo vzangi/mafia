@@ -239,7 +239,7 @@ class LobbiService extends BaseService {
       throw new Error('В партии может быть только один адвокат')
     }
 
-    const lover = roles.filter((role) => role[0] == Game.roles.PROSTITUTE)
+    const lover = roles.filter((role) => role[0] == Game.roles.LOVER)
     if (lover.length > 1) {
       throw new Error('В партии может быть только одина любовница')
     }
@@ -248,7 +248,7 @@ class LobbiService extends BaseService {
     }
 
     // Других ролей быть не должно
-    const others = roles.filter((role) => role[0] > Game.roles.PROSTITUTE)
+    const others = roles.filter((role) => role[0] > Game.roles.LOVER)
     if (others.length != 0) {
       throw new Error('Неизвестная роль')
     }
