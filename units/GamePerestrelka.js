@@ -438,7 +438,7 @@ class GamePerestrelka extends GameBase {
     // Смотрю, есть ли в игре любовница
     const puatanaInGame = this.getPlayerByRoleId(Game.roles.LOVER)
     if (puatanaInGame) {
-      rolesInNight += ', путаны'
+      rolesInNight += ', любовницы'
     }
 
     await this.systemMessage('<hr>')
@@ -446,7 +446,7 @@ class GamePerestrelka extends GameBase {
 
     this.systemLog(`<hr>Наступила ночь. ${rolesInNight}.`)
 
-    // Если был замороженный путаной игрок, то размораживаю его
+    // Если был замороженный любовницей игрок, то размораживаю его
     await this.unfreez()
 
     // Ход мафии
@@ -456,7 +456,7 @@ class GamePerestrelka extends GameBase {
     room.emit('mafia.start')
   }
 
-  // Выстрел мафии / маньяка / путаны
+  // Выстрел мафии / маньяка / любовницы
   async shot(username, mafId) {
     const { game } = this
     const player = this.getPlayerByName(username)
@@ -497,7 +497,7 @@ class GamePerestrelka extends GameBase {
       await this.maniacShot(player, shooter)
     }
 
-    // Ход путаны
+    // Ход любовницы
     if (shooter.roleId == Game.roles.LOVER) {
       await this.freezing(player, shooter)
     }
@@ -658,7 +658,7 @@ class GamePerestrelka extends GameBase {
 
     data.playerId = player.accountId
 
-    // Записываю ход путаны в базу
+    // Записываю ход любовницы в базу
     await GameStep.create(data)
 
     // Если игрок не мафия

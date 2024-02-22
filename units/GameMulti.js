@@ -310,7 +310,7 @@ class GameMulti extends GameBase {
       puatanaInGame &&
       puatanaInGame.status != GamePlayer.playerStatuses.FREEZED
     ) {
-      rolesInNight += ', путаны'
+      rolesInNight += ', любовницы'
     }
 
     await this.systemMessage('<hr>')
@@ -318,7 +318,7 @@ class GameMulti extends GameBase {
 
     this.systemLog(`<hr>Наступила ночь. ${rolesInNight}.`)
 
-    // Если был замороженный путаной игрок, то размораживаю его
+    // Если был замороженный любовницей игрок, то размораживаю его
     await this.unfreez()
 
     // Ход мафии
@@ -607,7 +607,7 @@ class GameMulti extends GameBase {
     this.systemLog('Мафия никого не убила.')
   }
 
-  // Выстрел мафии / маньяка / адвоката / путаны
+  // Выстрел мафии / маньяка / адвоката / любовницы
   async shot(username, mafId) {
     const { game } = this
     const player = this.getPlayerByName(username)
@@ -656,7 +656,7 @@ class GameMulti extends GameBase {
       await this.protection(player, shooter)
     }
 
-    // Ход путаны
+    // Ход любовницы
     if (shooter.roleId == Game.roles.LOVER) {
       await this.freezing(player, shooter)
     }
@@ -679,7 +679,7 @@ class GameMulti extends GameBase {
       throw new Error('Вы уже ходили этой ночью')
     }
 
-    // Записываю ход путаны в базу
+    // Записываю ход любовницы в базу
     await GameStep.create({
       gameId: game.id,
       day: game.day,

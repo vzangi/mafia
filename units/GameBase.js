@@ -844,7 +844,7 @@ class GameBase {
           continue
         }
 
-        // Роль путаны
+        // Роль любовницы
         if (player.roleId == Game.roles.LOVER) {
           aliveOtherMafia += 1
           continue
