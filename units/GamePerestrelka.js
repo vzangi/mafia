@@ -821,6 +821,11 @@ class GamePerestrelka extends GameBase {
     // Если есть, то передаю роль комиссара ему
     if (role.id == Game.roles.KOMISSAR) await this.updateSergeant()
 
+    // Если убита любовница, то размораживаю игрока
+    if (role.id == Game.roles.LOVER) {
+      await this.unfreez()
+    }
+
     // Показываю всем роль убитого игрока
     await this.showPlayerRole(killed, GamePlayer.playerStatuses.KILLED)
   }
@@ -852,6 +857,11 @@ class GamePerestrelka extends GameBase {
     // Если убит комиссар - надо посмотреть есть ли в игре сержант
     // Если есть, то передаю роль комиссара ему
     if (role.id == Game.roles.KOMISSAR) await this.updateSergeant()
+
+    // Если убита любовница, то размораживаю игрока
+    if (role.id == Game.roles.LOVER) {
+      await this.unfreez()
+    }
 
     // Показываю всем роль убитого игрока
     await this.showPlayerRole(killed, GamePlayer.playerStatuses.KILLED)
