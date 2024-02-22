@@ -51,6 +51,24 @@ script(id="gameItemTmpl" type="text/x-jquery-tmpl")
             span(class="ion-ios-clock fs-6 ion-icon")
             span(class="waithing-time" data-deadline="${deadline}" data-seconds="${seconds}" data-stamp="${Date.now()}") 
 
+        . 
+          {{if roles && roles.length > 0}}
+        div(class="roles")
+          . 
+            {{each(i,r) roles}}
+          div(class="badge role role-side-${r.role.rolesideId} role-id-${r.role.id} me-1" title="${r.role.description}" data-bs-toggle="tooltip" data-bs-placement="bottom")
+            span(class="role-name") ${r.role.name} 
+            . 
+              {{if r.cnt > 1}}
+            span(class='ion-ios-close-empty') 
+            span(class="role-cnt") ${r.cnt}
+            . 
+              {{/if}}
+          . 
+            {{/each}}
+        . 
+          {{/if}}
+
         div(class="description")
           span ${description}
 
