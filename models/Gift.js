@@ -34,6 +34,14 @@ const Gift = sequelize.define(
         const res = {
           limit,
           order: [['updatedAt', 'DESC']],
+          include: [
+            {
+              model: GiftGroup,
+              where: {
+                active: true,
+              },
+            },
+          ],
         }
         if (giftgroupId) {
           res.where = {
