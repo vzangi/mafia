@@ -1,12 +1,16 @@
 const htmlspecialchars = require('htmlspecialchars')
 const Account = require('../../models/Account')
 const Friend = require('../../models/Friend')
+const Claim = require('../../models/Claim')
 const Game = require('../../models/Game')
 const GamePlayer = require('../../models/GamePlayer')
 const GameInitRole = require('../../models/GameInitRole')
+const Punishment = require('../../models/Punishment')
 const minCount = 3
 const GamesManager = require('../../units/GamesManager')
 const BaseService = require('./BaseService')
+const { getCoolDateTime } = require('../../units/helpers')
+const { Op } = require('sequelize')
 
 class LobbiService extends BaseService {
 	// Получение текущих заявок
@@ -552,6 +556,148 @@ class LobbiService extends BaseService {
 		// Отправляю всем информацию что игрок покинул заявку
 		const { io } = this
 		io.of('/lobbi').emit('game.player.leave', gameId, username)
+	}
+
+	// Жалоба
+	async claim(data) {
+		const { username, type, comment } = data
+
+		if (!type || !username) {
+			throw new Error('Нет необходимых данных')
+		}
+
+		const { account } = this.socket
+
+		if (!account) {
+			throw new Error('Не авторизован')
+		}
+
+		if (type < 1 || type > 3) {
+			throw new Error('Не верный тип')
+		}
+
+		const player = await Account.findOne({
+			where: {
+				username,
+			},
+		})
+
+		if (!player) {
+			throw new Error('Пользователь не найден')
+		}
+
+		// Если у пользователя уже есть мут, то выходим
+		const hasPunishment = await Punishment.findOne({
+			where: {
+				accountId: player.id,
+				type: Punishment.types.MUTE,
+				untilAt: {
+					[Op.gte]: new Date().toISOString(),
+				},
+			},
+		})
+
+		if (hasPunishment) {
+			throw new Error('Пользователь уже получил мут')
+		}
+
+		const claimData = {
+			accountId: account.id,
+			playerId: player.id,
+			type,
+		}
+
+		const hourAgo = new Date(Date.now() - 1000 * 60 * 60).toISOString()
+
+		const hasClaim = await Claim.findOne({
+			where: {
+				...claimData,
+				createdAt: {
+					[Op.gte]: hourAgo,
+				},
+			},
+		})
+
+		if (hasClaim) {
+			throw new Error('Вы уже отправляли жалобу на этого игрока')
+		}
+
+		if (comment) claimData.comment = comment
+
+		// Создаю жалобу
+		const claim = await Claim.create(claimData)
+
+		// Если жалоба от админа, то сразу создаю наказание
+		if (account.role == 1) {
+			const pun = await this._makePunishment(player, type, comment)
+			claim.punishmentId = pun.id
+			await claim.save()
+			return
+		}
+
+		// Если в течении пяти минут было 5 жалоб на Player, то создаю наказание
+		const around5minute = new Date(Date.now() - 1000 * 60 * 5).toISOString()
+
+		const claims = await Claim.findAll({
+			where: {
+				playerId: player.id,
+				type,
+				createdAt: {
+					[Op.gt]: around5minute,
+				},
+			},
+		})
+
+		if (claims.length == 3) {
+			const punish = this._makePunishment(
+				player,
+				type,
+				'Мут по результатам самоконтроля'
+			)
+			for (const index in claims) {
+				const claimItem = claims[index]
+				claimItem.punishmentId = punish.id
+				await claimItem.save()
+			}
+		}
+	}
+
+	// Создать наказание
+	async _makePunishment(player, type, comment) {
+		const punishmentData = {
+			accountId: player.id,
+			type: Punishment.types.MUTE,
+		}
+
+		// Смотрю количество предыдущих нказаний по этому типу
+		const punishmentsCount = await Punishment.count({
+			where: punishmentData,
+		})
+
+		if (comment) punishmentData.comment = comment
+
+		const until = new Date(
+			Date.now() - 1000 * 60 * punishmentsCount + 1
+		).toISOString()
+
+		punishmentData.untilAt = until
+
+		// Создаю наказание
+		const punish = await Punishment.create(punishmentData)
+
+		// Перегружаю открытые сокеты наказанного игрока
+		const socks = this.getUserSockets(player.id, '/lobbi')
+		socks.forEach((s) => s.emit('reload'))
+
+		const reason = Claim.reason(type)
+		const message = `Вам запрещено писать в чате лобби до ${getCoolDateTime(
+			until
+		)} по причине: ${reason}`
+
+		// Уведомляю нарушителя
+		await this.notify(player.id, message, 2)
+
+		return punish
 	}
 }
 

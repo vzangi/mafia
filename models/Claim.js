@@ -51,4 +51,16 @@ Claim.belongsTo(Account, { as: 'player', foreignKey: 'playerId' })
 Claim.belongsTo(Game)
 Claim.belongsTo(Punishment)
 
+Claim.reason = (type) => {
+	switch (type) {
+		case Claim.types.FILTHY:
+			return 'мат'
+		case Claim.types.FLOOD:
+			return 'флуд'
+		case Claim.types.ABUSE:
+			return 'оскорбление'
+	}
+	return ''
+}
+
 module.exports = Claim
