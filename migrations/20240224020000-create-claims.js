@@ -33,7 +33,7 @@ module.exports = {
 					allowNull: false,
 				},
 				gameId: {
-					type: Sequelize.DATE,
+					type: Sequelize.INTEGER,
 					references: {
 						model: 'games',
 						key: 'id',
