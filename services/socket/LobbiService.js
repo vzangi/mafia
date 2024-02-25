@@ -576,6 +576,26 @@ class LobbiService extends BaseService {
 			throw new Error('Не верный тип')
 		}
 
+		// Проверяю есть ли возмоность жаловаться
+		const hasNoClaim = await Punishment.findOne({
+			where: {
+				accountId: account.id,
+				type: Punishment.types.NO_CLAIM,
+				untilAt: {
+					[Op.gte]: new Date().toISOString(),
+				},
+			},
+		})
+
+		if (hasNoClaim) {
+			throw new Error(
+				`Вы не можете отправлять жалобы до ${getCoolDateTime(
+					hasNoClaim.untilAt
+				)}`
+			)
+		}
+
+		// Беру пользователя на которого пришла жалоба
 		const player = await Account.findOne({
 			where: {
 				username,
@@ -584,6 +604,10 @@ class LobbiService extends BaseService {
 
 		if (!player) {
 			throw new Error('Пользователь не найден')
+		}
+
+		if (player.id == account.id) {
+			throw new Error('Нельзя жаловаться на самого себя')
 		}
 
 		// Если у пользователя уже есть мут, то выходим
@@ -607,8 +631,8 @@ class LobbiService extends BaseService {
 			type,
 		}
 
+		// Проверяю, отправлял ли уже этот пользователь жалобу в течении часа
 		const hourAgo = new Date(Date.now() - 1000 * 60 * 60).toISOString()
-
 		const hasClaim = await Claim.findOne({
 			where: {
 				...claimData,
@@ -635,9 +659,8 @@ class LobbiService extends BaseService {
 			return
 		}
 
-		// Если в течении пяти минут было 5 жалоб на Player, то создаю наказание
+		// Получаю жалобы на игрока за 5-ти минутный промежуток
 		const around5minute = new Date(Date.now() - 1000 * 60 * 5).toISOString()
-
 		const claims = await Claim.findAll({
 			where: {
 				playerId: player.id,
@@ -648,12 +671,16 @@ class LobbiService extends BaseService {
 			},
 		})
 
-		if (claims.length == 3) {
-			const punish = this._makePunishment(
+		// достигнут лимит жалоб
+		if (claims.length == Claim.limit(type)) {
+			// Создаю наказание
+			const punish = await this._makePunishment(
 				player,
 				type,
 				'Мут по результатам самоконтроля'
 			)
+
+			// Связываю жалобы с наказанием
 			for (const index in claims) {
 				const claimItem = claims[index]
 				claimItem.punishmentId = punish.id
@@ -677,7 +704,7 @@ class LobbiService extends BaseService {
 		if (comment) punishmentData.comment = comment
 
 		const until = new Date(
-			Date.now() - 1000 * 60 * punishmentsCount + 1
+			Date.now() + 1000 * 60 * 60 * (punishmentsCount + 1)
 		).toISOString()
 
 		punishmentData.untilAt = until

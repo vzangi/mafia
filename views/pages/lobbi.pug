@@ -9,6 +9,9 @@ block main
   include /includes/lobbi/chat
   include /includes/lobbi/games
 
+  if currentAccount 
+    include /includes/lobbi/claim-form
+
 
 block aside
   include /includes/lobbi/friends_online

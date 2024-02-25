@@ -52,15 +52,27 @@ Claim.belongsTo(Game)
 Claim.belongsTo(Punishment)
 
 Claim.reason = (type) => {
-	switch (type) {
-		case Claim.types.FILTHY:
+	switch (type * 1) {
+		case 1:
 			return 'мат'
-		case Claim.types.FLOOD:
+		case 2:
 			return 'флуд'
-		case Claim.types.ABUSE:
+		case 3:
 			return 'оскорбление'
 	}
-	return ''
+	return 'хз'
+}
+
+Claim.limit = (type) => {
+	switch (type * 1) {
+		case 1:
+			return 3
+		case 2:
+			return 3
+		case 3:
+			return 3
+	}
+	return 10
 }
 
 module.exports = Claim

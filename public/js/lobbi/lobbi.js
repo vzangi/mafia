@@ -358,4 +358,37 @@ $(async function () {
 		if (d > 9) return d
 		return `0${d}`
 	}
+
+	// Вызов формы для подачи жалобы
+	chat.on('click', '.m-time', function () {
+		const msgBox = $(this).parent().parent()
+		const username = msgBox.find('.m-nik:first').text()
+		const context = msgBox.find('.m-message').text().trim()
+
+		const claimForm = $('#claimForm')
+
+		if (!claimForm) return
+
+		claimForm.find('.claim-user-name').text(username)
+		claimForm.find('.claim-context').val(context)
+
+		claimForm.modal('show')
+	})
+
+	// Отправка жалобы
+	$('.btn-make-claim').click(function () {
+		const claimData = {}
+		claimData.username = $('.claim-user-name').text().trim()
+		claimData.comment = $('.claim-context').val().trim()
+		claimData.type = $('.claim-type').val()
+
+		$('#claimForm').modal('hide')
+
+		lobbiSocket.emit('claim', claimData, (res) => {
+			const { status, msg } = res
+			if (status != 0) return alert(msg)
+
+			alert('Ваша жалоба принята')
+		})
+	})
 })
