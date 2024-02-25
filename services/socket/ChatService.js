@@ -12,9 +12,17 @@ class ChatService extends BaseService {
 
 	// Пришло сообщение
 	async message(message) {
-		const { user, io } = this
+		const { user, io, socket } = this
 		if (!user) {
 			throw new Error('Не авторизован')
+		}
+
+		const { account } = socket
+		const { punishments } = account
+
+		if (punishments && punishments.length > 0) {
+			const muted = punishments.filter((p) => p.type == 1)
+			if (muted.length > 0) return
 		}
 
 		// Ищу игрока в игре
@@ -45,10 +53,16 @@ class ChatService extends BaseService {
 	// Пользователь начал что-то печатать в чате
 	typingBegin() {
 		const { io, socket } = this
-		if (!socket.account) {
+		const { account } = socket
+		if (!account) {
 			throw new Error('Не авторизован')
 		}
-		const { username } = socket.account
+		const { username, punishments } = account
+
+		if (punishments && punishments.length > 0) {
+			const muted = punishments.filter((p) => p.type == 1)
+			if (muted.length > 0) return
+		}
 
 		if (typingUsers[username]) {
 			clearTimeout(typingUsers[username])

@@ -34,5 +34,6 @@ const Punishment = sequelize.define('punishments', {
 Punishment.types = types
 
 Punishment.belongsTo(Account)
+Account.hasMany(Punishment)
 
 module.exports = Punishment

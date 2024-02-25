@@ -1,7 +1,7 @@
 include ../switch_mixin
 
 div(class="block chat-box mb-4")
-  
+
   div(class="chat-header")
     span(class="fs-4 me-3") Чат
     span(class="online-user-count-box me-auto") #[a(href="/online" class="user-online") &nbsp;] сейчас онлайн
@@ -25,21 +25,34 @@ div(class="block chat-box mb-4")
               include ../text_icon
             div(class="font-size small" data-font="font-14" title="Мелкий") 
               include ../text_icon
-          
+
       span(class="ion-arrow-expand expand ms-2" title="на всё окно")
 
   div(class="chat")  
     div(class="loader")
       img(src="/images/loading" + (Math.floor(Math.random()*5) + 1) +".gif" alt="loading")
-  
+
   div(class="typing-box") 
-  
+
   if (currentAccount)
+    -var isMuted = false 
+    if (currentAccount.punishments && currentAccount.punishments.length != 0)
+      -isMuted = currentAccount.punishments.filter(p => p.type == 1).length != 0
+      -var until = currentAccount.punishments.filter(p => p.type == 1)[0].untilAt.toLocaleString()
     div(class="input-box") 
-      input(type="text" maxlength=255 placeholder="Введите сообщение и нажмите Enter" name="chat-input" id="chat-input")
-      div(class="smiles" style="background-image: url(/images/eHehe.svg)") 
-      div(class="all-smiles" style="display:none") 
-        div(class="all-smiles-title mb-1") Смайлы
-        div(class="all-smiles-items")
-          each smile in smiles
-            img(src="/images/e"+ smile +".svg" alt=smile)
+
+      if (!isMuted)
+        input(type="text" maxlength=255 placeholder="Введите сообщение и нажмите Enter" name="chat-input" id="chat-input")
+        div(class="smiles" style="background-image: url(/images/eHehe.svg)") 
+        div(class="all-smiles" style="display:none") 
+          div(class="all-smiles-title mb-1") Смайлы
+          div(class="all-smiles-items")
+            each smile in smiles
+              img(src="/images/e"+ smile +".svg" alt=smile)     
+
+      else 
+        div(class="muted p-1 ps-2 pe-2")
+          span(class="ion-alert-circled") 
+          span Вам запрещено писать сообщения до 
+          span= until
+
