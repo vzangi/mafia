@@ -59,7 +59,7 @@ $(async function () {
         location.reload()
       })
     })
-  }, 5000)
+  }, 15000)
 
   socket.emit('friends.online', (status, res) => {
     if (status == 1) {
@@ -75,6 +75,7 @@ $(async function () {
         res.forEach((friend) => {
           friendOnlineTemplate.tmpl(friend.friend).appendTo(friendsOnlineList)
         })
+        activateBSTooltips()
       }
     } else {
       alert(res)
@@ -190,7 +191,7 @@ $(async function () {
     localStorage.setItem('input', chatInput.val())
   }
 
-  $('.friends-online').on('click', '.friend-info span', function (event) {
+  $('.friends-online').on('click', '.friend-info .f-nik', function (event) {
     event.preventDefault()
     const username = $(this).text()
     insertTextToInput(`[${username}] `)

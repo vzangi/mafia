@@ -1,0 +1,49 @@
+-var ptypes=['','Мут','Создание заявок','Участие в играх', 'Вход на сайт', 'Жалобы']
+-var ctypes=['','Мат','Флуд','Оскорбление', 'Мат', 'Флуд', 'Оскорбление', 'Мультоводство', 'Слив игры']
+if punishments
+  if punishments.length == 0
+    p Запретов не было
+  else
+    div(class="d-flex justify-content-between")
+      h3 Запреты
+      div 
+        button(class="btn btn-dark btn-sm show-all-punish") Показать все 
+    div(class="punishments")
+      table(class="table table-striped table-hover")
+        thead 
+          tr 
+            th Тип заперта
+            th Период
+            th Комментарий
+            th
+        tbody
+          each punishment, index in punishments
+            tr(class="punish"+(punishment.current?'':' hide') data-id=punishment.id)
+              td= ptypes[punishment.type]
+              td
+                span= punishment.createdAt.toLocaleString('ru-RU')
+                br
+                span= punishment.untilAt.toLocaleString('ru-RU')
+              td= punishment.comment
+              td 
+                button(class="btn btn-sm btn-danger remove-punish" data-id=punishment.id title="Удалить" data-bs-toggle="tooltip" data-bs-placement="left")
+                  span(class="bi bi-x-lg")
+            tr(style="display:none")
+              td(colspan='3')
+                table(class="table")
+                  thead 
+                    tr 
+                      th Тип жалобы
+                      th Отправитель
+                      th Время
+                      th Контекст
+                  tbody
+                    each claim, index in punishment.claims
+                      tr
+                        td= ctypes[claim.type]
+                        td
+                          a(href="/profile/"+claim.account.username target="_blank")= claim.account.username
+                        td= claim.createdAt.toLocaleString('ru-RU')
+                        td= claim.comment
+
+script(src="/js/profile/profile-punishment.js")

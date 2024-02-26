@@ -12,11 +12,15 @@ script(id="friendOnlineTmpl" type="text/x-jquery-tmpl")
         span 
           . 
             {{if punishments && punishments.length != 0}}
-              {{if punishments.filter(p => p.type == 1).length != 0}}
-          span(class="ion-android-microphone-off" title="Мут" data-bs-toggle="tooltip" data-bs-placement="bottom") 
+            {{each(i,punishment) punishments}}
+            {{if punishment.type == 1}}
+          span(class="ion-android-microphone-off2" title="Молчанка до {{html punishment.coolDate}}" data-bs-toggle="tooltip" data-bs-placement="bottom")
+            i(class="bi bi-envelope-slash-fill")
           . 
             {{/if}}
+            {{/each}}
             {{/if}}
+
           span(class="f-nik") ${username}
       div(class="friend-actions") 
         span(class="start-chat ion-chatbox-working" title="Личное сообщение" onclick="startPrivateWith(${id})")

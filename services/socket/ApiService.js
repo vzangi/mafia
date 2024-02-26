@@ -185,7 +185,7 @@ class ApiService extends BaseService {
                 [Op.gt]: new Date().toISOString(),
               },
             },
-            attributes: ['type'],
+            attributes: ['type', 'untilAt', 'coolDate'],
             required: false,
           },
         ],

@@ -38,6 +38,9 @@ module.exports = (io) => {
 
     // Роуты инвентаря
     require('./socket/InventoryRouter')(io, socket)
+
+    // Роуты запретов
+    require('./socket/PunishmentRouter')(io, socket)
   })
 
   io.of('/lobbi').use(validateTokenInSocket)

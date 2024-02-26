@@ -2,6 +2,7 @@ const Account = require('../../models/Account')
 const Friend = require('../../models/Friend')
 const Game = require('../../models/Game')
 const GamePlayer = require('../../models/GamePlayer')
+const Punishment = require('../../models/Punishment')
 const { getNowDateTime } = require('../../units/helpers')
 const BaseService = require('./BaseService')
 
@@ -96,6 +97,12 @@ class UserCountService extends BaseService {
     // Береу инфу из профиля
     const profile = await Account.findByPk(user.id, {
       attributes: ['id', 'username', 'gender', 'updatedAt', 'avatar'],
+      include: [
+        {
+          model: Punishment,
+          attributes: ['type', 'untilAt', 'coolDate'],
+        },
+      ],
     })
 
     // Беру список друзей

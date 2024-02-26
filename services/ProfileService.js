@@ -12,8 +12,9 @@ const WalletEvents = require('../models/WalletEvents')
 const Notification = require('../models/Notification')
 const ThingType = require('../models/ThingType')
 const Trade = require('../models/Trade')
-const ThingClass = require('../models/ThingClass')
 const Thing = require('../models/Thing')
+const Punishment = require('../models/Punishment')
+const Claim = require('../models/Claim')
 
 class ProfileService {
   async profileInfo(profile, currentUser) {
@@ -104,6 +105,30 @@ class ProfileService {
     }).findAll({
       limit: 9,
       order: [['id', 'desc']],
+    })
+
+    // Наказания
+    data.punishments = await Punishment.findAll({
+      where: {
+        accountId: profile.id,
+      },
+      include: [
+        {
+          model: Claim,
+          as: 'claims',
+          include: [
+            {
+              model: Account,
+              attributes: ['username'],
+              as: 'account',
+            },
+          ],
+        },
+      ],
+      order: [
+        ['id', 'desc'],
+        [{ model: Claim }, 'id', 'asc'],
+      ],
     })
 
     data.power = await AccountThing.getPower(profile.id)
