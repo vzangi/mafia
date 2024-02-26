@@ -7,6 +7,8 @@ script(id="userTmpl" type="text/x-jquery-tmpl")
       ]
 
 script(id="messageTmpl" type="text/x-jquery-tmpl")
+  . 
+    {{if username != ''}}
   div(class="message-box {{if highlight }}highlight{{/if}}")
     div(class="message")
       div(class="m-time me-2" title="${date}") ${time}
@@ -16,6 +18,15 @@ script(id="messageTmpl" type="text/x-jquery-tmpl")
         ]
       span(class="m-delimiter")  — 
       span(class="m-message") {{html message}}
+  . 
+    {{else}}
+  div(class="message-box {{if highlight }}highlight{{/if}}")
+    div(class="message")
+      div(class="m-time me-2" title="${date}") ${time}
+    span(class="text-secondary")
+      span(class="m-message") {{html message}}
+  . 
+    {{/if}}
 
 script(id="smileTmpl" type="text/x-jquery-tmpl")
   img(src='/images/e${smile}.svg' alt='${smile}')

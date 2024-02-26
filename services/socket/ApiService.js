@@ -7,6 +7,7 @@ const Friend = require('../../models/Friend')
 const Notification = require('../../models/Notification')
 const WalletEvents = require('../../models/WalletEvents')
 const BaseService = require('./BaseService')
+const Punishment = require('../../models/Punishment')
 
 class ApiService extends BaseService {
   // Список пользователей по части ника
@@ -176,6 +177,18 @@ class ApiService extends BaseService {
           online: true,
         },
         attributes: ['id', 'avatar', 'username'],
+        include: [
+          {
+            model: Punishment,
+            where: {
+              untilAt: {
+                [Op.gt]: new Date().toISOString(),
+              },
+            },
+            attributes: ['type'],
+            required: false,
+          },
+        ],
       },
     })
 

@@ -553,3 +553,8 @@ input:checked + .slider:before {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.text-secondary .m-message {
+  font-family: monospace;
+  color: #aaa;
+}
