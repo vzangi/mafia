@@ -363,6 +363,9 @@ $(async function () {
   // Вызов формы для подачи жалобы
   chat.on('click', '.m-time', function () {
     const msgBox = $(this).parent().parent()
+
+    if (msgBox.hasClass('system-message')) return
+
     const username = msgBox.find('.m-nik:first').text()
     const context = msgBox.find('.m-message').text().trim()
 

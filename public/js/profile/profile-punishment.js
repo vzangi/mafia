@@ -24,4 +24,25 @@ $(function () {
 
     return false
   })
+
+  $('.make-punish').click(function () {
+    const data = {}
+    data.type = $('.p-type').val()
+    data.username = $('.p-username').val()
+    data.comment = $('.p-comment').val()
+    data.period = {}
+    data.period.days = $('.p-days').val() * 1
+    data.period.hours = $('.p-hours').val() * 1
+    data.period.minutes = $('.p-minutes').val() * 1
+
+    if (data.period.days + data.period.hours + data.period.minutes == 0)
+      return alert('Период наказания не может быть нулевой')
+
+    socket.emit('punishment.make', data, (res) => {
+      const { status, msg } = res
+      if (status != 0) return alert(msg)
+
+      location.reload()
+    })
+  })
 })

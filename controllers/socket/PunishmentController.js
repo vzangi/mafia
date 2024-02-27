@@ -2,7 +2,7 @@ const BaseSocketController = require('./BaseSocketController')
 const Service = require('../../services/socket/PunishmentService')
 
 class PunishmentController extends BaseSocketController {
-  // Пополнение счёта
+  // Снятие запрета
   async removePunish(id) {
     try {
       const { account } = this.socket
@@ -14,6 +14,24 @@ class PunishmentController extends BaseSocketController {
       await this.service.removePunish(id)
     } catch (error) {
       console.log(error)
+    }
+  }
+
+  // Создание запрета
+  async makePunish(data, callback) {
+    try {
+      const { account } = this.socket
+
+      if (account.role != 1) {
+        throw new Error('Нет доступа')
+      }
+
+      await this.service.makePunish(data)
+
+      callback({ status: 0 })
+    } catch (error) {
+      console.log(error)
+      callback({ status: 1, msg: error.message })
     }
   }
 }

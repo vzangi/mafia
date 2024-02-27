@@ -4,6 +4,9 @@ module.exports = (io, socket) => {
     socket
   )
 
-  // Удаление запрета
+  // Снятие запрета
   socket.on('punishment.remove', controller.removePunish.bind(controller))
+
+  // Создание запрета
+  socket.on('punishment.make', controller.makePunish.bind(controller))
 }

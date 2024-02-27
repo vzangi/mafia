@@ -20,10 +20,10 @@ script(id="messageTmpl" type="text/x-jquery-tmpl")
       span(class="m-message") {{html message}}
   . 
     {{else}}
-  div(class="message-box {{if highlight }}highlight{{/if}}")
+  div(class="message-box {{if highlight }}highlight{{/if}} system-message")
     div(class="message")
       div(class="m-time me-2" title="${date}") ${time}
-    span(class="text-secondary")
+    span
       span(class="m-message") {{html message}}
   . 
     {{/if}}

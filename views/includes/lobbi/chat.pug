@@ -38,8 +38,7 @@ div(class="block chat-box mb-4")
     -var isMuted = false 
     if (currentAccount.punishments && currentAccount.punishments.length != 0)
       -isMuted = currentAccount.punishments.filter(p => p.type == 1).length != 0
-      -var until = currentAccount.punishments.filter(p => p.type == 1)[0].untilAt
-      -until = until.toLocaleString('ru-RU', { month: 'long', day: 'numeric' }) + ' ' + until.toLocaleTimeString('ru-Ru').substr(0, 5)
+
 
     div(class="input-box") 
 
@@ -53,6 +52,8 @@ div(class="block chat-box mb-4")
               img(src="/images/e"+ smile +".svg" alt=smile)     
 
       else 
+        -var until = currentAccount.punishments.filter(p => p.type == 1)[0].untilAt
+        -until = until.toLocaleString('ru-RU', { month: 'long', day: 'numeric' }) + ' ' + until.toLocaleTimeString('ru-Ru').substr(0, 5)
         div(class="muted p-1 ps-2 pe-2")
           span(class="ion-alert-circled") 
           span Вам запрещено писать сообщения до 

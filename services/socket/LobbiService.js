@@ -117,6 +117,23 @@ class LobbiService extends BaseService {
     }
 
     // 3. Нет запрета на создание заявки ...
+    const hasPunish = await Punishment.findOne({
+      where: {
+        accountId: user.id,
+        type: Punishment.types.NO_CREATION,
+        untilAt: {
+          [Op.gte]: new Date().toISOString(),
+        },
+      },
+    })
+
+    if (hasPunish) {
+      throw new Error(
+        `У вас действет запрет на создание заявок до ${getCoolDateTime(
+          hasPunish.untilAt
+        )}`
+      )
+    }
 
     // Устанавливаю дедлайн - время когда заявка удалиться,
     // если нужное количество игроков не соберётся

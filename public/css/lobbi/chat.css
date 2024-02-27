@@ -554,7 +554,7 @@ input:checked + .slider:before {
   text-overflow: ellipsis;
 }
 
-.text-secondary .m-message {
+.system-message .m-message {
   font-family: monospace;
   color: #aaa;
 }

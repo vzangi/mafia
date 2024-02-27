@@ -1,3 +1,4 @@
+hr
 -var ptypes=['','Мут','Создание заявок','Участие в играх', 'Вход на сайт', 'Жалобы']
 -var ctypes=['','Мат','Флуд','Оскорбление', 'Мат', 'Флуд', 'Оскорбление', 'Мультоводство', 'Слив игры']
 if punishments
@@ -45,5 +46,48 @@ if punishments
                           a(href="/profile/"+claim.account.username target="_blank")= claim.account.username
                         td= claim.createdAt.toLocaleString('ru-RU')
                         td= claim.comment
+
+hr
+
+h3 Создать Запрет
+
+div(class="mb-3")
+  input(type="hidden" class="p-username" value=profile.username)
+  label Тип запрета
+  select(class="form-control p-type")
+    option(value="1") Мут
+    option(value="2") Запрет создания партий
+    option(value="3") Запрет на игры
+    option(value="4") Запрет на вход
+    option(value="5") Запрет на жалобы
+
+
+div(class="mb-3")
+  div(class="row")
+    div(class="col-4")
+      label Дней
+      select(class="form-control p-days")
+        -var n = 0
+        while n < 365
+          option(value=n)= n++
+    div(class="col-4")
+      label Часов
+      select(class="form-control p-hours")
+        -n = 0
+        while n < 24
+          option(value=n)= n++
+    div(class="col-4")
+      label Минут
+      select(class="form-control p-minutes")
+        -n = 0
+        while n < 60
+          option(value=n)= n++
+
+div(class="mb-3")
+  textarea(placeholder="Комментарий" class="form-control p-comment")
+
+div(class="mb-3")
+  button(class="btn btn-primary make-punish") Отправить
+
 
 script(src="/js/profile/profile-punishment.js")

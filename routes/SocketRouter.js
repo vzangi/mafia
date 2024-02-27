@@ -9,6 +9,8 @@ module.exports = (io) => {
 
   // Подключение к сокету
   io.on('connection', (socket) => {
+    const { account } = socket
+
     // Роуты информации о количестве пользователей онлайн
     require('./socket/UsersCountRouter')(io, socket)
 
@@ -39,8 +41,10 @@ module.exports = (io) => {
     // Роуты инвентаря
     require('./socket/InventoryRouter')(io, socket)
 
-    // Роуты запретов
-    require('./socket/PunishmentRouter')(io, socket)
+    if (account && account.role == 1) {
+      // Роуты запретов
+      require('./socket/PunishmentRouter')(io, socket)
+    }
   })
 
   io.of('/lobbi').use(validateTokenInSocket)
