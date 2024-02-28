@@ -4,6 +4,7 @@ $(function () {
   const gamesList = $('.games-list')
   const gameItemTmpl = $('#gameItemTmpl')
   const username = $('.user-nik').text().trim()
+  let newGameMutex = false
 
   // На мобильных утройствах делаю список режимов скрываемым
   $(window).resize(function () {
@@ -177,6 +178,10 @@ $(function () {
     const playersCount = $('#gamePlayersCount').val()
     const description = $('#gameDescription').val()
 
+    // Ставлю мутекс
+    if (newGameMutex) return
+    newGameMutex = true
+
     // Запрос на создание игры
     lobbiSocket.emit(
       'game.make',
@@ -185,6 +190,7 @@ $(function () {
       waitingTime,
       description,
       (res) => {
+        newGameMutex = false
         console.log(res)
         if (res.status != 0) {
           if (playersCount > 20) $('#gamePlayersCount').val(20)
@@ -203,72 +209,64 @@ $(function () {
 
   // Создание заявки в классическом режиме
   $('.btn-make-type-1').click(function () {
-    const gametypeId = 1
-    const waitingTime = $('#waitingTime-1').text()
-    const playersCount = $('#gamePlayersCount-1').text()
-    const mode = $('#mode-1')[0].checked ? 2 : 1
-    const description = $('#gameDescription-1').val()
+    const data = {}
+    data.gametypeId = 1
+    data.waitingTime = $('#waitingTime-1').text()
+    data.playersCount = $('#gamePlayersCount-1').text()
+    data.mode = $('#mode-1')[0].checked ? 2 : 1
+    data.description = $('#gameDescription-1').val()
+
+    // Ставлю мутекс
+    if (newGameMutex) return
+    newGameMutex = true
 
     // Запрос на создание игры
-    lobbiSocket.emit(
-      'game.make',
-      {
-        gametypeId,
-        playersCount,
-        waitingTime,
-        mode,
-        description,
-      },
-      (res) => {
-        console.log(res)
-        if (res.status != 0) {
-          if (playersCount > 20) $('#gamePlayersCount-1').text(20)
-          if (playersCount < 6) $('#gamePlayersCount-1').text(6)
+    lobbiSocket.emit('game.make', data, (res) => {
+      newGameMutex = false
+      console.log(res)
+      if (res.status != 0) {
+        if (playersCount > 20) $('#gamePlayersCount-1').text(20)
+        if (playersCount < 6) $('#gamePlayersCount-1').text(6)
 
-          if (waitingTime > 20) $('#waitingTime-1').text(20)
-          if (waitingTime < 1) $('#waitingTime-1').text(1)
-          return alert(res.msg)
-        }
-
-        const { game } = res
-        showGame(game)
+        if (waitingTime > 20) $('#waitingTime-1').text(20)
+        if (waitingTime < 1) $('#waitingTime-1').text(1)
+        return alert(res.msg)
       }
-    )
+
+      const { game } = res
+      showGame(game)
+    })
   })
 
   // Создание заявки в режиме перестрелки
   $('.btn-make-type-2').click(function () {
-    const gametypeId = 2
-    const waitingTime = $('#waitingTime-2').text()
-    const playersCount = $('#gamePlayersCount-2').text()
-    const description = $('#gameDescription-2').val()
-    const mode = $('#mode-2')[0].checked ? 2 : 1
+    const data = {}
+    data.gametypeId = 2
+    data.waitingTime = $('#waitingTime-2').text()
+    data.playersCount = $('#gamePlayersCount-2').text()
+    data.description = $('#gameDescription-2').val()
+    data.mode = $('#mode-2')[0].checked ? 2 : 1
+
+    // Ставлю мутекс
+    if (newGameMutex) return
+    newGameMutex = true
 
     // Запрос на создание игры
-    lobbiSocket.emit(
-      'game.make',
-      {
-        gametypeId,
-        playersCount,
-        waitingTime,
-        description,
-        mode,
-      },
-      (res) => {
-        console.log(res)
-        if (res.status != 0) {
-          if (playersCount > 20) $('#gamePlayersCount-2').text(20)
-          if (playersCount < 6) $('#gamePlayersCount-2').text(6)
+    lobbiSocket.emit('game.make', data, (res) => {
+      newGameMutex = false
+      console.log(res)
+      if (res.status != 0) {
+        if (playersCount > 20) $('#gamePlayersCount-2').text(20)
+        if (playersCount < 6) $('#gamePlayersCount-2').text(6)
 
-          if (waitingTime > 20) $('#waitingTime-2').text(20)
-          if (waitingTime < 1) $('#waitingTime-2').text(1)
-          return alert(res.msg)
-        }
-
-        const { game } = res
-        showGame(game)
+        if (waitingTime > 20) $('#waitingTime-2').text(20)
+        if (waitingTime < 1) $('#waitingTime-2').text(1)
+        return alert(res.msg)
       }
-    )
+
+      const { game } = res
+      showGame(game)
+    })
   })
 
   $('.btn-make-type-3').click(function () {
@@ -277,37 +275,33 @@ $(function () {
 
   // Создание заявки в мультиролевом режиме
   $('.btn-make-type-4').click(function () {
-    const gametypeId = 4
-    const waitingTime = $('#waitingTime-4').text()
-    const playersCount = $('#gamePlayersCount-4').text()
-    const mode = $('#mode-4')[0].checked ? 2 : 1
-    const description = $('#gameDescription-4').val()
+    const data = {}
+    data.gametypeId = 4
+    data.waitingTime = $('#waitingTime-4').text()
+    data.playersCount = $('#gamePlayersCount-4').text()
+    data.mode = $('#mode-4')[0].checked ? 2 : 1
+    data.description = $('#gameDescription-4').val()
+
+    // Ставлю мутекс
+    if (newGameMutex) return
+    newGameMutex = true
 
     // Запрос на создание игры
-    lobbiSocket.emit(
-      'game.make',
-      {
-        gametypeId,
-        playersCount,
-        waitingTime,
-        mode,
-        description,
-      },
-      (res) => {
-        console.log(res)
-        if (res.status != 0) {
-          if (playersCount > 20) $('#gamePlayersCount-4').val(20)
-          if (playersCount < 3) $('#gamePlayersCount-4').val(3)
+    lobbiSocket.emit('game.make', data, (res) => {
+      newGameMutex = false
+      console.log(res)
+      if (res.status != 0) {
+        if (playersCount > 20) $('#gamePlayersCount-4').val(20)
+        if (playersCount < 3) $('#gamePlayersCount-4').val(3)
 
-          if (waitingTime > 20) $('#waitingTime-4').val(20)
-          if (waitingTime < 1) $('#waitingTime-4').val(1)
-          return alert(res.msg)
-        }
-
-        const { game } = res
-        showGame(game)
+        if (waitingTime > 20) $('#waitingTime-4').val(20)
+        if (waitingTime < 1) $('#waitingTime-4').val(1)
+        return alert(res.msg)
       }
-    )
+
+      const { game } = res
+      showGame(game)
+    })
   })
 
   // Создание заявки в конструкторе
@@ -371,8 +365,13 @@ $(function () {
       return alert('Количество ролей больше количества игроков')
     }
 
+    // Ставлю мутекс
+    if (newGameMutex) return
+    newGameMutex = true
+
     // Запрос на создание игры
     lobbiSocket.emit('game.make', data, (res) => {
+      newGameMutex = false
       console.log(res)
       if (res.status != 0) {
         if (data.playersCount > 20) $('#gamePlayersCount-5').val(20)
