@@ -118,6 +118,7 @@ $(function () {
       $('#friendOnlineTmpl')
         .tmpl(friend)
         .prependTo($('.friends-online .friends-list'))
+      activateBSTooltips()
     }
   })
 

@@ -30,7 +30,7 @@ class PagesController {
   // Вход на сайт
   login(req, res) {
     if (req.user) {
-      return res.redirect('pages/lobbi')
+      return res.redirect('/lobbi')
     }
     res.render('pages/auth/login')
   }

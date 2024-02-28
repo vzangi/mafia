@@ -1,3 +1,4 @@
+const { Op } = require('sequelize')
 const Account = require('../../models/Account')
 const Friend = require('../../models/Friend')
 const Game = require('../../models/Game')
@@ -101,6 +102,12 @@ class UserCountService extends BaseService {
         {
           model: Punishment,
           attributes: ['type', 'untilAt', 'coolDate'],
+          where: {
+            untilAt: {
+              [Op.gt]: new Date().toISOString(),
+            },
+          },
+          required: false,
         },
       ],
     })
