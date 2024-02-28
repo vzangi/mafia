@@ -822,10 +822,21 @@ class LobbiService extends BaseService {
       )
     }
 
-    if (game.gametypeId != 3) {
-      if (game.players.length < minCount) {
+    if (game.players.length < minCount) {
+      throw new Error(
+        `Минимальное количество игроков для запуска игры - ${minCount}`
+      )
+    }
+
+    if (game.gametypeId == 5) {
+      const gameRoles = await GameInitRole.findAll({
+        where: { gameId: game.id },
+      })
+      const cnt = gameRoles.reduce((a, { cnt }) => a + cnt, 0)
+
+      if (game.players.length < cnt) {
         throw new Error(
-          `Минимальное количество игроков для запуска игры - ${minCount}`
+          `Минимальное количество игроков для запуска игры - ${cnt}`
         )
       }
     }
