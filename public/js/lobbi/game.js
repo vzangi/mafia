@@ -528,4 +528,16 @@ $(function () {
       })
     })
   })
+
+  // Запуск игры в ручном режиме
+  gamesList.on('click', '.btn-play-game', function () {
+    const { id } = $(this).data()
+    confirm('Запустить игру?').then((accept) => {
+      if (!accept) return
+      lobbiSocket.emit('game.start', id, (res) => {
+        const { status, msg } = res
+        if (status != 0) return alert(msg)
+      })
+    })
+  })
 })

@@ -59,9 +59,14 @@ script(id="gameItemTmpl" type="text/x-jquery-tmpl")
             span(class="cnt") ${players.length} 
             span  / 
             span ${playersCount} 
-          div(class="d-flex align-items-center gap-1" title="Время для сбора игроков" data-bs-toggle="tooltip" data-bs-placement="bottom") 
-            span(class="ion-ios-clock fs-6 ion-icon")
+          div(class="d-flex align-items-center gap-1") 
+            span(class="ion-ios-clock fs-6 ion-icon" title="Время для сбора игроков" data-bs-toggle="tooltip" data-bs-placement="bottom")
             span(class="waithing-time" data-deadline="${deadline}" data-seconds="${seconds}" data-stamp="${Date.now()}") 
+            . 
+              {{if my && account.vip}}
+            span(class="bi bi-play-fill btn-play-game" title="Запустить партию" data-bs-toggle="tooltip" data-bs-placement="bottom" data-id="${id}")
+            . 
+              {{/if}}
 
         . 
           {{if roles && roles.length > 0}}
