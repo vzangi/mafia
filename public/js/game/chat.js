@@ -40,6 +40,54 @@ $(function () {
     chatInput.val(lastInput)
     localStorage.setItem('input', '')
   }
+  $('.show-claim-form').click(function () {
+    const { username } = $(this).parent().parent().parent().data()
+    const claimForm = $('#claimForm')
+    claimForm.find('.chat-claim').hide()
+    claimForm.find('.game-claim').show()
+    claimForm.find('.game-claim:first')[0].selected = true
+    claimForm.find('.claim-user-name').text(username)
+    claimForm.modal('show')
+  })
+
+  chat.on('click', '.m-time', function () {
+    const msgBox = $(this).parent().parent()
+
+    if (msgBox.hasClass('system-message')) return
+
+    const username = msgBox.find('.m-nik:first').text()
+    const context = msgBox.find('.m-message').text().trim()
+
+    const claimForm = $('#claimForm')
+
+    if (!claimForm) return
+
+    claimForm.find('.claim-user-name').text(username)
+    claimForm.find('.claim-context').val(context)
+
+    claimForm.find('.chat-claim').show()
+    claimForm.find('.game-claim').hide()
+    claimForm.find('.chat-claim:first')[0].selected = true
+
+    claimForm.modal('show')
+  })
+
+  // Отправка жалобы
+  $('.btn-make-claim').click(function () {
+    const claimData = {}
+    claimData.username = $('.claim-user-name').text().trim()
+    claimData.comment = $('.claim-context').val().trim()
+    claimData.type = $('.claim-type').val()
+
+    $('#claimForm').modal('hide')
+
+    gameSocket.emit('claim', claimData, (res) => {
+      const { status, msg } = res
+      if (status != 0) return alert(msg)
+
+      alert('Ваша жалоба принята')
+    })
+  })
 
   // Получение сообщений
   gameSocket.emit('get.messages', (messages) => {

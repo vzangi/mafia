@@ -34,4 +34,7 @@ module.exports = (io, socket) => {
 
   // Кто-то закончил печатать
   socket.on('typing.end', controller.typingEnd.bind(controller))
+
+  // Жалоба
+  socket.on('claim', controller.claim.bind(controller))
 }

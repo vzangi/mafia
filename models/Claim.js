@@ -33,7 +33,7 @@ const Claim = sequelize.define('claims', {
     type: DataTypes.INTEGER,
   },
   gameId: {
-    type: DataTypes.DATE,
+    type: DataTypes.INTEGER,
   },
   punishmentId: {
     type: DataTypes.INTEGER,
@@ -69,7 +69,7 @@ Claim.reason = (type) => {
     case 7:
       return 'помощь вторым аккаунтом'
     case 8:
-      return 'преднамеренный слив игры'
+      return 'намеренная порча игры '
   }
   return 'хз'
 }
@@ -83,7 +83,7 @@ Claim.limit = (type) => {
     case 3:
       return 3
   }
-  return 5
+  return 3
 }
 
 module.exports = Claim

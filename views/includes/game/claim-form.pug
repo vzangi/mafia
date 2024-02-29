@@ -1,0 +1,33 @@
+div(class="modal black-form fade" id="claimForm" tabindex="-1")
+  div(class="modal-dialog modal-dialog-centered")
+    div(class="modal-content")
+      div(class="modal-header")
+        h5(class="modal-title") 
+          span Жалоба
+          small *
+        button(type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть")
+
+      div(class="modal-body")
+        p 
+          span Укажите причину, по которой вы собиретесь подать жалобу на 
+          b(class="claim-user-name")
+
+        div(class="mb-3")
+          label Причина жалобы
+          select(class="form-control claim-type")
+            option(value='5' class="chat-claim") Флуд
+            option(value='4' class="chat-claim") Мат
+            option(value='6' class="chat-claim") Оскорбление
+            option(value='8' class="game-claim") Намеренная порча игры
+            option(value='7' class="game-claim") Помощь вторым аккаунтом
+
+        div(class="mb-3")
+          label Контекст
+          textarea(class="form-control claim-context")
+
+        div 
+          small * в случае, если вы подадите жалобу необоснованно, вы можете быть лишены права подавать жалобы.
+
+      div(class="modal-footer")
+        button(type="button" class="btn btn-secondary" data-bs-dismiss="modal") Отмена
+        button(type="button" class="btn btn-primary btn-make-claim") Отправить

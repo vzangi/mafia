@@ -12,6 +12,7 @@ const BaseService = require('../BaseService')
 const Punishment = require('../../../models/Punishment')
 const Claim = require('../../../models/Claim')
 const Chat = require('../../../models/Chat')
+const { getCoolDateTime } = require('../../../units/helpers')
 
 class BaseGameService extends BaseService {
   constructor(io, socket) {
@@ -394,16 +395,21 @@ class BaseGameService extends BaseService {
 
   // Жалоба
   async claim(data) {
-    const { username, type, comment, gameId } = data
+    const { username, type, comment } = data
+    const { user, gameId } = this.socket
 
     if (!type || !username || !gameId) {
       throw new Error('Нет необходимых данных')
     }
 
-    const { account } = this.socket
+    if (!user) {
+      throw new Error('Не авторизован')
+    }
+
+    const account = await Account.findOne({ where: { id: user.id } })
 
     if (!account) {
-      throw new Error('Не авторизован')
+      throw new Error('Ваш аккаунт не авторизован')
     }
 
     if (type < 4 || type > 8) {
@@ -461,6 +467,39 @@ class BaseGameService extends BaseService {
     if (player.id == account.id) {
       throw new Error(
         'Вы имеете право хранить молчание и не обязаны свидетельствовать против себя!'
+      )
+    }
+
+    // Проверяю, есть ли игрок в этой игре
+    const hasAccountInGame = await GamePlayer.findOne({
+      where: {
+        gameId,
+        accountId: account.id,
+        status: {
+          [Op.gte]: GamePlayer.playerStatuses.IN_GAME,
+        },
+      },
+    })
+
+    if (!hasAccountInGame) {
+      throw new Error(
+        'Вы не можете жаловаться в игре, если не принимали в ней участие'
+      )
+    }
+
+    const hasPlayerInGame = await GamePlayer.findOne({
+      where: {
+        gameId,
+        accountId: player.id,
+        status: {
+          [Op.gte]: GamePlayer.playerStatuses.IN_GAME,
+        },
+      },
+    })
+
+    if (!hasPlayerInGame) {
+      throw new Error(
+        'Вы не можете жаловаться на игрока, который не участвовал в этой игре'
       )
     }
 
@@ -573,7 +612,7 @@ class BaseGameService extends BaseService {
     const message = `Вам запрещено участие в играх до ${date} по причине: ${reason}`
 
     const sysmsg = await Chat.sysMessage(
-      `[${player.username}] запрещается участие в играх до ${date} за ${reason}.`
+      `[${player.username}] запрещается участие в играх до ${date} по причине: ${reason}.`
     )
 
     // Рассылаю сообщение всем подключенным пользователям

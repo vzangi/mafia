@@ -256,6 +256,7 @@ header,
   color: #333;
 }
 
+.black-form .modal-dialog,
 #roleForm .modal-dialog {
   max-width: 300px;
   margin: auto;
@@ -266,28 +267,35 @@ header,
   display: block;
 }
 
+.black-form .modal-content,
 #roleForm .modal-content {
   background-color: #333;
 }
 
+.black-form .modal-body,
 #roleForm .modal-body {
   background-color: #444;
   color: #aaa;
 }
 
+.black-form .modal-header,
 #roleForm .modal-header {
   border-bottom-color: #555;
 }
+
+.black-form .modal-title,
 #roleForm .modal-title {
   color: #666;
   opacity: 0.9;
   text-shadow: 0 0 4px #222;
 }
 
+.black-form .modal-footer,
 #roleForm .modal-footer {
   border-top-color: #555;
 }
 
+.black-form .roleName,
 #roleForm .roleName {
   color: #bbb;
   text-transform: uppercase;
@@ -295,6 +303,7 @@ header,
   text-align: center;
 }
 
+.black-form .form-check span,
 #roleForm .form-check span {
   color: #777;
 }
@@ -315,4 +324,12 @@ header,
 
 .iam .claim-btn-box {
   display: none !important;
+}
+
+.message-box:not(.system-message) .m-time:hover:before {
+  content: '\f100';
+  display: inline-block;
+  font-family: 'Ionicons';
+  margin-right: 4px;
+  cursor: pointer;
 }

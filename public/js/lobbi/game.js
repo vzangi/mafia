@@ -225,11 +225,11 @@ $(function () {
       newGameMutex = false
       console.log(res)
       if (res.status != 0) {
-        if (playersCount > 20) $('#gamePlayersCount-1').text(20)
-        if (playersCount < 6) $('#gamePlayersCount-1').text(6)
+        if (data.playersCount > 20) $('#gamePlayersCount-1').text(20)
+        if (data.playersCount < 6) $('#gamePlayersCount-1').text(6)
 
-        if (waitingTime > 20) $('#waitingTime-1').text(20)
-        if (waitingTime < 1) $('#waitingTime-1').text(1)
+        if (data.waitingTime > 20) $('#waitingTime-1').text(20)
+        if (data.waitingTime < 1) $('#waitingTime-1').text(1)
         return alert(res.msg)
       }
 
@@ -256,11 +256,11 @@ $(function () {
       newGameMutex = false
       console.log(res)
       if (res.status != 0) {
-        if (playersCount > 20) $('#gamePlayersCount-2').text(20)
-        if (playersCount < 6) $('#gamePlayersCount-2').text(6)
+        if (data.playersCount > 20) $('#gamePlayersCount-2').text(20)
+        if (data.playersCount < 6) $('#gamePlayersCount-2').text(6)
 
-        if (waitingTime > 20) $('#waitingTime-2').text(20)
-        if (waitingTime < 1) $('#waitingTime-2').text(1)
+        if (data.waitingTime > 20) $('#waitingTime-2').text(20)
+        if (data.waitingTime < 1) $('#waitingTime-2').text(1)
         return alert(res.msg)
       }
 
@@ -291,11 +291,11 @@ $(function () {
       newGameMutex = false
       console.log(res)
       if (res.status != 0) {
-        if (playersCount > 20) $('#gamePlayersCount-4').val(20)
-        if (playersCount < 3) $('#gamePlayersCount-4').val(3)
+        if (data.playersCount > 20) $('#gamePlayersCount-4').val(20)
+        if (data.playersCount < 3) $('#gamePlayersCount-4').val(3)
 
-        if (waitingTime > 20) $('#waitingTime-4').val(20)
-        if (waitingTime < 1) $('#waitingTime-4').val(1)
+        if (data.waitingTime > 20) $('#waitingTime-4').val(20)
+        if (data.waitingTime < 1) $('#waitingTime-4').val(1)
         return alert(res.msg)
       }
 

@@ -11,7 +11,14 @@ script(id="messageTmpl" type="text/x-jquery-tmpl")
     . 
       {{if message != '<hr>'}}
     div(class="message")
-      div(class="m-time me-2" title="${date}") ${time}
+      . 
+        {{if username!=''}}
+      div(class="m-time me-2" title="Пожаловаться") ${time}
+      . 
+        {{else}}
+      div(class="m-time me-2") ${time}
+      .
+        {{/if}}
     . 
       {{/if}}
     span 
