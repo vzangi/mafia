@@ -37,6 +37,7 @@ if punishments
                       th Тип жалобы
                       th Отправитель
                       th Время
+                      th Игра
                       th Контекст
                   tbody
                     each claim, index in punishment.claims
@@ -45,6 +46,9 @@ if punishments
                         td
                           a(href="/profile/"+claim.account.username target="_blank")= claim.account.username
                         td= claim.createdAt.toLocaleString('ru-RU')
+                        td
+                          if claim.gameId 
+                            a(href="/game/"+claim.gameId target="_blank")= claim.gameId
                         td= claim.comment
 
 hr
