@@ -60,6 +60,16 @@ Claim.reason = (type) => {
       return 'флуд'
     case 3:
       return 'оскорбление'
+    case 4:
+      return 'мат в игре'
+    case 5:
+      return 'флуд в игре'
+    case 6:
+      return 'оскорбление в игре'
+    case 7:
+      return 'помощь вторым аккаунтом'
+    case 8:
+      return 'преднамеренный слив игры'
   }
   return 'хз'
 }
@@ -73,7 +83,7 @@ Claim.limit = (type) => {
     case 3:
       return 3
   }
-  return 10
+  return 5
 }
 
 module.exports = Claim

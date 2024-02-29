@@ -9,6 +9,9 @@ const Role = require('../../../models/Role')
 const GameLog = require('../../../models/GameLog')
 const Games = require('../../../units/GamesManager')
 const BaseService = require('../BaseService')
+const Punishment = require('../../../models/Punishment')
+const Claim = require('../../../models/Claim')
+const Chat = require('../../../models/Chat')
 
 class BaseGameService extends BaseService {
   constructor(io, socket) {
@@ -387,6 +390,199 @@ class BaseGameService extends BaseService {
     if (!game) throw new Error('Игра не найдена')
 
     game.typingEnd(user.id)
+  }
+
+  // Жалоба
+  async claim(data) {
+    const { username, type, comment, gameId } = data
+
+    if (!type || !username || !gameId) {
+      throw new Error('Нет необходимых данных')
+    }
+
+    const { account } = this.socket
+
+    if (!account) {
+      throw new Error('Не авторизован')
+    }
+
+    if (type < 4 || type > 8) {
+      throw new Error('Не верный тип')
+    }
+
+    // Проверяю прошёл ли месяц после регистрации
+    const hasMonth = await Account.findOne({
+      where: {
+        id: account.id,
+        createdAt: {
+          [Op.lt]: new Date(
+            Date.now() - 1000 * 60 * 60 * 24 * 30
+          ).toISOString(),
+        },
+      },
+    })
+
+    if (!hasMonth) {
+      throw new Error(
+        'Вы сможете отправлять жалобы только через месяц поле регистрации на сайте.'
+      )
+    }
+
+    // Проверяю есть ли возмоность жаловаться
+    const hasNoClaim = await Punishment.findOne({
+      where: {
+        accountId: account.id,
+        type: Punishment.types.NO_CLAIM,
+        untilAt: {
+          [Op.gte]: new Date().toISOString(),
+        },
+      },
+    })
+
+    if (hasNoClaim) {
+      throw new Error(
+        `Вы не можете отправлять жалобы до ${getCoolDateTime(
+          hasNoClaim.untilAt
+        )}`
+      )
+    }
+
+    // Беру пользователя на которого пришла жалоба
+    const player = await Account.findOne({
+      where: {
+        username,
+      },
+    })
+
+    if (!player) {
+      throw new Error('Пользователь не найден')
+    }
+
+    if (player.id == account.id) {
+      throw new Error(
+        'Вы имеете право хранить молчание и не обязаны свидетельствовать против себя!'
+      )
+    }
+
+    // Если у пользователя уже есть запрет, то выходим
+    const hasPunishment = await Punishment.findOne({
+      where: {
+        accountId: player.id,
+        type: Punishment.types.NO_PLAYING,
+        untilAt: {
+          [Op.gte]: new Date().toISOString(),
+        },
+      },
+    })
+
+    if (hasPunishment) {
+      throw new Error('Пользователь уже получил запрет')
+    }
+
+    const claimData = {
+      accountId: account.id,
+      playerId: player.id,
+      type,
+      gameId,
+    }
+
+    // Проверяю, отправлял ли уже этот пользователь жалобу в течении часа
+    const hourAgo = new Date(Date.now() - 1000 * 60 * 60).toISOString()
+    const hasClaim = await Claim.findOne({
+      where: {
+        ...claimData,
+        createdAt: {
+          [Op.gte]: hourAgo,
+        },
+      },
+    })
+
+    if (hasClaim) {
+      throw new Error('Вы уже отправляли жалобу на этого игрока')
+    }
+
+    if (comment) claimData.comment = comment
+
+    // Создаю жалобу
+    const claim = await Claim.create(claimData)
+
+    // Если жалоба от админа, то сразу создаю наказание
+    if (account.role == 1) {
+      const pun = await this._makePunishment(player, type, comment)
+      claim.punishmentId = pun.id
+      await claim.save()
+      return
+    }
+
+    // Получаю жалобы на игрока за час
+    const around60minute = new Date(Date.now() - 1000 * 60 * 60).toISOString()
+    const claims = await Claim.findAll({
+      where: {
+        playerId: player.id,
+        type,
+        createdAt: {
+          [Op.gt]: around60minute,
+        },
+      },
+    })
+
+    // достигнут лимит жалоб
+    if (claims.length == Claim.limit(type)) {
+      // Создаю наказание
+      const punish = await this._makePunishment(
+        player,
+        type,
+        'Запрет по результатам самоконтроля'
+      )
+
+      // Связываю жалобы с наказанием
+      for (const index in claims) {
+        const claimItem = claims[index]
+        claimItem.punishmentId = punish.id
+        await claimItem.save()
+      }
+    }
+  }
+
+  // Создать наказание
+  async _makePunishment(player, type, comment) {
+    const punishmentData = {
+      accountId: player.id,
+      type: Punishment.types.NO_PLAYING,
+    }
+
+    // Смотрю количество предыдущих нказаний по этому типу
+    const punishmentsCount = await Punishment.count({
+      where: punishmentData,
+    })
+
+    if (comment) punishmentData.comment = comment
+
+    const until = new Date(
+      Date.now() + 1000 * 60 * 60 * (punishmentsCount + 1)
+    ).toISOString()
+
+    punishmentData.untilAt = until
+
+    // Создаю наказание
+    const punish = await Punishment.create(punishmentData)
+
+    const date = getCoolDateTime(until)
+
+    const reason = Claim.reason(type)
+    const message = `Вам запрещено участие в играх до ${date} по причине: ${reason}`
+
+    const sysmsg = await Chat.sysMessage(
+      `[${player.username}] запрещается участие в играх до ${date} за ${reason}.`
+    )
+
+    // Рассылаю сообщение всем подключенным пользователям
+    this.io.of('/lobbi').emit('chat.message', sysmsg)
+
+    // Уведомляю нарушителя
+    await this.notify(player.id, message, 2)
+
+    return punish
   }
 }
 

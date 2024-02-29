@@ -338,6 +338,13 @@ input:checked + .slider:before {
   font-size: 0.75em;
 }
 
+.message-box:not(.system-message) .m-time:hover:before {
+  content: '\f100';
+  display: inline-block;
+  font-family: 'Ionicons';
+  margin-right: 4px;
+}
+
 .m-nik {
   /* font-size: 14px; */
   font-weight: 700;

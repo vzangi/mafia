@@ -632,6 +632,24 @@ class LobbiService extends BaseService {
       throw new Error('Не верный тип')
     }
 
+    // Проверяю прошёл ли месяц после регистрации
+    const hasMonth = await Account.findOne({
+      where: {
+        id: account.id,
+        createdAt: {
+          [Op.lt]: new Date(
+            Date.now() - 1000 * 60 * 60 * 24 * 30
+          ).toISOString(),
+        },
+      },
+    })
+
+    if (!hasMonth) {
+      throw new Error(
+        'Вы сможете отправлять жалобы только через месяц поле регистрации на сайте.'
+      )
+    }
+
     // Проверяю есть ли возмоность жаловаться
     const hasNoClaim = await Punishment.findOne({
       where: {

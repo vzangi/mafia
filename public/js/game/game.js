@@ -148,6 +148,7 @@ $(function () {
       $('.kill-dot').remove()
       $('.prova-dot').remove()
       $('.role-name').parent().remove()
+      $('.claim-btn-box').show()
 
       if ($('.role-name').text() == 'Комиссар') {
         $('.player.role-4 .role').text('Комиссар')

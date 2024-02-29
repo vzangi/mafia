@@ -33,3 +33,6 @@ div(class="mb-3")
 
               div(class="kill-dot"+(game.period==4?(shoot?(shoot.player.username==player.username?' checked':' hide'):''):' hide') title="Выстрелить" data-username=player.username)
               div(class="prova-dot"+(game.period==3?'':' hide') title="Проверить" data-username=player.username)
+
+            div(class="claim-btn-box" style="display:"+(game.status==3?'block':'none'))
+              span(class="ion-alert-circled show-claim-form" title="Пожаловаться" data-bs-toggle="tooltip" data-bs-placement="left") 

@@ -2,7 +2,9 @@ div(class="modal fade" id="claimForm" tabindex="-1")
   div(class="modal-dialog modal-dialog-centered")
     div(class="modal-content")
       div(class="modal-header")
-        h5(class="modal-title") Жалоба
+        h5(class="modal-title") 
+          span Жалоба
+          small *
         button(type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть")
 
       div(class="modal-body")
@@ -13,14 +15,16 @@ div(class="modal fade" id="claimForm" tabindex="-1")
         div(class="mb-3")
           label Причина жалобы
           select(class="form-control claim-type")
-            option(value='1') Мат
             option(value='2') Флуд
+            option(value='1') Мат
             option(value='3') Оскорбление
 
         div(class="mb-3")
           label Контекст
           textarea(class="form-control claim-context")
 
+        div 
+          small * в случае, если вы подадите жалобу необоснованно, вы можете быть лишены права подавать жалобы.
 
       div(class="modal-footer")
         button(type="button" class="btn btn-secondary" data-bs-dismiss="modal") Отмена

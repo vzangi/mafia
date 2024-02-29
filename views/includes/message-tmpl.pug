@@ -11,7 +11,7 @@ script(id="messageTmpl" type="text/x-jquery-tmpl")
     {{if username != ''}}
   div(class="message-box {{if highlight }}highlight{{/if}}")
     div(class="message")
-      div(class="m-time me-2" title="${date}") ${time}
+      div(class="m-time me-2" title="Пожаловаться") ${time}
     span [
       a(href="/profile/${username}" title="ответить ${username}" class="m-nik {{if account.vip}}vip{{/if}}" tabindex="-1") ${username}
       . 
@@ -22,7 +22,7 @@ script(id="messageTmpl" type="text/x-jquery-tmpl")
     {{else}}
   div(class="message-box {{if highlight }}highlight{{/if}} system-message")
     div(class="message")
-      div(class="m-time me-2" title="${date}") ${time}
+      div(class="m-time me-2") ${time}
     span
       span(class="m-message") {{html message}}
   . 

@@ -38,3 +38,6 @@ div(class="mb-3")
               div(class="prova-dot"+(game.period==3?'':' hide') title="Проверить" data-username=player.username)
 
               div(class="doc-dot"+(game.period==4?(save?(save.player.username==player.username?' checked':' hide'):''):' hide') title="Лечить" data-username=player.username)
+
+            div(class="claim-btn-box" style="display:"+(game.status==3?'block':'none'))
+              span(class="ion-alert-circled show-claim-form" title="Пожаловаться" data-bs-toggle="tooltip" data-bs-placement="left") 

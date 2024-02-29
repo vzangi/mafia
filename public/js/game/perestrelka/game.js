@@ -1,254 +1,255 @@
 $(function () {
-	const chatInput = $('.input-box input')
+  const chatInput = $('.input-box input')
 
-	// Начало голосвания
-	function startVoting() {
-		$('.players-list').removeClass('voted')
-		$('.player').removeClass('voted')
-		setTimeout(() => $('.vote-dot').removeClass('hide'), 500)
+  // Начало голосвания
+  function startVoting() {
+    $('.players-list').removeClass('voted')
+    $('.player').removeClass('voted')
+    setTimeout(() => $('.vote-dot').removeClass('hide'), 500)
 
-		setTimeout(() => {
-			$('.vote-dot').removeClass('hide')
-			$('.players-list').addClass('voting')
-		}, 1000)
-	}
+    setTimeout(() => {
+      $('.vote-dot').removeClass('hide')
+      $('.players-list').addClass('voting')
+    }, 1000)
+  }
 
-	// Конец голосования
-	function stopVoting() {
-		$('.players-list').removeClass('voting')
-		$('.vote-result').remove()
-		setTimeout(() => {
-			$('.vote-cnt').text(0)
-			$('.vote-dot').addClass('hide')
-		}, 300)
-	}
+  // Конец голосования
+  function stopVoting() {
+    $('.players-list').removeClass('voting')
+    $('.vote-result').remove()
+    setTimeout(() => {
+      $('.vote-cnt').text(0)
+      $('.vote-dot').addClass('hide')
+    }, 300)
+  }
 
-	// Начало хода мафии
-	function nightBegin() {
-		$('.kill-dot').removeClass('hide')
-		$('.doc-dot').removeClass('hide')
-		setTimeout(function () {
-			$('body, .players-list').addClass('night')
-		}, 10)
-	}
+  // Начало хода мафии
+  function nightBegin() {
+    $('.kill-dot').removeClass('hide')
+    $('.doc-dot').removeClass('hide')
+    setTimeout(function () {
+      $('body, .players-list').addClass('night')
+    }, 10)
+  }
 
-	// Конец хода мафии
-	function nightEnd() {
-		$('body, .players-list').removeClass('night')
-		setTimeout(function () {
-			$('.kill-dot').addClass('hide').removeClass('checked')
-			$('.doc-dot').addClass('hide').removeClass('checked')
-		}, 300)
-	}
+  // Конец хода мафии
+  function nightEnd() {
+    $('body, .players-list').removeClass('night')
+    setTimeout(function () {
+      $('.kill-dot').addClass('hide').removeClass('checked')
+      $('.doc-dot').addClass('hide').removeClass('checked')
+    }, 300)
+  }
 
-	// Сумерки (ход кома)
-	function twilightBegin() {
-		$('.prova-dot').removeClass('hide')
-		setTimeout(function () {
-			$('body, .players-list').addClass('twilight')
-		}, 10)
-	}
+  // Сумерки (ход кома)
+  function twilightBegin() {
+    $('.prova-dot').removeClass('hide')
+    setTimeout(function () {
+      $('body, .players-list').addClass('twilight')
+    }, 10)
+  }
 
-	// Конец ход кома
-	function twilightEnd() {
-		$('body, .players-list').removeClass('twilight')
-		setTimeout(function () {
-			$('.prova-dot').addClass('hide').removeClass('checked')
-		}, 300)
-	}
+  // Конец ход кома
+  function twilightEnd() {
+    $('body, .players-list').removeClass('twilight')
+    setTimeout(function () {
+      $('.prova-dot').addClass('hide').removeClass('checked')
+    }, 300)
+  }
 
-	// Выстрел мафии
-	gameSocket.on('nightlife', (victim, life) => {
-		$(`.player[data-username='${victim}'] .night-life .life-digit`).text(life)
-		$(`.player[data-username='${victim}'] .night-life .life-value`).css(
-			'width',
-			`${life}%`
-		)
-	})
+  // Выстрел мафии
+  gameSocket.on('nightlife', (victim, life) => {
+    $(`.player[data-username='${victim}'] .night-life .life-digit`).text(life)
+    $(`.player[data-username='${victim}'] .night-life .life-value`).css(
+      'width',
+      `${life}%`
+    )
+  })
 
-	// Выстрел маньяка
-	gameSocket.on('manshot', (victim, life) => {
-		$(`.player[data-username='${victim}'] .man-life .life-digit`).text(life)
-		$(`.player[data-username='${victim}'] .man-life .life-value`).css(
-			'width',
-			`${life}%`
-		)
-	})
+  // Выстрел маньяка
+  gameSocket.on('manshot', (victim, life) => {
+    $(`.player[data-username='${victim}'] .man-life .life-digit`).text(life)
+    $(`.player[data-username='${victim}'] .man-life .life-value`).css(
+      'width',
+      `${life}%`
+    )
+  })
 
-	gameSocket.on('voting.stop', () => {
-		stopVoting()
-	})
+  gameSocket.on('voting.stop', () => {
+    stopVoting()
+  })
 
-	gameSocket.on('voting.start', () => {
-		startVoting()
-	})
+  gameSocket.on('voting.start', () => {
+    startVoting()
+  })
 
-	gameSocket.on('mafia.start', () => {
-		nightBegin()
-	})
+  gameSocket.on('mafia.start', () => {
+    nightBegin()
+  })
 
-	gameSocket.on('mafia.stop', () => {
-		nightEnd()
-	})
+  gameSocket.on('mafia.stop', () => {
+    nightEnd()
+  })
 
-	gameSocket.on('kommissar.start', () => {
-		twilightBegin()
-	})
+  gameSocket.on('kommissar.start', () => {
+    twilightBegin()
+  })
 
-	gameSocket.on('kommissar.stop', () => {
-		twilightEnd()
-	})
+  gameSocket.on('kommissar.stop', () => {
+    twilightEnd()
+  })
 
-	gameSocket.on('prova', (user) => {
-		showRole(user, true)
-	})
+  gameSocket.on('prova', (user) => {
+    showRole(user, true)
+  })
 
-	gameSocket.on('role.update', (data) => {
-		const { role } = data
+  gameSocket.on('role.update', (data) => {
+    const { role } = data
 
-		$('.role-name').text(role.name)
+    $('.role-name').text(role.name)
 
-		// Стал комиссаром
-		if (role.id == 3) {
-			// Даю возможность проверки
-			$('.prova-dot').show()
-		}
-	})
+    // Стал комиссаром
+    if (role.id == 3) {
+      // Даю возможность проверки
+      $('.prova-dot').show()
+    }
+  })
 
-	// Конец игры
-	gameSocket.on('game.over', (side) => {
-		$('.chat-input-box').remove()
-		$('.vote-dot').remove()
-		$('.kill-dot').remove()
-		$('.doc-dot').remove()
-		$('.prova-dot').remove()
-		$('.to-lobbi').removeClass('hide')
-	})
+  // Конец игры
+  gameSocket.on('game.over', (side) => {
+    $('.chat-input-box').remove()
+    $('.vote-dot').remove()
+    $('.kill-dot').remove()
+    $('.doc-dot').remove()
+    $('.prova-dot').remove()
+    $('.to-lobbi').removeClass('hide')
+  })
 
-	// Голос
-	gameSocket.on('vote', (voterUsername, playerUsername, life) => {
-		console.log(voterUsername, playerUsername)
+  // Голос
+  gameSocket.on('vote', (voterUsername, playerUsername, life) => {
+    console.log(voterUsername, playerUsername)
 
-		$(`.player[data-username='${playerUsername}'] .day-life .life-digit`).text(
-			life
-		)
-		$(`.player[data-username='${playerUsername}'] .day-life .life-value`).css(
-			'width',
-			`${life}%`
-		)
+    $(`.player[data-username='${playerUsername}'] .day-life .life-digit`).text(
+      life
+    )
+    $(`.player[data-username='${playerUsername}'] .day-life .life-value`).css(
+      'width',
+      `${life}%`
+    )
 
-		// Увеличиваю количество голосов
-		const dot = $(`.vote-dot[data-username='${playerUsername}'] .vote-cnt`)
-		const cnt = dot.text() * 1
-		dot.text(cnt + 1)
+    // Увеличиваю количество голосов
+    const dot = $(`.vote-dot[data-username='${playerUsername}'] .vote-cnt`)
+    const cnt = dot.text() * 1
+    dot.text(cnt + 1)
 
-		// Меняю статус голосовавшего
-		const voter = $(`.player[data-username='${voterUsername}']`)
-		voter.addClass('voted')
-		$('#voteResultTmpl')
-			.tmpl({ vote: playerUsername })
-			.appendTo(voter.find('.friend-info'))
-	})
+    // Меняю статус голосовавшего
+    const voter = $(`.player[data-username='${voterUsername}']`)
+    voter.addClass('voted')
+    $('#voteResultTmpl')
+      .tmpl({ vote: playerUsername })
+      .appendTo(voter.find('.friend-info'))
+  })
 
-	// Отображение раскрытой роли
-	gameSocket.on('role.show', (user) => {
-		showRole(user)
-	})
+  // Отображение раскрытой роли
+  gameSocket.on('role.show', (user) => {
+    showRole(user)
+  })
 
-	gameSocket.on('freez', () => {
-		chatInput.attr('disabled', '')
-	})
+  gameSocket.on('freez', () => {
+    chatInput.attr('disabled', '')
+  })
 
-	gameSocket.on('unfreez', () => {
-		chatInput.removeAttr('disabled')
-	})
+  gameSocket.on('unfreez', () => {
+    chatInput.removeAttr('disabled')
+  })
 
-	function showRole(user, isProva = false) {
-		const player = $(`.player[data-username='${user.username}']`)
-		if (!isProva) {
-			player.find('.vote-dot').remove()
-		}
-		player.find('.kill-dot').remove()
-		player.find('.doc-dot').remove()
-		player.find('.prova-dot').remove()
-		player.addClass(`role-${user.role.id}`).addClass('role-showed')
+  function showRole(user, isProva = false) {
+    const player = $(`.player[data-username='${user.username}']`)
+    if (!isProva) {
+      player.find('.vote-dot').remove()
+    }
+    player.find('.kill-dot').remove()
+    player.find('.doc-dot').remove()
+    player.find('.prova-dot').remove()
+    player.addClass(`role-${user.role.id}`).addClass('role-showed')
 
-		if (player.find('.role').length == 0) {
-			$('#playerRoleTmpl').tmpl(user.role).appendTo(player.find('.friend-info'))
-		}
+    if (player.find('.role').length == 0) {
+      $('#playerRoleTmpl').tmpl(user.role).appendTo(player.find('.friend-info'))
+    }
 
-		if (user.status) {
-			player.addClass(`player-status-${user.status}`)
-		}
+    if (user.status) {
+      player.addClass(`player-status-${user.status}`)
+    }
 
-		// Если раскрыта роль текущего игрока
-		if (user.username == getMyNik()) {
-			$('.to-lobbi').removeClass('hide')
-			$('.chat-input-box').remove()
-			$('.kill-dot').remove()
-			$('.prova-dot').remove()
-			$('.doc-dot').remove()
-			$('.role-name').parent().remove()
+    // Если раскрыта роль текущего игрока
+    if (user.username == getMyNik()) {
+      $('.to-lobbi').removeClass('hide')
+      $('.chat-input-box').remove()
+      $('.kill-dot').remove()
+      $('.prova-dot').remove()
+      $('.doc-dot').remove()
+      $('.role-name').parent().remove()
+      $('.claim-btn-box').show()
 
-			if ($('.role-name').text() == 'Комиссар') {
-				$('.player.role-4 .role').text('Комиссар')
-			}
-		}
-	}
+      if ($('.role-name').text() == 'Комиссар') {
+        $('.player.role-4 .role').text('Комиссар')
+      }
+    }
+  }
 
-	// Получение ника текущего игрока
-	function getMyNik() {
-		const iam = $('.player.iam')
-		if (iam.length != 1) return ''
-		return iam.data().username
-	}
+  // Получение ника текущего игрока
+  function getMyNik() {
+    const iam = $('.player.iam')
+    if (iam.length != 1) return ''
+    return iam.data().username
+  }
 
-	// Голосование
-	$('.vote-dot').click(function () {
-		const { username } = $(this).data()
-		if (username == getMyNik()) return
+  // Голосование
+  $('.vote-dot').click(function () {
+    const { username } = $(this).data()
+    if (username == getMyNik()) return
 
-		if ($(`.iam.voted`).length == 1) return
+    if ($(`.iam.voted`).length == 1) return
 
-		gameSocket.emit('vote', username, (res) => {
-			const { status, msg } = res
-			if (status != 0) alert(msg)
-		})
-	})
+    gameSocket.emit('vote', username, (res) => {
+      const { status, msg } = res
+      if (status != 0) alert(msg)
+    })
+  })
 
-	// Проверка
-	$('.prova-dot').click(function () {
-		const { username } = $(this).data()
-		gameSocket.emit('prova', username)
-	})
+  // Проверка
+  $('.prova-dot').click(function () {
+    const { username } = $(this).data()
+    gameSocket.emit('prova', username)
+  })
 
-	// Выстрел
-	$('.kill-dot').click(function () {
-		if (myRole.id != 2 && myRole.id != 6 && myRole.id != 8 && myRole.id != 9)
-			return
-		if ($(this).hasClass('checked')) return
+  // Выстрел
+  $('.kill-dot').click(function () {
+    if (myRole.id != 2 && myRole.id != 6 && myRole.id != 8 && myRole.id != 9)
+      return
+    if ($(this).hasClass('checked')) return
 
-		const { username } = $(this).data()
-		$(this).addClass('checked')
+    const { username } = $(this).data()
+    $(this).addClass('checked')
 
-		gameSocket.emit('shot', username, (res) => {
-			const { status, msg } = res
-			if (status != 0) alert(msg)
-		})
+    gameSocket.emit('shot', username, (res) => {
+      const { status, msg } = res
+      if (status != 0) alert(msg)
+    })
 
-		$('.kill-dot:not(.checked)').addClass('hide')
-	})
+    $('.kill-dot:not(.checked)').addClass('hide')
+  })
 
-	// Лечение
-	$('.doc-dot').click(function () {
-		if (myRole.id != 5) return
-		if ($(this).hasClass('checked')) return
+  // Лечение
+  $('.doc-dot').click(function () {
+    if (myRole.id != 5) return
+    if ($(this).hasClass('checked')) return
 
-		const { username } = $(this).data()
-		$(this).addClass('checked')
+    const { username } = $(this).data()
+    $(this).addClass('checked')
 
-		gameSocket.emit('therapy', username)
+    gameSocket.emit('therapy', username)
 
-		$('.doc-dot:not(.checked)').addClass('hide')
-	})
+    $('.doc-dot:not(.checked)').addClass('hide')
+  })
 })

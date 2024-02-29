@@ -53,6 +53,9 @@ $(async function () {
 
   setTimeout(() => {
     socket.on('connect', () => {
+      location.reload()
+      return
+
       alert(
         'Соединение было утеряно. Необходимо обновить страницу для получения актуальных данных'
       ).then(() => {
