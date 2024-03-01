@@ -5,6 +5,7 @@ $(function () {
 
   onlineSocket.on('online', (account) => {
     $('#onlineUserTmpl').tmpl(account).prependTo('.users-list')
+    activateBSTooltips()
   })
 
   onlineSocket.on('offline', (account) => {

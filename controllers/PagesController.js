@@ -53,11 +53,8 @@ class PagesController {
 
   // Список игроков онлайн
   async online(req, res) {
-    const users = await Account.findAll({
-      where: {
-        online: 1,
-      },
-    })
+    const users = await service.online()
+    console.log(users)
     res.render('pages/online', {
       users,
       title: 'Онлайн список игроков Mafia One',

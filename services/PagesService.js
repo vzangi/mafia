@@ -1,5 +1,8 @@
 const smiles = require('../units/smiles')
 const GamePlayer = require('../models/GamePlayer')
+const Account = require('../models/Account')
+const Punishment = require('../models/Punishment')
+const { Op } = require('sequelize')
 
 class PagesService {
   async lobbi(user) {
@@ -23,6 +26,27 @@ class PagesService {
     }
 
     return data
+  }
+
+  async online() {
+    const users = await Account.findAll({
+      where: {
+        online: 1,
+      },
+      include: [
+        {
+          model: Punishment,
+          where: {
+            untilAt: {
+              [Op.gt]: new Date().toISOString(),
+            },
+          },
+          required: false,
+        },
+      ],
+    })
+
+    return users
   }
 }
 

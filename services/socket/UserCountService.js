@@ -48,6 +48,7 @@ class UserCountService extends BaseService {
     io.of('/online').emit(status, {
       username: account.username,
       avatar: account.avatar,
+      punishments: account.punishments,
     })
 
     // Если пользователь находился в игре,
