@@ -6,6 +6,10 @@ block head
 block content 
     if !isBlock
         include /includes/profile/profile/top_info
+
+        if punishments && punishments.length > 0 && punishments.filter(p => p.current).length > 0
+            include /includes/profile/profile/punish
+
         include /includes/profile/profile/top_stat
 
         div(class="container mt-4")

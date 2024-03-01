@@ -1,0 +1,11 @@
+-var pcls=['','info','warning','danger','dark','primary']
+-var ptps=['','Молчанка до ','Запрет на создание заявок до ','Запрет на участие в играх до ', 'Запрет входа на сайт до ', 'Запрет на подачу жалоб до ']
+div(class="container mt-4")
+  div(class="row")
+    div(class="col-6")
+      each pun, index in punishments
+        if pun.current
+          div(class="alert alert-"+(pcls[pun.type]) role="alert")
+            span(class="bi bi-exclamation-triangle-fill me-1")
+            span= ptps[pun.type]  
+            span= pun.coolDate
