@@ -25,6 +25,10 @@ $(function () {
     return false
   })
 
+  $('.btn-show-punish-form').click(function () {
+    $('#punishForm').modal('show')
+  })
+
   $('.make-punish').click(function () {
     const data = {}
     data.type = $('.p-type').val()

@@ -1,6 +1,7 @@
 hr
 -var ptypes=['','Мут','Создание заявок','Участие в играх', 'Вход на сайт', 'Жалобы']
 -var ctypes=['','Мат','Флуд','Оскорбление', 'Мат', 'Флуд', 'Оскорбление', 'Мультоводство', 'Слив игры']
+-var pclasses=['','info','warning','danger','dark','primary']
 if punishments
   if punishments.length == 0
     p Запретов не было
@@ -9,6 +10,8 @@ if punishments
       h3 Запреты
       div 
         button(class="btn btn-dark btn-sm show-all-punish") Показать все 
+        button(class="btn btn-primary btn-sm ms-1 btn-show-punish-form" title="Создать запрет" data-bs-toggle="tooltip" data-bs-placement="bottom")
+          span(class="bi bi-plus")
     div(class="punishments")
       table(class="table table-striped table-hover")
         thead 
@@ -19,7 +22,7 @@ if punishments
             th
         tbody
           each punishment, index in punishments
-            tr(class="punish"+(punishment.current?'':' hide') data-id=punishment.id)
+            tr(class="punish"+(punishment.current?'':' hide')+" table-"+(pclasses[punishment.type]) data-id=punishment.id)
               td= ptypes[punishment.type]
               td
                 span= punishment.createdAt.toLocaleString('ru-RU')
@@ -29,15 +32,16 @@ if punishments
               td 
                 button(class="btn btn-sm btn-danger remove-punish" data-id=punishment.id title="Удалить" data-bs-toggle="tooltip" data-bs-placement="left")
                   span(class="bi bi-x-lg")
-            tr(style="display:none")
-              td(colspan='3')
+            tr(style="display:none" class="table-"+(pclasses[punishment.type]))
+              td(colspan='4')
                 table(class="table")
                   thead 
-                    tr 
+                    tr
                       th Тип жалобы
                       th Отправитель
                       th Время
-                      th Игра
+                      if punishment.type != 1
+                        th Игра
                       th Контекст
                   tbody
                     each claim, index in punishment.claims
@@ -46,52 +50,58 @@ if punishments
                         td
                           a(href="/profile/"+claim.account.username target="_blank")= claim.account.username
                         td= claim.createdAt.toLocaleString('ru-RU')
-                        td
-                          if claim.gameId 
-                            a(href="/game/"+claim.gameId target="_blank")= claim.gameId
+                        if punishment.type != 1
+                          td
+                            if claim.gameId 
+                              a(href="/game/"+claim.gameId target="_blank")= claim.gameId
                         td= claim.comment
 
-hr
 
-h3 Создать Запрет
+div(class="modal fade" id="punishForm" tabindex="-1")
+  div(class="modal-dialog modal-dialog-centered")
+    div(class="modal-content")
+      div(class="modal-header")
+        h5(class="modal-title") 
+          span Создать запрет
+        button(type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть")
 
-div(class="mb-3")
-  input(type="hidden" class="p-username" value=profile.username)
-  label Тип запрета
-  select(class="form-control p-type")
-    option(value="1") Мут
-    option(value="2") Запрет создания партий
-    option(value="3") Запрет на игры
-    option(value="4") Запрет на вход
-    option(value="5") Запрет на жалобы
+      div(class="modal-body")
+        div(class="mb-3")
+          input(type="hidden" class="p-username" value=profile.username)
+          label Тип запрета
+          select(class="form-control p-type")
+            option(value="1") Мут
+            option(value="2") Запрет создания партий
+            option(value="3") Запрет на игры
+            option(value="4") Запрет на вход
+            option(value="5") Запрет на жалобы
 
+        div(class="mb-3")
+          div(class="row")
+            div(class="col-4")
+              label Дней
+              select(class="form-control p-days")
+                -var n = 0
+                while n < 365
+                  option(value=n)= n++
+            div(class="col-4")
+              label Часов
+              select(class="form-control p-hours")
+                -n = 0
+                while n < 24
+                  option(value=n)= n++
+            div(class="col-4")
+              label Минут
+              select(class="form-control p-minutes")
+                -n = 0
+                while n < 60
+                  option(value=n)= n++
 
-div(class="mb-3")
-  div(class="row")
-    div(class="col-4")
-      label Дней
-      select(class="form-control p-days")
-        -var n = 0
-        while n < 365
-          option(value=n)= n++
-    div(class="col-4")
-      label Часов
-      select(class="form-control p-hours")
-        -n = 0
-        while n < 24
-          option(value=n)= n++
-    div(class="col-4")
-      label Минут
-      select(class="form-control p-minutes")
-        -n = 0
-        while n < 60
-          option(value=n)= n++
+        div(class="mb-3")
+          textarea(placeholder="Комментарий" class="form-control p-comment")
 
-div(class="mb-3")
-  textarea(placeholder="Комментарий" class="form-control p-comment")
-
-div(class="mb-3")
-  button(class="btn btn-primary make-punish") Отправить
-
+      div(class="modal-footer")
+        button(type="button" class="btn btn-secondary" data-bs-dismiss="modal") Отмена
+        button(type="button" class="btn btn-primary make-punish") Отправить
 
 script(src="/js/profile/profile-punishment.js")
