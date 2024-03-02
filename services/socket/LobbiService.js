@@ -82,6 +82,14 @@ class LobbiService extends BaseService {
 			throw new Error('Максимальное время для заявки - 20 минут')
 		}
 
+		const account = await Account.findByPk(user.id, {
+			attributes: ['username', 'vipTo', 'vip'],
+		})
+
+		if (!account) {
+			throw new Error('Игрок не найден')
+		}
+
 		if (gametypeId == 5) {
 			const { roles } = settings
 
@@ -96,14 +104,13 @@ class LobbiService extends BaseService {
 			if (totalRolesCount > playersCount) {
 				throw new Error('Количество ролей больше количества игроков')
 			}
-		}
 
-		const account = await Account.findByPk(user.id, {
-			attributes: ['username'],
-		})
-
-		if (!account) {
-			throw new Error('Игрок не найден')
+			// Только вип
+			if (!account.vip) {
+				throw new Error(
+					'Заявки в режиме конструктора могут создавать только vip-игроки'
+				)
+			}
 		}
 
 		// Проверяю, может ли игрок создать заявку:
@@ -117,6 +124,17 @@ class LobbiService extends BaseService {
 		})
 
 		if (inGameWaithing) {
+			throw new Error('Вы находитесь в другой заявке')
+		}
+
+		// 1.1 не ждёт сорев
+		const hasContest = await ContestPlayer.findOne({
+			where: {
+				accountId: user.id,
+			},
+		})
+
+		if (hasContest) {
 			throw new Error('Вы находитесь в другой заявке')
 		}
 
