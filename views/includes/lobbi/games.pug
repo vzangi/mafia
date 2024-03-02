@@ -7,5 +7,35 @@ div(class="block mb-4")
       if currentAccount
         button(class="btn btn-success btn-make-game") Создать заявку
 
+div(class="contest-box hide")
+  div(class="game-item")
+    div(class="block p-4 mb-3")
+      div(class="game-info mb-3")
+        div(class="d-flex justify-content-between align-items-center gap-1")
+          div(class="game-type d-flex align-items-center gap-1" title="Режим игры" data-bs-toggle="tooltip" data-bs-placement="bottom") 
+            span(class="ion-ios-game-controller-b fs-5 ion-icon") 
+            span Соревновательный
+          div(class="players-count d-flex align-items-center gap-1" title="Количество ожидающих игроков" data-bs-toggle="tooltip" data-bs-placement="bottom") 
+            span(class="ion-ios-people fs-4 ion-icon") 
+            span(class="concnt") 0
+
+      div(class="players d-flex flex-wrap")
+        div(class="game-action-btns d-flex gap-2")
+          div
+            div(class="game-action-btn btn-leave-contest ion-ios-close-outline me-2" title="Покинуть очередь соревновательного режима" data-bs-toggle="tooltip" data-bs-placement="bottom")
+
+          div(class="player")
+            div(class="friend-item flex-column align-items-center gap-1")
+              div(class="friend-avatar online")
+                img(src="/uploads/"+currentAccount.avatar)
+              div(class="friend-info text-center w-100")
+                a(href="/profile")= currentAccount.username
+
+          div(class="player")
+            div(class="friend-item flex-column align-items-center gap-1")
+              div(class="friend-avatar")
+                img(src="/images/loading.gif")
+              div(class="friend-info text-center w-100")
+                span Ожидание
 
 div(class="games-list mb-4")

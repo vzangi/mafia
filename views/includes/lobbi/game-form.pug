@@ -113,6 +113,14 @@ div(class="modal fade" id="makeForm" tabindex="-1")
             p(class="text-secondary")
               small В этом режиме тип игры и набор ролей выбирается случайным образом и вы заранее не знаете с кем будете играть
 
+            p(class="text-secondary")
+              small Чтобы сыграть выберите хотя бы два варианта из предложенных
+
+            div(class="contests-box")
+              each contest in contests 
+                +gameFormRow('')
+                  +settings_item(contest.name, 'contest-'+contest.id, true)
+
             div(class="text-center mt-4")
               button(type="button" class="btn btn-primary btn-sm btn-make-type-3" data-type="1" data-bs-dismiss="modal") Играть
 
