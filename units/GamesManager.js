@@ -132,12 +132,8 @@ class GamesManager {
 			order: sequelize.random(),
 		})
 
-		console.log(contest.id, neededPlayersCount, players.length)
-
 		// Если найдено необходимое количество игроков
 		if (neededPlayersCount == players.length) {
-			console.log('start')
-
 			const gameData = {}
 			gameData.accountId = contestPlayer.accountId
 			gameData.gametypeId = contest.gametypeId
@@ -146,8 +142,6 @@ class GamesManager {
 			gameData.deadline = new Date().toISOString()
 			gameData.competition = true
 			gameData.mode = contest.mode
-
-			console.log(gameData)
 
 			// Создаю игру
 			const newGame = await Game.create(gameData)
