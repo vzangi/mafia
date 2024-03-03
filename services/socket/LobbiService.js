@@ -14,6 +14,7 @@ const { Op } = require('sequelize')
 const Chat = require('../../models/Chat')
 const Contest = require('../../models/Contest')
 const ContestPlayer = require('../../models/ContestPlayer')
+const log = require('../../units/customLog')
 
 class LobbiService extends BaseService {
 	// Получение текущих заявок
@@ -563,7 +564,7 @@ class LobbiService extends BaseService {
 				// Инициирую запуск игры
 				GamesManager.start(io, GamesManager.whatingGames[gameId])
 			} catch (error) {
-				console.log(error)
+				log(error)
 				throw new Error(error.message)
 			}
 		}

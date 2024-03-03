@@ -202,7 +202,6 @@ $(function () {
 			description,
 			(res) => {
 				newGameMutex = false
-				console.log(res)
 				if (res.status != 0) {
 					if (playersCount > 20) $('#gamePlayersCount').val(20)
 					if (playersCount < 6) $('#gamePlayersCount').val(6)
@@ -234,7 +233,6 @@ $(function () {
 		// Запрос на создание игры
 		lobbiSocket.emit('game.make', data, (res) => {
 			newGameMutex = false
-			console.log(res)
 			if (res.status != 0) {
 				if (data.playersCount > 20) $('#gamePlayersCount-1').text(20)
 				if (data.playersCount < 6) $('#gamePlayersCount-1').text(6)
@@ -265,7 +263,6 @@ $(function () {
 		// Запрос на создание игры
 		lobbiSocket.emit('game.make', data, (res) => {
 			newGameMutex = false
-			console.log(res)
 			if (res.status != 0) {
 				if (data.playersCount > 20) $('#gamePlayersCount-2').text(20)
 				if (data.playersCount < 6) $('#gamePlayersCount-2').text(6)
@@ -303,7 +300,6 @@ $(function () {
 		// Запрос на создание игры
 		lobbiSocket.emit('game.contests', data, (res) => {
 			newGameMutex = false
-			console.log(res)
 			if (res.status != 0) {
 				return alert(res.msg)
 			}
@@ -329,7 +325,6 @@ $(function () {
 		// Запрос на создание игры
 		lobbiSocket.emit('game.make', data, (res) => {
 			newGameMutex = false
-			console.log(res)
 			if (res.status != 0) {
 				if (data.playersCount > 20) $('#gamePlayersCount-4').val(20)
 				if (data.playersCount < 3) $('#gamePlayersCount-4').val(3)
@@ -412,7 +407,6 @@ $(function () {
 		// Запрос на создание игры
 		lobbiSocket.emit('game.make', data, (res) => {
 			newGameMutex = false
-			console.log(res)
 			if (res.status != 0) {
 				if (data.playersCount > 20) $('#gamePlayersCount-5').val(20)
 				if (data.playersCount < 3) $('#gamePlayersCount-5').val(3)

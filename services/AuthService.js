@@ -49,7 +49,6 @@ class AuthService {
 
 			this._welcomeEmail(email, username)
 		} catch (error) {
-			console.log(error)
 			throw new Error('Ошибка при регистрации')
 		}
 	}

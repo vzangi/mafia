@@ -4,37 +4,35 @@ const bot = new TelegramApi(API_TOKEN, { polling: true })
 const Account = require('../models/Account')
 
 bot.on('message', async (msg) => {
-  const { text } = msg
-  const { chat } = msg
-  if (!text) return
-  if (text.indexOf('/start') != 0) return
-  const parts = text.split(' ')
+	const { text } = msg
+	const { chat } = msg
+	if (!text) return
+	if (text.indexOf('/start') != 0) return
+	const parts = text.split(' ')
 
-  if (parts.length != 2) return
+	if (parts.length != 2) return
 
-  const [userid, hash] = parts[1].split('__')
+	const [userid, hash] = parts[1].split('__')
 
-  if (!userid) return
-  if (!hash) return
+	if (!userid) return
+	if (!hash) return
 
-  const account = await Account.findOne({ where: { id: userid } })
+	const account = await Account.findOne({ where: { id: userid } })
 
-  if (!account) return
+	if (!account) return
 
-  if (hash != `${account.id}3301`) return
+	if (hash != `${account.id}3301`) return
 
-  if (account.telegramChatId) {
-    return bot.sendMessage(chat.id, 'Уведомления уже были подключены')
-  }
+	if (account.telegramChatId) {
+		return bot.sendMessage(chat.id, 'Уведомления уже были подключены')
+	}
 
-  account.telegramChatId = chat.id
-  await account.save()
+	account.telegramChatId = chat.id
+	await account.save()
 
-  bot.sendMessage(chat.id, 'Уведомления в telegram успешно подключены!')
+	bot.sendMessage(chat.id, 'Уведомления в telegram успешно подключены!')
 })
 
-bot.on('polling_error', (msg) => {
-  //console.log(msg)
-})
+bot.on('polling_error', (msg) => {})
 
 module.exports = bot

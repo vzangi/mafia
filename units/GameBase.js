@@ -14,6 +14,7 @@ const AccountThing = require('../models/AccountThing')
 const sequelize = require('./db')
 const Notification = require('../models/Notification')
 const GameLog = require('../models/GameLog')
+const log = require('./customLog')
 
 /*  ==================================
     Базовый класс для всех режимов игр
@@ -152,7 +153,7 @@ class GameBase {
 		for (const index in roles) {
 			const name = await Role.findByPk(roles[index][0])
 			if (!name) {
-				console.log('Не найдена роль', roles[index][0])
+				log('Не найдена роль' + roles[index][0])
 				continue
 			}
 			names.push([name.name, roles[index][1]])
@@ -278,7 +279,7 @@ class GameBase {
 				}
 			}
 		} catch (error) {
-			console.log(error)
+			log(error)
 		}
 		return ids
 	}
@@ -301,7 +302,7 @@ class GameBase {
 
 			return true
 		} catch (error) {
-			console.log(error)
+			log(error)
 			return false
 		}
 	}

@@ -34,7 +34,6 @@ $(function () {
 
 	// Новый период в игре и время на него
 	gameSocket.on('deadline', (seconds, period) => {
-		console.log('deadline', seconds, period)
 		$(time).data().seconds = seconds
 		$(time).data().stamp = Date.now()
 		tick()

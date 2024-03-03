@@ -10,6 +10,7 @@ const sequelize = require('./db')
 const Account = require('../models/Account')
 const deadlineInterval = 1000
 const minCount = 3
+const log = require('./customLog')
 
 /*  ====================================
     Класс для управления текущими играми
@@ -33,10 +34,7 @@ class GamesManager {
 			try {
 				GamesManager.start(io, game)
 			} catch (error) {
-				console.log(
-					`Ошибка при запуске воркера заявки ${game.id}: `,
-					error.message
-				)
+				log(`Ошибка при запуске воркера заявки ${game.id}: ${error.message}`)
 			}
 		})
 
@@ -83,7 +81,7 @@ class GamesManager {
 						await GamesManager.start(io, game)
 						break
 					} catch (error) {
-						console.log(error.message)
+						log(error)
 					}
 				}
 
@@ -251,7 +249,7 @@ class GamesManager {
 			// Запускаю процесс игры
 			await newGame.startGame()
 		} catch (error) {
-			console.log('Ошибка при запуске игры: ', error.message)
+			log('Ошибка при запуске игры: ' + error.message)
 
 			// Удаляю заявку
 			await GamesManager.remove(io, game)
@@ -303,7 +301,7 @@ class GamesManager {
 			// Возвращаю игру
 			return game
 		} catch (error) {
-			console.log(`Игра ${gameId} не найдена`)
+			log(`Игра ${gameId} не найдена`)
 
 			// Если игры нет в списке - возвращаю null
 			return null

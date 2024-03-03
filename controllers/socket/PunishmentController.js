@@ -1,41 +1,42 @@
 const BaseSocketController = require('./BaseSocketController')
 const Service = require('../../services/socket/PunishmentService')
+const log = require('../../units/customLog')
 
 class PunishmentController extends BaseSocketController {
-  // Снятие запрета
-  async removePunish(id) {
-    try {
-      const { account } = this.socket
+	// Снятие запрета
+	async removePunish(id) {
+		try {
+			const { account } = this.socket
 
-      if (account.role != 1) {
-        throw new Error('Нет доступа')
-      }
+			if (account.role != 1) {
+				throw new Error('Нет доступа')
+			}
 
-      await this.service.removePunish(id)
-    } catch (error) {
-      console.log(error)
-    }
-  }
+			await this.service.removePunish(id)
+		} catch (error) {
+			log(error)
+		}
+	}
 
-  // Создание запрета
-  async makePunish(data, callback) {
-    try {
-      const { account } = this.socket
+	// Создание запрета
+	async makePunish(data, callback) {
+		try {
+			const { account } = this.socket
 
-      if (account.role != 1) {
-        throw new Error('Нет доступа')
-      }
+			if (account.role != 1) {
+				throw new Error('Нет доступа')
+			}
 
-      await this.service.makePunish(data)
+			await this.service.makePunish(data)
 
-      callback({ status: 0 })
-    } catch (error) {
-      console.log(error)
-      callback({ status: 1, msg: error.message })
-    }
-  }
+			callback({ status: 0 })
+		} catch (error) {
+			log(error)
+			callback({ status: 1, msg: error.message })
+		}
+	}
 }
 
 module.exports = (io, socket) => {
-  return new PunishmentController(io, socket, Service)
+	return new PunishmentController(io, socket, Service)
 }
