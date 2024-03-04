@@ -48,7 +48,6 @@
 
 .game-type-5.active {
   background-color: var(--bs-yellow);
-  color: var(--color-white);
 }
 
 .game-type-item h4 {

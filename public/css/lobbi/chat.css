@@ -565,3 +565,14 @@ input:checked + .slider:before {
   font-family: monospace;
   color: #aaa;
 }
+
+.btn-remove-message {
+  align-self: self-start;
+  cursor: pointer;
+  opacity: 0.3;
+}
+
+.btn-remove-message:hover {
+  opacity: 1;
+  color: #f55;
+}

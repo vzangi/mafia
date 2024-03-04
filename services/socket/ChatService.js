@@ -4,105 +4,130 @@ const GamePlayer = require('../../models/GamePlayer')
 const typingUsers = []
 
 class ChatService extends BaseService {
-	// Список последних сообщений
-	async lastMessages() {
-		const messages = await Chat.scope('def').findAll()
-		return messages
-	}
+  // Список последних сообщений
+  async lastMessages() {
+    const messages = await Chat.scope('def').findAll()
+    return messages
+  }
 
-	// Пришло сообщение
-	async message(message) {
-		const { user, io, socket } = this
-		if (!user) {
-			throw new Error('Не авторизован')
-		}
+  // Пришло сообщение
+  async message(message) {
+    const { user, io, socket } = this
+    if (!user) {
+      throw new Error('Не авторизован')
+    }
 
-		const { account } = socket
-		const { punishments } = account
+    const { account } = socket
+    const { punishments } = account
 
-		if (punishments && punishments.length > 0) {
-			const muted = punishments.filter((p) => p.type == 1)
-			if (muted.length > 0) return
-		}
+    if (punishments && punishments.length > 0) {
+      const muted = punishments.filter((p) => p.type == 1)
+      if (muted.length > 0) return
+    }
 
-		// Ищу игрока в игре
-		const playerInGame = await GamePlayer.findOne({
-			where: {
-				accountId: user.id,
-				status: [
-					GamePlayer.playerStatuses.FREEZED,
-					GamePlayer.playerStatuses.IN_GAME,
-				],
-			},
-		})
+    // Ищу игрока в игре
+    const playerInGame = await GamePlayer.findOne({
+      where: {
+        accountId: user.id,
+        status: [
+          GamePlayer.playerStatuses.FREEZED,
+          GamePlayer.playerStatuses.IN_GAME,
+        ],
+      },
+    })
 
-		if (playerInGame) {
-			this.getUserSockets(user.id, '/lobbi').forEach((s) => {
-				s.emit('game.play', playerInGame.gameId)
-			})
-			return
-		}
+    if (playerInGame) {
+      this.getUserSockets(user.id, '/lobbi').forEach((s) => {
+        s.emit('game.play', playerInGame.gameId)
+      })
+      return
+    }
 
-		// Сохраняю сообщение в базу
-		const msg = await Chat.newMessage(user.id, message)
+    // Сохраняю сообщение в базу
+    const msg = await Chat.newMessage(user.id, message)
 
-		// Рассылаю сообщение всем подключенным пользователям
-		io.of('/lobbi').emit('chat.message', msg)
-	}
+    // Рассылаю сообщение всем подключенным пользователям
+    io.of('/lobbi').emit('chat.message', msg)
+  }
 
-	// Пользователь начал что-то печатать в чате
-	typingBegin() {
-		const { io, socket } = this
-		const { account } = socket
-		if (!account) {
-			throw new Error('Не авторизован')
-		}
-		const { username, punishments } = account
+  // Удаление сообщения из чата
+  async removeMessage(id) {
+    const { user, io, socket } = this
+    if (!user) {
+      throw new Error('Не авторизован')
+    }
 
-		if (punishments && punishments.length > 0) {
-			const muted = punishments.filter((p) => p.type == 1)
-			if (muted.length > 0) return
-		}
+    const { account } = socket
 
-		if (typingUsers[username]) {
-			clearTimeout(typingUsers[username])
-		}
+    if (account.role != 1) {
+      throw new Error('Нет прав')
+    }
 
-		typingUsers[username] = setTimeout(() => {
-			this._cancelTyping()
-		}, 3000)
+    const message = await Chat.findByPk(id)
 
-		io.of('/lobbi').emit('chat.typing.begin', Object.keys(typingUsers))
-	}
+    if (!message) {
+      throw new Error('Сообщение не найдено')
+    }
 
-	// Пользователь перестал печатать
-	typingEnd() {
-		const { socket } = this
-		if (!socket.account) {
-			throw new Error('Не авторизован')
-		}
-		const { username } = socket.account
+    message.message = ''
+    await message.save()
 
-		if (typingUsers[username]) {
-			clearTimeout(typingUsers[username])
-		}
+    io.of('/lobbi').emit('chat.message.removed', id)
+  }
 
-		this._cancelTyping()
-	}
+  // Пользователь начал что-то печатать в чате
+  typingBegin() {
+    const { io, socket } = this
+    const { account } = socket
+    if (!account) {
+      throw new Error('Не авторизован')
+    }
+    const { username, punishments } = account
 
-	// Процедура завершения печати
-	_cancelTyping() {
-		const { io, socket } = this
-		if (!socket.account) {
-			throw new Error('Не авторизован')
-		}
-		const { username } = socket.account
+    if (punishments && punishments.length > 0) {
+      const muted = punishments.filter((p) => p.type == 1)
+      if (muted.length > 0) return
+    }
 
-		if (typingUsers[username]) {
-			delete typingUsers[username]
-		}
-		io.of('/lobbi').emit('chat.typing.end', Object.keys(typingUsers))
-	}
+    if (typingUsers[username]) {
+      clearTimeout(typingUsers[username])
+    }
+
+    typingUsers[username] = setTimeout(() => {
+      this._cancelTyping()
+    }, 3000)
+
+    io.of('/lobbi').emit('chat.typing.begin', Object.keys(typingUsers))
+  }
+
+  // Пользователь перестал печатать
+  typingEnd() {
+    const { socket } = this
+    if (!socket.account) {
+      throw new Error('Не авторизован')
+    }
+    const { username } = socket.account
+
+    if (typingUsers[username]) {
+      clearTimeout(typingUsers[username])
+    }
+
+    this._cancelTyping()
+  }
+
+  // Процедура завершения печати
+  _cancelTyping() {
+    const { io, socket } = this
+    if (!socket.account) {
+      throw new Error('Не авторизован')
+    }
+    const { username } = socket.account
+
+    if (typingUsers[username]) {
+      delete typingUsers[username]
+    }
+    io.of('/lobbi').emit('chat.typing.end', Object.keys(typingUsers))
+  }
 }
 
 module.exports = ChatService

@@ -10,6 +10,9 @@ module.exports = (io, socket) => {
   // Пришло сообщение
   socket.on('chat.message', controller.message.bind(controller))
 
+  // Удаление сообщения из чата
+  socket.on('chat.message.remove', controller.removeMessage.bind(controller))
+
   // Пользователь начал что-то печатать в чате
   socket.on('chat.typing.begin', controller.typingBegin.bind(controller))
 

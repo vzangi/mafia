@@ -116,6 +116,12 @@ $(async function () {
     scrollToEnd()
   })
 
+  lobbiSocket.on('chat.message.removed', (id) => {
+    $(`.message-box[data-id='${id}'] .m-message`).html(
+      '<small class="text-info">&lt; сообщение удалено &gt;</small>'
+    )
+  })
+
   // Получение количества пользователей онлайн с сервера
   socket.on('online.count', (count) => {
     userOnlineCount.text(count)

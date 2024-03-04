@@ -21,3 +21,5 @@ block scripts
   script(src="/js/lobbi/base.js")
   script(src="/js/lobbi/lobbi.js?v=1.0")
   script(src="/js/lobbi/game.js")
+  if currentAccount && currentAccount.role == 1
+    script(src="/js/lobbi/moder.js")

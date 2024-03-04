@@ -134,7 +134,7 @@ div(class="modal fade" id="makeForm" tabindex="-1")
             p(class="text-secondary")
               small В этом режиме, кроме честных жителей и мафии в игре также могут присутствовать #[b маньяк], #[b дитя], #[b врач], #[b любовница] и #[b адвокат].
 
-            +gameFormRow('Количество игроков (9 - 20 игроков)')
+            +gameFormRow('Количество игроков (7 - 20 игроков)')
               +numberInput("gamePlayersCount-4", 3, 20, 9)
 
 
@@ -144,7 +144,7 @@ div(class="modal fade" id="makeForm" tabindex="-1")
             +gameFormRow('')
               +settings_item('С добивами', 'mode-4', true)
                 | 
-                span(class="ion-ios-help-outline" title="В режиме с добивами в тюрьму отправляется игрок набравший наибольшее количество голосов за день" data-bs-toggle="tooltip" data-bs-placement="bottom" )
+                span(class="ion-ios-help-outline" title="В режиме с добивами в тюрьму отправляется игрок набравший наибольшее количество голосов за день" data-bs-toggle="tooltip" data-bs-placement="bottom")
 
             +gameFormRow('Подпись к заявке')
               input(class="form-control" type="text" placeholder="Подпись к заявке" maxlength="69" id="gameDescription-4" name="gameDescription-4")
@@ -162,8 +162,8 @@ div(class="modal fade" id="makeForm" tabindex="-1")
             p(class="text-secondary")
               small Набор ролей, который будет в игре настраивается создателем партии.
 
-            +gameFormRow('Количество игроков (3 - 20 игроков)')
-              +numberInput("gamePlayersCount-5", 3, 20, 7)
+            +gameFormRow('Количество игроков (3 - 21 игрока)')
+              +numberInput("gamePlayersCount-5", 3, 21, 7)
 
 
             +gameFormRow('Время на сбор (1 - 20 минут)')

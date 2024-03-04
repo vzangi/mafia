@@ -1,4 +1,4 @@
-const { DataTypes, Sequelize } = require('sequelize')
+const { DataTypes, Sequelize, Op } = require('sequelize')
 const sequelize = require('../units/db')
 const Account = require('./Account')
 const ChatUsers = require('./ChatUsers')
@@ -29,9 +29,14 @@ const Chat = sequelize.define(
   {
     scopes: {
       def: {
+        where: {
+          message: {
+            [Op.ne]: '',
+          },
+        },
         limit: lastMessagesLimit,
         order: [['createdAt', 'desc']],
-        attributes: ['message', 'username', 'createdAt'],
+        attributes: ['id', 'message', 'username', 'createdAt'],
         include: [
           {
             model: ChatUsers,

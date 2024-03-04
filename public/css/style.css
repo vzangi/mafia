@@ -732,3 +732,7 @@ ul.aside-menu li a.active {
 .ratio1_1 {
   aspect-ratio: 1/1;
 }
+
+.pointer {
+  cursor: pointer;
+}
