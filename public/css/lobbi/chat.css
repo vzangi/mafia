@@ -322,6 +322,9 @@ input:checked + .slider:before {
 .message-box.highlight {
   color: var(--color-yellow);
 }
+.message-box.highlight.system-message {
+  color: inherit;
+}
 
 .highlight .m-message,
 .highlight a {
