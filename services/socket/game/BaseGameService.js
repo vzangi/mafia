@@ -13,6 +13,7 @@ const Punishment = require('../../../models/Punishment')
 const Claim = require('../../../models/Claim')
 const Chat = require('../../../models/Chat')
 const { getCoolDateTime } = require('../../../units/helpers')
+const htmlspecialchars = require('htmlspecialchars')
 
 class BaseGameService extends BaseService {
   constructor(io, socket) {
@@ -540,7 +541,7 @@ class BaseGameService extends BaseService {
       throw new Error('Вы уже отправляли жалобу на этого игрока')
     }
 
-    if (comment) claimData.comment = comment
+    if (comment) claimData.comment = htmlspecialchars(comment)
 
     // Создаю жалобу
     const claim = await Claim.create(claimData)
