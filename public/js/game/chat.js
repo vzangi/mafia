@@ -28,7 +28,7 @@ $(function () {
   const linkTemplate = $('#linkTmpl')
 
   let smilePattern = $('.smile-pattern').text()
-  smilePattern = new RegExp(`(${smilePattern})`, 'g')
+  smilePattern = new RegExp(`~(${smilePattern})`, 'g')
   let timeoutTyping
   let needScroll = localStorage.getItem('needScroll') == '1'
   let wideChat = localStorage.getItem('wideChat') == '1'

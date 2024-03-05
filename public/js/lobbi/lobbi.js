@@ -93,7 +93,7 @@ $(async function () {
   // Запрашиваю список доступных смайлов для чата
   socket.emit('smiles.list', (smiles) => {
     smiles = smiles.join('|')
-    smilePattern = new RegExp(`(${smiles})`, 'g')
+    smilePattern = new RegExp(`~(${smiles})`, 'g')
 
     // Получение последних сообщений с сервера
     lobbiSocket.emit('chat.last', (msgs) => {

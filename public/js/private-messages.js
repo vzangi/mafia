@@ -23,7 +23,7 @@ $(function () {
   socket.emit('smiles.list', (smiles) => {
     allSmiles = smiles
     smiles = smiles.join('|')
-    smilePattern = new RegExp(`(${smiles})`, 'g')
+    smilePattern = new RegExp(`~(${smiles})`, 'g')
   })
 
   const setBeginning = () => {
@@ -438,7 +438,7 @@ $(function () {
   const parseMessage = (msg) => {
     // Ссылки преобразуются в гиперлинки
 
-    if (allSmiles.indexOf(msg.message) >= 0) {
+    if (allSmiles.indexOf(msg.message.replace('~', '')) >= 0) {
       msg.smile = true
     }
 
