@@ -13,12 +13,18 @@ if currentAccount
       div(class="block p-4 mb-3")
         div(class="game-info mb-3")
           div(class="d-flex justify-content-between align-items-center gap-1")
+
             div(class="game-type d-flex align-items-center gap-1" title="Режим игры" data-bs-toggle="tooltip" data-bs-placement="bottom") 
               span(class="ion-ios-game-controller-b fs-5 ion-icon") 
               span Соревновательный
+
             div(class="players-count d-flex align-items-center gap-1" title="Количество ожидающих игроков" data-bs-toggle="tooltip" data-bs-placement="bottom") 
               span(class="ion-ios-people fs-4 ion-icon") 
               span(class="concnt") 0
+
+            div(class="d-flex align-items-center gap-1") 
+              span(class="ion-ios-clock fs-6 ion-icon" title="Время для сбора игроков" data-bs-toggle="tooltip" data-bs-placement="bottom")
+              span(class="waithing-time" data-seconds="" data-stamp='') 20 мин
 
         div(class="players d-flex flex-wrap")
           div(class="game-action-btns d-flex gap-2")

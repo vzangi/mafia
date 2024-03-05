@@ -11,6 +11,7 @@ const Account = require('../models/Account')
 const deadlineInterval = 1000
 const minCount = 3
 const log = require('./customLog')
+const { Op } = require('sequelize')
 
 /*  ====================================
     Класс для управления текущими играми
@@ -107,6 +108,30 @@ class GamesManager {
     Проверка очереди на сорев
     ==================================== */
   static async checkContests(io) {
+    // Запрос спсика заявок с вышедшим временем ожидания
+    const deadWhere = {
+      where: {
+        createdAt: {
+          [Op.lt]: new Date(Date.now() - 1000 * 60 * ContestPlayer.whaitingTime)
+            .toISOString()
+            .replace('T', ' '),
+        },
+      },
+    }
+
+    //Ищу заявки у которых завершился дэдлайн
+    const deadlined = await ContestPlayer.findAll(deadWhere)
+
+    // Если такие заявки найдены
+    if (deadlined.length != 0) {
+      // Удаляю их
+      await ContestPlayer.destroy(deadWhere)
+
+      // Обновляю количество ожидающих сорева
+      const concount = await ContestPlayer.concount()
+      io.of('/lobbi').emit('update.concount', concount)
+    }
+
     // Беру одного из ждущих игроков
     const contestPlayer = await ContestPlayer.findOne({
       include: [{ model: Contest }],

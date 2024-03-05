@@ -21,18 +21,15 @@ class LobbiService extends BaseService {
   async getGames() {
     const data = {}
     data.games = await Game.scope('def').findAll()
-    data.incontest = false
 
     const { user } = this
 
     if (user) {
-      const hasContests = await ContestPlayer.findOne({
+      data.incontest = await ContestPlayer.findOne({
         where: {
           accountId: user.id,
         },
       })
-
-      if (hasContests) data.incontest = true
     }
 
     data.concount = await ContestPlayer.concount()
