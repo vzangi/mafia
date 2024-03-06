@@ -16,7 +16,9 @@ div(class="container")
     div(class="profile-avatar " + (profile.online ? "online" : ""))
       div(class="profile-avatar-image" style="background-image:url(/uploads/" + profile.avatar + ")" data-bs-toggle="tooltip" data-bs-placement="top" title=profile.online ? '' : 'Последний раз в онлайне - ' + prettyDate(profile.updatedAt))
     div(class="profile-top-info-main")
-      div(class="profile-top-info-main-nick")
+      div(class="profile-top-info-main-nick d-flex align-items-center")
+        if profile.vip
+          span(class="bi bi-star-fill fs-3 text-warning me-2" data-bs-toggle="tooltip" data-bs-placement="top" title='VIP-статус<br>до ' + prettyDate(profile.vipTo) data-bs-html="true") 
         span(class="nick" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title='Дата регистрации <br>' + prettyDate(profile.createdAt))=profile.username
       div(class="profile-top-info-main-rank")
         if profile.rank == 0
@@ -40,9 +42,19 @@ div(class="container")
         else
           div(class="image" style="background-image:url(/images/6.svg)")
           div(class="text f-mon")= profile.rank
-      if profile.vip
-        div(class="profile-top-info-main-vip mt-3")
-          span(class='vip-user' data-bs-toggle="tooltip" data-bs-placement="right" title='до ' + prettyDate(profile.vipTo)) VIP игрок
+
+      div(class="profile-level d-flex mt-2")
+        -var levelName='Новичок'
+        -var levelNum=0
+        if profile.level >= 20
+          -levelName='Зелёнка'
+          -levelNum=1
+        if profile.level >= 100
+          -levelName='Бывалый'
+          -levelNum=2
+        span(title=`Уровень: ${levelNum}<hr>Набрано баллов: ${profile.level}` data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true")
+          a(href="#")
+            span(class="badge bg-secondary")= levelName
 
       if power 
         div(class="power mt-3 fs-4") 
