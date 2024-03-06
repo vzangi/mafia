@@ -114,7 +114,6 @@ Account.levelBorders = levelBorders
 Account.levelNames = levelNames
 
 Account.getLevelByBorder = (border) => {
-  console.log(border)
   for (const level in levelBorders)
     if (levelBorders[level] > border) return level
   return levelBorders.length
