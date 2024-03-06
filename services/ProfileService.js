@@ -18,371 +18,374 @@ const Claim = require('../models/Claim')
 const log = require('../units/customLog')
 
 class ProfileService {
-	async profileInfo(profile, currentUser) {
-		const data = {
-			profile,
-			title: `Профиль игрока ${profile.username}`,
-			ogimage: process.env.APP_HOST + '/uploads/' + profile.avatar,
-		}
+  async profileInfo(profile, currentUser) {
+    const data = {
+      profile,
+      title: `Профиль игрока ${profile.username}`,
+      ogimage: process.env.APP_HOST + '/uploads/' + profile.avatar,
+    }
 
-		data.friends = await Friend.scope({
-			method: ['friends', profile.id],
-		}).findAll()
+    data.friends = await Friend.scope({
+      method: ['friends', profile.id],
+    }).findAll()
 
-		data.partner = await Friend.scope({
-			method: ['partner', profile.id],
-		}).findOne()
+    data.partner = await Friend.scope({
+      method: ['partner', profile.id],
+    }).findOne()
 
-		data.friendsCorrectForm = Friend.correctForm(data.friends.length)
+    data.friendsCorrectForm = Friend.correctForm(data.friends.length)
 
-		// Значок
-		data.badge = await AccountThing.findOne({
-			where: {
-				accountId: profile.id,
-				taked: true,
-				marketPrice: null,
-			},
-			include: [
-				{
-					model: Thing,
-					where: {
-						thingtypeId: 6,
-					},
-				},
-			],
-		})
+    // Значок
+    data.badge = await AccountThing.findOne({
+      where: {
+        accountId: profile.id,
+        taked: true,
+        marketPrice: null,
+      },
+      include: [
+        {
+          model: Thing,
+          where: {
+            thingtypeId: 6,
+          },
+        },
+      ],
+    })
 
-		if (currentUser) {
-			data.isFrends = await Friend.findOne({
-				where: {
-					accountId: currentUser.id,
-					friendId: profile.id,
-				},
-				order: [['id', 'DESC']],
-			})
-			data.isBlock = await Friend.findOne({
-				where: {
-					accountId: profile.id,
-					friendId: currentUser.id,
-					status: Friend.statuses.BLOCK,
-				},
-			})
-			data.havePartner = await Friend.findOne({
-				where: {
-					accountId: currentUser.id,
-					status: Friend.statuses.MARRIED,
-				},
-			})
+    if (currentUser) {
+      data.isFrends = await Friend.findOne({
+        where: {
+          accountId: currentUser.id,
+          friendId: profile.id,
+        },
+        order: [['id', 'DESC']],
+      })
+      data.isBlock = await Friend.findOne({
+        where: {
+          accountId: profile.id,
+          friendId: currentUser.id,
+          status: Friend.statuses.BLOCK,
+        },
+      })
+      data.havePartner = await Friend.findOne({
+        where: {
+          accountId: currentUser.id,
+          status: Friend.statuses.MARRIED,
+        },
+      })
 
-			// Зашёл в свой профиль
-			if (currentUser.id == profile.id) {
-				// Пометить открытки просмотренными
-				try {
-					await AccountGift.update(
-						{
-							accountId: currentUser.id,
-						},
-						{
-							where: {
-								accountId: currentUser.id,
-								createdAt: {
-									[Op.eq]: sequelize.col('updatedAt'),
-								},
-							},
-						}
-					)
-				} catch (error) {}
-			}
-		}
+      // Зашёл в свой профиль
+      if (currentUser.id == profile.id) {
+        // Пометить открытки просмотренными
+        try {
+          await AccountGift.update(
+            {
+              accountId: currentUser.id,
+            },
+            {
+              where: {
+                accountId: currentUser.id,
+                createdAt: {
+                  [Op.eq]: sequelize.col('updatedAt'),
+                },
+              },
+            }
+          )
+        } catch (error) {}
+      }
+    }
 
-		data.gifts = await AccountGift.scope({
-			method: ['withModels', profile.id],
-		}).findAll()
+    data.gifts = await AccountGift.scope({
+      method: ['withModels', profile.id],
+    }).findAll()
 
-		data.things = await AccountThing.scope({
-			method: ['withThings', profile.id],
-		}).findAll({
-			limit: 9,
-			order: [['id', 'desc']],
-		})
+    data.things = await AccountThing.scope({
+      method: ['withThings', profile.id],
+    }).findAll({
+      limit: 9,
+      order: [['id', 'desc']],
+    })
 
-		// Наказания
-		data.punishments = await Punishment.findAll({
-			where: {
-				accountId: profile.id,
-			},
-			include: [
-				{
-					model: Claim,
-					as: 'claims',
-					include: [
-						{
-							model: Account,
-							attributes: ['username'],
-							as: 'account',
-						},
-					],
-				},
-			],
-			order: [
-				['id', 'desc'],
-				[{ model: Claim }, 'id', 'asc'],
-			],
-		})
+    // Наказания
+    data.punishments = await Punishment.findAll({
+      where: {
+        accountId: profile.id,
+      },
+      include: [
+        {
+          model: Claim,
+          as: 'claims',
+          include: [
+            {
+              model: Account,
+              attributes: ['username'],
+              as: 'account',
+            },
+          ],
+        },
+      ],
+      order: [
+        ['id', 'desc'],
+        [{ model: Claim }, 'id', 'asc'],
+      ],
+    })
 
-		data.power = await AccountThing.getPower(profile.id)
+    data.power = await AccountThing.getPower(profile.id)
 
-		return data
-	}
+    data.levelNum = Account.getLevelByBorder(profile.level)
+    data.levelName = Account.levelNames[data.levelNum]
 
-	async profileByNik(nik, user) {
-		let profile = null
-		if (nik) {
-			profile = await Account.findOne({
-				where: {
-					username: nik,
-					status: {
-						[Op.ne]: 0,
-					},
-				},
-			})
-		} else {
-			profile = await Account.findOne({ where: { id: user.id } })
-		}
+    return data
+  }
 
-		if (!profile) {
-			throw new Error(`Профиль по нику ${nik} не найден`)
-		}
+  async profileByNik(nik, user) {
+    let profile = null
+    if (nik) {
+      profile = await Account.findOne({
+        where: {
+          username: nik,
+          status: {
+            [Op.ne]: 0,
+          },
+        },
+      })
+    } else {
+      profile = await Account.findOne({ where: { id: user.id } })
+    }
 
-		const data = await this.profileInfo(profile, user)
-		return data
-	}
+    if (!profile) {
+      throw new Error(`Профиль по нику ${nik} не найден`)
+    }
 
-	async currentUserFriendsList(user) {
-		const account = await Account.findByPk(user.id)
-		const data = await this.friendsList(account.username)
-		return data
-	}
+    const data = await this.profileInfo(profile, user)
+    return data
+  }
 
-	async friendsList(nik) {
-		const profile = await Account.findOne({
-			where: {
-				username: nik,
-			},
-		})
+  async currentUserFriendsList(user) {
+    const account = await Account.findByPk(user.id)
+    const data = await this.friendsList(account.username)
+    return data
+  }
 
-		const friends = await Friend.scope('def').findAll({
-			where: {
-				accountId: profile.id,
-				status: Friend.statuses.ACCEPTED,
-			},
-		})
+  async friendsList(nik) {
+    const profile = await Account.findOne({
+      where: {
+        username: nik,
+      },
+    })
 
-		const partner = await Friend.scope('def').findOne({
-			where: {
-				accountId: profile.id,
-				status: Friend.statuses.MARRIED,
-			},
-		})
+    const friends = await Friend.scope('def').findAll({
+      where: {
+        accountId: profile.id,
+        status: Friend.statuses.ACCEPTED,
+      },
+    })
 
-		const data = {
-			profile,
-			friends,
-			partner,
-			title: `Друзья игрока ${profile.username}`,
-		}
+    const partner = await Friend.scope('def').findOne({
+      where: {
+        accountId: profile.id,
+        status: Friend.statuses.MARRIED,
+      },
+    })
 
-		return data
-	}
+    const data = {
+      profile,
+      friends,
+      partner,
+      title: `Друзья игрока ${profile.username}`,
+    }
 
-	async friendsRequest(account) {
-		const requests = await Friend.scope({
-			method: ['requests', account.id],
-		}).findAll()
+    return data
+  }
 
-		const data = {
-			requests,
-			title: `Запросы в друзья`,
-		}
+  async friendsRequest(account) {
+    const requests = await Friend.scope({
+      method: ['requests', account.id],
+    }).findAll()
 
-		return data
-	}
+    const data = {
+      requests,
+      title: `Запросы в друзья`,
+    }
 
-	async wallet(account) {
-		const accountId = account.id
-		const eventCount = await WalletEvents.count({ where: { accountId } })
+    return data
+  }
 
-		const data = {
-			eventCount,
-			title: `Кошелёк - пополнение баланса`,
-		}
+  async wallet(account) {
+    const accountId = account.id
+    const eventCount = await WalletEvents.count({ where: { accountId } })
 
-		return data
-	}
+    const data = {
+      eventCount,
+      title: `Кошелёк - пополнение баланса`,
+    }
 
-	async settings(account) {
-		const accountId = account.id
-		const nikChanges = await AccountName.findAll({
-			where: { accountId },
-			order: [['id', 'DESC']],
-		})
+    return data
+  }
 
-		const data = {
-			nikChanges,
-			title: `Настройки профиля ${account.username}`,
-		}
+  async settings(account) {
+    const accountId = account.id
+    const nikChanges = await AccountName.findAll({
+      where: { accountId },
+      order: [['id', 'DESC']],
+    })
 
-		return data
-	}
+    const data = {
+      nikChanges,
+      title: `Настройки профиля ${account.username}`,
+    }
 
-	async changePassword(account, password, passwordConfirm) {
-		if (!account) {
-			throw new Error('Не авторизован')
-		}
+    return data
+  }
 
-		if (!password || !passwordConfirm) {
-			throw new Error('Нет необходимых данных')
-		}
+  async changePassword(account, password, passwordConfirm) {
+    if (!account) {
+      throw new Error('Не авторизован')
+    }
 
-		if (password != passwordConfirm) {
-			throw new Error('Пароли не совпадают')
-		}
+    if (!password || !passwordConfirm) {
+      throw new Error('Нет необходимых данных')
+    }
 
-		try {
-			const hash = await bcrypt.hash(password, 10)
-			await Account.update({ password: hash }, { where: { id: account.id } })
-			return true
-		} catch (error) {
-			throw new Error('Ошибка при смене пароля')
-		}
-	}
+    if (password != passwordConfirm) {
+      throw new Error('Пароли не совпадают')
+    }
 
-	async changeAvatar(account, avatar) {
-		if (!account || !avatar) throw new Error('Нет необходимых данных')
+    try {
+      const hash = await bcrypt.hash(password, 10)
+      await Account.update({ password: hash }, { where: { id: account.id } })
+      return true
+    } catch (error) {
+      throw new Error('Ошибка при смене пароля')
+    }
+  }
 
-		let ext = ''
-		if (avatar.mimetype == 'image/jpeg') ext = 'jpg'
-		if (avatar.mimetype == 'image/png') ext = 'png'
-		if (avatar.mimetype == 'image/gif') ext = 'gif'
-		if (avatar.mimetype == 'image/webp') ext = 'webp'
+  async changeAvatar(account, avatar) {
+    if (!account || !avatar) throw new Error('Нет необходимых данных')
 
-		if (ext == '') {
-			throw new Error(
-				'Можно загружать только фото в формате: jpg, png, gif, webp'
-			)
-		}
+    let ext = ''
+    if (avatar.mimetype == 'image/jpeg') ext = 'jpg'
+    if (avatar.mimetype == 'image/png') ext = 'png'
+    if (avatar.mimetype == 'image/gif') ext = 'gif'
+    if (avatar.mimetype == 'image/webp') ext = 'webp'
 
-		const rnd1 = Math.ceil(Math.random() * 10000)
-		const rnd2 = Math.ceil(Math.random() * 10000)
+    if (ext == '') {
+      throw new Error(
+        'Можно загружать только фото в формате: jpg, png, gif, webp'
+      )
+    }
 
-		// Формирую имя новой автарки
-		const fileName = `${account.id}-${rnd1}-${rnd2}.${ext}`
+    const rnd1 = Math.ceil(Math.random() * 10000)
+    const rnd2 = Math.ceil(Math.random() * 10000)
 
-		// Запрещаю загрузку автарок больше 5 мегабайт
-		if (avatar.size > 5_000_000) {
-			throw new Error('Размер фото не должно превышать ограничение в 5Mb')
-		}
+    // Формирую имя новой автарки
+    const fileName = `${account.id}-${rnd1}-${rnd2}.${ext}`
 
-		// Если размер аватарки больше 300 Кб, то сжимаю её
-		if (avatar.size > 300_000) {
-			const img = await Jimp.read(avatar.data)
-			img.resize(250, Jimp.AUTO).writeAsync('./public/uploads/' + fileName)
-		} else {
-			// Перемещаю загруженное фото в папку с загрузками
-			await avatar.mv('./public/uploads/' + fileName)
-		}
+    // Запрещаю загрузку автарок больше 5 мегабайт
+    if (avatar.size > 5_000_000) {
+      throw new Error('Размер фото не должно превышать ограничение в 5Mb')
+    }
 
-		// Если предыдущее фото не то, что даётся по умолчанию
-		if (account.avatar != 'noname.svg') {
-			// Удаляю предыдущее фото, чтобы не захламлять сервер
-			fs.unlink(`${__dirname}/../public/uploads/${account.avatar}`, (err) => {
-				if (err) log(err)
-			})
-		}
+    // Если размер аватарки больше 300 Кб, то сжимаю её
+    if (avatar.size > 300_000) {
+      const img = await Jimp.read(avatar.data)
+      img.resize(250, Jimp.AUTO).writeAsync('./public/uploads/' + fileName)
+    } else {
+      // Перемещаю загруженное фото в папку с загрузками
+      await avatar.mv('./public/uploads/' + fileName)
+    }
 
-		// Сохраняю автарку в базу
-		account.avatar = fileName
-		await account.save()
+    // Если предыдущее фото не то, что даётся по умолчанию
+    if (account.avatar != 'noname.svg') {
+      // Удаляю предыдущее фото, чтобы не захламлять сервер
+      fs.unlink(`${__dirname}/../public/uploads/${account.avatar}`, (err) => {
+        if (err) log(err)
+      })
+    }
 
-		return fileName
-	}
+    // Сохраняю автарку в базу
+    account.avatar = fileName
+    await account.save()
 
-	async notifications(account) {
-		if (!account) {
-			throw new Error('Нет необходимых данных')
-		}
-		const notifies = await Notification.findAll({
-			where: {
-				accountId: account.id,
-			},
-			limit: 10,
-			order: [['id', 'DESC']],
-		})
+    return fileName
+  }
 
-		const data = {
-			notifies,
-			botName: process.env.TELEGRAM_BOT_NAME || 'MafiaUanBot',
-		}
+  async notifications(account) {
+    if (!account) {
+      throw new Error('Нет необходимых данных')
+    }
+    const notifies = await Notification.findAll({
+      where: {
+        accountId: account.id,
+      },
+      limit: 10,
+      order: [['id', 'DESC']],
+    })
 
-		return data
-	}
+    const data = {
+      notifies,
+      botName: process.env.TELEGRAM_BOT_NAME || 'MafiaUanBot',
+    }
 
-	async removeNotify(account, notifyId) {
-		if (!account || !notifyId) {
-			throw new Error('Нет необходимых данных')
-		}
+    return data
+  }
 
-		await Notification.destroy({
-			where: {
-				id: notifyId,
-				accountId: account.id,
-			},
-		})
-	}
+  async removeNotify(account, notifyId) {
+    if (!account || !notifyId) {
+      throw new Error('Нет необходимых данных')
+    }
 
-	// Отключение уведомлений в telegram
-	async offTelegramNotifes(account) {
-		if (!account) {
-			throw new Error('Нет необходимых данных')
-		}
+    await Notification.destroy({
+      where: {
+        id: notifyId,
+        accountId: account.id,
+      },
+    })
+  }
 
-		// Просто забываем id чата
-		account.telegramChatId = null
-		await account.save()
-	}
+  // Отключение уведомлений в telegram
+  async offTelegramNotifes(account) {
+    if (!account) {
+      throw new Error('Нет необходимых данных')
+    }
 
-	// Данные для страницы инвентаря
-	async inventory(username) {
-		const profile = await Account.findOne({ where: { username } })
-		if (!profile) {
-			throw new Error('Пользователь с таким ником не найден')
-		}
+    // Просто забываем id чата
+    account.telegramChatId = null
+    await account.save()
+  }
 
-		const thingsCount = await AccountThing.scope({
-			method: ['withThings', profile.id],
-		}).count()
+  // Данные для страницы инвентаря
+  async inventory(username) {
+    const profile = await Account.findOne({ where: { username } })
+    if (!profile) {
+      throw new Error('Пользователь с таким ником не найден')
+    }
 
-		const types = await ThingType.findAll({
-			order: [['sort']],
-		})
+    const thingsCount = await AccountThing.scope({
+      method: ['withThings', profile.id],
+    }).count()
 
-		const data = {
-			profile,
-			thingsCount,
-			types,
-			title: `Инвентарь ${username}`,
-		}
+    const types = await ThingType.findAll({
+      order: [['sort']],
+    })
 
-		// Количество запросов на обмен
-		data.tradesCount = await Trade.count({
-			where: {
-				toId: profile.id,
-				status: 0,
-			},
-		})
+    const data = {
+      profile,
+      thingsCount,
+      types,
+      title: `Инвентарь ${username}`,
+    }
 
-		return data
-	}
+    // Количество запросов на обмен
+    data.tradesCount = await Trade.count({
+      where: {
+        toId: profile.id,
+        status: 0,
+      },
+    })
+
+    return data
+  }
 }
 
 module.exports = new ProfileService()

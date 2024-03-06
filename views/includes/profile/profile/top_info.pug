@@ -44,14 +44,6 @@ div(class="container")
           div(class="text f-mon")= profile.rank
 
       div(class="profile-level d-flex mt-2")
-        -var levelName='Новичок'
-        -var levelNum=0
-        if profile.level >= 20
-          -levelName='Зелёнка'
-          -levelNum=1
-        if profile.level >= 100
-          -levelName='Бывалый'
-          -levelNum=2
         span(title=`Уровень: ${levelNum}<hr>Набрано баллов: ${profile.level}` data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true")
           a(href="#")
             span(class="badge bg-secondary")= levelName

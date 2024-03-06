@@ -8,6 +8,9 @@ const genders = {
   FEMALE: 2,
 }
 
+const levelBorders = [20, 100, 500, 1000]
+const levelNames = ['Новчиок', 'Зелёнка', 'Бывалый', 'Профи', 'Босс']
+
 const Account = sequelize.define('account', {
   id: {
     type: DataTypes.INTEGER,
@@ -107,5 +110,14 @@ Account.findAccountsByNik = async (nik) => {
 }
 
 Account.genders = genders
+Account.levelBorders = levelBorders
+Account.levelNames = levelNames
+
+Account.getLevelByBorder = (border) => {
+  console.log(border)
+  for (const level in levelBorders)
+    if (levelBorders[level] > border) return level
+  return levelBorders.length
+}
 
 module.exports = Account

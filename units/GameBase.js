@@ -984,6 +984,11 @@ class GameBase {
       // Вышедшим в тайм игрокам призы не даю
       if (player.status == GamePlayer.playerStatuses.TIMEOUT) continue
 
+      // Если не конструктор, то апаю лвл
+      if (game.gametypeId != 5) {
+        await this.levelUp(player)
+      }
+
       // Шанс для выбывшего игрока
       chanceToPriz = 0.25
 
@@ -997,6 +1002,70 @@ class GameBase {
 
       // Выдаю приз
       await this.takePrize(player.accountId)
+    }
+  }
+
+  // Повышение лвл
+  async levelUp(player) {
+    const { game } = this
+    let up = 0
+
+    const account = await Account.findByPk(player.accountId)
+    const startLevel = Account.getLevelByBorder(account.level)
+
+    if (!account) {
+      log(`Аккаунт ${player.accountId} не найден`)
+      return
+    }
+
+    // Маньяк
+    if (player.role.rolesideId == Game.sides.MANIAC) {
+      // балл за каждый труп
+      const killsCount = await GameStep.count({
+        where: {
+          gameId: game.id,
+          accountId: account.id,
+          stepType: GameStep.stepTypes.KILLING,
+        },
+      })
+
+      // +2 за победу
+      up = killsCount + 2
+    }
+
+    // Мафия
+    if (player.role.rolesideId == Game.sides.MAFIA) {
+      up = 4
+    }
+
+    // Честные жители
+    if (player.role.rolesideId == Game.sides.CITIZENS) {
+      up = 2
+
+      if (player.role == Role.roles.KOMISSAR) {
+        up += 1
+      }
+
+      if (player.role == Role.roles.SERGEANT) {
+        up += 1
+      }
+
+      if (player.role == Role.roles.DOCTOR) {
+        up += 1
+      }
+    }
+
+    // Увеличиваю лвл
+    account.level += up
+    await account.save()
+
+    // Проверяю достиг ли игрок нового лвл
+    const endLevel = Account.getLevelByBorder(account.level)
+    if (startLevel < endLevel) {
+      // Новый лвл
+      console.log(`${account.username} достиг уровня ${endLevel}`)
+
+      // Поощрить как-то
     }
   }
 
@@ -1016,22 +1085,22 @@ class GameBase {
     }
 
     // Приз - вещь
-    if (rnd > 0.8) {
+    if (rnd > 0.7) {
       thingtypeId = 1
 
-      if (rnd > 0.89 && rnd < 0.9) {
+      if (rnd > 0.79 && rnd < 0.8) {
         // Вещь второго класса
         thingclassId = 2
       }
     }
 
     // Приз - подарочный набор
-    if (rnd > 0.9) {
+    if (rnd > 0.8) {
       thingtypeId = 3
     }
 
     // Приз - ключ
-    if (rnd > 0.99) {
+    if (rnd > 0.9) {
       thingtypeId = 5
     }
 
