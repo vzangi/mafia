@@ -2,13 +2,13 @@ script(id="noFriendsOnlineTmpl" type="text/x-jquery-tmpl")
   span(class="pt-1 text-secondary no-online-friends") Друзей в онлайне пока нет
 
 script(id="friendOnlineTmpl" type="text/x-jquery-tmpl")
-  div(class="online-friend-box" data-id="${id}")
+  div(class="online-friend-box${gameplayers?(gameplayers.length != 0?' in-game':''):''}" data-id="${id}" data-r="${JSON.stringify(this)}")
     div(class="friend-item")
       div(class="friend-avatar online")
         a(href="/profile/${username}")
           img(src="/uploads/${avatar}")
       div(class="friend-info")
-        span 
+        span(class="ellipsis")
           . 
             {{if punishments && punishments.length != 0}}
             {{each(i,punishment) punishments}}
@@ -22,7 +22,15 @@ script(id="friendOnlineTmpl" type="text/x-jquery-tmpl")
 
           span(class="f-nik") ${username}
       div(class="friend-actions") 
-        span(class="start-chat ion-chatbox-working" title="Личное сообщение" onclick="startPrivateWith(${id})")
+        . 
+          {{if gameplayers && gameplayers.length != 0}}
+        a(href="/game/${gameplayers[0].gameId}" class="to-game bi bi-controller me-2" title="Смотреть игру" data-bs-toggle="tooltip" data-bs-placement="bottom")
+        . 
+          {{else}}
+        a(class="to-game bi bi-controller me-2" title="Смотреть игру" data-bs-toggle="tooltip" data-bs-placement="bottom")
+        . 
+          {{/if}}
+        span(class="start-chat ion-chatbox-working" title="Личное сообщение" data-bs-toggle="tooltip" data-bs-placement="bottom" onclick="startPrivateWith(${id})")
 
 script(id="gamePlayerTmpl" type="text/x-jquery-tmpl")
   div(class="player" data-username="${player.account.username}")

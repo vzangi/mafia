@@ -127,6 +127,18 @@ $(async function () {
     userOnlineCount.text(count)
   })
 
+  socket.on('friend.ingame', (friendId, gameId) => {
+    $(`.online-friend-box[data-id=${friendId}]`).addClass('in-game')
+    $(`.online-friend-box[data-id=${friendId}] .to-game`).attr(
+      'href',
+      `/game/${gameId}`
+    )
+  })
+
+  socket.on('friend.leavegame', (friendId, gameId) => {
+    $(`.online-friend-box[data-id=${friendId}]`).removeClass('in-game')
+  })
+
   // Прокрутка чата до последних сообщений
   const scrollToEnd = (scroll = false) => {
     const height = chat[0].scrollHeight || 100000

@@ -97,7 +97,7 @@ $(function () {
   // Удаление заявки
   lobbiSocket.on('game.remove', (id) => {
     if (
-      $(`.game-item[data-id=${id}] .player[data-username=${username}]`)
+      $(`.game-item[data-id=${id}] .player[data-username='${username}']`)
         .length == 1
     ) {
       $('body').removeClass('inGame')
@@ -146,7 +146,7 @@ $(function () {
     const game = $(`.game-item[data-id=${gameId}]`)
     if (!game) return
 
-    const player = game.find(`.player[data-username=${leaveUserName}]`)
+    const player = game.find(`.player[data-username='${leaveUserName}']`)
     if (!player) return
     player.remove()
 
@@ -163,14 +163,14 @@ $(function () {
 
   // Игрок вышел в оффлайн
   onlineSocket.on('offline', (user) => {
-    const u = $(`.player[data-username=${user.username}]`)
+    const u = $(`.player[data-username='${user.username}']`)
     if (!u) return
     u.find('.friend-avatar').removeClass('online')
   })
 
   // Игрок вошёл на сайт
   onlineSocket.on('online', (user) => {
-    const u = $(`.player[data-username=${user.username}]`)
+    const u = $(`.player[data-username='${user.username}']`)
     if (!u) return
     u.find('.friend-avatar').addClass('online')
   })

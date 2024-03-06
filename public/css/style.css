@@ -710,6 +710,11 @@ ul.aside-menu li a.active {
   border: 2px solid #fff;
 }
 
+.in-game .pm-friend-avatar.online:after,
+.in-game .friend-avatar.online:after {
+  background: #858eff;
+}
+
 .game-item .friend-avatar.online:after {
   border: 2px solid #ccc;
 }
@@ -725,6 +730,10 @@ ul.aside-menu li a.active {
   overflow: hidden;
 }
 
+.in-game .friend-info {
+  opacity: 0.5;
+}
+
 .friend-nik {
   font-weight: 600;
 }
@@ -735,4 +744,13 @@ ul.aside-menu li a.active {
 
 .pointer {
   cursor: pointer;
+}
+
+.to-game {
+  font-size: 1.4em;
+  display: none;
+}
+
+.in-game .to-game {
+  display: block;
 }

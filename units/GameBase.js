@@ -15,6 +15,7 @@ const sequelize = require('./db')
 const Notification = require('../models/Notification')
 const GameLog = require('../models/GameLog')
 const log = require('./customLog')
+const Friend = require('../models/Friend')
 
 /*  ==================================
     Базовый класс для всех режимов игр
@@ -33,7 +34,7 @@ class GameBase {
     this.players = []
 
     // время хода
-    this.periodInterval = 120
+    this.periodInterval = 20
 
     // время перехода для комиссара
     this.perehodInterval = 6
@@ -247,6 +248,8 @@ class GameBase {
         sid.emit('game.play', game.id)
       })
 
+      this._notifyFriends(player)
+
       // Если игрока нет в лобби
       if (ids.length == 0) {
         // Отправляю нотификацию в телегу
@@ -266,6 +269,27 @@ class GameBase {
     io.of('/lobbi').emit('game.start', game.id)
   }
 
+  // Нотификация друзьям о том что игрок в партии
+  async _notifyFriends(player, event = 'friend.ingame') {
+    // Беру список друзей
+    const friends = await Friend.scope({
+      method: ['friends', player.accountId],
+    }).findAll()
+
+    friends.forEach((f) => {
+      const { friend } = f
+
+      // Если друг онлайн
+      if (friend.online) {
+        const friendIds = this.getUserSocketIds(friend.id, '/')
+        friendIds.forEach((soc) => {
+          soc.emit(event, player.accountId, this.game.id)
+        })
+      }
+    })
+  }
+
+  // Получение сокетов игрока
   getUserSocketIds(userId, nsp = '/game') {
     const { io } = this
     const ids = []
@@ -521,6 +545,9 @@ class GameBase {
   async showPlayerRole(player, status) {
     const { room } = this
     const role = await player.getRole()
+
+    await this, this._notifyFriends(player, 'friend.leavegame')
+
     room.emit('role.show', {
       role: role,
       username: player.username,
@@ -1042,15 +1069,15 @@ class GameBase {
     if (player.role.rolesideId == Game.sides.CITIZENS) {
       up = 2
 
-      if (player.role == Role.roles.KOMISSAR) {
+      if (player.role.id == Role.roles.KOMISSAR) {
         up += 1
       }
 
-      if (player.role == Role.roles.SERGEANT) {
+      if (player.role.id == Role.roles.SERGEANT) {
         up += 1
       }
 
-      if (player.role == Role.roles.DOCTOR) {
+      if (player.role.id == Role.roles.DOCTOR) {
         up += 1
       }
     }

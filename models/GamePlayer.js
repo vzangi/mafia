@@ -78,5 +78,6 @@ const GamePlayer = sequelize.define(
 GamePlayer.playerStatuses = playerStatuses
 
 GamePlayer.belongsTo(Role)
+Account.hasMany(GamePlayer)
 
 module.exports = GamePlayer

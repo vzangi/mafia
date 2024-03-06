@@ -188,6 +188,17 @@ class ApiService extends BaseService {
             attributes: ['type', 'untilAt', 'coolDate'],
             required: false,
           },
+          {
+            model: GamePlayer,
+            attributes: ['gameId'],
+            where: {
+              status: [
+                GamePlayer.playerStatuses.IN_GAME,
+                GamePlayer.playerStatuses.FREEZED,
+              ],
+            },
+            required: false,
+          },
         ],
       },
     })
