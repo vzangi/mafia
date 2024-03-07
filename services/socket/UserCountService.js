@@ -45,11 +45,23 @@ class UserCountService extends BaseService {
     //     attributes: ['username', 'avatar']
     // })
 
+    const gameplayers = await GamePlayer.findAll({
+      where: {
+        accountId: account.id,
+        status: [
+          GamePlayer.playerStatuses.IN_GAME,
+          GamePlayer.playerStatuses.FREEZED,
+        ],
+      },
+      attributes: ['gameId'],
+    })
+
     const status = on ? 'online' : 'offline'
     io.of('/online').emit(status, {
       username: account.username,
       avatar: account.avatar,
       punishments: account.punishments,
+      gameplayers,
     })
 
     // Если пользователь находился в игре,

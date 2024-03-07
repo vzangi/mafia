@@ -1,9 +1,9 @@
 script(id="onlineUserTmpl" type="text/x-jquery-tmpl")
-  div(class="friend-box d-flex align-items-center m-3" data-nik="${username}")
+  div(class="friend-box d-flex align-items-center m-3${gameplayers?(gameplayers.length != 0?' in-game':''):''}" data-nik="${username}")
     div(class="friend-avatar online")
       img(src="/uploads/${avatar}" alt="${username}")
-    div(class="friend-links ms-2")
-      span 
+    div(class="friend-links friend-info ms-2 flex-grow-1")
+      span(class="ellipsis") 
         . 
           {{if punishments && punishments.length != 0}}
           {{each(i,punishment) punishments}}
@@ -15,3 +15,10 @@ script(id="onlineUserTmpl" type="text/x-jquery-tmpl")
           {{/each}}
           {{/if}}
       a(href="/profile/${username}") ${username}
+
+    div(class="friend-actions") 
+      . 
+        {{if gameplayers && gameplayers.length != 0}}
+      a(href="/game/${gameplayers[0].gameId}" class="to-game bi bi-controller me-2" title="Смотреть игру" data-bs-toggle="tooltip" data-bs-placement="bottom")
+      . 
+        {{/if}}
