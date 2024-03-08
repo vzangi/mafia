@@ -24,24 +24,9 @@ div(class="container")
         if profile.rank == 0
           div(class="image" style="background-image:url(/images/0.svg)")
           div(class="text") Нет ранга
-        else if profile.rank < 1500
-          div(class="image" style="background-image:url(/images/1.svg)")
+        else 
+          div(class="image" style=`background-image:url(/images/${rankImg}.svg)`)
           div(class="text f-mon" title="Ранг" data-bs-toggle="tooltip" data-bs-placement="right")= profile.rank
-        else if profile.rank < 2500
-          div(class="image" style="background-image:url(/images/2.svg)")
-          div(class="text f-mon" title="Ранг" data-bs-toggle="tooltip" data-bs-placement="right")= profile.rank
-        else if profile.rank < 3000
-          div(class="image" style="background-image:url(/images/3.svg)")
-          div(class="text f-mon" title="Ранг" data-bs-toggle="tooltip" data-bs-placement="right")= profile.rank
-        else if profile.rank < 3500
-          div(class="image" style="background-image:url(/images/4.svg)")
-          div(class="text f-mon" title="Ранг" data-bs-toggle="tooltip" data-bs-placement="right")= profile.rank
-        else if profile.rank < 4000
-          div(class="image" style="background-image:url(/images/5.svg)")
-          div(class="text f-mon" title="Ранг" data-bs-toggle="tooltip" data-bs-placement="right")= profile.rank
-        else
-          div(class="image" style="background-image:url(/images/6.svg)")
-          div(class="text f-mon")= profile.rank
 
       div(class="profile-level d-flex mt-2")
         span(title=`${levelNum} уровень<hr>Набрано баллов: ${profile.level}` data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true")

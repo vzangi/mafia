@@ -977,6 +977,37 @@ class GameBase {
 
     // Запуск процесса раздачи подарков победившей стороне ...
     await this.prizes(side)
+
+    // Если сорев - рассчитываю ранги
+    if (game.competition && side != Game.sides.DRAW) {
+      await this.rankUp()
+    }
+  }
+
+  // Пересчёт рангов
+  async rankUp() {
+    const { game, players } = this
+
+    const bal = await GamePlayer.getGameRank(game)
+
+    for (const index in players) {
+      const player = players[index]
+
+      const role = await player.getRole()
+
+      if (role.rolesideId == game.rolesideId) {
+        // Победитель
+        await Account.increment('rank', {
+          by: bal,
+          where: { id: player.accountId },
+        })
+      } else {
+        await Account.decrement('rank', {
+          by: bal,
+          where: { id: player.accountId },
+        })
+      }
+    }
   }
 
   // Раздача призов

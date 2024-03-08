@@ -135,6 +135,13 @@ class ProfileService {
     data.levelNum = Account.getLevelByBorder(profile.level)
     data.levelName = Account.levelNames[data.levelNum]
 
+    data.rankImg = 6
+    if (profile.rank < 4000) data.rankImg = 5
+    if (profile.rank < 3500) data.rankImg = 4
+    if (profile.rank < 3000) data.rankImg = 3
+    if (profile.rank < 2500) data.rankImg = 2
+    if (profile.rank < 1500) data.rankImg = 1
+
     return data
   }
 

@@ -1,4 +1,4 @@
-const { DataTypes } = require('sequelize')
+const { DataTypes, Sequelize, Op } = require('sequelize')
 const sequelize = require('../units/db')
 const Role = require('./Role')
 const Account = require('./Account')
@@ -76,6 +76,54 @@ const GamePlayer = sequelize.define(
 )
 
 GamePlayer.playerStatuses = playerStatuses
+
+/**
+ * Расчёт балла ранга полученного по результатам игры
+ */
+GamePlayer.getGameRank = async (game) => {
+  const reqAvg = {
+    where: {
+      gameId: game.id,
+    },
+    include: [
+      {
+        model: Role,
+        attributes: [],
+      },
+      {
+        model: Account,
+        attributes: [],
+      },
+    ],
+    raw: true,
+    attributes: [[Sequelize.fn('AVG', Sequelize.col('rank')), 'avg']],
+  }
+
+  // Средний ранг игроков
+  const allAvg = await GamePlayer.findOne(reqAvg)
+
+  reqAvg.include[0].where = {
+    rolesideId: game.rolesideId,
+  }
+
+  // Средний ранг победителей
+  const winAvg = await GamePlayer.findOne(reqAvg)
+
+  reqAvg.include[0].where = {
+    rolesideId: { [Op.ne]: game.rolesideId },
+  }
+
+  // Средний ранг проигравших
+  const looseAvg = await GamePlayer.findOne(reqAvg)
+
+  // Балл
+  const bal = Math.round(
+    15 - (5 * ((winAvg.avg - looseAvg.avg) * 100)) / allAvg.avg / 100
+  )
+
+  if (bal < 1) return 1
+  return bal
+}
 
 GamePlayer.belongsTo(Role)
 Account.hasMany(GamePlayer)
