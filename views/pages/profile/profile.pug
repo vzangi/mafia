@@ -20,7 +20,7 @@ block content
     else 
         include /includes/profile/profile/block
 
-    if currentAccount.role == 1
+    if currentAccount && currentAccount.role == 1
         div(class="container mt-4")
             include /includes/profile/profile/punishments
 

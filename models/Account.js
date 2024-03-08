@@ -52,7 +52,7 @@ const Account = sequelize.define('account', {
 	},
 	rank: {
 		type: DataTypes.INTEGER,
-		defaultValue: 1500,
+		defaultValue: 2000,
 	},
 	level: {
 		type: DataTypes.INTEGER,
