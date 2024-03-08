@@ -17,6 +17,7 @@ const GameLog = require('../models/GameLog')
 const log = require('./customLog')
 const Friend = require('../models/Friend')
 const ThingType = require('../models/ThingType')
+const GameEvent = require('../models/GameEvent')
 
 /*  ==================================
     Базовый класс для всех режимов игр
@@ -982,6 +983,36 @@ class GameBase {
 		if (game.competition && side != Game.sides.DRAW) {
 			await this.rankUp()
 		}
+
+		// Событие - Результат игры
+		const event = {
+			gameId: game.id,
+			type: GameEvent.eventTypes.RESULT,
+		}
+
+		for (const index in players) {
+			const player = players[index]
+
+			event.accountId = player.accountId
+
+			if (side == Game.sides.DRAW) {
+				event.value = GameEvent.resultEvents.DRAW
+			} else {
+				// Если вышел по тайму
+				if (player.status == GamePlayer.playerStatuses.TIMEOUT) {
+					event.value = GameEvent.resultEvents.TIMEOUT
+				} else {
+					const role = await player.getRole()
+
+					event.value =
+						role.rolesideId == game.rolesideId
+							? GameEvent.resultEvents.WIN
+							: GameEvent.resultEvents.LOOSE
+				}
+			}
+
+			await GameEvent.create(event)
+		}
 	}
 
 	// Пересчёт рангов
@@ -994,13 +1025,33 @@ class GameBase {
 			const player = players[index]
 
 			const role = await player.getRole()
-			const npr = role.rolesideId == game.rolesideId ? 1 : -1
+
+			// Флаг победитель/проигравший
+			let npr = role.rolesideId == game.rolesideId ? 1 : -1
+
+			// Если вышел по тайму
+			if (player.status == GamePlayer.playerStatuses.TIMEOUT) {
+				// Балл вычитается
+				npr = -1
+			}
+
+			// Новый ранг
 			let rank = player.account.rank + bal * npr
 
+			// Учитываю ограничения ранга
 			if (rank > 5000) rank = 5000
 			if (rank < 0) rank = 0
 
+			// Обновляю ранг
 			await Account.update({ rank }, { where: { id: player.accountId } })
+
+			// Событие - изменение ранга
+			await GameEvent.create({
+				gameId: game.id,
+				accountId: player.accountId,
+				type: GameEvent.eventTypes.COMPETITION,
+				value: bal * npr,
+			})
 		}
 	}
 
