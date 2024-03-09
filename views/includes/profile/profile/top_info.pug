@@ -30,7 +30,7 @@ div(class="container")
 
       div(class="profile-level d-flex mt-2")
         span(title=`${levelNum} уровень<hr>Набрано баллов: ${profile.level}` data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true")
-          a(href="#")
+          a(href="/profile/statistics/"+profile.username)
             span(class="badge bg-secondary")= levelName
 
       if power 

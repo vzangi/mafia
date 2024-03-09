@@ -1,56 +1,55 @@
 .top-settings-box {
-  display: flex;
-  padding: 1.2rem;
-  gap: 2rem;
+	display: flex;
+	padding: 1.2rem;
+	gap: 2rem;
 }
 
 .avatar-box {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 1rem;
 }
 
 .avatar-box img {
-  min-width: 100px;
-  max-width: 200px;
-  border-radius: 200px;
-  aspect-ratio: 1/1;
+	width: 100px;
+	height: 100px;
+	border-radius: 100px;
 }
 
 .fields-box {
-  flex: 1;
+	flex: 1;
 }
 
 .change-avatar-box {
-  position: relative;
+	position: relative;
 }
 
 .change-avatar-box form {
-  display: none;
+	display: none;
 }
 
 .accept-input-box {
-  display: flex;
+	display: flex;
 }
 .accept-input-box input {
-  flex: 1;
+	flex: 1;
 }
 .accept-input-box .btn {
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-  display: none;
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+	display: none;
 }
 .accept-input-box.changed input {
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-  box-shadow: none;
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+	box-shadow: none;
 }
 .accept-input-box.changed .btn {
-  display: block;
+	display: block;
 }
 @media (max-width: 576px) {
-  .top-settings-box {
-    flex-direction: column;
-  }
+	.top-settings-box {
+		flex-direction: column;
+	}
 }

@@ -1,0 +1,29 @@
+div(class="block p-3 mb-4")
+	h5 По ролям
+	table(class="table table-hover")
+		thead 
+			tr 
+				th Роль
+				th Побед
+				th Поражений
+				th Всего
+		tr 
+			td Мафия
+			td= role.mafia.win
+			td= role.mafia.loose
+			td= role.mafia.all
+		tr 
+			td Комиссар
+			td= role.komissar.win
+			td= role.komissar.loose
+			td= role.komissar.all
+		tr 
+			td Честный житель
+			td= role.citizen.win
+			td= role.citizen.loose
+			td= role.citizen.all
+		tr 
+			td Маньяк
+			td= role.maniac.win
+			td= role.maniac.loose
+			td= role.maniac.all

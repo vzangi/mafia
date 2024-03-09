@@ -1,5 +1,7 @@
+const { AccessDeniedError } = require('sequelize')
 const service = require('../services/ProfileService')
 const log = require('../units/customLog')
+const Account = require('../models/Account')
 
 class ProfileController {
 	// Переход в профиль по никнейму
@@ -167,6 +169,28 @@ class ProfileController {
 			res.render('pages/profile/inventory', data)
 		} catch (error) {
 			log(error)
+			res.redirect('/profile')
+		}
+	}
+
+	// Статистика
+	async statistics(req, res) {
+		try {
+			const { username } = req.params
+			let account = null
+			if (username) {
+				account = await Account.findOne({ where: { username } })
+			} else {
+				if (!req.account) {
+					throw new Error('Не авторизован')
+				}
+				account = req.account
+			}
+			const data = await service.statistics(account)
+			res.render('pages/profile/statistics', data)
+		} catch (error) {
+			log(error)
+			console.log(error)
 			res.redirect('/profile')
 		}
 	}
