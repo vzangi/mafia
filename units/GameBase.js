@@ -36,7 +36,7 @@ class GameBase {
 		this.players = []
 
 		// время хода
-		this.periodInterval = 120
+		this.periodInterval = 20
 
 		// время перехода для комиссара
 		this.perehodInterval = 6
@@ -838,6 +838,17 @@ class GameBase {
 			})
 		}
 
+		if (role == Game.roles.MAFIA) {
+			// Событие - ком нашёл мафа
+			await this.makeAction(
+				[Game.roles.KOMISSAR],
+				GameEvent.actionEvents.KOM_FIND_MAF
+			)
+		}
+
+		// Событие - факт первой проверки
+		await this.makeFirstFact(player.accountId, GameEvent.factEvents.FIRST_CHECK)
+
 		// перехожу к следующему периоду
 		game.deadline = 0
 	}
@@ -990,6 +1001,7 @@ class GameBase {
 			type: GameEvent.eventTypes.RESULT,
 		}
 
+		// Выставляю каждому игроку результат
 		for (const index in players) {
 			const player = players[index]
 
@@ -1013,6 +1025,19 @@ class GameBase {
 
 			await GameEvent.create(event)
 		}
+
+		// Активирую события
+		await GameEvent.update(
+			{
+				active: true,
+			},
+			{
+				where: {
+					gameId: game.id,
+					active: false,
+				},
+			}
+		)
 	}
 
 	// Пересчёт рангов
@@ -1269,6 +1294,65 @@ class GameBase {
 				message: newNotify.message,
 				level: newNotify.level,
 			})
+		})
+	}
+
+	// Добавление события игры
+	async makeAction(roles, value) {
+		if (this.game.gametypeId == 5) return
+
+		// Событие
+		const event = {
+			gameId: this.game.id,
+			type: GameEvent.eventTypes.ACTION,
+			value,
+			active: false,
+		}
+
+		// Игроки, которые инициировали событие
+		const players = this.players.filter(
+			(p) =>
+				roles.indexOf(p.roleId) >= 0 &&
+				p.status == GamePlayer.playerStatuses.IN_GAME
+		)
+
+		// Добавляю событие
+		for (const index in players) {
+			const player = players[index]
+			event.accountId = player.accountId
+			await GameEvent.create(event)
+		}
+	}
+
+	// Добавление события первого факта игры
+	async makeFirstFact(accountId, value) {
+		if (this.game.gametypeId == 5) return
+
+		const hasFact = await GameEvent.findOne({
+			where: {
+				gameId: this.game.id,
+				type: GameEvent.eventTypes.FACT,
+				value,
+			},
+		})
+
+		// Если такой факт уже был - выхожу
+		if (hasFact) return
+
+		// Создаю факт
+		await this.makeFact(accountId, value)
+	}
+
+	// Добавление факта игры
+	async makeFact(accountId, value) {
+		if (this.game.gametypeId == 5) return
+
+		await GameEvent.create({
+			gameId: this.game.id,
+			accountId,
+			type: GameEvent.eventTypes.FACT,
+			value,
+			active: false,
 		})
 	}
 

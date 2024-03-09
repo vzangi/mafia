@@ -8,6 +8,7 @@ const Thing = require('../models/Thing')
 const GameBase = require('./GameBase')
 const sequelize = require('./db')
 const log = require('./customLog')
+const GameEvent = require('../models/GameEvent')
 
 // Игра в классическом режиме
 class GamePerestrelka extends GameBase {
@@ -346,6 +347,9 @@ class GamePerestrelka extends GameBase {
 			player.status = GamePlayer.playerStatuses.PRISONED
 			await player.save()
 
+			// Событие - факт первой посадки
+			await this.makeFirstFact(player.accountId, GameEvent.factEvents.FIRST_ZEK)
+
 			const role = await player.getRole()
 
 			await this.systemMessage(
@@ -668,6 +672,12 @@ class GamePerestrelka extends GameBase {
 			player.status = GamePlayer.playerStatuses.FREEZED
 			await player.save()
 
+			// Событие - любовница морозит игрока
+			await this.makeAction(
+				[Game.roles.LOVER],
+				GameEvent.actionEvents.LOVER_FREEZ
+			)
+
 			const sockets = this.getUserSocketIds(player.accountId, '/game')
 			sockets.forEach((socket) => {
 				socket.emit('freez')
@@ -809,6 +819,12 @@ class GamePerestrelka extends GameBase {
 		killed.status = GamePlayer.playerStatuses.KILLED
 		await killed.save()
 
+		// Событие - маф убил игрока
+		await this.makeAction([Game.roles.MAFIA], GameEvent.actionEvents.MAF_KILL)
+
+		// Событие - факт первый труп
+		await this.makeFirstFact(killed.accountId, GameEvent.factEvents.FIRST_CORSE)
+
 		const role = await killed.getRole()
 
 		const msg = `<b>${role.name} ${killed.username} ${
@@ -853,7 +869,8 @@ class GamePerestrelka extends GameBase {
 		} маньяком.</b>`
 		await this.systemMessage(msg)
 
-		this.systemLog(msg)
+		// Событие - ман убил игрока
+		await this.makeAction([Game.roles.MANIAC], GameEvent.actionEvents.MAN_KILL)
 
 		// Если убит комиссар - надо посмотреть есть ли в игре сержант
 		// Если есть, то передаю роль комиссара ему
@@ -866,6 +883,8 @@ class GamePerestrelka extends GameBase {
 
 		// Показываю всем роль убитого игрока
 		await this.showPlayerRole(killed, GamePlayer.playerStatuses.KILLED)
+
+		this.systemLog(msg)
 	}
 
 	// Разморозка игрока
