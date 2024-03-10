@@ -23,6 +23,13 @@ const sides = {
 	MANIAC: 4,
 }
 
+const types = {
+	CLASSIC: 1,
+	SHOOTOUT: 2,
+	MULTI: 4,
+	CONSTRUCTOR: 5,
+}
+
 const roles = {
 	CITIZEN: 1,
 	MAFIA: 2,
@@ -204,6 +211,7 @@ const Game = sequelize.define(
 
 Game.statuses = statuses
 Game.sides = sides
+Game.types = types
 Game.roles = roles
 Game.periods = periods
 

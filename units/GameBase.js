@@ -98,13 +98,16 @@ class GameBase {
 
 			// Классика или мульти
 			if (
-				game.gametypeId == 1 ||
-				game.gametypeId == 4 ||
-				game.gametypeId == 5
+				game.gametypeId == Game.types.CLASSIC ||
+				game.gametypeId == Game.types.MULTI ||
+				game.gametypeId == Game.types.CONSTRUCTOR
 			) {
-				if (game.gametypeId == 1) gameTypeMsg += 'Классическая игра'
-				if (game.gametypeId == 4) gameTypeMsg += 'Мультиролевая игра'
-				if (game.gametypeId == 5) gameTypeMsg += 'Конструктор'
+				if (game.gametypeId == Game.types.CLASSIC)
+					gameTypeMsg += 'Классическая игра'
+				if (game.gametypeId == Game.types.MULTI)
+					gameTypeMsg += 'Мультиролевая игра'
+				if (game.gametypeId == Game.types.CONSTRUCTOR)
+					gameTypeMsg += 'Конструктор'
 				if (game.mode == 1)
 					gameTypeMsg += ` «По большинству голосов»  (без добивов)`
 				if (game.mode == 2)
@@ -112,7 +115,7 @@ class GameBase {
 			}
 
 			// Перестрелка
-			if (game.gametypeId == 2) {
+			if (game.gametypeId == Game.types.SHOOTOUT) {
 				gameTypeMsg += 'Перестрелка'
 				if (game.mode == 1) gameTypeMsg += ' в режиме «По большинству голосов»'
 				if (game.mode == 2) gameTypeMsg += ' в режиме «Ожидание всех голосов»'
@@ -995,49 +998,52 @@ class GameBase {
 			await this.rankUp()
 		}
 
-		// Событие - Результат игры
-		const event = {
-			gameId: game.id,
-			type: GameEvent.eventTypes.RESULT,
-		}
+		// Если не конструктор
+		if (game.gametypeId != Game.types.CONSTRUCTOR) {
+			// Событие - Результат игры
+			const event = {
+				gameId: game.id,
+				type: GameEvent.eventTypes.RESULT,
+			}
 
-		// Выставляю каждому игроку результат
-		for (const index in players) {
-			const player = players[index]
+			// Выставляю каждому игроку результат
+			for (const index in players) {
+				const player = players[index]
 
-			event.accountId = player.accountId
+				event.accountId = player.accountId
 
-			if (side == Game.sides.DRAW) {
-				event.value = GameEvent.resultEvents.DRAW
-			} else {
-				// Если вышел по тайму
-				if (player.status == GamePlayer.playerStatuses.TIMEOUT) {
-					event.value = GameEvent.resultEvents.TIMEOUT
+				if (side == Game.sides.DRAW) {
+					event.value = GameEvent.resultEvents.DRAW
 				} else {
-					const role = await player.getRole()
+					// Если вышел по тайму
+					if (player.status == GamePlayer.playerStatuses.TIMEOUT) {
+						event.value = GameEvent.resultEvents.TIMEOUT
+					} else {
+						const role = await player.getRole()
 
-					event.value =
-						role.rolesideId == game.rolesideId
-							? GameEvent.resultEvents.WIN
-							: GameEvent.resultEvents.LOOSE
+						event.value =
+							role.rolesideId == game.rolesideId
+								? GameEvent.resultEvents.WIN
+								: GameEvent.resultEvents.LOOSE
+					}
 				}
+
+				await GameEvent.create(event)
 			}
 
-			await GameEvent.create(event)
-		}
-
-		// Активирую события
-		await GameEvent.update(
-			{
-				active: true,
-			},
-			{
-				where: {
-					gameId: game.id,
-					active: false,
+			// Активирую события
+			await GameEvent.update(
+				{
+					active: true,
 				},
-			}
-		)
+				{
+					where: {
+						gameId: game.id,
+						active: false,
+					},
+				}
+			)
+		}
 	}
 
 	// Пересчёт рангов
@@ -1114,7 +1120,7 @@ class GameBase {
 			if (player.status == GamePlayer.playerStatuses.TIMEOUT) continue
 
 			// Если не конструктор, то апаю лвл
-			if (game.gametypeId != 5) {
+			if (game.gametypeId != Game.types.CONSTRUCTOR) {
 				await this.levelUp(player)
 			}
 
@@ -1299,7 +1305,7 @@ class GameBase {
 
 	// Добавление события игры
 	async makeAction(roles, value) {
-		if (this.game.gametypeId == 5) return
+		if (this.game.gametypeId == Game.types.CONSTRUCTOR) return
 
 		// Событие
 		const event = {
@@ -1326,7 +1332,7 @@ class GameBase {
 
 	// Добавление события первого факта игры
 	async makeFirstFact(accountId, value) {
-		if (this.game.gametypeId == 5) return
+		if (this.game.gametypeId == Game.types.CONSTRUCTOR) return
 
 		const hasFact = await GameEvent.findOne({
 			where: {
@@ -1345,7 +1351,7 @@ class GameBase {
 
 	// Добавление факта игры
 	async makeFact(accountId, value) {
-		if (this.game.gametypeId == 5) return
+		if (this.game.gametypeId == Game.types.CONSTRUCTOR) return
 
 		await GameEvent.create({
 			gameId: this.game.id,
@@ -1522,6 +1528,15 @@ class GameBase {
 		})
 		if (player.length == 1) return player[0]
 		return null
+	}
+
+	// Мафии некого убивать
+	noVictim() {
+		const activePlayers = this.activePlayersCount()
+		const mafiaCount = this.liveMafiaCount()
+		if (activePlayers - mafiaCount == 1)
+			if (this.hasRoleInGame(Game.roles.CHILD)) return true
+		return false
 	}
 
 	/*  ==================================

@@ -322,6 +322,14 @@ class GameMulti extends GameBase {
 
 		this.systemLog(`<hr>Наступила ночь. ${rolesInNight}.`)
 
+		if (this.noVictim()) {
+			await this.systemMessage(`Мафии некого убивать.`)
+			this.systemLog(`Мафии некого убивать.`)
+
+			await this.nextDay()
+			return
+		}
+
 		// Если был замороженный любовницей игрок, то размораживаю его
 		await this.unfreez()
 
