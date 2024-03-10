@@ -177,16 +177,19 @@ class ProfileController {
 	async statistics(req, res) {
 		try {
 			const { username } = req.params
-			let account = null
+			const statData = {}
 			if (username) {
-				account = await Account.findOne({ where: { username } })
+				statData.account = await Account.findOne({ where: { username } })
+				if (!statData.account) {
+					throw new Error('Пользователь не найден')
+				}
 			} else {
 				if (!req.account) {
 					throw new Error('Не авторизован')
 				}
-				account = req.account
+				statData.account = req.account
 			}
-			const data = await service.statistics(account)
+			const data = await service.statistics(statData)
 			res.render('pages/profile/statistics', data)
 		} catch (error) {
 			log(error)

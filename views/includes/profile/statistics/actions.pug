@@ -1,0 +1,24 @@
+div(class="block p-3 mb-4")
+	h5 Игровые действия
+	table(class="table table-hover")
+		tr 
+			td Трупов за мафию
+			td= action.maf_kill
+		tr 
+			td Промахов за мафию
+			td= action.maf_miss
+		tr 
+			td Трупов за маньяка
+			td= action.man_kill
+		tr 
+			td Проверенных мафиози
+			td= action.kom_find_maf
+		tr 
+			td Спасений доктором
+			td= action.doc_save
+		tr 
+			td Спасений адвокатом
+			td= action.adv_save
+		tr 
+			td Зоморозок любовницей
+			td= action.lover_freez

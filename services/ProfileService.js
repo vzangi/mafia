@@ -399,40 +399,23 @@ class ProfileService {
 	}
 
 	// Статистика
-	async statistics(account) {
+	async statistics(statData) {
+		const { account } = statData
 		if (!account) throw new Error('Нет необходимых данных')
-		const accountId = account.id
 
-		const data = {
-			profile: account,
-			role: {},
-		}
+		const data = { profile: account }
 
 		// Общая статистика
-		data.total = await this._getTotal(accountId)
+		data.total = await this._getTotal(account.id)
 
 		// Стата за мафию
-		data.role.mafia = await this._getRoles(accountId, [
-			Role.roles.MAFIA,
-			Role.roles.ADVOCATE,
-			Role.roles.LOVER,
-		])
+		data.role = await this._getRoles(account.id)
 
-		// Стата за кома
-		data.role.komissar = await this._getRoles(accountId, [
-			Role.roles.KOMISSAR,
-			Role.roles.SERGEANT,
-		])
+		// Игровые действия
+		data.action = await this._getGameActions(account.id)
 
-		// Стата за честных
-		data.role.citizen = await this._getRoles(accountId, [
-			Role.roles.CITIZEN,
-			Role.roles.DOCTOR,
-			Role.roles.CHILD,
-		])
-
-		// Стата за маньяка
-		data.role.maniac = await this._getRoles(accountId, Role.roles.MANIAC)
+		// Игровые факты
+		data.fact = await this._getGameFacts(account.id)
 
 		return data
 	}
@@ -469,7 +452,37 @@ class ProfileService {
 	}
 
 	// Статистика по ролям
-	async _getRoles(accountId, roleId) {
+	async _getRoles(accountId) {
+		const role = {}
+
+		// Стата за мафию
+		role.mafia = await this._getRole(accountId, [
+			Role.roles.MAFIA,
+			Role.roles.ADVOCATE,
+			Role.roles.LOVER,
+		])
+
+		// Стата за кома
+		role.komissar = await this._getRole(accountId, [
+			Role.roles.KOMISSAR,
+			Role.roles.SERGEANT,
+		])
+
+		// Стата за честных
+		role.citizen = await this._getRole(accountId, [
+			Role.roles.CITIZEN,
+			Role.roles.DOCTOR,
+			Role.roles.CHILD,
+		])
+
+		// Стата за маньяка
+		role.maniac = await this._getRole(accountId, Role.roles.MANIAC)
+
+		return role
+	}
+
+	// Статистика по роли
+	async _getRole(accountId, roleId) {
 		const role = {}
 
 		const req = {
@@ -508,6 +521,70 @@ class ProfileService {
 		role.loose = await GameEvent.count(req)
 
 		return role
+	}
+
+	// Игровая статистика
+	async _getGameActions(accountId) {
+		const action = {}
+		const where = {
+			accountId,
+			type: GameEvent.eventTypes.ACTION,
+			active: true,
+		}
+
+		// Количество убийств за мафию
+		where.value = GameEvent.actionEvents.MAF_KILL
+		action.maf_kill = await GameEvent.count({ where })
+
+		// Количество промахов за мафию
+		where.value = GameEvent.actionEvents.MAF_MISS
+		action.maf_miss = await GameEvent.count({ where })
+
+		// Количество трупов за маньяка
+		where.value = GameEvent.actionEvents.MAN_KILL
+		action.man_kill = await GameEvent.count({ where })
+
+		// Найденных мафов
+		where.value = GameEvent.actionEvents.KOM_FIND_MAF
+		action.kom_find_maf = await GameEvent.count({ where })
+
+		// Спасений доктором
+		where.value = GameEvent.actionEvents.DOC_SAVE
+		action.doc_save = await GameEvent.count({ where })
+
+		// Спасений адвокатом
+		where.value = GameEvent.actionEvents.ADV_SAVE
+		action.adv_save = await GameEvent.count({ where })
+
+		// Заморозок
+		where.value = GameEvent.actionEvents.LOVER_FREEZ
+		action.lover_freez = await GameEvent.count({ where })
+
+		return action
+	}
+
+	// Игровые показатели
+	async _getGameFacts(accountId) {
+		const fact = {}
+		const where = {
+			accountId,
+			type: GameEvent.eventTypes.FACT,
+			active: true,
+		}
+
+		// Первая посадка
+		where.value = GameEvent.factEvents.FIRST_ZEK
+		fact.first_zek = await GameEvent.count({ where })
+
+		// Первая посадка
+		where.value = GameEvent.factEvents.FIRST_CORSE
+		fact.first_course = await GameEvent.count({ where })
+
+		// Первая посадка
+		where.value = GameEvent.factEvents.FIRST_CHECK
+		fact.first_check = await GameEvent.count({ where })
+
+		return fact
 	}
 }
 
