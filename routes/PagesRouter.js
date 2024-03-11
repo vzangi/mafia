@@ -33,6 +33,9 @@ router.get('/top-of-week', pages.topOfWeek)
 // Ручка очистки топа недели
 router.get('/clear-top-of-week/:secret', pages.clearTopOfWeek)
 
+// Список пользователей
+router.get('/users', pages.users)
+
 // Cтраницы со статическим содержимым
 router.use('/', require('./BlogRouter'))
 

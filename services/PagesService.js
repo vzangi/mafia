@@ -9,126 +9,136 @@ const WalletEvent = require('../models/WalletEvents')
 const Notification = require('../models/Notification')
 
 class PagesService {
-  async lobbi(user) {
-    const data = { smiles }
+	async lobbi(user) {
+		const data = { smiles }
 
-    data.contests = await Contest.scope('active').findAll()
+		data.contests = await Contest.scope('active').findAll()
 
-    data.top = await GameEvent.scope('top').findAll({ limit: 3 })
-    data.intop = false
+		data.top = await GameEvent.scope('top').findAll({ limit: 3 })
+		data.intop = false
 
-    if (user) {
-      // Проверяю, находится ли пользователь в игре
-      const playerInGame = await GamePlayer.findOne({
-        where: {
-          accountId: user.id,
-          status: [
-            GamePlayer.playerStatuses.IN_GAME,
-            GamePlayer.playerStatuses.FREEZED,
-          ],
-        },
-      })
+		if (user) {
+			// Проверяю, находится ли пользователь в игре
+			const playerInGame = await GamePlayer.findOne({
+				where: {
+					accountId: user.id,
+					status: [
+						GamePlayer.playerStatuses.IN_GAME,
+						GamePlayer.playerStatuses.FREEZED,
+					],
+				},
+			})
 
-      // Если да - прикрепляю номер заявки
-      if (playerInGame) {
-        data.gameId = playerInGame.gameId
-      }
+			// Если да - прикрепляю номер заявки
+			if (playerInGame) {
+				data.gameId = playerInGame.gameId
+			}
 
-      const hasInTop = await GameEvent.findOne({
-        where: {
-          type: GameEvent.eventTypes.TOPWEEK,
-          accountId: user.id,
-        },
-      })
+			const hasInTop = await GameEvent.findOne({
+				where: {
+					type: GameEvent.eventTypes.TOPWEEK,
+					accountId: user.id,
+				},
+			})
 
-      if (hasInTop) data.intop = true
-    }
+			if (hasInTop) data.intop = true
+		}
 
-    return data
-  }
+		return data
+	}
 
-  async online() {
-    const users = await Account.findAll({
-      where: {
-        online: 1,
-      },
-      include: [
-        {
-          model: Punishment,
-          where: {
-            untilAt: {
-              [Op.gt]: new Date().toISOString(),
-            },
-          },
-          required: false,
-        },
-        {
-          model: GamePlayer,
-          attributes: ['gameId'],
-          where: {
-            status: [
-              GamePlayer.playerStatuses.IN_GAME,
-              GamePlayer.playerStatuses.FREEZED,
-            ],
-          },
-          required: false,
-        },
-      ],
-    })
+	async online() {
+		const users = await Account.findAll({
+			where: {
+				online: 1,
+			},
+			include: [
+				{
+					model: Punishment,
+					where: {
+						untilAt: {
+							[Op.gt]: new Date().toISOString(),
+						},
+					},
+					required: false,
+				},
+				{
+					model: GamePlayer,
+					attributes: ['gameId'],
+					where: {
+						status: [
+							GamePlayer.playerStatuses.IN_GAME,
+							GamePlayer.playerStatuses.FREEZED,
+						],
+					},
+					required: false,
+				},
+			],
+		})
 
-    return users
-  }
+		return users
+	}
 
-  async topOfWeek() {
-    const data = {}
+	async topOfWeek() {
+		const data = {}
 
-    data.top = await GameEvent.scope('top').findAll({ limit: 10 })
+		data.top = await GameEvent.scope('top').findAll({ limit: 10 })
 
-    return data
-  }
+		return data
+	}
 
-  async clearTopOfWeek(secret) {
-    const s = process.env.CLEAR_SECRET || 123
-    if (secret != s) throw new Error('Неверные данные')
+	async clearTopOfWeek(secret) {
+		const s = process.env.CLEAR_SECRET || 123
+		if (secret != s) throw new Error('Неверные данные')
 
-    // Беру трёх победителей
-    const top = await GameEvent.scope('top').findAll({ limit: 3 })
+		// Беру трёх победителей
+		const top = await GameEvent.scope('top').findAll({ limit: 3 })
 
-    // Распределение призового фонда
-    const prizes = [600, 300, 100]
+		// Распределение призового фонда
+		const prizes = [600, 300, 100]
 
-    // Прохожусь по каждому победителю
-    for (let index = 0; index < top.length; index++) {
-      const player = top[index]
+		// Прохожусь по каждому победителю
+		for (let index = 0; index < top.length; index++) {
+			const player = top[index]
 
-      console.log(player.accountId, player.username, prizes[index])
+			console.log(player.accountId, player.username, prizes[index])
 
-      // Закидываю игроку выигрыш
-      await WalletEvent.payment(player.accountId, prizes[index])
+			// Закидываю игроку выигрыш
+			await WalletEvent.payment(player.accountId, prizes[index])
 
-      // Отправляю уведомление
-      const message = `Вы получили ${prizes[index]} рублей за ${
-        index + 1
-      }-е место в топе недели!`
-      const newNotify = await Notification.create({
-        accountId: player.accountId,
-        message,
-        level: 4,
-      })
+			// Отправляю уведомление
+			const message = `Вы получили ${prizes[index]} рублей за ${
+				index + 1
+			}-е место в топе недели!`
+			const newNotify = await Notification.create({
+				accountId: player.accountId,
+				message,
+				level: 4,
+			})
 
-      // Заменяю типы событий, чтобы очистить список топа недели
-      await GameEvent.update(
-        {
-          type: GameEvent.eventTypes.TOPWEEK + 10,
-        },
-        {
-          where: {
-            type: GameEvent.eventTypes.TOPWEEK,
-          },
-        }
-      )
-    }
-  }
+			// Заменяю типы событий, чтобы очистить список топа недели
+			await GameEvent.update(
+				{
+					type: GameEvent.eventTypes.TOPWEEK + 10,
+				},
+				{
+					where: {
+						type: GameEvent.eventTypes.TOPWEEK,
+					},
+				}
+			)
+		}
+	}
+
+	async users() {
+		const data = {}
+
+		data.users = await Account.findAll({
+			order: [['id', 'desc']],
+		})
+
+		return data
+	}
 }
 
 module.exports = new PagesService()
