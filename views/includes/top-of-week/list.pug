@@ -3,7 +3,7 @@ div(class="block list mb-4")
     h3 Топ игроков недели
 
   if top.length == 0
-    p Пока никого нет
+    div(class="line") На этой неделе ещё никто не сыграл.
   else
     each player,i in top 
       div(class="line player")
