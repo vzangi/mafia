@@ -1,4 +1,4 @@
-const { DataTypes } = require('sequelize')
+const { DataTypes, Sequelize } = require('sequelize')
 const sequelize = require('../units/db')
 const Account = require('./Account')
 const Game = require('./Game')
@@ -72,31 +72,58 @@ const factEvents = {
   FIRST_CHECK: 3,
 }
 
-const GameEvent = sequelize.define('gameevents', {
-  id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
-    primaryKey: true,
+const GameEvent = sequelize.define(
+  'gameevents',
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    gameId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    accountId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    type: {
+      type: DataTypes.INTEGER,
+    },
+    value: {
+      type: DataTypes.INTEGER,
+    },
+    active: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+    },
   },
-  gameId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  accountId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  type: {
-    type: DataTypes.INTEGER,
-  },
-  value: {
-    type: DataTypes.INTEGER,
-  },
-  active: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: true,
-  },
-})
+  {
+    scopes: {
+      top: {
+        where: {
+          type: eventTypes.TOPWEEK,
+        },
+        include: [
+          {
+            model: Account,
+            attributes: ['username', 'avatar'],
+          },
+        ],
+        attributes: [
+          'accountId',
+          [Sequelize.fn('SUM', Sequelize.col('value')), 'total'],
+          'account.username',
+          'account.avatar',
+        ],
+        group: ['accountId'],
+        order: [['total', 'desc']],
+        raw: true,
+      },
+    },
+  }
+)
 
 GameEvent.belongsTo(Account)
 GameEvent.belongsTo(Game)

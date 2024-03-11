@@ -509,9 +509,6 @@ input:checked + .slider:before {
   background: var(--chat-white);
 }
 
-.friends-online {
-  padding: 1rem;
-}
 .friends-online h4 {
   font-size: 1rem;
   color: var(--color-black-light);
@@ -578,4 +575,45 @@ input:checked + .slider:before {
 .btn-remove-message:hover {
   opacity: 1;
   color: #f55;
+}
+
+.top3.player {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  max-width: 100%;
+  border-bottom: 1px solid #eee;
+}
+.top3:last-child {
+  border: 0;
+}
+
+.top3 .place {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100%;
+  width: 40px;
+  height: 40px;
+  font: 700 1.1em Montserrat;
+}
+
+.top3 .place-1 {
+  background-color: var(--color-gold);
+  color: #fff;
+}
+
+.top3 .place-2 {
+  background-color: var(--color-footer-gray-light);
+  color: #fff;
+}
+
+.top3 .place-3 {
+  background-color: #c04b38;
+  color: #fff;
+}
+
+.top3 .total {
+  color: #555;
 }

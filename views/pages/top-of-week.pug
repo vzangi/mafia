@@ -1,0 +1,13 @@
+extends /layouts/two_column_8_4
+
+block head
+  link(href="/css/top-of-week.css" rel="stylesheet")
+
+block main
+  include /includes/top-of-week/list
+
+block aside
+  include /includes/top-of-week/priz
+  include /includes/top-of-week/top-desc
+
+block scripts 

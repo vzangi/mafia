@@ -3,13 +3,17 @@ const Contest = require('../models/Contest')
 const GamePlayer = require('../models/GamePlayer')
 const Account = require('../models/Account')
 const Punishment = require('../models/Punishment')
-const { Op } = require('sequelize')
+const { Op, Sequelize } = require('sequelize')
+const GameEvent = require('../models/GameEvent')
 
 class PagesService {
   async lobbi(user) {
     const data = { smiles }
 
     data.contests = await Contest.scope('active').findAll()
+
+    data.top = await GameEvent.scope('top').findAll({ limit: 3 })
+    data.intop = false
 
     if (user) {
       // Проверяю, находится ли пользователь в игре
@@ -27,6 +31,15 @@ class PagesService {
       if (playerInGame) {
         data.gameId = playerInGame.gameId
       }
+
+      const hasInTop = await GameEvent.findOne({
+        where: {
+          type: GameEvent.eventTypes.TOPWEEK,
+          accountId: user.id,
+        },
+      })
+
+      if (hasInTop) data.intop = true
     }
 
     return data
@@ -62,6 +75,14 @@ class PagesService {
     })
 
     return users
+  }
+
+  async topOfWeek() {
+    const data = {}
+
+    data.top = await GameEvent.scope('top').findAll({ limit: 10 })
+
+    return data
   }
 }
 

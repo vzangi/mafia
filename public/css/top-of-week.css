@@ -1,0 +1,107 @@
+.number,
+.comma {
+  background-color: #333;
+  color: #fff;
+  font: 700 2.8rem Montserrat;
+  margin-left: 1px;
+  border: 1px solid #111;
+  position: relative;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.number {
+  width: 40px;
+}
+
+.comma {
+  width: 20px;
+}
+
+.number:before,
+.comma:before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 29px;
+  left: 0;
+  box-shadow: #000 0 0 3px;
+  width: 100%;
+  height: 1px;
+  background-color: rgba(0, 0, 0, 0.9);
+}
+
+.priz-value-box .number:first-child {
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+}
+
+.priz-value-box .number:last-child {
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+}
+
+.priz-value-box p {
+  text-align: center;
+  font-size: 1.2em;
+  color: #555;
+}
+
+.top-desc {
+  color: #555;
+}
+
+.top-desc p {
+  font-size: 0.9rem;
+}
+
+.list {
+  color: #555;
+}
+
+.line {
+  padding: 1.3rem;
+  border-bottom: 1px solid #eee;
+}
+
+.line:last-child {
+  border-bottom: 0;
+}
+
+.player {
+  display: flex;
+  align-items: center;
+}
+
+.place {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100%;
+  width: 40px;
+  height: 40px;
+  font: 700 1.1em Montserrat;
+}
+
+.place-1 {
+  background-color: var(--color-gold);
+  color: #fff;
+}
+
+.place-2 {
+  background-color: var(--color-footer-gray-light);
+  color: #fff;
+}
+
+.place-3 {
+  background-color: #c04b38;
+  color: #fff;
+}
+
+.avatar img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50px;
+}

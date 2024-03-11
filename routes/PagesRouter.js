@@ -27,6 +27,9 @@ router.get('/online', pages.online)
 // Сраница с открытками
 router.get('/gift', pages.gift)
 
+// Сраница со списком топа недели
+router.get('/top-of-week', pages.topOfWeek)
+
 // Cтраницы со статическим содержимым
 router.use('/', require('./BlogRouter'))
 
