@@ -1,4 +1,3 @@
-const Account = require('../models/Account')
 const service = require('../services/PagesService')
 const log = require('../units/customLog')
 
@@ -76,6 +75,19 @@ class PagesController {
       const data = await service.topOfWeek()
       data.title = 'Топ недели игроков Mafia One'
       res.render('pages/top-of-week', data)
+    } catch (error) {
+      log(error)
+      next()
+    }
+  }
+
+  // Очистить топ недели
+  async clearTopOfWeek(req, res, next) {
+    try {
+      const { secret } = req.params
+      await service.clearTopOfWeek(secret)
+      log('Сброс топа недели')
+      res.send('ok')
     } catch (error) {
       log(error)
       next()

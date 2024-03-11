@@ -30,6 +30,9 @@ router.get('/gift', pages.gift)
 // Сраница со списком топа недели
 router.get('/top-of-week', pages.topOfWeek)
 
+// Ручка очистки топа недели
+router.get('/clear-top-of-week/:secret', pages.clearTopOfWeek)
+
 // Cтраницы со статическим содержимым
 router.use('/', require('./BlogRouter'))
 
