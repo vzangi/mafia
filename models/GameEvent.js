@@ -5,94 +5,97 @@ const Game = require('./Game')
 
 // Типы событий
 const eventTypes = {
-	// Результат игры
-	RESULT: 1,
+  // Результат игры
+  RESULT: 1,
 
-	// Игровое действие
-	ACTION: 2,
+  // Игровое действие
+  ACTION: 2,
 
-	// Игровое событие/факт
-	FACT: 3,
+  // Игровое событие/факт
+  FACT: 3,
 
-	// Баллы за сорев
-	COMPETITION: 4,
+  // Баллы за сорев
+  COMPETITION: 4,
+
+  // Баллы топа недели
+  TOPWEEK: 5,
 }
 
 // Результаты
 const resultEvents = {
-	// Победа
-	WIN: 1,
+  // Победа
+  WIN: 1,
 
-	// Поражение
-	LOOSE: 2,
+  // Поражение
+  LOOSE: 2,
 
-	// Ничья
-	DRAW: 3,
+  // Ничья
+  DRAW: 3,
 
-	// Тайм
-	TIMEOUT: 4,
+  // Тайм
+  TIMEOUT: 4,
 }
 
 // Действия
 const actionEvents = {
-	// Маф убил игрока
-	MAF_KILL: 1,
+  // Маф убил игрока
+  MAF_KILL: 1,
 
-	// Маф промазал
-	MAF_MISS: 2,
+  // Маф промазал
+  MAF_MISS: 2,
 
-	// Маньяк убил игрока
-	MAN_KILL: 3,
+  // Маньяк убил игрока
+  MAN_KILL: 3,
 
-	// Ком нашёл мафа
-	KOM_FIND_MAF: 4,
+  // Ком нашёл мафа
+  KOM_FIND_MAF: 4,
 
-	// Доктор спас от смерти
-	DOC_SAVE: 5,
+  // Доктор спас от смерти
+  DOC_SAVE: 5,
 
-	// Адвокат защитил от посадки
-	ADV_SAVE: 6,
+  // Адвокат защитил от посадки
+  ADV_SAVE: 6,
 
-	// Любовница заморозила игрока
-	LOVER_FREEZ: 7,
+  // Любовница заморозила игрока
+  LOVER_FREEZ: 7,
 }
 
 // Факты
 const factEvents = {
-	// Первая посадка
-	FIRST_ZEK: 1,
+  // Первая посадка
+  FIRST_ZEK: 1,
 
-	// Первый труп
-	FIRST_CORSE: 2,
+  // Первый труп
+  FIRST_CORSE: 2,
 
-	// Первая проверка
-	FIRST_CHECK: 3,
+  // Первая проверка
+  FIRST_CHECK: 3,
 }
 
 const GameEvent = sequelize.define('gameevents', {
-	id: {
-		type: DataTypes.INTEGER,
-		autoIncrement: true,
-		primaryKey: true,
-	},
-	gameId: {
-		type: DataTypes.INTEGER,
-		allowNull: false,
-	},
-	accountId: {
-		type: DataTypes.INTEGER,
-		allowNull: false,
-	},
-	type: {
-		type: DataTypes.INTEGER,
-	},
-	value: {
-		type: DataTypes.INTEGER,
-	},
-	active: {
-		type: DataTypes.BOOLEAN,
-		defaultValue: true,
-	},
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  },
+  gameId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  accountId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  type: {
+    type: DataTypes.INTEGER,
+  },
+  value: {
+    type: DataTypes.INTEGER,
+  },
+  active: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true,
+  },
 })
 
 GameEvent.belongsTo(Account)
