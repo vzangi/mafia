@@ -14,9 +14,9 @@ div(class="block list mb-4")
         div(class="avatar ms-3")
           img(src=`/uploads/${player.avatar}` width=50 height=50)
 
-        div(class="d-flex flex-column justify-content-center flex-grow-1 ms-2")
-          div(class="username")
-            a(href=`/profile/${player.username}` class="ellipsis")
+        div(class="d-flex flex-column justify-content-center flex-grow-1 ms-2 overflow-hidden")
+          div(class="username ellipsis")
+            a(href=`/profile/${player.username}`)
               span= player.username
           if i == 0
             div 

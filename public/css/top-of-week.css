@@ -74,6 +74,10 @@
   align-items: center;
 }
 
+.avatar {
+  flex: none;
+}
+
 .place {
   flex-shrink: 0;
   display: flex;

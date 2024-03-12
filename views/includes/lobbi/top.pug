@@ -3,20 +3,21 @@ div(class="block p-4 mb-4")
     span(class="text-secondary") Топ недели
     a(href="/top-of-week") 
       small Подробнее
+  div
+    each player, i in top 
+      div
+        div(class="top3 player")
 
-  each player, i in top 
-    div(class="top3 player")
+          div(class=`place place-${i+1}`)
+            span= i+1
 
-      div(class=`place place-${i+1}`)
-        span= i+1
+          div(class="d-flex flex-column justify-content-center flex-grow-1 ms-2 overflow-hidden")
+            div(class="username ellipsis")
+              a(href=`/profile/${player.username}`)
+                span= player.username
 
-      div(class="d-flex flex-column justify-content-center flex-grow-1 ms-2")
-        div(class="username")
-          a(href=`/profile/${player.username}` class="ellipsis")
-            span= player.username
-
-      div(class="total ms-2")
-        b= player.total
+          div(class="total ms-2")
+            b= player.total
 
   if !intop
     div(class="mt-2")
