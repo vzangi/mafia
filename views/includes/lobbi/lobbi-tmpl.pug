@@ -1,5 +1,5 @@
 script(id="noFriendsOnlineTmpl" type="text/x-jquery-tmpl")
-  span(class="pt-1 text-secondary no-online-friends") Друзей в онлайне пока нет
+  small(class="pt-1 text-secondary no-online-friends") Друзей в онлайне пока нет
 
 script(id="friendOnlineTmpl" type="text/x-jquery-tmpl")
   div(class="online-friend-box${gameplayers?(gameplayers.length != 0?' in-game':''):''}" data-id="${id}" data-r="${JSON.stringify(this)}")
