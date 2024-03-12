@@ -1314,7 +1314,7 @@ class GameBase {
   }
 
   // Добавление события игры
-  async makeAction(roles, value) {
+  async makeAction(roles, value, inGameIgnore = false) {
     if (this.game.gametypeId == Game.types.CONSTRUCTOR) return
 
     // Событие
@@ -1329,7 +1329,7 @@ class GameBase {
     const players = this.players.filter(
       (p) =>
         roles.indexOf(p.roleId) >= 0 &&
-        p.status == GamePlayer.playerStatuses.IN_GAME
+        (p.status == GamePlayer.playerStatuses.IN_GAME || inGameIgnore)
     )
 
     // Добавляю событие
