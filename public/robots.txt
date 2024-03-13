@@ -14,5 +14,7 @@ Disallow: /profile/things
 Disallow: /profile/statistics/*
 Disallow: /profile/*/friends
 Disallow: /profile/*/things
+Disallow: /game
+Disallow: /game/*
 
 Sitemap: https://mafia-one.com/sitemap.xml
