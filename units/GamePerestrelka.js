@@ -722,7 +722,7 @@ class GamePerestrelka extends GameBase {
 
   // После ночи
   async afterNight() {
-    const { game } = this
+    const { game, players } = this
 
     // Беру все выстрелы мафов
     const shots = await GameStep.findAll({
@@ -732,6 +732,17 @@ class GamePerestrelka extends GameBase {
         stepType: GameStep.stepTypes.NIGHT,
       },
     })
+
+    // Лечение врача
+    const docSave = await GameStep.findOne({
+      where: {
+        gameId: game.id,
+        day: game.day,
+        stepType: GameStep.stepTypes.THERAPY,
+      },
+    })
+
+    let hasSave = false
 
     // Прохожусь по игрокам, в которых были выстрелы мафов
     for (const index in shots) {
@@ -746,6 +757,32 @@ class GamePerestrelka extends GameBase {
           type: GameLife.types.NIGHT,
         },
       })
+
+      // Врач лечил игрока, в которого стрелял маф
+      if (!hasSave && docSave && docSave.playerId == player.accountId) {
+        // Врач может спасать только от одного выстрела
+        hasSave = true
+
+        // Расчитываю велчину ночной жизни
+        const docPower = await AccountThing.getPower(docSave.accountId)
+        const playerPower = await AccountThing.getPower(player.accountId)
+        playerLife.life += Math.ceil((100 + docPower - playerPower) / 4)
+        if (playerLife.life > 100) playerLife.life = 100
+
+        // Увеличиваю уровень ночных жизней
+        await playerLife.save()
+
+        // Уведомляю всех мафов о лечении
+        for (const index in players) {
+          const plr = players[index]
+          if (plr.roleId == Game.roles.MAFIA) {
+            const sockets = this.getUserSocketIds(plr.accountId)
+            sockets.forEach((socket) => {
+              socket.emit('nightlife', player.username, playerLife.life)
+            })
+          }
+        }
+      }
 
       // Игрок убит
       if (playerLife.life == 0) {
@@ -969,8 +1006,13 @@ class GamePerestrelka extends GameBase {
       stepType: GameStep.stepTypes.THERAPY,
     })
 
+    // Расчитываю уровень на который врач может спасти игрока
+    const docPower = await AccountThing.getPower(doc.accountId)
+    const playerPower = await AccountThing.getPower(player.accountId)
+    const save = Math.ceil((100 + docPower - playerPower) / 4)
+
     this.systemLog(
-      `<b>Врач ${doc.username} спасает ${player.username}</b>`,
+      `<b>Врач ${doc.username} пытается спасти ${player.username} на +${save}</b>`,
       GameLog.types.DOC,
       true
     )
