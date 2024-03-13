@@ -8,17 +8,27 @@ div(class="block p-4 mb-4")
       div
         div(class="top3 player")
 
-          div(class=`place place-${i+1}`)
-            span= i+1
+          div(class=`place place-${i+1}`) #[span= i+1]
 
           div(class="d-flex flex-column justify-content-center flex-grow-1 ms-2 overflow-hidden")
             div(class="username ellipsis")
-              a(href=`/profile/${player.username}`)
-                span= player.username
+              a(href=`/profile/${player.username}`)= player.username
 
-          div(class="total ms-2")
-            b= player.total
+          div(class="total ms-2") #[b= player.total]
 
   if !intop
     div(class="mt-2")
       small(class="text-secondary") Вы не входите в топ игроков недели — сначала выиграйте соревновательный матч.
+
+  if place
+    div(class="dots ms-3 text-secondary") ...
+    div
+      div(class="top3 player")
+
+        div(class=`place place-${place}`) #[span= place]
+
+        div(class="d-flex flex-column justify-content-center flex-grow-1 ms-2 overflow-hidden")
+          div(class="username ellipsis")
+            a(href=`/profile/${playerInTop.username}`)= playerInTop.username
+
+        div(class="total ms-2") #[b= playerInTop.total]

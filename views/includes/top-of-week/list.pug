@@ -8,25 +8,39 @@ div(class="block list mb-4")
     each player,i in top 
       div(class="line player")
 
-        div(class=`place place-${i+1}`)
-          span= i+1
+        div(class=`place place-${i+1}`) #[span= i+1]
 
-        div(class="avatar ms-3")
-          img(src=`/uploads/${player.avatar}` width=50 height=50)
+        div(class="avatar ms-3") #[img(src=`/uploads/${player.avatar}`)]
 
         div(class="d-flex flex-column justify-content-center flex-grow-1 ms-2 overflow-hidden")
           div(class="username ellipsis")
-            a(href=`/profile/${player.username}`)
-              span= player.username
+            a(href=`/profile/${player.username}`)= player.username
           if i == 0
-            div 
-              small(class="text-secondary") 600 р.
+            div #[small(class="text-secondary") 600 р.]
           if i == 1
-            div 
-              small(class="text-secondary") 300 р.
+            div #[small(class="text-secondary") 300 р.]
           if i == 2
-            div 
-              small(class="text-secondary") 100 р.
+            div #[small(class="text-secondary") 100 р.]
 
-        div(class="total ms-3")
-          b= player.total
+        div(class="total ms-3") #[b= player.total]
+
+    if place 
+      div(class="line ms-3 text-secondary") ...
+
+      div(class="line player")
+
+        div(class=`place place-${place}`) #[span= place]
+
+        div(class="avatar ms-3") #[img(src=`/uploads/${playerInTop.avatar}`)]
+
+        div(class="d-flex flex-column justify-content-center flex-grow-1 ms-2 overflow-hidden")
+          div(class="username ellipsis")
+            a(href=`/profile/${playerInTop.username}`)= playerInTop.username
+          if i == 0
+            div #[small(class="text-secondary") 600 р.]
+          if i == 1
+            div #[small(class="text-secondary") 300 р.]
+          if i == 2
+            div #[small(class="text-secondary") 100 р.]
+
+        div(class="total ms-3") #[b= playerInTop.total]

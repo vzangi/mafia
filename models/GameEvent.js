@@ -133,4 +133,12 @@ GameEvent.resultEvents = resultEvents
 GameEvent.actionEvents = actionEvents
 GameEvent.factEvents = factEvents
 
+GameEvent.positionInTop = async (accountId) => {
+  const list = await GameEvent.scope('top').findAll()
+  for (const index in list) {
+    if (list[index].accountId == accountId) return [index * 1 + 1, list[index]]
+  }
+  return [null, null]
+}
+
 module.exports = GameEvent
