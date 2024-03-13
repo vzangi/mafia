@@ -3,6 +3,16 @@ User-agent: *
 Disallow: /login
 Disallow: /registration
 Disallow: /restore
+Disallow: /users
 Disallow: /games/current
 Disallow: /games/archive
-Disallow: /profile/statistic
+Disallow: /profile/wallet
+Disallow: /profile/settings
+Disallow: /profile/notifications
+Disallow: /profile/friends
+Disallow: /profile/things
+Disallow: /profile/statistics/*
+Disallow: /profile/*/friends
+Disallow: /profile/*/things
+
+Sitemap: https://mafia-one.com/sitemap.xml
