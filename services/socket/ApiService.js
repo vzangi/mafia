@@ -71,7 +71,7 @@ class ApiService extends BaseService {
     const inGame = await this._inGame(user)
 
     if (inGame) {
-      throw new Error('Нельзя менять ник во время игры')
+      throw new Error('Нельзя менять ник пока вы находитесь в заявке или игре')
     }
 
     const nik = newnik.trim()
@@ -217,6 +217,7 @@ class ApiService extends BaseService {
         status: [
           GamePlayer.playerStatuses.IN_GAME,
           GamePlayer.playerStatuses.FREEZED,
+          GamePlayer.playerStatuses.WHAITNG,
         ],
       },
     })
