@@ -39,7 +39,7 @@ class GameBase {
     this.periodInterval = 120
 
     // время перехода для комиссара
-    this.perehodInterval = 6
+    this.perehodInterval = 3
 
     // Мутекс для воркера
     this.workerMutex = true

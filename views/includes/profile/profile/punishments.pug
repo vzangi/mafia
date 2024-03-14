@@ -2,59 +2,62 @@ hr
 -var ptypes=['','Мут','Создание заявок','Участие в играх', 'Вход на сайт', 'Жалобы']
 -var ctypes=['','Мат','Флуд','Оскорбление', 'Мат', 'Флуд', 'Оскорбление', 'Мультоводство', 'Слив игры']
 -var pclasses=['','info','warning','danger','dark','primary']
-if punishments
-  if punishments.length == 0
-    p Запретов не было
-  else
-    div(class="d-flex justify-content-between")
-      h3 Запреты
-      div 
-        button(class="btn btn-dark btn-sm show-all-punish") Показать все 
-        button(class="btn btn-primary btn-sm ms-1 btn-show-punish-form" title="Создать запрет" data-bs-toggle="tooltip" data-bs-placement="bottom")
-          span(class="bi bi-plus")
-    div(class="punishments")
-      table(class="table table-striped table-hover")
-        thead 
-          tr 
-            th Тип заперта
-            th Период
-            th Комментарий
-            th
-        tbody
-          each punishment, index in punishments
-            tr(class="punish"+(punishment.current?'':' hide')+" table-"+(pclasses[punishment.type]) data-id=punishment.id)
-              td= ptypes[punishment.type]
-              td
-                span= punishment.createdAt.toLocaleString('ru-RU')
-                br
-                span= punishment.untilAt.toLocaleString('ru-RU')
-              td= punishment.comment
-              td 
-                button(class="btn btn-sm btn-danger remove-punish" data-id=punishment.id title="Удалить" data-bs-toggle="tooltip" data-bs-placement="left")
-                  span(class="bi bi-x-lg")
-            tr(style="display:none" class="table-"+(pclasses[punishment.type]))
-              td(colspan='4')
-                table(class="table")
-                  thead 
+
+div(class="d-flex justify-content-between")
+  h3 Запреты
+  div 
+    if punishments && punishments.length != 0
+      button(class="btn btn-dark btn-sm show-all-punish") Показать все 
+    button(class="btn btn-primary btn-sm ms-1 btn-show-punish-form" title="Создать запрет" data-bs-toggle="tooltip" data-bs-placement="bottom")
+      span(class="bi bi-plus")
+
+
+if punishments && punishments.length == 0
+  p Запретов не было
+else
+  div(class="punishments")
+    table(class="table table-striped table-hover")
+      thead 
+        tr 
+          th Тип заперта
+          th Период
+          th Комментарий
+          th
+      tbody
+        each punishment, index in punishments
+          tr(class="punish"+(punishment.current?'':' hide')+" table-"+(pclasses[punishment.type]) data-id=punishment.id)
+            td= ptypes[punishment.type]
+            td
+              span= punishment.createdAt.toLocaleString('ru-RU')
+              br
+              span= punishment.untilAt.toLocaleString('ru-RU')
+            td= punishment.comment
+            td 
+              button(class="btn btn-sm btn-danger remove-punish" data-id=punishment.id title="Удалить" data-bs-toggle="tooltip" data-bs-placement="left")
+                span(class="bi bi-x-lg")
+          tr(style="display:none" class="table-"+(pclasses[punishment.type]))
+            td(colspan='4')
+              table(class="table")
+                thead 
+                  tr
+                    th Тип жалобы
+                    th Отправитель
+                    th Время
+                    if punishment.type != 1
+                      th Игра
+                    th Контекст
+                tbody
+                  each claim, index in punishment.claims
                     tr
-                      th Тип жалобы
-                      th Отправитель
-                      th Время
+                      td= ctypes[claim.type]
+                      td
+                        a(href="/profile/"+claim.account.username target="_blank")= claim.account.username
+                      td= claim.createdAt.toLocaleString('ru-RU')
                       if punishment.type != 1
-                        th Игра
-                      th Контекст
-                  tbody
-                    each claim, index in punishment.claims
-                      tr
-                        td= ctypes[claim.type]
                         td
-                          a(href="/profile/"+claim.account.username target="_blank")= claim.account.username
-                        td= claim.createdAt.toLocaleString('ru-RU')
-                        if punishment.type != 1
-                          td
-                            if claim.gameId 
-                              a(href="/game/"+claim.gameId target="_blank")= claim.gameId
-                        td= claim.comment
+                          if claim.gameId 
+                            a(href="/game/"+claim.gameId target="_blank")= claim.gameId
+                      td= claim.comment
 
 
 div(class="modal fade" id="punishForm" tabindex="-1")

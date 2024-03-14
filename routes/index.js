@@ -16,7 +16,7 @@ module.exports = (app) => {
 
   // Глобальный обработчик при возникновении ошибок
   app.use((err, req, res, next) => {
-    console.error(err)
+    console.error(new Date().toLocaleString('ru-Ru'), err.message)
     res.status(404).render('pages/404')
   })
 }
