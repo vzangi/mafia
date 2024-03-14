@@ -373,44 +373,46 @@ class ProfileService {
   }
 
   // Данные для страницы инвентаря
-  async inventory(username, curAccount) {
+  async inventory(username, user) {
     const profile = await Account.findOne({ where: { username } })
     if (!profile) {
       throw new Error('Пользователь с таким ником не найден')
     }
 
-    const hideinvent = await AccountSetting.getHideInventSetting(profile.id)
+    if (!user || user.id != profile.id) {
+      const hideinvent = await AccountSetting.getHideInventSetting(profile.id)
 
-    // Если инвентарь виден только друзьям
-    if (hideinvent == 1) {
-      if (!curAccount) {
-        throw new Error(`Доступ в инвентарь ${username} закрыт`)
+      // Если инвентарь виден только друзьям
+      if (hideinvent == 1) {
+        if (!user) {
+          throw new Error(`Доступ в инвентарь ${username} закрыт`)
+        }
+
+        const isFriends = await Friend.findOne({
+          where: {
+            accountId: user.id,
+            friendId: profile.id,
+          },
+          order: [['id', 'DESC']],
+        })
+
+        if (!isFriends) {
+          throw new Error(
+            `Доступ в инвентарь ${username} закрыт для ${user.id}`
+          )
+        }
       }
 
-      const isFriends = await Friend.findOne({
-        where: {
-          accountId: curAccount.id,
-          friendId: profile.id,
-        },
-        order: [['id', 'DESC']],
-      })
+      if (hideinvent == 2) {
+        if (!user) {
+          throw new Error(`Доступ в инвентарь ${username} закрыт`)
+        }
 
-      if (!isFriends) {
-        throw new Error(
-          `Доступ в инвентарь ${username} закрыт для ${curAccount.username}`
-        )
-      }
-    }
-
-    if (hideinvent == 2) {
-      if (!curAccount) {
-        throw new Error(`Доступ в инвентарь ${username} закрыт`)
-      }
-
-      if (username != curAccount.username) {
-        throw new Error(
-          `Доступ в инвентарь ${username} закрыт для ${curAccount.username}`
-        )
+        if (profile.id != user.id) {
+          throw new Error(
+            `Доступ в инвентарь ${username} закрыт для ${user.id}`
+          )
+        }
       }
     }
 

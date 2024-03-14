@@ -153,8 +153,8 @@ class ProfileController {
   async inventory(req, res) {
     try {
       const { username } = req.params
-      const { account } = req
-      const data = await service.inventory(username, account)
+      const { user } = req
+      const data = await service.inventory(username, user)
       res.render('pages/profile/inventory', data)
     } catch (error) {
       log(error)
