@@ -8,6 +8,7 @@ const Notification = require('../../models/Notification')
 const WalletEvents = require('../../models/WalletEvents')
 const BaseService = require('./BaseService')
 const Punishment = require('../../models/Punishment')
+const AccountSetting = require('../../models/AccountSetting')
 
 class ApiService extends BaseService {
   // Список пользователей по части ника
@@ -206,6 +207,7 @@ class ApiService extends BaseService {
     return friends
   }
 
+  // Проверяю находится ли игрок в партии или заявке
   async _inGame(user) {
     if (!user) {
       throw new Error('Не авторизован')
@@ -227,6 +229,7 @@ class ApiService extends BaseService {
     return false
   }
 
+  // Получение нотификаций
   async getNotifies(lastId) {
     const { user } = this
     if (!user) {
@@ -245,6 +248,18 @@ class ApiService extends BaseService {
     })
 
     return notifies
+  }
+
+  // Скрытие или отображение инвентаря
+  async inventorySetting(value) {
+    const { user } = this
+    if (!user) {
+      throw new Error('Не авторизован')
+    }
+
+    await AccountSetting.setHideInventSetting(user.id, value)
+
+    return true
   }
 }
 

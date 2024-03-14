@@ -20,9 +20,16 @@ div(class="block")
         label(class="form-label") Почта
         input(class="form-control" disabled value=currentAccount.email)
 
-      div 
+      div(class="mb-3")
         label(class="form-label") Пол
         select(class="form-control" id="gender")
           option(value="0") Не указан
           option(value="1" selected=currentAccount.gender==1) Мужской
           option(value="2" selected=currentAccount.gender==2) Женский
+
+      div 
+        label(class="form-label") Инвентарь
+        select(class="form-control" id="inventhide")
+          option(value="0") Виден всем
+          option(value="1" selected=hideinvent==1) Виден только друзьям
+          option(value="2" selected=hideinvent==2) Скрыт для всех

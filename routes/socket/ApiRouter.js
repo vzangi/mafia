@@ -24,4 +24,7 @@ module.exports = (io, socket) => {
 
   // Получение нотификаций
   socket.on('notifies.get', controller.getNotifies.bind(controller))
+
+  // Скрытие или отображение инвентаря
+  socket.on('setting.hideinvent', controller.inventorySetting.bind(controller))
 }

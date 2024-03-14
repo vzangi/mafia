@@ -4,6 +4,8 @@ const ThingType = require('../models/ThingType')
 const Thing = require('../models/Thing')
 const Trade = require('../models/Trade')
 const TradeItem = require('../models/TradeItem')
+const AccountSetting = require('../models/AccountSetting')
+const Friend = require('../models/Friend')
 
 class TradeService {
   // Данные страницы нового обмена
@@ -20,6 +22,30 @@ class TradeService {
 
     if (!vizavi) {
       throw new Error('Игрок с таким ником не найден')
+    }
+
+    const hideinvent = await AccountSetting.getHideInventSetting(vizavi.id)
+
+    if (hideinvent == 2) {
+      throw new Error(
+        `Обмены с ${vizavi.username} не доступны для ${account.username}`
+      )
+    }
+
+    if (hideinvent == 1) {
+      const isFriends = await Friend.findOne({
+        where: {
+          accountId: account.id,
+          friendId: vizavi.id,
+        },
+        order: [['id', 'DESC']],
+      })
+
+      if (!isFriends) {
+        throw new Error(
+          `Обмены с ${vizavi.username} не доступны для ${account.username}`
+        )
+      }
     }
 
     // Мои вещи из инвентаря
