@@ -3,87 +3,98 @@ const Payment = require('../models/Payment')
 const WalletEvent = require('../models/WalletEvents')
 
 class YooKassaService {
-  // Пришёл ответ от ЮМоney на тестовую оплату
-  async testResponse(data) {
-    if (!data) throw new Error('No data')
+	// Пришёл ответ от ЮМоney на тестовую оплату
+	async testResponse(data) {
+		if (!data) throw new Error('No data')
 
-    const { event, object } = data
+		const { event, object } = data
 
-    if (!event || !object) throw new Error('No data')
-    if (event != 'payment.succeeded')
-      throw new Error(`Статус нотификации: ${event}`)
+		if (!event || !object) throw new Error('No data')
+		if (event != 'payment.succeeded')
+			throw new Error(`Статус нотификации: ${event}`)
 
-    const { id, status } = object
+		const { id, status } = object
 
-    if (!status || !id) throw new Error('No data')
-    if (status != 'succeeded') throw new Error(`Статус оплаты: ${status}`)
+		if (!status || !id) throw new Error('No data')
+		if (status != 'succeeded') throw new Error(`Статус оплаты: ${status}`)
 
-    const payment = await Payment.findOne({ where: { pid: id } })
+		const payment = await Payment.findOne({ where: { pid: id } })
 
-    if (!payment) throw new Error('Платёж не найден')
+		if (!payment) throw new Error('Платёж не найден')
 
-    if (payment.status == status)
-      throw new Error(`Платёж #${id} ранее уже был проведён`)
+		if (payment.status == status)
+			throw new Error(`Платёж #${id} ранее уже был проведён`)
 
-    // Сохраняю статус платежа
-    payment.status = status
-    await payment.save()
+		// Сохраняю статус платежа
+		payment.status = status
+		await payment.save()
 
-    const { accountId, amount } = payment
+		const { accountId, amount } = payment
 
-    // Зачисляю средства на счёт
-    //await WalletEvent.payment(accountId, amount)
+		// Зачисляю средства на счёт
+		//await WalletEvent.payment(accountId, amount)
 
-    const message = `Ваш кошелёк пополнен на ${amount} рублей`
+		const message = `Ваш кошелёк пополнен на ${amount} рублей`
 
-    // Отправляю нотификацию
-    const newNotify = await Notification.create({
-      accountId,
-      message,
-      level: 1,
-    })
-  }
+		// Отправляю нотификацию
+		const newNotify = await Notification.create({
+			accountId,
+			message,
+			level: 1,
+		})
+	}
 
-  // Пришёл ответ от ЮМоney на оплату
-  async response(data) {
-    if (!data) throw new Error('No data')
+	// Пришёл ответ от ЮМоney на оплату
+	async response(data) {
+		if (!data) throw new Error('No data')
 
-    const { event, object } = data
+		const { event, object } = data
 
-    if (!event || !object) throw new Error('No data')
-    if (event != 'payment.succeeded')
-      throw new Error(`Статус нотификации: ${event}`)
+		if (!event || !object) throw new Error('No data')
+		const { id, status } = object
 
-    const { id, status } = object
+		// Если статус - отменён
+		if (event == 'payment.canceled') {
+			await Payment.update(
+				{
+					status: 'canceled',
+				},
+				{ where: { pid: id } }
+			)
+			return
+		}
 
-    if (!status || !id) throw new Error('No data')
-    if (status != 'succeeded') throw new Error(`Статус оплаты: ${status}`)
+		if (event != 'payment.succeeded')
+			throw new Error(`Статус нотификации: ${event}`)
 
-    const payment = await Payment.findOne({ where: { pid: id } })
+		if (!status || !id) throw new Error('No data')
+		if (status != 'succeeded') throw new Error(`Статус оплаты: ${status}`)
 
-    if (!payment) throw new Error('Платёж не найден')
+		const payment = await Payment.findOne({ where: { pid: id } })
 
-    if (payment.status == status)
-      throw new Error(`Платёж #${id} ранее уже был проведён`)
+		if (!payment) throw new Error('Платёж не найден')
 
-    // Сохраняю статус платежа
-    payment.status = status
-    await payment.save()
+		if (payment.status == status)
+			throw new Error(`Платёж #${id} ранее уже был проведён`)
 
-    const { accountId, amount } = payment
+		// Сохраняю статус платежа
+		payment.status = status
+		await payment.save()
 
-    // Зачисляю средства на счёт
-    await WalletEvent.payment(accountId, amount)
+		const { accountId, amount } = payment
 
-    const message = `Ваш кошелёк пополнен на ${amount} рублей`
+		// Зачисляю средства на счёт
+		await WalletEvent.payment(accountId, amount)
 
-    // Отправляю нотификацию
-    const newNotify = await Notification.create({
-      accountId,
-      message,
-      level: 1,
-    })
-  }
+		const message = `Ваш кошелёк пополнен на ${amount} рублей`
+
+		// Отправляю нотификацию
+		const newNotify = await Notification.create({
+			accountId,
+			message,
+			level: 1,
+		})
+	}
 }
 
 module.exports = new YooKassaService()
