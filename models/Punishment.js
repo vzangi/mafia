@@ -9,6 +9,7 @@ const types = {
   NO_PLAYING: 3, // Запрет на игры
   NO_LOGIN: 4, // Запрет на вход
   NO_CLAIM: 5, // Запрет на жалобы
+  NO_AVATAR: 6, // Запрет на установку аватара
 }
 
 const Punishment = sequelize.define('punishments', {

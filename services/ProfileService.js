@@ -21,6 +21,7 @@ const GamePlayer = require('../models/GamePlayer')
 const Role = require('../models/Role')
 const Game = require('../models/Game')
 const AccountSetting = require('../models/AccountSetting')
+const { getCoolDateTime } = require('../units/helpers')
 
 class ProfileService {
   async profileInfo(profile, currentUser) {
@@ -280,6 +281,24 @@ class ProfileService {
 
   async changeAvatar(account, avatar) {
     if (!account || !avatar) throw new Error('Нет необходимых данных')
+
+    const hasAvatarPunish = await Punishment.findOne({
+      where: {
+        accountId: account.id,
+        type: Punishment.types.NO_AVATAR,
+        untilAt: {
+          [Op.gte]: new Date().toISOString(),
+        },
+      },
+    })
+
+    if (hasAvatarPunish) {
+      throw new Error(
+        `У вас действет запрет на смену аватарки до ${getCoolDateTime(
+          hasAvatarPunish.untilAt
+        )}`
+      )
+    }
 
     let ext = ''
     if (avatar.mimetype == 'image/jpeg') ext = 'jpg'
