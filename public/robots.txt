@@ -4,8 +4,7 @@ Disallow: /login
 Disallow: /registration
 Disallow: /restore
 Disallow: /users
-Disallow: /games/current
-Disallow: /games/archive
+Disallow: /market/my
 Disallow: /profile/wallet
 Disallow: /profile/settings
 Disallow: /profile/notifications
@@ -14,7 +13,8 @@ Disallow: /profile/things
 Disallow: /profile/statistics/*
 Disallow: /profile/*/friends
 Disallow: /profile/*/things
-Disallow: /game
+Disallow: /games/current
+Disallow: /games/archive
 Disallow: /game/*
 Disallow: /*?*
 
