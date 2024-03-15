@@ -1553,7 +1553,9 @@ class GameBase {
       Игрок начал что-то печатать в чате
       ================================== */
   typingBegin(userId) {
-    const { typingUsers } = this
+    const { typingUsers, game } = this
+
+    if (game.period == Game.periods.NIGHT) return
 
     // Беру игрока из списка участвующих в игре
     const player = this.getPlayerById(userId)
