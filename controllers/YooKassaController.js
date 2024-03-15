@@ -13,6 +13,18 @@ class YooKassaController {
       next(error)
     }
   }
+
+  // Пришёл ответ от ЮМоney на оплату
+  async response(req, res, next) {
+    try {
+      const { body } = req
+      await service.response(body)
+      res.send('ok')
+    } catch (error) {
+      log(error)
+      next(error)
+    }
+  }
 }
 
 module.exports = new YooKassaController()
