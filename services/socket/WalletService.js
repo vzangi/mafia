@@ -1,6 +1,7 @@
 const { Op } = require('sequelize')
 const Account = require('../../models/Account')
 const Thing = require('../../models/Thing')
+const Payment = require('../../models/Payment')
 const WalletEvent = require('../../models/WalletEvents')
 const bot = require('../../units/bot')
 const BaseService = require('./BaseService')
@@ -16,7 +17,7 @@ const maxTransferSumm = 5000
 class WalletService extends BaseService {
   // Пополнение счёта
   async payment(payData) {
-    const { sum, method } = payData
+    let { sum, method } = payData
     const { user } = this
     if (!user) throw new Error('Не авторизован')
 
@@ -35,12 +36,15 @@ class WalletService extends BaseService {
     // await WalletEvent.payment(user.id, sum)
   }
 
+  // Запрос к YooKassa на создание платежа
   async _YooKassaRequest(payData) {
     const { sum, accountId } = payData
 
     const account = await Account.findByPk(accountId)
 
     if (!account) throw new Error('Аккаунт не найден')
+
+    const url = 'https://api.yookassa.ru/v3/payments'
 
     const payload = {
       amount: {
@@ -57,7 +61,6 @@ class WalletService extends BaseService {
 
     const storeId = process.env.STORE_ID
     const secretKey = process.env.PAYMENT_SECRET_KEY
-    const url = 'https://api.yookassa.ru/v3/payments'
     const ikey = `${accountId}-${this._v4rnd()}-${this._v4rnd()}`
 
     const options = {
@@ -76,9 +79,25 @@ class WalletService extends BaseService {
 
     const { data } = await axios.post(url, payload, options)
 
+    const { id, status, amount, description, confirmation } = data
+
+    if (!id || !confirmation) {
+      throw new Error('Что-то пошло не так')
+    }
+
+    const payment = {
+      accountId,
+      pid: id,
+      status,
+      description,
+      amount: amount.value * 1,
+    }
+
+    await Payment.create(payment)
+
     console.log(data)
 
-    return data
+    return confirmation.confirmation_url
   }
 
   _v4rnd() {

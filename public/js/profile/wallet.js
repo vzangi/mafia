@@ -49,11 +49,11 @@ $(function () {
     const method = 1 // Способ оплаты
     if (sum < 50 || sum > 15000) return false
 
-    socket.emit('payment', sum, method, async (res) => {
-      if (res.status != 0) {
-        return await alert(res.msg)
-      }
-      location.reload()
+    socket.emit('payment', { sum, method }, (res) => {
+      const { status, msg, url } = res
+      if (status != 0) return alert(res.msg)
+
+      location.href = url
     })
   })
 

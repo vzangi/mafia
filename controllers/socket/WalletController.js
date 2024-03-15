@@ -6,8 +6,8 @@ class WalletController extends BaseSocketController {
   // Пополнение счёта
   async payment(payData, callback) {
     try {
-      const response = await this.service.payment(payData)
-      callback({ status: 0, response })
+      const url = await this.service.payment(payData)
+      callback({ status: 0, url })
     } catch (error) {
       callback({ status: 1, msg: error.message })
     }
