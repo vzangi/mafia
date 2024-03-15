@@ -5,8 +5,6 @@ const WalletEvent = require('../models/WalletEvents')
 class YooKassaService {
   // Пришёл ответ от ЮМоney на тестовую оплату
   async testResponse(data) {
-    console.log(data)
-
     if (!data) throw new Error('No data')
 
     const { event, object } = data

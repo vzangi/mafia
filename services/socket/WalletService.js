@@ -32,8 +32,6 @@ class WalletService extends BaseService {
     const data = await this._YooKassaRequest(payData)
 
     return data
-
-    // await WalletEvent.payment(user.id, sum)
   }
 
   // Запрос к YooKassa на создание платежа
@@ -75,8 +73,6 @@ class WalletService extends BaseService {
       },
     }
 
-    console.log(payload, options)
-
     const { data } = await axios.post(url, payload, options)
 
     const { id, status, amount, description, confirmation } = data
@@ -94,8 +90,6 @@ class WalletService extends BaseService {
     }
 
     await Payment.create(payment)
-
-    console.log(data)
 
     return confirmation.confirmation_url
   }
