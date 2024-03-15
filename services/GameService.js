@@ -161,7 +161,8 @@ class GameService {
 
 	// Текущие игры
 	async current() {
-		const games = await Game.findAll({
+		const data = {}
+		data.games = await Game.findAll({
 			where: {
 				status: Game.statuses.STARTED,
 			},
@@ -190,11 +191,16 @@ class GameService {
 			],
 		})
 
-		return games
+		data.title = 'Текущие игры Мафии идущие онлайн'
+		data.description =
+			'На этой странице вы найдёте список онлайн игр идущих в прямом эфире.'
+
+		return data
 	}
 
 	// Архив игр
 	async archive(year, month, day) {
+		const data = {}
 		const date = new Date()
 		if (!year && !month && !day) {
 			year = date.getFullYear()
@@ -208,7 +214,7 @@ class GameService {
 			throw new Error('Неверный формат даты')
 		}
 
-		const games = await Game.findAll({
+		data.games = await Game.findAll({
 			where: {
 				status: [Game.statuses.ENDED, Game.statuses.STOPPED],
 				startedAt: {
@@ -240,12 +246,13 @@ class GameService {
 			],
 		})
 
-		const data = {
-			games,
-			year,
-			month,
-			day,
-		}
+		data.year = year
+		data.month = month
+		data.day = day
+
+		data.title = 'Архив поединков онлайн игры Мафия'
+		data.description =
+			'На этой странице вы найдёте список прошедших игр онлайн проекта Mafia One.'
 
 		return data
 	}

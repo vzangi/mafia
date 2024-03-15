@@ -31,8 +31,8 @@ class GameController {
 	// Текущие игры
 	async current(req, res, next) {
 		try {
-			const games = await service.current()
-			res.render('pages/game/current', { games })
+			const data = await service.current()
+			res.render('pages/game/current', data)
 		} catch (error) {
 			log(error)
 			next(error)
