@@ -5,6 +5,7 @@ module.exports = (app) => {
   app.use('/market', require('./MarketRouter'))
   app.use('/trades', require('./TradeRouter'))
   app.use('/', require('./GameRouter'))
+  app.use('/', require('./YooKassaRouter'))
 
   app.use('/gift', require('./admin/GiftsRouter'))
   app.use('/market', require('./admin/MarketRouter'))

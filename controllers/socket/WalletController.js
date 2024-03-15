@@ -4,10 +4,10 @@ const Service = require('../../services/socket/WalletService')
 
 class WalletController extends BaseSocketController {
   // Пополнение счёта
-  async payment(sum, method, callback) {
+  async payment(payData, callback) {
     try {
-      await this.service.payment(sum, method)
-      callback({ status: 0, msg: `Кошелёк пополнен на ${sum} рублей` })
+      const response = await this.service.payment(payData)
+      callback({ status: 0, response })
     } catch (error) {
       callback({ status: 1, msg: error.message })
     }

@@ -5,6 +5,7 @@ const WalletEvent = require('../../models/WalletEvents')
 const bot = require('../../units/bot')
 const BaseService = require('./BaseService')
 const htmlspecialchars = require('htmlspecialchars')
+const axios = require('axios')
 
 const minPaymentSumm = 50
 const maxPaymentSumm = 15000
@@ -14,20 +15,74 @@ const maxTransferSumm = 5000
 
 class WalletService extends BaseService {
   // Пополнение счёта
-  async payment(sum, method) {
+  async payment(payData) {
+    const { sum, method } = payData
     const { user } = this
-    if (!user) {
-      throw new Error('Не авторизован')
-    }
+    if (!user) throw new Error('Не авторизован')
 
     sum = sum * 1
-    if (sum < minPaymentSumm || sum > maxPaymentSumm) {
+    if (sum < minPaymentSumm || sum > maxPaymentSumm)
       throw new Error('Неверная сумма')
+
+    if (user.id != 1) throw new Error('Скоро...')
+
+    payData.accountId = user.id
+
+    const data = await this._YooKassaRequest(payData)
+
+    return data
+
+    // await WalletEvent.payment(user.id, sum)
+  }
+
+  async _YooKassaRequest(payData) {
+    const { sum, accountId } = payData
+
+    const account = await Account.findByPk(accountId)
+
+    if (!account) throw new Error('Аккаунт не найден')
+
+    const payload = {
+      amount: {
+        value: sum,
+        currency: 'RUB',
+      },
+      capture: true,
+      confirmation: {
+        type: 'redirect',
+        return_url: 'https://mafia-one.com/return_url',
+      },
+      description: `Пополнение кошелька ${account.username} на ${sum} руб.`,
     }
 
-    throw new Error('Лафа кончилась)')
+    const storeId = process.env.STORE_ID
+    const secretKey = process.env.PAYMENT_SECRET_KEY
+    const url = 'https://api.yookassa.ru/v3/payments'
+    const ikey = `${accountId}-${this._v4rnd()}-${this._v4rnd()}`
 
-    await WalletEvent.payment(user.id, sum)
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Idempotence-Key': ikey,
+      },
+      auth: {
+        username: storeId,
+        password: secretKey,
+      },
+    }
+
+    console.log(payload, options)
+
+    const { data } = await axios.post(url, payload, options)
+
+    console.log(data)
+
+    return data
+  }
+
+  _v4rnd() {
+    return Math.ceil(Math.random() * 1000)
   }
 
   // Последние транзакции
