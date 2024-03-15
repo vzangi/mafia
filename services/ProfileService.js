@@ -62,8 +62,8 @@ class ProfileService {
     if (currentUser) {
       data.isFrends = await Friend.findOne({
         where: {
-          accountId: currentUser.id,
-          friendId: profile.id,
+          accountId: profile.id,
+          friendId: currentUser.id,
         },
         order: [['id', 'DESC']],
       })
@@ -390,8 +390,8 @@ class ProfileService {
 
         const isFriends = await Friend.findOne({
           where: {
-            accountId: user.id,
-            friendId: profile.id,
+            accountId: profile.id,
+            friendId: user.id,
           },
           order: [['id', 'DESC']],
         })

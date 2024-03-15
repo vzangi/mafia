@@ -35,8 +35,8 @@ class TradeService {
     if (hideinvent == 1) {
       const isFriends = await Friend.findOne({
         where: {
-          accountId: account.id,
-          friendId: vizavi.id,
+          accountId: vizavi.id,
+          friendId: account.id,
         },
         order: [['id', 'DESC']],
       })
