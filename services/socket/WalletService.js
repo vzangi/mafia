@@ -54,7 +54,7 @@ class WalletService extends BaseService {
       capture: true,
       confirmation: {
         type: 'redirect',
-        return_url: 'https://mafia-one.com/return_url',
+        return_url: 'https://mafia-one.com/profile/wallet',
       },
       description: `Пополнение кошелька ${account.username} на ${sum} руб.`,
     }
