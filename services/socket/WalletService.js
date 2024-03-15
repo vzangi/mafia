@@ -25,7 +25,7 @@ class WalletService extends BaseService {
     if (sum < minPaymentSumm || sum > maxPaymentSumm)
       throw new Error('Неверная сумма')
 
-    if (user.id > 4) throw new Error('Скоро...')
+    if (user.id > 1) throw new Error('Скоро...')
 
     payData.accountId = user.id
 
