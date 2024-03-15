@@ -52,6 +52,22 @@ class WalletService extends BaseService {
         type: 'redirect',
         return_url: 'https://mafia-one.com/profile/wallet',
       },
+      receipt: {
+        customer: {
+          email: account.email,
+        },
+        items: [
+          {
+            description: 'Пополнение кошелька',
+            amount: {
+              value: sum,
+              currency: 'RUB',
+            },
+            vat_code: 1,
+            quantity: 1,
+          },
+        ],
+      },
       description: `Пополнение кошелька ${account.username} на ${sum} руб.`,
     }
 
