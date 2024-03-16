@@ -32,7 +32,8 @@ script(src="/js/helper/alert.js")
 script(src="/js/vendor/jquery.tmpl.js")
 script(src="/js/base.js")
 
-include ./metrika
+if !currentAccount || (currentAccount && currentAccount.id != 1)
+    include ./metrika
 
 include ./message-tmpl
 
