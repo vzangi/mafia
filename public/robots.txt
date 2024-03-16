@@ -5,7 +5,7 @@ Disallow: /registration
 Disallow: /restore
 Disallow: /users
 Disallow: /market/my
-Disallow: /gift/groups
+Disallow: /gift/group*
 Disallow: /profile/wallet
 Disallow: /profile/settings
 Disallow: /profile/notifications
