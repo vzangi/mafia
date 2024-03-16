@@ -215,6 +215,10 @@ class ProfileService {
 	}
 
 	async friendsRequest(account) {
+		if (!account) {
+			throw new Error('Не авторизован')
+		}
+
 		const requests = await Friend.scope({
 			method: ['requests', account.id],
 		}).findAll()

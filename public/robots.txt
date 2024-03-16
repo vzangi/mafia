@@ -8,7 +8,7 @@ Disallow: /market/my
 Disallow: /profile/wallet
 Disallow: /profile/settings
 Disallow: /profile/notifications
-Disallow: /profile/friends
+Disallow: /profile/friends*
 Disallow: /profile/things
 Disallow: /profile/statistics/*
 Disallow: /profile/*/friends
