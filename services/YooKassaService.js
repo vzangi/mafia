@@ -10,9 +10,10 @@ class YooKassaService {
 		const { event, object } = data
 
 		if (!event || !object) throw new Error('No data')
-		if (event != 'payment.succeeded')
+		if (event != 'payment.succeeded') {
+			console.log(data)
 			throw new Error(`Статус нотификации: ${event}`)
-
+		}
 		const { id, status } = object
 
 		if (!status || !id) throw new Error('No data')
@@ -64,8 +65,10 @@ class YooKassaService {
 			return
 		}
 
-		if (event != 'payment.succeeded')
+		if (event != 'payment.succeeded') {
+			console.log(data)
 			throw new Error(`Статус нотификации: ${event}`)
+		}
 
 		if (!status || !id) throw new Error('No data')
 		if (status != 'succeeded') throw new Error(`Статус оплаты: ${status}`)
