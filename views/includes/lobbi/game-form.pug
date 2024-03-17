@@ -66,9 +66,14 @@ div(class="modal fade" id="makeForm" tabindex="-1")
               +numberInput("waitingTime-1", 1, 20, 10)
 
             +gameFormRow('')
+              +settings_item('Автостарт', 'autostart-1', true)
+                | 
+                span(class="ion-ios-help-outline" title="Игра запуститься как только наберётся нужное количество игроков" data-bs-toggle="tooltip" data-bs-placement="bottom")
+
+            +gameFormRow('')
               +settings_item('С добивами', 'mode-1', true)
                 | 
-                span(class="ion-ios-help-outline" title="В режиме с добивами в тюрьму отправляется игрок набравший наибольшее количество голосов за день" data-bs-toggle="tooltip" data-bs-placement="bottom" )
+                span(class="ion-ios-help-outline" title="В режиме с добивами в тюрьму отправляется игрок набравший наибольшее количество голосов за день" data-bs-toggle="tooltip" data-bs-placement="bottom")
 
             +gameFormRow('Подпись к заявке')
               input(class="form-control" type="text" placeholder="Подпись к заявке" maxlength="69" id="gameDescription-1" name="gameDescription-1")
@@ -93,14 +98,19 @@ div(class="modal fade" id="makeForm" tabindex="-1")
               +numberInput("waitingTime-2", 1, 20, 10)
 
             +gameFormRow('')
+              +settings_item('Автостарт', 'autostart-2', true)
+                | 
+                span(class="ion-ios-help-outline" title="Игра запуститься как только наберётся нужное количество игроков" data-bs-toggle="tooltip" data-bs-placement="bottom")
+
+            +gameFormRow('')
               +settings_item('Ждать все ходы', 'mode-2', true)
                 | 
-                span(class="ion-ios-help-outline" title="С этой опцией день будет завершаться, когда все игроки сделают ход" data-bs-toggle="tooltip" data-bs-placement="bottom" )
+                span(class="ion-ios-help-outline" title="С этой опцией день будет завершаться, когда все игроки сделают ход" data-bs-toggle="tooltip" data-bs-placement="bottom")
 
             +gameFormRow('')
               +settings_item('Рукопашная', 'melee-2', false)
                 | 
-                span(class="ion-ios-help-outline" title="Игра без оружия" data-bs-toggle="tooltip" data-bs-placement="bottom" )
+                span(class="ion-ios-help-outline" title="Игра без оружия" data-bs-toggle="tooltip" data-bs-placement="bottom")
 
             +gameFormRow('Подпись к заявке')
               input(class="form-control" type="text" placeholder="Подпись к заявке" maxlength="69" id="gameDescription-2" name="gameDescription-2")
@@ -147,6 +157,11 @@ div(class="modal fade" id="makeForm" tabindex="-1")
               +numberInput("waitingTime-4", 1, 20, 10)
 
             +gameFormRow('')
+              +settings_item('Автостарт', 'autostart-4', true)
+                | 
+                span(class="ion-ios-help-outline" title="Игра запуститься как только наберётся нужное количество игроков" data-bs-toggle="tooltip" data-bs-placement="bottom")
+
+            +gameFormRow('')
               +settings_item('С добивами', 'mode-4', true)
                 | 
                 span(class="ion-ios-help-outline" title="В режиме с добивами в тюрьму отправляется игрок набравший наибольшее количество голосов за день" data-bs-toggle="tooltip" data-bs-placement="bottom")
@@ -175,9 +190,14 @@ div(class="modal fade" id="makeForm" tabindex="-1")
               +numberInput("waitingTime-5", 1, 20, 10)
 
             +gameFormRow('')
+              +settings_item('Автостарт', 'autostart-5', true)
+                | 
+                span(class="ion-ios-help-outline" title="Игра запуститься как только наберётся нужное количество игроков" data-bs-toggle="tooltip" data-bs-placement="bottom")
+
+            +gameFormRow('')
               +settings_item('С добивами', 'mode-5', true)
                 | 
-                span(class="ion-ios-help-outline" title="В режиме с добивами в тюрьму отправляется игрок набравший наибольшее количество голосов за день" data-bs-toggle="tooltip" data-bs-placement="bottom" )
+                span(class="ion-ios-help-outline" title="В режиме с добивами в тюрьму отправляется игрок набравший наибольшее количество голосов за день" data-bs-toggle="tooltip" data-bs-placement="bottom")
 
             +gameFormRow('Количество мафиози (1 - 4 игроков)')
               +numberInput("mafiaCount-5", 1, 4, 2)

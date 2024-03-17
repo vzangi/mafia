@@ -40,8 +40,15 @@ class LobbiService extends BaseService {
 
 	// Новая заявка на игру
 	async makeGame(settings) {
-		let { gametypeId, playersCount, waitingTime, description, mode, melee } =
-			settings
+		let {
+			gametypeId,
+			playersCount,
+			waitingTime,
+			description,
+			mode,
+			melee,
+			autostart,
+		} = settings
 
 		const { user } = this
 		if (!user) {
@@ -213,6 +220,7 @@ class LobbiService extends BaseService {
 			description,
 			deadline,
 			mode,
+			autostart,
 		}
 
 		// Опция "Рукопашная"
@@ -587,7 +595,7 @@ class LobbiService extends BaseService {
 		})
 
 		// Если набралось требуемое количество игроков
-		if (game.playersCount == game.players.length + 1) {
+		if (game.autostart && game.playersCount == game.players.length + 1) {
 			// Беру игру
 			try {
 				// Инициирую запуск игры

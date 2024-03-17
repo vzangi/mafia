@@ -237,6 +237,7 @@ $(function () {
 		data.waitingTime = $('#waitingTime-1').text()
 		data.playersCount = $('#gamePlayersCount-1').text()
 		data.mode = $('#mode-1')[0].checked ? 2 : 1
+		data.autostart = $('#autostart-1')[0].checked ? 1 : 0
 		data.description = $('#gameDescription-1').val()
 
 		// Ставлю мутекс
@@ -267,6 +268,7 @@ $(function () {
 		data.waitingTime = $('#waitingTime-2').text()
 		data.playersCount = $('#gamePlayersCount-2').text()
 		data.description = $('#gameDescription-2').val()
+		data.autostart = $('#autostart-2')[0].checked ? 1 : 0
 		data.mode = $('#mode-2')[0].checked ? 2 : 1
 		data.melee = $('#melee-2')[0].checked
 
@@ -291,6 +293,7 @@ $(function () {
 		})
 	})
 
+	// Присоедениться к очереди на соревновательную игру
 	$('.btn-make-type-3').click(function () {
 		const data = {}
 
@@ -332,6 +335,7 @@ $(function () {
 		data.gametypeId = 4
 		data.waitingTime = $('#waitingTime-4').text()
 		data.playersCount = $('#gamePlayersCount-4').text()
+		data.autostart = $('#autostart-4')[0].checked ? 1 : 0
 		data.mode = $('#mode-4')[0].checked ? 2 : 1
 		data.description = $('#gameDescription-4').val()
 
@@ -362,6 +366,7 @@ $(function () {
 		data.gametypeId = 5
 		data.waitingTime = $('#waitingTime-5').text() * 1
 		data.playersCount = $('#gamePlayersCount-5').text() * 1
+		data.autostart = $('#autostart-5')[0].checked ? 1 : 0
 		data.mode = $('#mode-5')[0].checked ? 2 : 1
 		data.description = $('#gameDescription-5').val()
 
