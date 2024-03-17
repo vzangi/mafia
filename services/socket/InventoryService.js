@@ -486,12 +486,15 @@ class InventoryService extends BaseService {
 				status: [
 					GamePlayer.playerStatuses.FREEZED,
 					GamePlayer.playerStatuses.IN_GAME,
+					GamePlayer.playerStatuses.WHAITNG,
 				],
 			},
 		})
 
 		if (playerInGame) {
-			throw new Error('Пока вы в игре нельзя брать или класть вещи в инвентарь')
+			throw new Error(
+				'Нельзя брать или класть вещи в инвентарь пока вы в заявке'
+			)
 		}
 
 		// Ищу вещь в инвентаре

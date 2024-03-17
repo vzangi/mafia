@@ -97,6 +97,11 @@ div(class="modal fade" id="makeForm" tabindex="-1")
                 | 
                 span(class="ion-ios-help-outline" title="С этой опцией день будет завершаться, когда все игроки сделают ход" data-bs-toggle="tooltip" data-bs-placement="bottom" )
 
+            +gameFormRow('')
+              +settings_item('Рукопашная', 'melee-2', false)
+                | 
+                span(class="ion-ios-help-outline" title="Игра без оружия" data-bs-toggle="tooltip" data-bs-placement="bottom" )
+
             +gameFormRow('Подпись к заявке')
               input(class="form-control" type="text" placeholder="Подпись к заявке" maxlength="69" id="gameDescription-2" name="gameDescription-2")
 

@@ -15,6 +15,7 @@ const Chat = require('../../models/Chat')
 const Contest = require('../../models/Contest')
 const ContestPlayer = require('../../models/ContestPlayer')
 const log = require('../../units/customLog')
+const AccountThing = require('../../models/AccountThing')
 
 class LobbiService extends BaseService {
 	// Получение текущих заявок
@@ -39,7 +40,8 @@ class LobbiService extends BaseService {
 
 	// Новая заявка на игру
 	async makeGame(settings) {
-		let { gametypeId, playersCount, waitingTime, description, mode } = settings
+		let { gametypeId, playersCount, waitingTime, description, mode, melee } =
+			settings
 
 		const { user } = this
 		if (!user) {
@@ -203,8 +205,7 @@ class LobbiService extends BaseService {
 			description = description.substr(0, 69)
 		}
 
-		// Создаю заявку на игру
-		const newGame = await Game.create({
+		const gameData = {
 			accountId: user.id,
 			gametypeId,
 			playersCount,
@@ -212,7 +213,24 @@ class LobbiService extends BaseService {
 			description,
 			deadline,
 			mode,
-		})
+		}
+
+		// Опция "Рукопашная"
+		if (gametypeId == Game.types.SHOOTOUT && melee) {
+			gameData.melee = true
+
+			// Проверяю, есть ли у меня инвентарь
+			const power = await AccountThing.getPower(user.id)
+
+			if (power != 0) {
+				throw new Error(
+					'Чтобы создать перестрелку в рукопашном режиме необходимо разоружиться'
+				)
+			}
+		}
+
+		// Создаю заявку на игру
+		const newGame = await Game.create(gameData)
 
 		// Добавляю в неё игрока
 		const player = await GamePlayer.create({
@@ -541,6 +559,16 @@ class LobbiService extends BaseService {
 
 		if (inGame) {
 			throw new Error('Вы всё ещё в другой заявке')
+		}
+
+		if (game.gametypeId == Game.types.SHOOTOUT && game.melee) {
+			const power = await AccountThing.getPower(account.id)
+
+			if (power != 0) {
+				throw new Error(
+					'Чтобы играть перестрелку в рукопашном режиме необходимо разоружиться'
+				)
+			}
 		}
 
 		// Добавляю игрока в заявку

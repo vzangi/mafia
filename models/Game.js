@@ -98,6 +98,10 @@ const Game = sequelize.define(
 			type: DataTypes.INTEGER,
 			defaultValue: 1,
 		},
+		melee: {
+			type: DataTypes.INTEGER,
+			defaultValue: 0,
+		},
 		rolesideId: {
 			type: DataTypes.INTEGER,
 		},
