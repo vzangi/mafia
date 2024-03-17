@@ -95,9 +95,11 @@ const getParam = (paramName, url) => {
 }
 
 const seoMiddelware = (req, res, next) => {
+	const url = req.originalUrl
 	paramsList.map((param) => {
-		res.locals[param] = getParam(param, req.originalUrl)
+		res.locals[param] = getParam(param, url)
 	})
+	res.locals['url'] = url
 	next()
 }
 
