@@ -5,7 +5,7 @@ class RoboKassaController {
   // Пришёл ответ от Robokassa на тестовую оплату
   async testSuccessResponse(req, res, next) {
     try {
-      const { body } = req
+      console.log(req)
       await service.testSuccessResponse(body)
       res.send('ok')
     } catch (error) {
