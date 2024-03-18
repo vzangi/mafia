@@ -7,6 +7,7 @@ const bot = require('../../units/bot')
 const BaseService = require('./BaseService')
 const htmlspecialchars = require('htmlspecialchars')
 const axios = require('axios')
+const md5 = require('md5')
 
 const minPaymentSumm = 50
 const maxPaymentSumm = 15000
@@ -110,6 +111,58 @@ class WalletService extends BaseService {
 
   _v4rnd() {
     return Math.ceil(Math.random() * 1000)
+  }
+
+  // Пополнение счёта
+  async paymentEuro(payData) {
+    let { sum, method } = payData
+    const { user } = this
+    if (!user) throw new Error('Не авторизован')
+
+    sum = sum * 1
+    if (sum < minPaymentSumm || sum > maxPaymentSumm)
+      throw new Error('Неверная сумма')
+
+    payData.accountId = user.id
+
+    const data = await this._RoboKassaRequest(payData)
+
+    return data
+  }
+
+  // Ссылка для пополнения в робокассе
+  async _RoboKassaRequest(payData) {
+    const { sum, accountId } = payData
+
+    const account = await Account.findByPk(accountId)
+
+    if (!account) throw new Error('Аккаунт не найден')
+
+    const url = 'https://auth.robokassa.ru/Merchant/Index.aspx?'
+
+    const login = 'mafiaone'
+
+    const pass1 = process.env.RK_PASS_1 || ''
+
+    const invid = `${accountId}-${this._v4rnd()}-${this._v4rnd()}`
+
+    const description = `Пополнение кошелька ${account.username} на ${sum} руб.`
+
+    const signature = md5(`${login}:${sum}:${invid}:${pass1}`)
+
+    const pay_url = `${url}MerchantLogin=${login}&OutSum=${sum}&InvoiceID=${invid}&Description=${description}&SignatureValue=${signature}`
+
+    const payment = {
+      accountId,
+      pid: invid,
+      status: '',
+      description,
+      amount: sum,
+    }
+
+    await Payment.create(payment)
+
+    return pay_url
   }
 
   // Последние транзакции

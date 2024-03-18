@@ -12,6 +12,15 @@ class WalletController extends BaseSocketController {
       callback({ status: 1, msg: error.message })
     }
   }
+  // Пополнение счёта
+  async paymentEuro(payData, callback) {
+    try {
+      const url = await this.service.paymentEuro(payData)
+      callback({ status: 0, url })
+    } catch (error) {
+      callback({ status: 1, msg: error.message })
+    }
+  }
 
   // Последние транзакции
   async transactions(offset = 0, callback) {

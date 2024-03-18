@@ -57,6 +57,19 @@ $(function () {
     })
   })
 
+  $('#payBtnEuro').click(function () {
+    const sum = $('.price-item.active span').text() * 1
+    const method = 1 // Способ оплаты
+    if (sum < 50 || sum > 15000) return false
+
+    socket.emit('payment.euro', { sum, method }, (res) => {
+      const { status, msg, url } = res
+      if (status != 0) return alert(res.msg)
+
+      location.href = url
+    })
+  })
+
   $('#transferForm').submit(function (event) {
     event.preventDefault()
 
