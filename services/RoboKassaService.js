@@ -7,8 +7,6 @@ class RoboKassaService {
   async testResultResponse(data) {
     if (!data) throw new Error('No data')
 
-    console.log('result', data)
-
     const { InvId } = data
 
     return InvId
