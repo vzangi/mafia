@@ -148,10 +148,6 @@ class WalletService extends BaseService {
 
     const description = `Пополнение кошелька ${account.username} на ${sum} руб.`
 
-    const signature = md5(`${login}:${sum}:${invid}:${pass1}`)
-
-    const pay_url = `${url}MerchantLogin=${login}&OutSum=${sum}&InvoiceID=${invid}&Description=${description}&SignatureValue=${signature}`
-
     const payment = {
       accountId,
       pid: invid,
@@ -160,7 +156,11 @@ class WalletService extends BaseService {
       amount: sum,
     }
 
-    await Payment.create(payment)
+    const pay = await Payment.create(payment)
+
+    const signature = md5(`${login}:${sum}:${pay.id}:${pass1}`)
+
+    const pay_url = `${url}MerchantLogin=${login}&OutSum=${sum}&InvoiceID=${pay.id}&Description=${description}&SignatureValue=${signature}&IsTest=1`
 
     return pay_url
   }
