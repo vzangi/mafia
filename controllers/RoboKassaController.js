@@ -19,7 +19,7 @@ class RoboKassaController {
     try {
       const { body } = req
       await service.testSuccessResponse(body)
-      res.send('ok')
+      res.redirect('/profile/wallet')
     } catch (error) {
       log(error)
       next(error)
@@ -31,7 +31,7 @@ class RoboKassaController {
     try {
       const { body } = req
       await service.testSuccessResponse(body)
-      res.send('ok')
+      res.redirect('/profile/wallet')
     } catch (error) {
       log(error)
       next(error)

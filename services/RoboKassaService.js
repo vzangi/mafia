@@ -18,6 +18,32 @@ class RoboKassaService {
   async testSuccessResponse(data) {
     if (!data) throw new Error('No data')
 
+    const { InvId } = data
+
+    const payment = await Payment.findOne({ where: { id: InvId } })
+
+    if (!payment) throw new Error('Платёж не найден')
+
+    if (payment.status == 'success')
+      throw new Error(`Платёж #${InvId} ранее уже был проведён`)
+
+    // Сохраняю статус платежа
+    payment.status = 'success'
+    await payment.save()
+
+    const { accountId, amount } = payment
+
+    const message = `Ваш кошелёк пополнен на ${amount} рублей`
+
+    // Отправляю нотификацию
+    const newNotify = await Notification.create({
+      accountId,
+      message,
+      level: 1,
+    })
+
+    await WalletEvent.payment(accountId, amount)
+
     console.log('success', data)
   }
 
