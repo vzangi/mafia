@@ -5,7 +5,10 @@ module.exports = (app) => {
   app.use('/market', require('./MarketRouter'))
   app.use('/trades', require('./TradeRouter'))
   app.use('/', require('./GameRouter'))
+
+  // Роуты оплаты
   app.use('/', require('./YooKassaRouter'))
+  app.use('/', require('./RoboKassaRouter'))
 
   app.use('/gift', require('./admin/GiftsRouter'))
   app.use('/market', require('./admin/MarketRouter'))
