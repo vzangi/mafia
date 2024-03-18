@@ -3,12 +3,12 @@ const router = express.Router()
 const controller = require('../controllers/RoboKassaController')
 
 // Пришёл ответ от Robokassa
-router.post('/robokassa_result', controller.testSuccessResponse)
+router.post('/robokassa_result', controller.testResultResponse)
 
 // Пришёл ответ от Robokassa
 router.post('/robokassa_success', controller.testSuccessResponse)
 
 // Пришёл ответ от Robokassa
-router.post('/robokassa_fail', controller.testSuccessResponse)
+router.post('/robokassa_fail', controller.testFailResponse)
 
 module.exports = router

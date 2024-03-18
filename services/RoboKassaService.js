@@ -4,10 +4,24 @@ const WalletEvent = require('../models/WalletEvents')
 
 class RoboKassaService {
   // Пришёл ответ от Robokassa на тестовую оплату
+  async testResultResponse(data) {
+    if (!data) throw new Error('No data')
+
+    console.log('result', data)
+  }
+
+  // Пришёл ответ от Robokassa на тестовую оплату
   async testSuccessResponse(data) {
     if (!data) throw new Error('No data')
 
-    console.log(data)
+    console.log('success', data)
+  }
+
+  // Пришёл ответ от Robokassa на тестовую оплату
+  async testFailResponse(data) {
+    if (!data) throw new Error('No data')
+
+    console.log('fail', data)
   }
 
   // Пришёл ответ от Robokassa на оплату
