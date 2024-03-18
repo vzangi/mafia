@@ -8,6 +8,10 @@ class RoboKassaService {
     if (!data) throw new Error('No data')
 
     console.log('result', data)
+
+    const { InvId } = data
+
+    return InvId
   }
 
   // Пришёл ответ от Robokassa на тестовую оплату

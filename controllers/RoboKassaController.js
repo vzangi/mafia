@@ -6,8 +6,8 @@ class RoboKassaController {
   async testResultResponse(req, res, next) {
     try {
       const { body } = req
-      await service.testResultResponse(body)
-      res.send('ok')
+      const invId = await service.testResultResponse(body)
+      res.send(`OK${invId}`)
     } catch (error) {
       log(error)
       next(error)
