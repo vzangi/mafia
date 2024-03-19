@@ -9,6 +9,7 @@ const pages = [
   'ranks',
   'rules',
   'vip',
+  'roles',
 ]
 
 pages.map((page) => {
