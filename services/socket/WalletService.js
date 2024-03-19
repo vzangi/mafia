@@ -160,7 +160,7 @@ class WalletService extends BaseService {
 
     const signature = md5(`${login}:${sum}:${pay.id}:${pass1}`)
 
-    const pay_url = `${url}MerchantLogin=${login}&OutSum=${sum}&InvoiceID=${pay.id}&Description=${description}&SignatureValue=${signature}&IsTest=1`
+    const pay_url = `${url}MerchantLogin=${login}&OutSum=${sum}&InvoiceID=${pay.id}&Description=${description}&SignatureValue=${signature}`
 
     return pay_url
   }

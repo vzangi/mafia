@@ -14,30 +14,6 @@ class RoboKassaController {
     }
   }
 
-  // Пришёл ответ от Robokassa на тестовую оплату
-  async testSuccessResponse(req, res, next) {
-    try {
-      const { body } = req
-      await service.testSuccessResponse(body)
-      res.redirect('/profile/wallet')
-    } catch (error) {
-      log(error)
-      next(error)
-    }
-  }
-
-  // Пришёл ответ от Robokassa на тестовую оплату
-  async testFailResponse(req, res, next) {
-    try {
-      const { body } = req
-      await service.testSuccessResponse(body)
-      res.redirect('/profile/wallet')
-    } catch (error) {
-      log(error)
-      next(error)
-    }
-  }
-
   // Пришёл ответ от Robokassa на оплату
   async response(req, res, next) {
     try {
