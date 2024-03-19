@@ -73,19 +73,14 @@ class RoboKassaService {
     if (!InvId || !OutSum || !SignatureValue)
       throw new Error('Нет необходимых данных в ответе Robokassa')
 
-    const login = process.env.RK_LOGIN || 'mafiaone'
     const pass2 = process.env.RK_PASS_2 || '123'
-
-    const shp_oplata = 1
 
     const payment = await Payment.findOne({ where: { id: InvId } })
 
     if (!payment) throw new Error(`Платёж ${InvId} не найден`)
 
     // Контрольная сумма
-    const hash = md5(
-      `${OutSum}:${InvId}:${pass2}:Shp_login=${login}:Shp_oplata=${shp_oplata}`
-    )
+    const hash = md5(`${OutSum}:${InvId}:${pass2}`).toUpperCase()
 
     console.log(hash)
 
