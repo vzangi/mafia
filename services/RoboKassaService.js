@@ -80,9 +80,12 @@ class RoboKassaService {
     if (!payment) throw new Error(`Платёж ${InvId} не найден`)
 
     // Контрольная сумма
-    const hash = md5(`${OutSum}:${InvId}:${pass2}`).toUpperCase()
 
-    console.log(hash)
+    const d = `${OutSum}:${InvId}:${pass2}`
+
+    const hash = md5(d).toUpperCase()
+
+    console.log(hash, d)
 
     if (hash != SignatureValue) throw new Error(`Контрольная сумма не верна`)
 
