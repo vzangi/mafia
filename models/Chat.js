@@ -81,6 +81,23 @@ Chat.newMessage = async (accountId, msg) => {
   if (message.length > 255) {
     message = message.substr(0, 255)
   }
+
+  // проверяю является ли сообщение флудом
+  const isFlood = await Chat.findAll({
+    where: {
+      message,
+      accountId,
+      createdAt: {
+        [Op.gt]: new Date(Date.now() - 60000).toISOString(),
+      },
+    },
+    order: [['id', 'desc']],
+  })
+
+  if (isFlood.length == 2) {
+    throw new Error('flood')
+  }
+
   const chatusers = await getUsersInMessage(msg)
   const account = await Account.findByPk(accountId)
   const { username } = account

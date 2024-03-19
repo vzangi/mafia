@@ -1,6 +1,8 @@
 const BaseService = require('./BaseService')
 const Chat = require('../../models/Chat')
+const Punishment = require('../../models/Punishment')
 const GamePlayer = require('../../models/GamePlayer')
+const { getCoolDateTime } = require('../../units/helpers')
 const typingUsers = []
 
 class ChatService extends BaseService {
@@ -43,11 +45,53 @@ class ChatService extends BaseService {
       return
     }
 
-    // Сохраняю сообщение в базу
-    const msg = await Chat.newMessage(user.id, message)
+    try {
+      // Сохраняю сообщение в базу
+      const msg = await Chat.newMessage(user.id, message)
 
-    // Рассылаю сообщение всем подключенным пользователям
-    io.of('/lobbi').emit('chat.message', msg)
+      // Рассылаю сообщение всем подключенным пользователям
+      io.of('/lobbi').emit('chat.message', msg)
+    } catch (error) {
+      if (error.message == 'flood') {
+        const punishmentData = {
+          accountId: user.id,
+          type: Punishment.types.MUTE,
+        }
+
+        // Смотрю количество предыдущих нказаний по этому типу
+        const punishmentsCount = await Punishment.count({
+          where: punishmentData,
+        })
+
+        punishmentData.untilAt = new Date(
+          Date.now() + 1000 * 60 * 60 * (punishmentsCount + 1)
+        ).toISOString()
+
+        punishmentData.comment = 'По результатам автоблокировщика флуда'
+
+        await Punishment.create(punishmentData)
+
+        // Перегружаю открытые сокеты наказанного игрока
+        const socks = this.getUserSockets(account.id, '/lobbi')
+        socks.forEach((s) => s.emit('reload'))
+
+        const date = getCoolDateTime(punishmentData.untilAt)
+
+        const message = `Вам запрещено писать в чате лобби до ${date} по причине: флуд`
+
+        const sysmsg = await Chat.sysMessage(
+          `[${account.username}] запрещается писать в этот чат до ${date} за флуд.`
+        )
+
+        // Рассылаю сообщение всем подключенным пользователям
+        io.of('/lobbi').emit('chat.message', sysmsg)
+
+        // Уведомляю нарушителя
+        await this.notify(account.id, message, 2)
+      } else {
+        throw new Error(error)
+      }
+    }
   }
 
   // Удаление сообщения из чата
