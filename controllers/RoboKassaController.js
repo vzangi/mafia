@@ -42,8 +42,30 @@ class RoboKassaController {
   async response(req, res, next) {
     try {
       const { body } = req
-      await service.response(body)
-      res.send('ok')
+      const invId = await service.response(body)
+      res.send(`OK${invId}`)
+    } catch (error) {
+      log(error)
+      next(error)
+    }
+  }
+
+  // Платёж в Robokassa завершился успешно
+  async success(req, res, next) {
+    try {
+      const { body } = req
+      res.redirect('/profile/wallet')
+    } catch (error) {
+      log(error)
+      next(error)
+    }
+  }
+
+  // Платёж в Robokassa не удался
+  async fail(req, res, next) {
+    try {
+      const { body } = req
+      res.redirect('/profile/wallet')
     } catch (error) {
       log(error)
       next(error)

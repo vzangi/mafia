@@ -140,7 +140,7 @@ class WalletService extends BaseService {
 
     const url = 'https://auth.robokassa.ru/Merchant/Index.aspx?'
 
-    const login = 'mafiaone'
+    const login = process.env.RK_LOGIN || 'mafiaone'
 
     const pass1 = process.env.RK_PASS_1 || ''
 
@@ -160,7 +160,7 @@ class WalletService extends BaseService {
 
     const signature = md5(`${login}:${sum}:${pay.id}:${pass1}`)
 
-    const pay_url = `${url}MerchantLogin=${login}&OutSum=${sum}&InvoiceID=${pay.id}&Description=${description}&SignatureValue=${signature}`
+    const pay_url = `${url}MerchantLogin=${login}&OutSum=${sum}&InvoiceID=${pay.id}&Description=${description}&SignatureValue=${signature}&IsTest=1`
 
     return pay_url
   }

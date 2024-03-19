@@ -1,119 +1,100 @@
 const Notification = require('../models/Notification')
 const Payment = require('../models/Payment')
 const WalletEvent = require('../models/WalletEvents')
+const md5 = require('md5')
 
 class RoboKassaService {
-	// Пришёл ответ от Robokassa на тестовую оплату
-	async testResultResponse(data) {
-		if (!data) throw new Error('No data')
+  // Пришёл ответ от Robokassa на тестовую оплату
+  async testResultResponse(data) {
+    if (!data) throw new Error('No data')
 
-		const { InvId } = data
+    const { InvId } = data
 
-		const payment = await Payment.findOne({ where: { id: InvId } })
+    const payment = await Payment.findOne({ where: { id: InvId } })
 
-		if (payment) {
-			payment.status = 'pinned'
-			await payment.save()
-		}
+    if (payment) {
+      payment.status = 'pinned'
+      await payment.save()
+    }
 
-		return InvId
-	}
+    return InvId
+  }
 
-	// Пришёл ответ от Robokassa на тестовую оплату
-	async testSuccessResponse(data) {
-		if (!data) throw new Error('No data')
+  // Пришёл ответ от Robokassa на тестовую оплату
+  async testSuccessResponse(data) {
+    if (!data) throw new Error('No data')
 
-		const { InvId } = data
+    const { InvId } = data
 
-		const payment = await Payment.findOne({ where: { id: InvId } })
+    const payment = await Payment.findOne({ where: { id: InvId } })
 
-		if (!payment) throw new Error('Платёж не найден')
+    if (!payment) throw new Error('Платёж не найден')
 
-		if (payment.status != 'pinned') return
+    if (payment.status != 'pinned') return
 
-		if (payment.status == 'success')
-			throw new Error(`Платёж #${InvId} ранее уже был проведён`)
+    if (payment.status == 'success')
+      throw new Error(`Платёж #${InvId} ранее уже был проведён`)
 
-		// Сохраняю статус платежа
-		payment.status = 'success'
-		await payment.save()
+    // Сохраняю статус платежа
+    payment.status = 'success'
+    await payment.save()
 
-		const { accountId, amount } = payment
+    const { accountId, amount } = payment
 
-		const message = `Ваш кошелёк пополнен на ${amount} рублей`
+    const message = `Ваш кошелёк пополнен на ${amount} рублей`
 
-		// Отправляю нотификацию
-		const newNotify = await Notification.create({
-			accountId,
-			message,
-			level: 1,
-		})
+    // Отправляю нотификацию
+    const newNotify = await Notification.create({
+      accountId,
+      message,
+      level: 1,
+    })
 
-		await WalletEvent.payment(accountId, amount)
+    await WalletEvent.payment(accountId, amount)
 
-		console.log('success', data)
-	}
+    console.log('success', data)
+  }
 
-	// Пришёл ответ от Robokassa на тестовую оплату
-	async testFailResponse(data) {
-		if (!data) throw new Error('No data')
+  // Пришёл ответ от Robokassa на тестовую оплату
+  async testFailResponse(data) {
+    if (!data) throw new Error('No data')
 
-		console.log('fail', data)
-	}
+    console.log('fail', data)
+  }
 
-	// Пришёл ответ от Robokassa на оплату
-	async response(data) {
-		if (!data) throw new Error('No data')
+  // Пришёл ответ от Robokassa на оплату
+  async response(data) {
+    if (!data) throw new Error('No data')
 
-		const { event, object } = data
+    console.log(data)
 
-		if (!event || !object) throw new Error('No data')
-		const { id, status } = object
+    const { InvId, OutSum, SignatureValue } = data
 
-		// Если статус - отменён
-		if (event == 'payment.canceled') {
-			await Payment.update(
-				{
-					status: 'canceled',
-				},
-				{ where: { pid: id } }
-			)
-			return
-		}
+    if (!InvId || !OutSum || !SignatureValue)
+      throw new Error('Нет необходимых данных в ответе Robokassa')
 
-		if (event != 'payment.succeeded') {
-			console.log(data)
-			throw new Error(`Статус нотификации: ${event}`)
-		}
+    const login = process.env.RK_LOGIN || 'mafiaone'
+    const pass2 = process.env.RK_PASS_2 || '123'
 
-		if (!status || !id) throw new Error('No data')
-		if (status != 'succeeded') throw new Error(`Статус оплаты: ${status}`)
+    const shp_oplata = 1
 
-		const payment = await Payment.findOne({ where: { pid: id } })
+    const payment = await Payment.findOne({ where: { id: InvId } })
 
-		if (!payment) throw new Error('Платёж не найден')
+    if (!payment) throw new Error(`Платёж ${InvId} не найден`)
 
-		if (payment.status == status)
-			throw new Error(`Платёж #${id} ранее уже был проведён`)
+    // Контрольная сумма
+    const hash = md5(
+      `${OutSum}:${InvId}:${pass2}:Shp_login=${login}:Shp_oplata=${shp_oplata}`
+    )
 
-		// Сохраняю статус платежа
-		payment.status = status
-		await payment.save()
+    console.log(hash)
 
-		const { accountId, amount } = payment
+    if (hash != SignatureValue) throw new Error(`Контрольная сумма не верна`)
 
-		// Зачисляю средства на счёт
-		await WalletEvent.payment(accountId, amount)
+    //await WalletEvent.payment(accountId, amount)
 
-		const message = `Ваш кошелёк пополнен на ${amount} рублей`
-
-		// Отправляю нотификацию
-		const newNotify = await Notification.create({
-			accountId,
-			message,
-			level: 1,
-		})
-	}
+    return InvId
+  }
 }
 
 module.exports = new RoboKassaService()
