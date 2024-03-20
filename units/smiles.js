@@ -24,6 +24,8 @@ const smiles = [
   'Moon',
   'Bear',
   'Microphone',
+  'Kubik',
+  'Beer',
 ]
 
 module.exports = smiles
