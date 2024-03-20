@@ -4,6 +4,7 @@ const Account = require('./Account')
 const ChatUsers = require('./ChatUsers')
 const htmlspecialchars = require('htmlspecialchars')
 const lastMessagesLimit = 100
+const floodTimeLimit = 10
 
 const Chat = sequelize.define(
   'chat',
@@ -88,7 +89,7 @@ Chat.newMessage = async (accountId, msg) => {
       message,
       accountId,
       createdAt: {
-        [Op.gt]: new Date(Date.now() - 60000).toISOString(),
+        [Op.gt]: new Date(Date.now() - floodTimeLimit * 1000).toISOString(),
       },
     },
     order: [['id', 'desc']],
