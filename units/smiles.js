@@ -26,6 +26,7 @@ const smiles = [
   'Microphone',
   'Kubik',
   'Beer',
+  'Pizza',
 ]
 
 module.exports = smiles
