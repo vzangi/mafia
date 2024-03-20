@@ -113,12 +113,12 @@ $(function () {
     if (scroll || needScroll == 0) {
       if (smooth) {
         chat[0].scrollBy({
-          top: height * 2,
+          top: height,
           left: 0,
           behavior: 'smooth',
         })
       } else {
-        chat.scrollTop(height * 2)
+        chat.scrollTop(height)
       }
     }
   }
