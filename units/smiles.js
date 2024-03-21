@@ -23,6 +23,7 @@ const smiles = [
   'Okay',
   'Moon',
   'Bear',
+  'Rose',
   'Microphone',
   'Kubik',
   'Beer',
