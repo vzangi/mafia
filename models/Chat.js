@@ -95,7 +95,20 @@ Chat.newMessage = async (accountId, msg) => {
     order: [['id', 'desc']],
   })
 
-  if (isFlood.length == 2) {
+  if (isFlood.length >= 2) {
+    throw new Error('flood')
+  }
+
+  const messagesCount = await Chat.count({
+    where: {
+      accountId,
+      createdAt: {
+        [Op.gt]: new Date(Date.now() - floodTimeLimit * 1000).toISOString(),
+      },
+    },
+  })
+
+  if (messagesCount > 9) {
     throw new Error('flood')
   }
 
