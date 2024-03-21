@@ -2,6 +2,7 @@ $(function () {
   const fileInput = $('.change-avatar-box input[type=file]')
   const genderSelect = $('#gender')
   const hideSetting = $('#inventhide')
+  const gameNotify = $('#gamenotify')
   const avatarForm = $('.change-avatar-box form')
   const nikInput = $('.nik-box input')
   const nikAcceptBtn = $('.nik-box .btn')
@@ -44,6 +45,14 @@ $(function () {
   hideSetting.change(function () {
     const val = $(this).val()
     socket.emit('setting.hideinvent', val, (res) => {
+      const { status, msg } = res
+      if (status != 0) alert(msg)
+    })
+  })
+
+  gameNotify.change(function () {
+    const val = $(this).val()
+    socket.emit('setting.gamenotify', val, (res) => {
       const { status, msg } = res
       if (status != 0) alert(msg)
     })

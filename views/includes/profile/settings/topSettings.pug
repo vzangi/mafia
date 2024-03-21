@@ -27,9 +27,16 @@ div(class="block")
           option(value="1" selected=currentAccount.gender==1) Мужской
           option(value="2" selected=currentAccount.gender==2) Женский
 
-      div 
+      div(class="mb-3")
         label(class="form-label") Инвентарь
         select(class="form-control" id="inventhide")
           option(value="0") Виден всем
           option(value="1" selected=hideinvent==1) Виден только друзьям
           option(value="2" selected=hideinvent==2) Скрыт для всех
+
+      if currentAccount.telegramChatId
+        div 
+          label(class="form-label") Уведомление в Telegram о начале партии
+          select(class="form-control" id="gamenotify")
+            option(value="1" selected=gamenotify==1) Уведомлять всегда
+            option(value="2" selected=gamenotify==2) Уведомлять только если я оффлайн

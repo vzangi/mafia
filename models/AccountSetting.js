@@ -4,8 +4,11 @@ const Account = require('./Account')
 
 // Типы событий
 const settingTypes = {
-  // Показывать ли
+  // Показывать ли инвент
   HIDE_INVENT: 1,
+
+  // Отправлять ли уведомление о начале игры
+  GAME_START_NOTIFY: 2,
 }
 
 const AccountSetting = sequelize.define('accountsettings', {
@@ -31,26 +34,10 @@ Account.hasMany(AccountSetting)
 
 AccountSetting.settingTypes = settingTypes
 
-// Получение значение настройки отображения инвентаря
-AccountSetting.getHideInventSetting = async (accountId) => {
-  const currentSetting = await AccountSetting.findOne({
-    where: {
-      accountId,
-      type: settingTypes.HIDE_INVENT,
-    },
-  })
+const setSetting = async (settingData) => {
+  const { type, accountId, value } = settingData
 
-  if (!currentSetting) return 0
-
-  return currentSetting.value * 1
-}
-
-// Установка настройки отображения инвентаря
-AccountSetting.setHideInventSetting = async (accountId, value) => {
-  const data = {
-    accountId,
-    type: settingTypes.HIDE_INVENT,
-  }
+  const data = { accountId, type }
 
   // Беру текущее значение настройки
   const currentSetting = await AccountSetting.findOne({ where: data })
@@ -66,6 +53,55 @@ AccountSetting.setHideInventSetting = async (accountId, value) => {
     await currentSetting.save()
     return currentSetting
   }
+}
+
+const getSetting = async (settingData) => {
+  const { accountId, type } = settingData
+  const currentSetting = await AccountSetting.findOne({
+    where: { accountId, type },
+  })
+
+  if (!currentSetting) return 0
+
+  return currentSetting.value * 1
+}
+
+// Получение значение настройки отображения инвентаря
+AccountSetting.getHideInventSetting = async (accountId) => {
+  const val = await getSetting({
+    accountId,
+    type: settingTypes.HIDE_INVENT,
+  })
+  return val
+}
+
+// Установка настройки отображения инвентаря
+AccountSetting.setHideInventSetting = async (accountId, value) => {
+  const setting = await setSetting({
+    accountId,
+    type: settingTypes.HIDE_INVENT,
+    value,
+  })
+  return setting
+}
+
+// Получение значение настройки уведомления
+AccountSetting.getGameStartNotifySetting = async (accountId) => {
+  const val = await getSetting({
+    accountId,
+    type: settingTypes.GAME_START_NOTIFY,
+  })
+  return val
+}
+
+// Установка настройки уведомления
+AccountSetting.setGameStartNotifySetting = async (accountId, value) => {
+  const setting = await setSetting({
+    accountId,
+    type: settingTypes.GAME_START_NOTIFY,
+    value,
+  })
+  return setting
 }
 
 module.exports = AccountSetting

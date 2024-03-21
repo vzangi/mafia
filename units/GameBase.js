@@ -18,6 +18,7 @@ const log = require('./customLog')
 const Friend = require('../models/Friend')
 const ThingType = require('../models/ThingType')
 const GameEvent = require('../models/GameEvent')
+const AccountSetting = require('../models/AccountSetting')
 
 /*  ==================================
     Базовый класс для всех режимов игр
@@ -247,18 +248,31 @@ class GameBase {
   // Нотификация игрокам о начале игры
   async notify() {
     const { io, players, game } = this
-    players.forEach((player) => {
-      const ids = this.getUserSocketIds(player.accountId, '/lobbi')
-      ids.forEach((sid) => {
-        sid.emit('game.play', game.id)
-      })
 
+    for (const index in players) {
+      const player = players[index]
+
+      // Сообщаю игроку в лобби о начале партии
+      const ids = this.getUserSocketIds(player.accountId, '/lobbi')
+      ids.forEach((sid) => sid.emit('game.play', game.id))
+
+      // Сообщаю друзьям что игрок в партии
       this._notifyFriends(player)
 
-      // Если игрока нет в лобби
-      if (ids.length == 0) {
-        // Отправляю нотификацию в телегу
+      // Узнаю статус настройки
+      const startNotify = await AccountSetting.findOne({
+        where: {
+          accountId: player.accountId,
+          type: AccountSetting.settingTypes.GAME_START_NOTIFY,
+        },
+      })
 
+      // Флаг необходимости нотификации
+      const needNotify = !startNotify || startNotify.value == 1
+
+      // Если игрока нет в лобби или оповещение включено
+      if (needNotify || ids.length == 0) {
+        // Отправляю нотификацию в телегу
         if (player.account.telegramChatId) {
           bot.sendMessage(
             player.account.telegramChatId,
@@ -269,8 +283,9 @@ class GameBase {
           )
         }
       }
-    })
+    }
 
+    // Сообщаю всем в лобби о запуске игры
     io.of('/lobbi').emit('game.start', game.id)
   }
 

@@ -90,6 +90,16 @@ class ApiController extends BaseSocketController {
       callback({ status: 1, msg: error.message })
     }
   }
+
+  // Настройка уведомления о начале игры в телегу
+  async gamenotifySetting(value, callback) {
+    try {
+      await this.service.gamenotifySetting(value)
+      callback({ status: 0 })
+    } catch (error) {
+      callback({ status: 1, msg: error.message })
+    }
+  }
 }
 
 module.exports = (io, socket) => {

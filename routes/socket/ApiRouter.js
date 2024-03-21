@@ -27,4 +27,7 @@ module.exports = (io, socket) => {
 
   // Скрытие или отображение инвентаря
   socket.on('setting.hideinvent', controller.inventorySetting.bind(controller))
+
+  // Настройка уведомления о начале игры в телегу
+  socket.on('setting.gamenotify', controller.gamenotifySetting.bind(controller))
 }

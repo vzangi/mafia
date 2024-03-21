@@ -257,7 +257,27 @@ class ApiService extends BaseService {
       throw new Error('Не авторизован')
     }
 
+    if (value != 0 && value != 1 && value != 2) {
+      throw new Error('Неверные данные')
+    }
+
     await AccountSetting.setHideInventSetting(user.id, value)
+
+    return true
+  }
+
+  // Настройка уведомления о начале игры в телегу
+  async gamenotifySetting(value) {
+    const { user } = this
+    if (!user) {
+      throw new Error('Не авторизован')
+    }
+
+    if (value != 1 && value != 2) {
+      throw new Error('Неверные данные')
+    }
+
+    await AccountSetting.setGameStartNotifySetting(user.id, value)
 
     return true
   }
