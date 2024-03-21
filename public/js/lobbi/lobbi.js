@@ -351,8 +351,17 @@ $(async function () {
   }
 
   // Показывает настройки чата
-  chatSettingsButton.click(function () {
+  chatSettingsButton.click(function (event) {
+    event.stopPropagation()
     toggleActive(chatSettingsBox)
+  })
+
+  chatSettingsBox.click(function (event) {
+    event.stopPropagation()
+  })
+
+  $('body').click(function (event) {
+    if (chatSettingsBox.css('display') == 'block') toggleActive(chatSettingsBox)
   })
 
   // Раскрывает чат на всю страницу
