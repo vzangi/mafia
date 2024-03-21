@@ -3,18 +3,19 @@ script(id="onlineUserTmpl" type="text/x-jquery-tmpl")
     div(class="friend-avatar online")
       img(src="/uploads/${avatar}" alt="${username}")
     div(class="friend-links friend-info ms-2 flex-grow-1")
-      span(class="ellipsis") 
-        . 
-          {{if punishments && punishments.length != 0}}
-          {{each(i,punishment) punishments}}
-          {{if punishment.type == 1}}
-        span(class="ion-android-microphone-off2" title="Молчанка<br> до {{html punishment.coolDate}}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true")
-          i(class="bi bi-envelope-slash-fill") 
-        . 
-          {{/if}}
-          {{/each}}
-          {{/if}}
-      a(href="/profile/${username}") ${username}
+      span
+        span(class="ellipsis") 
+          . 
+            {{if punishments && punishments.length != 0}}
+            {{each(i,punishment) punishments}}
+            {{if punishment.type == 1}}
+          span(class="ion-android-microphone-off2" title="Молчанка<br> до {{html punishment.coolDate}}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true")
+            i(class="bi bi-envelope-slash-fill") 
+          . 
+            {{/if}}
+            {{/each}}
+            {{/if}}
+        a(href="/profile/${username}") ${username}
 
     div(class="friend-actions") 
       . 

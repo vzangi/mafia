@@ -14,12 +14,13 @@ block main
             div(class="friend-avatar online")
               img(src="/uploads/"+user.avatar alt=user.username)
             div(class="friend-links friend-info ms-2 flex-grow-1")
-              if user.punishments && user.punishments.length > 0
-                each pun in user.punishments
-                  if pun.type == 1
-                    span(class="ion-android-microphone-off2" title="Молчанка<br> до "+(pun.coolDate) data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true")
-                      i(class="bi bi-envelope-slash-fill") 
-              a(href="/profile/"+user.username)= user.username
+              span
+                if user.punishments && user.punishments.length > 0
+                  each pun in user.punishments
+                    if pun.type == 1
+                      span(class="ion-android-microphone-off2" title="Молчанка<br> до "+(pun.coolDate) data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true")
+                        i(class="bi bi-envelope-slash-fill") 
+                a(href="/profile/"+user.username)= user.username
             div(class="friend-actions") 
               if user.gameplayers&&user.gameplayers.length!=0
                 a(href="/game/"+user.gameplayers[0].gameId class="to-game bi bi-controller me-2" title="Смотреть игру" data-bs-toggle="tooltip" data-bs-placement="bottom")

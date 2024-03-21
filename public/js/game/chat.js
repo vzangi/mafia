@@ -27,6 +27,17 @@ $(function () {
   const smileTemplate = $('#smileTmpl')
   const linkTemplate = $('#linkTmpl')
 
+  const supportsSmoothScrolling = () => {
+    const body = document.body
+    const scrollSave = body.style.scrollBehavior
+    body.style.scrollBehavior = 'smooth'
+    const hasSmooth = getComputedStyle(body).scrollBehavior === 'smooth'
+    body.style.scrollBehavior = scrollSave
+    return hasSmooth
+  }
+
+  const supportSmooth = supportsSmoothScrolling()
+
   let smilePattern = $('.smile-pattern').text()
   smilePattern = new RegExp(`~(${smilePattern})`, 'g')
   let timeoutTyping
@@ -111,7 +122,7 @@ $(function () {
   const scrollToEnd = (scroll = false, smooth = true) => {
     const height = chat[0].scrollHeight || 100000
     if (scroll || needScroll == 0) {
-      if (smooth) {
+      if (smooth && supportSmooth) {
         chat[0].scrollBy({
           top: height,
           left: 0,
