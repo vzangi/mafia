@@ -165,8 +165,10 @@ class ProfileController {
   // Свой инвентарь
   async myInventory(req, res) {
     try {
+      const { account } = req
+      if (!account) throw new Error('Не авторизован')
       const { username } = req.account
-      const data = await service.inventory(username)
+      const data = await service.inventory(username, account)
       res.render('pages/profile/inventory', data)
     } catch (error) {
       log(error)
