@@ -7,6 +7,8 @@ Disallow: /users
 Disallow: /market/my
 Disallow: /market/things*
 Disallow: /gift/group*
+Disallow: /profile
+Disallow: /return_url
 Disallow: /profile/wallet
 Disallow: /profile/settings
 Disallow: /profile/notifications

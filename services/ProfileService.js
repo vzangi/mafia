@@ -63,11 +63,14 @@ class ProfileService {
     if (currentUser) {
       data.isFrends = await Friend.findOne({
         where: {
-          accountId: profile.id,
-          friendId: currentUser.id,
+          accountId: currentUser.id,
+          friendId: profile.id,
         },
         order: [['id', 'DESC']],
       })
+
+      console.log(data.isFrends)
+
       data.isBlock = await Friend.findOne({
         where: {
           accountId: profile.id,
