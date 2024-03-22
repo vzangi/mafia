@@ -165,6 +165,19 @@ $(function () {
     scrollToEnd()
   })
 
+  // Запрещаю печатать в поле при флуде
+  gameSocket.on('flood', (time) => {
+    chatInput.attr('disabled', '')
+    chatInput.attr(
+      'placeholder',
+      `Мут за флуд на ${Math.ceil(time / 1000)} секунд`
+    )
+    setTimeout(function () {
+      chatInput.removeAttr('disabled')
+      chatInput.attr('placeholder', `Введите сообщение и нажмите Enter`)
+    }, time)
+  })
+
   const tmpl = (template, data) => {
     return $.tmpl(template, data).get()[0].outerHTML
   }
@@ -253,6 +266,7 @@ $(function () {
 
   // Вставка текста в поле ввода
   const insertTextToInput = (text) => {
+    if (chatInput.attr('disabled')) return
     const input = chatInput[0]
     const pos = input.selectionStart
     input.setRangeText(text, pos, pos)

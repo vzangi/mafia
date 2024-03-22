@@ -1,8 +1,9 @@
-const { DataTypes, Sequelize } = require('sequelize')
+const { DataTypes, Sequelize, Op } = require('sequelize')
 const sequelize = require('../units/db')
 const Account = require('./Account')
 const GameChatUsers = require('./GameChatUsers')
 const htmlspecialchars = require('htmlspecialchars')
+const floodTimeLimit = 10
 
 const GameChat = sequelize.define('gamechats', {
   id: {
@@ -44,19 +45,57 @@ const getUsersInMessage = async (message) => {
       attributes: ['id'],
     })
     if (!account) continue
-    if (accounts.filter(a => a.accountId == account.id).length == 0) 
+    if (accounts.filter((a) => a.accountId == account.id).length == 0)
       accounts.push({ accountId: account.id })
   }
   return accounts
 }
 
 // Сохраняет новое сообщение в базе и возвращает его
-GameChat.newMessage = async (gameId, accountId, msg, isPrivate = false, chars = true) => {
+GameChat.newMessage = async (
+  gameId,
+  accountId,
+  msg,
+  isPrivate = false,
+  chars = true
+) => {
   let message = msg
   if (chars) message = htmlspecialchars(msg)
   if (message.length > 255) {
     message = message.substr(0, 255)
   }
+
+  if (accountId) {
+    // проверяю является ли сообщение флудом
+    const isFlood = await GameChat.findAll({
+      where: {
+        message,
+        accountId,
+        createdAt: {
+          [Op.gt]: new Date(Date.now() - floodTimeLimit * 1000).toISOString(),
+        },
+      },
+      order: [['id', 'desc']],
+    })
+
+    if (isFlood.length >= 2) {
+      throw new Error('flood')
+    }
+
+    const messagesCount = await GameChat.count({
+      where: {
+        accountId,
+        createdAt: {
+          [Op.gt]: new Date(Date.now() - floodTimeLimit * 1000).toISOString(),
+        },
+      },
+    })
+
+    if (messagesCount > 9) {
+      throw new Error('flood')
+    }
+  }
+
   const gamechatusers = await getUsersInMessage(message)
   let username = ''
   if (accountId) {

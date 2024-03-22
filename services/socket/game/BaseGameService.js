@@ -262,6 +262,18 @@ class BaseGameService extends BaseService {
       throw new Error('Игра не найдена')
     }
 
+    const floodBlockTime = game.isFlooder(user.id)
+
+    if (floodBlockTime) {
+      const ids = this.getUserSockets(user.id, '/game')
+      ids.forEach((sock) => sock.emit('flood', floodBlockTime))
+      throw new Error(
+        `Вы не можете писать в чат по причине флуда ещё ${Math.ceil(
+          floodBlockTime / 1000
+        )} секунд`
+      )
+    }
+
     const player = game.getPlayerById(user.id)
     if (player.status == GamePlayer.playerStatuses.FREEZED) {
       throw new Error('Любовница заманила вас в свои сети')
@@ -271,28 +283,38 @@ class BaseGameService extends BaseService {
       throw new Error('Вы не можете писать в этой игре')
     }
 
-    // Сохраняю сообщение в базу
-    const msg = await GameChat.newMessage(gameId, user.id, message, isPrivate)
+    try {
+      // Сохраняю сообщение в базу
+      const msg = await GameChat.newMessage(gameId, user.id, message, isPrivate)
 
-    if (!isPrivate) {
-      // Рассылаю сообщение всем подключенным пользователям
-      io.of('/game').to(gameId).emit('message', msg)
-    } else {
-      // Отправляю самому игроку
-      const ids = this.getUserSockets(user.id, '/game')
-      ids.forEach((sock) => {
-        sock.emit('message', msg)
-      })
+      if (!isPrivate) {
+        // Рассылаю сообщение всем подключенным пользователям
+        io.of('/game').to(gameId).emit('message', msg)
+      } else {
+        // Отправляю самому игроку
+        const ids = this.getUserSockets(user.id, '/game')
+        ids.forEach((sock) => {
+          sock.emit('message', msg)
+        })
 
-      // Отправляю игрокам, которые были выделены в сообщении
-      msg.gamechatusers.forEach((cu) => {
-        if (cu.accountId != user.id) {
-          const ids = this.getUserSockets(cu.accountId, '/game')
-          ids.forEach((sock) => {
-            sock.emit('message', msg)
-          })
-        }
-      })
+        // Отправляю игрокам, которые были выделены в сообщении
+        msg.gamechatusers.forEach((cu) => {
+          if (cu.accountId != user.id) {
+            const ids = this.getUserSockets(cu.accountId, '/game')
+            ids.forEach((sock) => {
+              sock.emit('message', msg)
+            })
+          }
+        })
+      }
+    } catch (error) {
+      if (error.message == 'flood') {
+        const time = game.blockFlooder(user.id)
+        const ids = this.getUserSockets(user.id, '/game')
+        ids.forEach((sock) => sock.emit('flood', time))
+      } else {
+        throw new Error(error)
+      }
     }
   }
 
@@ -359,13 +381,16 @@ class BaseGameService extends BaseService {
     // Беру текущую игру
     const game = Games.getGame(gameId)
 
+    // Игра должна быть загружена
+    if (!game) return
+
+    const floodBlockTime = game.isFlooder(user.id)
+    if (floodBlockTime) return
+
     const player = game.getPlayerById(user.id)
     if (player.status != GamePlayer.playerStatuses.IN_GAME) {
       throw new Error('Вы не можете писать в этой игре')
     }
-
-    // Игра должна быть загружена
-    if (!game) throw new Error('Игра не найдена')
 
     game.typingBegin(user.id)
   }

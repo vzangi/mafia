@@ -49,6 +49,9 @@ class GameBase {
     // Ключами являются ники игроков
     // Значениями по ключу - id таймера сброса печати
     this.typingUsers = {}
+
+    // Флудящие игроки
+    this.flooders = {}
   }
 
   // Запуск игры
@@ -1637,6 +1640,28 @@ class GameBase {
 
     // Отправка списка печатающих игроков
     this.room.emit('typing', Object.keys(typingUsers))
+  }
+
+  // Блокировка флудера
+  blockFlooder(accountId) {
+    const { flooders } = this
+    const blockTime = 10 * 1000
+    const cnt = !flooders[accountId] ? 1 : flooders[accountId].cnt + 1
+
+    flooders[accountId] = { cnt, time: new Date().getTime() + blockTime * cnt }
+    return blockTime * cnt
+  }
+
+  // Проверка есть ли запрет из-за флуда
+  isFlooder(accountId) {
+    const { flooders } = this
+    const flooder = flooders[accountId]
+    if (!flooder) return false
+
+    const currentTime = new Date().getTime()
+    if (flooder.time < currentTime) return false
+
+    return flooder.time - currentTime
   }
 }
 
