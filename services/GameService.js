@@ -214,11 +214,16 @@ class GameService {
       throw new Error('Неверный формат даты')
     }
 
+    // Интервал дат по которым ищуться партии
+    const d_begin = new Date(year, month - 1, day)
+    const d_end = new Date(d_begin.getTime() + 1000 * 60 * 60 * 24)
+
     data.games = await Game.findAll({
       where: {
         status: [Game.statuses.ENDED, Game.statuses.STOPPED],
         startedAt: {
-          [Op.startsWith]: `${year}-${month}-${day}`,
+          [Op.gt]: d_begin.toISOString(),
+          [Op.lt]: d_end.toISOString(),
         },
       },
       order: [['id', 'desc']],
