@@ -192,6 +192,9 @@ $(function () {
 
 	// Вывести игру на страницу
 	function showGame(game) {
+		// Костыль от двойного вывода заявки
+		if ($(`.game-item[data-id='${game.id}']`).length != 0) return
+
 		game.inGame = false
 		game.my = false
 		// Проверяю, находится ли текущий игрок в заявке
