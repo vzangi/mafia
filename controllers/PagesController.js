@@ -37,7 +37,7 @@ class PagesController {
 	// Регистрация
 	registration(req, res) {
 		if (req.user) {
-			return res.redirect('pages/lobbi')
+			return res.redirect('/lobbi')
 		}
 		res.render('pages/auth/reg')
 	}
@@ -45,7 +45,7 @@ class PagesController {
 	// Восстановление пароля
 	restore(req, res) {
 		if (req.user) {
-			return res.redirect('pages/lobbi')
+			return res.redirect('/lobbi')
 		}
 		res.render('pages/auth/restore')
 	}
@@ -75,7 +75,6 @@ class PagesController {
 		try {
 			const { user } = req
 			const data = await service.topOfWeek(user)
-			data.title = 'Топ лучших игроков недели онлайн игры мафия'
 			res.render('pages/top-of-week', data)
 		} catch (error) {
 			log(error)
