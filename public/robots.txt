@@ -8,6 +8,7 @@ Disallow: /market/my
 Disallow: /market/things*
 Disallow: /gift/group*
 Disallow: /profile
+Disallow: /trades*
 Disallow: /return_url
 Disallow: /profile/wallet
 Disallow: /profile/settings
