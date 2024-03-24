@@ -9,7 +9,7 @@ const Contest = require('../models/Contest')
 const sequelize = require('./db')
 const Account = require('../models/Account')
 const deadlineInterval = 1000
-const minCount = 3
+const minCount = 6
 const log = require('./customLog')
 const { Op } = require('sequelize')
 
@@ -214,7 +214,7 @@ class GamesManager {
 		// Если игроков больше или равно минимально допустимому количеству - возвращаю true
 		if (playersInGame >= minCount) return true
 
-		// Если мультирежим
+		// Если конструктор
 		if (game.gametypeId == Game.types.CONSTRUCTOR) {
 			// Игроков должно быть больше, чем задано ролей
 		}

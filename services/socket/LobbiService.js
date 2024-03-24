@@ -55,6 +55,14 @@ class LobbiService extends BaseService {
 			throw new Error('Не авторизован')
 		}
 
+		const account = await Account.findByPk(user.id, {
+			attributes: ['username', 'vipTo', 'vip', 'role'],
+		})
+
+		if (!account) {
+			throw new Error('Игрок не найден')
+		}
+
 		if (!gametypeId || !playersCount || !waitingTime) {
 			throw new Error('Нет необходимых данных')
 		}
@@ -67,13 +75,23 @@ class LobbiService extends BaseService {
 			throw new Error('Нет у нас таких режимов')
 		}
 
-		if (
-			gametypeId == Game.types.CLASSIC ||
-			gametypeId == Game.types.SHOOTOUT ||
-			gametypeId == Game.types.MULTI
-		) {
-			if (playersCount < minCount) {
-				throw new Error(`Минимальное количество игроков - ${minCount}`)
+		if (account.role != 1 || playersCount < 3) {
+			if (
+				gametypeId == Game.types.CLASSIC ||
+				gametypeId == Game.types.SHOOTOUT ||
+				gametypeId == Game.types.MULTI
+			) {
+				if (playersCount < minCount) {
+					throw new Error(`Минимальное количество игроков - ${minCount}`)
+				}
+			}
+
+			if (playersCount > 21) {
+				throw new Error('Максимальное количество игроков - 21')
+			}
+
+			if (waitingTime > 20) {
+				throw new Error('Максимальное время для заявки - 20 минут')
 			}
 		}
 
@@ -83,24 +101,8 @@ class LobbiService extends BaseService {
 			}
 		}
 
-		if (playersCount > 21) {
-			throw new Error('Максимальное количество игроков - 21')
-		}
-
 		if (waitingTime < 1) {
 			throw new Error('Минимальное время для заявки - 1 минута')
-		}
-
-		if (waitingTime > 20) {
-			throw new Error('Максимальное время для заявки - 20 минут')
-		}
-
-		const account = await Account.findByPk(user.id, {
-			attributes: ['username', 'vipTo', 'vip'],
-		})
-
-		if (!account) {
-			throw new Error('Игрок не найден')
 		}
 
 		if (gametypeId == Game.types.CONSTRUCTOR) {
@@ -1043,10 +1045,12 @@ class LobbiService extends BaseService {
 			)
 		}
 
-		if (game.players.length < minCount) {
-			throw new Error(
-				`Минимальное количество игроков для запуска игры - ${minCount}`
-			)
+		if (userAccount.role != 1 || game.players.length < 3) {
+			if (game.players.length < minCount) {
+				throw new Error(
+					`Минимальное количество игроков для запуска игры - ${minCount}`
+				)
+			}
 		}
 
 		if (game.gametypeId == Game.types.CONSTRUCTOR) {
