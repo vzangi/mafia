@@ -6,7 +6,7 @@ const Game = require('../../models/Game')
 const GamePlayer = require('../../models/GamePlayer')
 const GameInitRole = require('../../models/GameInitRole')
 const Punishment = require('../../models/Punishment')
-const minCount = 3
+const minCount = 6
 const GamesManager = require('../../units/GamesManager')
 const BaseService = require('./BaseService')
 const { getCoolDateTime } = require('../../units/helpers')
@@ -67,22 +67,24 @@ class LobbiService extends BaseService {
 			throw new Error('Нет у нас таких режимов')
 		}
 
-		if (gametypeId == Game.types.CLASSIC || gametypeId == Game.types.SHOOTOUT) {
+		if (
+			gametypeId == Game.types.CLASSIC ||
+			gametypeId == Game.types.SHOOTOUT ||
+			gametypeId == Game.types.MULTI
+		) {
 			if (playersCount < minCount) {
 				throw new Error(`Минимальное количество игроков - ${minCount}`)
 			}
 		}
 
-		if (gametypeId == Game.types.MULTI) {
+		if (gametypeId == Game.types.CONSTRUCTOR) {
 			if (playersCount < 3) {
-				throw new Error(
-					'Минимальное количество игроков в мультиролевом режиме - 3'
-				)
+				throw new Error('Минимальное количество игроков в конструкторе - 3')
 			}
 		}
 
-		if (playersCount > 20) {
-			throw new Error('Максимальное количество игроков - 20')
+		if (playersCount > 21) {
+			throw new Error('Максимальное количество игроков - 21')
 		}
 
 		if (waitingTime < 1) {
