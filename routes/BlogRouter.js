@@ -14,6 +14,7 @@ const pages = [
   'shootout',
   'multimode',
   'constructor',
+  'competitive',
 ]
 
 pages.map((page) => {
