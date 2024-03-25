@@ -13,6 +13,7 @@ const pages = [
   'classic',
   'shootout',
   'multimode',
+  'constructor',
 ]
 
 pages.map((page) => {
