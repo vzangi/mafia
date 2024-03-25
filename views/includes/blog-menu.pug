@@ -1,0 +1,29 @@
+mixin menu_link(name, url, active_url)
+  li 
+    a(href=`/${url}` class=(url==active_url?'active':''))= name
+
+mixin blog_menu(url)
+  div(class="block mb-4 pb-2 sticky-top d-md-block d-none")
+    div(class="p-4 pb-2")
+      h4 Материалы
+
+    ul(class="aside-menu")
+      +menu_link('Правила сайта', 'rules', url)
+      +menu_link('Как тут играть', 'how-to-play', url)
+      +menu_link('Роли', 'roles', url)
+      +menu_link('О нарушениях', 'guidelines', url)
+      +menu_link('О наказаниях', 'bans', url)
+      +menu_link('Об инвентаре', 'inventory', url)
+      +menu_link('Ранги', 'ranks', url)
+      +menu_link('О платежах', 'payments', url)
+      +menu_link('VIP-статус', 'vip', url)
+
+    div(class="p-4 pb-2")
+      h4 Режимы игры
+
+    ul(class="aside-menu")
+      +menu_link('Классический', 'classic', url)
+      +menu_link('Мультиролевой', 'multimode', url)
+      +menu_link('Перестрелка', 'shootout', url)
+      +menu_link('Конструктор', 'constructor', url)
+      //- +menu_link('Соревновательный', 'sorev', url)
