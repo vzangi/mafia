@@ -30,4 +30,10 @@ const GameInitRole = sequelize.define(
 
 GameInitRole.belongsTo(Role)
 
+GameInitRole.rolesCount = async (gameId) => {
+  const rolesInGame = await GameInitRole.findAll({ where: { gameId } })
+  if (!rolesInGame) return 0
+  return rolesInGame.reduce((a, b) => a + b['cnt'], 0)
+}
+
 module.exports = GameInitRole

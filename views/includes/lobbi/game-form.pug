@@ -59,15 +59,19 @@ div(class="modal fade" id="makeForm" tabindex="-1")
             p(class="text-secondary")
               small Роли доступные в этом режиме: #[b честный житель], #[b мафия], #[b комиссар], #[b сержант].
 
+            -var minPC = 6
+            -var maxPC = 21
+            -var maxWT = 20
             if currentAccount && currentAccount.role == 1
-              +gameFormRow('Количество игроков (3 - 21 игроков)')
-                +numberInput("gamePlayersCount-1", 3, 21, 7)
-            else
-              +gameFormRow('Количество игроков (6 - 21 игроков)')
-                +numberInput("gamePlayersCount-1", 6, 21, 7)
+              -minPC = 3
+              -maxPC = 999
+              -maxWT = 999
 
-            +gameFormRow('Время на сбор (1 - 20 минут)')
-              +numberInput("waitingTime-1", 1, 20, 10)
+            +gameFormRow(`Количество игроков (${minPC} - ${maxPC} игроков)`)
+              +numberInput("gamePlayersCount-1", minPC, maxPC, 7)
+
+            +gameFormRow(`Время на сбор (1 - ${maxWT} минут)`)
+              +numberInput("waitingTime-1", 1, maxWT, 10)
 
             if currentAccount && currentAccount.vip
               +gameFormRow('')
@@ -96,15 +100,11 @@ div(class="modal fade" id="makeForm" tabindex="-1")
             p(class="text-secondary")
               small Роли доступные в этом режиме: #[b честный житель], #[b мафия], #[b комиссар], #[b сержант], #[b маньяк], #[b врач], #[b дитя].
 
-            if currentAccount && currentAccount.role == 1
-              +gameFormRow('Количество игроков (3 - 21 игроков)')
-                +numberInput("gamePlayersCount-2", 3, 21, 7)
-            else
-              +gameFormRow('Количество игроков (6 - 21 игроков)')
-                +numberInput("gamePlayersCount-2", 6, 21, 7)
+            +gameFormRow(`Количество игроков (${minPC} - ${maxPC} игроков)`)
+              +numberInput("gamePlayersCount-2", minPC, maxPC, 7)
 
-            +gameFormRow('Время на сбор (1 - 20 минут)')
-              +numberInput("waitingTime-2", 1, 20, 10)
+            +gameFormRow(`Время на сбор (1 - ${maxWT} минут)`)
+              +numberInput("waitingTime-2", 1, maxWT, 10)
 
             if currentAccount && currentAccount.vip
               +gameFormRow('')
@@ -159,16 +159,11 @@ div(class="modal fade" id="makeForm" tabindex="-1")
             p(class="text-secondary")
               small В этом режиме, кроме честных жителей и мафии в игре также могут присутствовать #[b маньяк], #[b дитя], #[b врач], #[b любовница] и #[b адвокат].
 
-            if currentAccount && currentAccount.role == 1
-              +gameFormRow('Количество игроков (3 - 21 игроков)')
-                +numberInput("gamePlayersCount-4", 3, 21, 9)
-            else
-              +gameFormRow('Количество игроков (6 - 21 игроков)')
-                +numberInput("gamePlayersCount-4", 6, 21, 9)
+            +gameFormRow(`Количество игроков (${minPC} - ${maxPC} игроков)`)
+              +numberInput("gamePlayersCount-4", minPC, maxPC, 9)
 
-
-            +gameFormRow('Время на сбор (1 - 20 минут)')
-              +numberInput("waitingTime-4", 1, 20, 10)
+            +gameFormRow(`Время на сбор (1 - ${maxWT} минут)`)
+              +numberInput("waitingTime-4", 1, maxWT, 10)
 
             if currentAccount && currentAccount.vip
               +gameFormRow('')
@@ -197,12 +192,12 @@ div(class="modal fade" id="makeForm" tabindex="-1")
             p(class="text-secondary")
               small Набор ролей, который будет в игре настраивается создателем партии.
 
-            +gameFormRow('Количество игроков (3 - 21 игрока)')
-              +numberInput("gamePlayersCount-5", 3, 21, 7)
+            +gameFormRow(`Количество игроков (3 - ${maxPC} игроков)`)
+              +numberInput("gamePlayersCount-5", 3, maxPC, 7)
 
 
-            +gameFormRow('Время на сбор (1 - 20 минут)')
-              +numberInput("waitingTime-5", 1, 20, 10)
+            +gameFormRow(`Время на сбор (1 - ${maxWT} минут)`)
+              +numberInput("waitingTime-5", 1, maxWT, 10)
 
             if currentAccount && currentAccount.vip
               +gameFormRow('')
