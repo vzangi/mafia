@@ -3,7 +3,7 @@ mixin menu_link(name, url, active_url)
     a(href=`/${url}` class=(url==active_url?'active':''))= name
 
 mixin blog_menu(url)
-  div(class="block mb-5 pb-2 sticky-top d-md-block d-none")
+  div(class="block mb-5 pb-2 sticky-top d-md-block d-none" style="z-index:1")
     div(class="p-4 pb-2")
       h4 Материалы
 
