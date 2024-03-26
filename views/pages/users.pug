@@ -1,25 +1,36 @@
 extends /layouts/two_column_3_9
 
 block main
-	h1 Список пользователей
+  h1 Список пользователей
 
-	div(class="block mt-3 mb-3")
-		div(class="block users-list")
+  div(class="block mt-3 mb-3")
+    div(class="block users-list")
 
-			each user in users
-				div(class="online-friend-box"+(user.gameplayers&&user.gameplayers.length!=0?' in-game':''))
-					div(class="friend-box d-flex align-items-center m-3" data-nik=user.username)
-						div(class="friend-avatar"+(user.online?' online':''))
-							img(src="/uploads/"+user.avatar alt=user.username)
-						div(class="friend-links friend-info ms-2 flex-grow-1")
-							if user.punishments && user.punishments.length > 0
-								each pun in user.punishments
-									if pun.type == 1
-										span(class="ion-android-microphone-off2" title="Молчанка<br> до "+(pun.coolDate) data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true")
-											i(class="bi bi-envelope-slash-fill") 
-							a(href="/profile/"+user.username)= user.username
-						div(class="friend-actions") 
-							if user.gameplayers&&user.gameplayers.length!=0
-								a(href="/game/"+user.gameplayers[0].gameId class="to-game bi bi-controller me-2" title="Смотреть игру" data-bs-toggle="tooltip" data-bs-placement="bottom")
+      each user in users
+        div(class="online-friend-box"+(user.gameplayers&&user.gameplayers.length!=0?' in-game':''))
+          div(class="friend-box d-flex align-items-center m-3" data-nik=user.username)
+            div(class="friend-avatar"+(user.online?' online':''))
+              img(src="/uploads/"+user.avatar alt=user.username)
+
+            div(class="friend-links friend-info ms-2 flex-grow-1")
+              if user.punishments && user.punishments.length > 0
+                each pun in user.punishments
+                  if pun.type == 1
+                    span(class="ion-android-microphone-off2" title="Молчанка<br> до "+(pun.coolDate) data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true")
+                      i(class="bi bi-envelope-slash-fill") 
+              a(href="/profile/"+user.username)= user.username
+
+            div(class="friend-actions") 
+              if user.gameplayers&&user.gameplayers.length!=0
+                a(href="/game/"+user.gameplayers[0].gameId class="to-game bi bi-controller me-2" title="Смотреть игру" data-bs-toggle="tooltip" data-bs-placement="bottom")
+
+              if currentAccount && currentAccount.id == 1
+                if user.noindex
+                  button(class="btn btn-sm btn-primary make-indexable" data-id=user.id) index
+                else
+                  button(class="btn btn-sm btn-danger make-noindexable" data-id=user.id) noindex
+
 
 block scripts 
+  if currentAccount && currentAccount.id == 1
+    script(src="/js/admin/user.js")

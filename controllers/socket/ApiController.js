@@ -100,6 +100,16 @@ class ApiController extends BaseSocketController {
       callback({ status: 1, msg: error.message })
     }
   }
+
+  // Установка индексируемости профиля
+  async indexable(data, callback) {
+    try {
+      await this.service.indexable(data)
+      if (callback) callback({ status: 0 })
+    } catch (error) {
+      if (callback) callback({ status: 1, msg: error.message })
+    }
+  }
 }
 
 module.exports = (io, socket) => {

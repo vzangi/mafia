@@ -152,6 +152,8 @@ class ProfileService {
     if (profile.rank < 2500) data.rankImg = 2
     if (profile.rank < 1500) data.rankImg = 1
 
+    data.noindex = profile.noindex
+
     return data
   }
 

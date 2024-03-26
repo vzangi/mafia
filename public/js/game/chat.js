@@ -120,9 +120,9 @@ $(function () {
 
   // Прокрутка чата до последних сообщений
   const scrollToEnd = (scroll = false, smooth = true) => {
-    const height = chat[0].scrollHeight || 100000
+    const height = chat[0].scrollHeight // || 100000
     if (scroll || needScroll == 0) {
-      if (smooth && supportSmooth) {
+      if (false && smooth && supportSmooth) {
         chat[0].scrollBy({
           top: height,
           left: 0,

@@ -4,6 +4,8 @@ module.exports = (io, socket) => {
     socket
   )
 
+  const { account } = socket
+
   // Поиск пользователя по нику
   socket.on('user.search', controller.searchUsersByNik.bind(controller))
 
@@ -30,4 +32,9 @@ module.exports = (io, socket) => {
 
   // Настройка уведомления о начале игры в телегу
   socket.on('setting.gamenotify', controller.gamenotifySetting.bind(controller))
+
+  if (account && account.id == 1) {
+    // Установка индексируемости профиля
+    socket.on('indexable', controller.indexable.bind(controller))
+  }
 }

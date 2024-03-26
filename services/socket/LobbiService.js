@@ -555,7 +555,7 @@ class LobbiService extends BaseService {
 
       const isBlocked = await Friend.findOne({
         where: {
-          status: -2,
+          status: Friend.statuses.BLOCK,
           accountId: acc.id,
           friendId: account.id,
         },
@@ -563,6 +563,16 @@ class LobbiService extends BaseService {
 
       if (isBlocked) {
         throw new Error('Вы в ЧС у создателя заявки')
+      }
+    }
+
+    if (game.gametypeId == Game.types.SHOOTOUT && game.melee) {
+      const power = await AccountThing.getPower(account.id)
+
+      if (power != 0) {
+        throw new Error(
+          'Чтобы играть перестрелку в рукопашном режиме необходимо разоружиться'
+        )
       }
     }
 
@@ -582,22 +592,37 @@ class LobbiService extends BaseService {
       throw new Error('Вы всё ещё в другой заявке')
     }
 
-    if (game.gametypeId == Game.types.SHOOTOUT && game.melee) {
-      const power = await AccountThing.getPower(account.id)
-
-      if (power != 0) {
-        throw new Error(
-          'Чтобы играть перестрелку в рукопашном режиме необходимо разоружиться'
-        )
-      }
-    }
-
     // Добавляю игрока в заявку
     await GamePlayer.create({
       gameId,
       accountId: account.id,
       username: account.username,
     })
+
+    // Проверяю попал ли игрок в заявку единожды
+    const inGames = await GamePlayer.findAll({
+      where: {
+        accountId: account.id,
+        status: [
+          GamePlayer.playerStatuses.WHAITNG,
+          GamePlayer.playerStatuses.IN_GAME,
+          GamePlayer.playerStatuses.FREEZED,
+        ],
+      },
+    })
+
+    if (inGames.length != 1) {
+      console.log(`Игрок ${account.username} находится в двух заявках!`)
+      // Удаляю его из всех кроме первой
+      for (let i = 1; i < inGames.length; i++) {
+        await GamePlayer.destroy({
+          where: {
+            id: inGames[i].id,
+          },
+        })
+      }
+      throw new Error('Двойной заход в заявку')
+    }
 
     // Отправляю всем информацию об игроке зашедшем в зявку
     const { io } = this

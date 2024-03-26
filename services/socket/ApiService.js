@@ -281,6 +281,13 @@ class ApiService extends BaseService {
 
     return true
   }
+
+  // Установка индексируемости профиля
+  async indexable(data) {
+    const { id, noindex } = data
+    if (!id || noindex === undefined) throw new Error('Нет необходимых данных')
+    await Account.update({ noindex }, { where: { id } })
+  }
 }
 
 module.exports = ApiService
