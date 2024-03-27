@@ -265,7 +265,6 @@ img.prevu {
 /* Registration page */
 .block {
   display: block;
-  border-bottom: 2px solid rgba(0, 0, 0, 0.1);
   border-radius: var(--border-radius);
   padding-top: 0.1px;
   padding-bottom: 0.1px;

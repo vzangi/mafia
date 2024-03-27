@@ -1,0 +1,128 @@
+:root {
+  --bs-heading-color: #aaa;
+}
+
+body {
+  background: #222;
+}
+
+.block {
+  --bs-text-opacity: 1;
+  background: #333;
+  color: #aaa;
+  box-shadow: 0 0 10px 0px inset #111;
+}
+
+.block a {
+  color: #bbb;
+  text-decoration: none;
+}
+
+header {
+  background: #333;
+  border-color: #444;
+}
+
+header li a.nav-link {
+  color: #aaa;
+}
+
+.footer {
+  background-color: #333;
+  color: #aaa;
+  border-top: 1px solid #444;
+}
+
+.footer a {
+  color: #aaa;
+}
+
+.footer .title.title4 {
+  color: #aaa;
+}
+
+.header-logo > svg > path,
+.header-logo div {
+  fill: #aaa;
+  color: #aaa;
+}
+
+.right-header-block .search,
+.right-header-block .chatbox {
+  color: #aaa;
+}
+
+.friends-online input {
+  background-color: #444 !important;
+  border: 1px solid #555 !important;
+  color: #ccc;
+}
+
+.top3 .total {
+  color: inherit !important;
+}
+
+.top-desc {
+  color: #aaa !important;
+}
+.line {
+  border-bottom: 1px solid #555 !important;
+}
+
+.list {
+  color: #aaa !important;
+}
+
+article > * {
+  color: #aaa;
+}
+
+article h1,
+article h2,
+article h3,
+article h4,
+article h5 {
+  color: #aaa;
+}
+
+ul.aside-menu li a {
+  color: #aaa;
+}
+
+ul.aside-menu li a:hover {
+  background: transparent;
+  text-decoration: underline;
+}
+
+article .text-dark,
+article a {
+  --bs-text-opacity: 1;
+  color: var(--color-gold) !important;
+}
+
+.game-form {
+  background: #333;
+}
+
+.game-types-list {
+  background-color: #333 !important;
+  color: #aaa !important;
+}
+
+.game-settings-list {
+  background: #333 !important;
+  color: #aaa !important;
+  box-shadow: -9px 0px 5px -2px #222 !important;
+}
+
+.game-type-item:hover {
+  background: #3d3d3d !important;
+}
+
+.game-type-item h4 {
+  color: #ddd;
+}
+
+.game-type-item.active h4 {
+  color: inherit;
+}
