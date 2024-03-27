@@ -86,6 +86,15 @@ const isCorrectDate = (year, month, day) => {
   return true
 }
 
+const isoFromDate = (date, p = 0) => {
+  const d = date.split('.')
+  const r = new Date(d[2], d[1] * 1 - 1, d[0] * 1 + p, 0, 0, 0, 0)
+  return r.toISOString()
+}
+
+const isCorrectDateString = (date) =>
+  /^[0-9]{2}[.][0-9]{2}[.][0-9]{4}$/.test(date)
+
 module.exports = {
   getTimeFromIso,
   getDateFromIso,
@@ -94,4 +103,6 @@ module.exports = {
   getCoolDateTime,
   deadlineAfter,
   isCorrectDate,
+  isoFromDate,
+  isCorrectDateString,
 }

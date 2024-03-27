@@ -21,7 +21,11 @@ const GamePlayer = require('../models/GamePlayer')
 const Role = require('../models/Role')
 const Game = require('../models/Game')
 const AccountSetting = require('../models/AccountSetting')
-const { getCoolDateTime } = require('../units/helpers')
+const {
+  getCoolDateTime,
+  isCorrectDateString,
+  isoFromDate,
+} = require('../units/helpers')
 
 class ProfileService {
   async profileInfo(profile, currentUser) {
@@ -473,33 +477,69 @@ class ProfileService {
 
   // Статистика
   async statistics(statData) {
-    const { account } = statData
-    if (!account) throw new Error('Нет необходимых данных')
+    const { username, from, to } = statData
+
+    if (!username) throw new Error('Ник не указан')
+
+    const account = await Account.findOne({ where: { username } })
+    if (!account) {
+      throw new Error('Пользователь не найден')
+    }
+
+    const period = this._getPeriod(from, to)
 
     const data = { profile: account }
 
     // Общая статистика
-    data.total = await this._getTotal(account.id)
+    data.total = await this._getTotal(account.id, period)
 
     // Стата за мафию
-    data.role = await this._getRoles(account.id)
+    data.role = await this._getRoles(account.id, period)
 
     // Игровые действия
-    data.action = await this._getGameActions(account.id)
+    data.action = await this._getGameActions(account.id, period)
 
     // Игровые факты
-    data.fact = await this._getGameFacts(account.id)
+    data.fact = await this._getGameFacts(account.id, period)
+
+    if (isCorrectDateString(from)) data.from = from
+    if (isCorrectDateString(to)) data.to = to
 
     return data
   }
 
+  _getPeriod(from, to) {
+    const period = {}
+
+    if (isCorrectDateString(from) && isCorrectDateString(to)) {
+      period.createdAt = {
+        [Op.gte]: isoFromDate(from),
+        [Op.lte]: isoFromDate(to, 1),
+      }
+    } else {
+      if (isCorrectDateString(from)) {
+        period.createdAt = {
+          [Op.gte]: isoFromDate(from),
+        }
+      }
+      if (isCorrectDateString(to)) {
+        period.createdAt = {
+          [Op.lte]: isoFromDate(to, 1),
+        }
+      }
+    }
+
+    return period
+  }
+
   // Общая статистика
-  async _getTotal(accountId) {
+  async _getTotal(accountId, period) {
     const total = {}
     const where = {
       accountId,
       type: GameEvent.eventTypes.RESULT,
       active: true,
+      ...period,
     }
 
     // Все игры
@@ -525,43 +565,45 @@ class ProfileService {
   }
 
   // Статистика по ролям
-  async _getRoles(accountId) {
+  async _getRoles(accountId, period) {
     const role = {}
 
     // Стата за мафию
-    role.mafia = await this._getRole(accountId, [
-      Role.roles.MAFIA,
-      Role.roles.ADVOCATE,
-      Role.roles.LOVER,
-    ])
+    role.mafia = await this._getRole(
+      accountId,
+      [Role.roles.MAFIA, Role.roles.ADVOCATE, Role.roles.LOVER],
+      period
+    )
 
     // Стата за кома
-    role.komissar = await this._getRole(accountId, [
-      Role.roles.KOMISSAR,
-      Role.roles.SERGEANT,
-    ])
+    role.komissar = await this._getRole(
+      accountId,
+      [Role.roles.KOMISSAR, Role.roles.SERGEANT],
+      period
+    )
 
     // Стата за честных
-    role.citizen = await this._getRole(accountId, [
-      Role.roles.CITIZEN,
-      Role.roles.DOCTOR,
-      Role.roles.CHILD,
-    ])
+    role.citizen = await this._getRole(
+      accountId,
+      [Role.roles.CITIZEN, Role.roles.DOCTOR, Role.roles.CHILD],
+      period
+    )
 
     // Стата за маньяка
-    role.maniac = await this._getRole(accountId, Role.roles.MANIAC)
+    role.maniac = await this._getRole(accountId, Role.roles.MANIAC, period)
 
     return role
   }
 
   // Статистика по роли
-  async _getRole(accountId, roleId) {
+  async _getRole(accountId, roleId, period) {
     const role = {}
 
     const req = {
       where: {
         accountId,
         type: GameEvent.eventTypes.RESULT,
+        ...period,
       },
       include: [
         {
@@ -597,12 +639,13 @@ class ProfileService {
   }
 
   // Игровая статистика
-  async _getGameActions(accountId) {
+  async _getGameActions(accountId, period) {
     const action = {}
     const where = {
       accountId,
       type: GameEvent.eventTypes.ACTION,
       active: true,
+      ...period,
     }
 
     // Количество убийств за мафию
@@ -637,12 +680,13 @@ class ProfileService {
   }
 
   // Игровые показатели
-  async _getGameFacts(accountId) {
+  async _getGameFacts(accountId, period) {
     const fact = {}
     const where = {
       accountId,
       type: GameEvent.eventTypes.FACT,
       active: true,
+      ...period,
     }
 
     // Первая посадка

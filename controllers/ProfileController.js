@@ -1,7 +1,5 @@
-const { AccessDeniedError } = require('sequelize')
 const service = require('../services/ProfileService')
 const log = require('../units/customLog')
-const Account = require('../models/Account')
 
 class ProfileController {
   // Переход в профиль по никнейму
@@ -180,19 +178,10 @@ class ProfileController {
   async statistics(req, res) {
     try {
       const { username } = req.params
-      const statData = {}
-      if (username) {
-        statData.account = await Account.findOne({ where: { username } })
-        if (!statData.account) {
-          throw new Error('Пользователь не найден')
-        }
-      } else {
-        if (!req.account) {
-          throw new Error('Не авторизован')
-        }
-        statData.account = req.account
-      }
+      const { from, to } = req.query
+      const statData = { from, to, username }
       const data = await service.statistics(statData)
+
       res.render('pages/profile/statistics', data)
     } catch (error) {
       log(error)
