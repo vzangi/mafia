@@ -646,7 +646,7 @@ ul.aside-menu li a:hover {
 
 ul.aside-menu li a.active {
   background-color: #2aa9d8;
-  background-color: rgba(75, 137, 220, 0.15);
+  background-color: rgba(75, 137, 220, 0.15) !important;
   border-left: 3px solid #4b89dc;
 }
 
