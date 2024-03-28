@@ -70,6 +70,10 @@ const Account = sequelize.define('account', {
     type: DataTypes.BOOLEAN,
     defaultValue: 0,
   },
+  skin: {
+    type: DataTypes.INTEGER,
+    defaultValue: 1,
+  },
   vipTo: {
     type: DataTypes.DATE,
   },

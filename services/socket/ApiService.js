@@ -288,6 +288,29 @@ class ApiService extends BaseService {
     if (!id || noindex === undefined) throw new Error('Нет необходимых данных')
     await Account.update({ noindex }, { where: { id } })
   }
+
+  // Именения скина
+  async changeSkin(skin) {
+    const { user } = this
+    if (!user) {
+      throw new Error('Не авторизован')
+    }
+
+    if (skin != 0 && skin != 1) {
+      throw new Error('Неверное значение поля skin')
+    }
+
+    await Account.update(
+      {
+        skin,
+      },
+      {
+        where: {
+          id: user.id,
+        },
+      }
+    )
+  }
 }
 
 module.exports = ApiService

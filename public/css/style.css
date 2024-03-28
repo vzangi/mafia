@@ -753,3 +753,59 @@ ul.aside-menu li a.active {
 .in-game .to-game {
   display: block;
 }
+
+.page-loader {
+  position: fixed;
+  z-index: 1111111;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #333;
+  color: #aaa;
+  fill: #aaa;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.page-loader.removing {
+  opacity: 0;
+}
+
+.loading-line {
+  width: 200px;
+  height: 5px;
+  border: 1px solid #444;
+}
+
+.loader-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+.loader-data svg {
+  width: 100px;
+  display: block;
+  margin: auto;
+}
+
+@keyframes loading111 {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.line-inner {
+  background-color: #006a44;
+  animation-name: loading111;
+  animation-duration: 1s;
+  animation-timing-function: ease-out;
+  animation-iteration-count: 1;
+  height: 100%;
+}

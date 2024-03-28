@@ -110,6 +110,15 @@ class ApiController extends BaseSocketController {
       if (callback) callback({ status: 1, msg: error.message })
     }
   }
+
+  // Установка скина
+  async changeSkin(skin) {
+    try {
+      await this.service.changeSkin(skin)
+    } catch (error) {
+      log(error)
+    }
+  }
 }
 
 module.exports = (io, socket) => {

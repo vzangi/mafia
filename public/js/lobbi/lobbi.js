@@ -107,6 +107,11 @@ $(async function () {
       needScroll && chatFixCheckbox.click()
 
       wideChat && chatWhideCheckbox.click()
+
+      setTimeout(() => {
+        $('.page-loader').addClass('removing')
+        setTimeout(() => $('.page-loader').remove(), 300)
+      }, 500)
     })
   })
 

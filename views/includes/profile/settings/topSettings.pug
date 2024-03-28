@@ -35,8 +35,14 @@ div(class="block")
           option(value="2" selected=hideinvent==2) Скрыт для всех
 
       if currentAccount.telegramChatId
-        div 
+        div(class="mb-3")
           label(class="form-label") Уведомление в Telegram о начале партии
           select(class="form-control" id="gamenotify")
             option(value="1" selected=gamenotify==1) Уведомлять всегда
             option(value="2" selected=gamenotify==2) Уведомлять только если я оффлайн
+
+      div(class="mb-3")
+        label(class="form-label") Тема
+        select(class="form-control" id="skin")
+          option(value="0" selected=currentAccount.skin==0) Светлая
+          option(value="1" selected=currentAccount.skin==1) Тёмная

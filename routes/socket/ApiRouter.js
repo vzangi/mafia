@@ -37,4 +37,7 @@ module.exports = (io, socket) => {
     // Установка индексируемости профиля
     socket.on('indexable', controller.indexable.bind(controller))
   }
+
+  // Иземенение скина
+  socket.on('profile.skin.change', controller.changeSkin.bind(controller))
 }

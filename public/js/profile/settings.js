@@ -2,6 +2,7 @@ $(function () {
   const fileInput = $('.change-avatar-box input[type=file]')
   const genderSelect = $('#gender')
   const hideSetting = $('#inventhide')
+  const skin = $('#skin')
   const gameNotify = $('#gamenotify')
   const avatarForm = $('.change-avatar-box form')
   const nikInput = $('.nik-box input')
@@ -40,6 +41,12 @@ $(function () {
   genderSelect.change(function () {
     const gender = $(this).val()
     socket.emit('profile.gender.change', gender)
+  })
+
+  skin.change(function () {
+    const skin = $(this).val()
+    socket.emit('profile.skin.change', skin)
+    setTimeout(() => location.reload(), 300)
   })
 
   hideSetting.change(function () {

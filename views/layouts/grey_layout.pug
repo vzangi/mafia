@@ -19,4 +19,5 @@ html
 
   block scripts 
 
-  link(rel='stylesheet' href='/css/skin/dark.css')
+  if !currentAccount || (currentAccount && currentAccount.skin == 1)
+    link(rel='stylesheet' href='/css/skin/dark.css')

@@ -43,7 +43,7 @@ script(id="gamePlayerTmpl" type="text/x-jquery-tmpl")
         a(href="/profile/${player.account.username}") ${player.account.username}
 
 script(id="gameItemTmpl" type="text/x-jquery-tmpl")
-  div(class="game-item ${my?'my':''} ${inGame?'ingame':''} old-game-type-${gametype.id}" data-id="${id}" data-game="${JSON.stringify(this.data)}")
+  div(class="game-item removing ${my?'my':''} ${inGame?'ingame':''} old-game-type-${gametype.id}" data-id="${id}" data-game="${JSON.stringify(this.data)}")
     div(class="block p-4 mb-3")
 
       div(class="game-info mb-3")

@@ -407,3 +407,14 @@ table.ui-datepicker-calendar {
   --bs-table-bg: #e9b100;
   --bs-table-border-color: #555;
 }
+
+.game-item {
+  transition: all 0.5s ease;
+  opacity: 1;
+  transform: rotateX(0deg);
+}
+
+.game-item.removing {
+  opacity: 0;
+  transform: rotateX(90deg);
+}
