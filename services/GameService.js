@@ -7,7 +7,11 @@ const GameStep = require('../models/GameStep')
 const GameType = require('../models/GameType')
 const GameLife = require('../models/GameLife')
 const smiles = require('../units/smiles')
-const { getDateFromIso, isCorrectDate } = require('../units/helpers')
+const {
+  getDateFromIso,
+  isoFromDate,
+  isCorrectDateString,
+} = require('../units/helpers')
 
 class GameService {
   // Страница игры
@@ -198,33 +202,63 @@ class GameService {
     return data
   }
 
+  // Получение интервала по датам
+  _getDateInterval(from, to) {
+    // Если обе даты верны
+    if (isCorrectDateString(from) && isCorrectDateString(to)) {
+      return {
+        startedAt: {
+          [Op.gte]: isoFromDate(from),
+          [Op.lte]: isoFromDate(to, 1),
+        },
+      }
+    }
+
+    // Если пришла только дата "От"
+    if (isCorrectDateString(from)) {
+      return {
+        startedAt: {
+          [Op.gte]: isoFromDate(from),
+        },
+      }
+    }
+
+    // Если пришла только дата "До"
+    if (isCorrectDateString(to)) {
+      return {
+        startedAt: {
+          [Op.lte]: isoFromDate(to, 1),
+        },
+      }
+    }
+
+    // Если даты не пришли, то беру сегодняшний день
+    const date = getDateFromIso(new Date().toISOString())
+      .split('.')
+      .reverse()
+      .join('.')
+
+    return {
+      startedAt: {
+        [Op.gte]: isoFromDate(date),
+      },
+    }
+  }
+
   // Архив игр
-  async archive(year, month, day) {
-    const data = {}
-    const date = new Date()
-    if (!year && !month && !day) {
-      year = date.getFullYear()
-      month = date.getMonth() + 1
-      day = date.getDate()
-    }
-    if (month < 10) month = `0${month * 1}`
-    if (day < 10) day = `0${day * 1}`
-
-    if (!isCorrectDate(year, month, day)) {
-      throw new Error('Неверный формат даты')
+  async archive(archiveData) {
+    let { from, to } = archiveData
+    const data = {
+      from,
+      to,
     }
 
-    // Интервал дат по которым ищуться партии
-    const d_begin = new Date(year, month - 1, day)
-    const d_end = new Date(d_begin.getTime() + 1000 * 60 * 60 * 24)
+    const { startedAt } = this._getDateInterval(from, to)
 
     data.games = await Game.findAll({
       where: {
         status: [Game.statuses.ENDED, Game.statuses.STOPPED],
-        startedAt: {
-          [Op.gt]: d_begin.toISOString(),
-          [Op.lt]: d_end.toISOString(),
-        },
+        startedAt,
       },
       order: [['id', 'desc']],
       include: [
@@ -251,10 +285,6 @@ class GameService {
         },
       ],
     })
-
-    data.year = year
-    data.month = month
-    data.day = day
 
     data.title = 'Архив поединков онлайн игры Мафия'
     data.description =
