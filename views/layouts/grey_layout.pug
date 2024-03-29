@@ -2,11 +2,11 @@ doctype html
 html 
   head
     include ../includes/head
-    link(href="/css/grey.css" rel="stylesheet")
+    link(href="/css/grey.css?v=1.0" rel="stylesheet")
     block head
 
     if !currentAccount || (currentAccount && currentAccount.skin == 1)
-      link(rel='stylesheet' href='/css/skin/dark.css')
+      link(rel='stylesheet' href='/css/skin/dark.css?v=1.0')
 
     if currentAccount && currentAccount.vip == 1 && currentAccount.bg
       style= `body{background-image: url(/uploads/${currentAccount.bg})}`
