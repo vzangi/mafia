@@ -37,6 +37,7 @@ body {
   background: #333;
   color: #aaa;
   box-shadow: 0 0 10px 0px inset #111;
+  background-image: url(/images/diagonal-light.png);
 }
 
 .block a {
@@ -412,6 +413,8 @@ table.ui-datepicker-calendar {
   transition: all 0.5s ease;
   opacity: 1;
   transform: rotateX(0deg);
+  background-image: url(/images/diagonal.png);
+  border-radius: var(--border-radius);
 }
 
 .game-item.removing {

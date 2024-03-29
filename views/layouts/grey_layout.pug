@@ -6,7 +6,7 @@ html
     block head
 
     if !currentAccount || (currentAccount && currentAccount.skin == 1)
-      link(rel='stylesheet' href='/css/skin/dark.css?v=1.0')
+      link(rel='stylesheet' href='/css/skin/dark.css?v=1.1')
 
     if currentAccount && currentAccount.vip == 1 && currentAccount.bg
       style= `body{background-image: url(/uploads/${currentAccount.bg})}`
