@@ -33,7 +33,7 @@ script(id="friendOnlineTmpl" type="text/x-jquery-tmpl")
         span(class="start-chat ion-chatbox-working" title="Личное сообщение" data-bs-toggle="tooltip" data-bs-placement="bottom" onclick="startPrivateWith(${id})")
 
 script(id="gamePlayerTmpl" type="text/x-jquery-tmpl")
-  div(class="player" data-username="${player.account.username}")
+  div(class="player added" data-username="${player.account.username}")
     div(class="friend-item flex-column align-items-center gap-1")
       div(class="friend-avatar ${player.account.online?'online':''}")
         img(src="/uploads/${player.account.avatar}")
