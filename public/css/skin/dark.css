@@ -221,8 +221,8 @@ a.thing-item {
   --bs-btn-color: #676b55;
   --bs-btn-border-color: #676b55;
   --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: #198754;
-  --bs-btn-hover-border-color: #198754;
+  --bs-btn-hover-bg: #6f800e;
+  --bs-btn-hover-border-color: #6f800e;
   --bs-btn-focus-shadow-rgb: 25, 135, 84;
   --bs-btn-active-color: #fff;
   --bs-btn-active-bg: #198754;
@@ -420,4 +420,13 @@ table.ui-datepicker-calendar {
 .game-item.removing {
   opacity: 0;
   transform: rotateX(90deg);
+}
+
+.pm-friend-info .back {
+  color: #aaa;
+}
+
+.notifier {
+  background: #333;
+  box-shadow: -1px 0 8px inset #111;
 }
