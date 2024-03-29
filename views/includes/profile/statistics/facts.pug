@@ -1,28 +1,29 @@
-div(class="block p-3 mb-4")
-	h5 Игровые факты
-	table(class="table table-hover")
-		tr 
-			td Первая посадка
-			td
-				span= fact.first_zek 
-				if total.all == 0
-					span  (0%)
-				else
-					span= ` (${(fact.first_zek * 100 / total.all).toFixed(2)}%)`
-		tr 
-			td Первый труп
-			td
-				span= fact.first_course
-				if total.all == 0
-					span  (0%)
-				else
-					span= ` (${(fact.first_course * 100 / total.all).toFixed(2)}%)`
+if currentAccount && currentAccount.vip && fact
+  div(class="block p-3 mb-4")
+    h5 Игровые факты
+    table(class="table table-hover")
+      tr 
+        td Первая посадка
+        td
+          span= fact.first_zek 
+          if total.all == 0
+            span  (0%)
+          else
+            span= ` (${(fact.first_zek * 100 / total.all).toFixed(2)}%)`
+      tr 
+        td Первый труп
+        td
+          span= fact.first_course
+          if total.all == 0
+            span  (0%)
+          else
+            span= ` (${(fact.first_course * 100 / total.all).toFixed(2)}%)`
 
-		tr 
-			td Первая проверка
-			td
-				span= fact.first_check
-				if total.all == 0
-					span  (0%)
-				else
-					span= ` (${(fact.first_check * 100 / total.all).toFixed(2)}%)`
+      tr 
+        td Первая проверка
+        td
+          span= fact.first_check
+          if total.all == 0
+            span  (0%)
+          else
+            span= ` (${(fact.first_check * 100 / total.all).toFixed(2)}%)`
