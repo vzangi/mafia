@@ -61,6 +61,8 @@ body {
   background-color: var(--color-body-dark);
   font-family: 'Open Sans', tahoma, arial, sans-serif;
   color: var(--color-black);
+  background-attachment: fixed;
+  background-size: cover;
 }
 
 body.fix-body,
@@ -83,7 +85,7 @@ td {
 .wrapper {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  min-height: 100%;
 }
 
 .content {
