@@ -391,7 +391,7 @@ class ProfileService {
     await bg.mv('./public/uploads/' + fileName)
 
     // Если предыдущее фото не то, что даётся по умолчанию
-    if (account.bg != '') {
+    if (account.bg) {
       // Удаляю предыдущее фото, чтобы не захламлять сервер
       fs.unlink(`${__dirname}/../public/uploads/${account.bg}`, (err) => {
         if (err) log(err)
