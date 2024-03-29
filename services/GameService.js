@@ -260,7 +260,7 @@ class GameService {
         status: [Game.statuses.ENDED, Game.statuses.STOPPED],
         startedAt,
       },
-      order: [['id', 'desc']],
+      order: [['startedAt', 'desc']],
       include: [
         { model: GameType },
         {
