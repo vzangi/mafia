@@ -74,6 +74,9 @@ const Account = sequelize.define('account', {
     type: DataTypes.INTEGER,
     defaultValue: 1,
   },
+  bg: {
+    type: DataTypes.STRING,
+  },
   vipTo: {
     type: DataTypes.DATE,
   },

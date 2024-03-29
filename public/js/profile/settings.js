@@ -1,10 +1,12 @@
 $(function () {
   const fileInput = $('.change-avatar-box input[type=file]')
+  const bgFileInput = $('.change-bg-box input[type=file]')
   const genderSelect = $('#gender')
   const hideSetting = $('#inventhide')
   const skin = $('#skin')
   const gameNotify = $('#gamenotify')
   const avatarForm = $('.change-avatar-box form')
+  const bgForm = $('.change-bg-box form')
   const nikInput = $('.nik-box input')
   const nikAcceptBtn = $('.nik-box .btn')
 
@@ -36,6 +38,10 @@ $(function () {
 
   $('.change-avatar-btn').click(function () {
     fileInput.click()
+  })
+
+  $('.change-bg-btn').click(function () {
+    bgFileInput.click()
   })
 
   genderSelect.change(function () {
@@ -81,6 +87,35 @@ $(function () {
       success: function (res) {
         $('.avatar-box img').attr('src', `/uploads/${res.fileName}`)
         $('.h-image-box img').attr('src', `/uploads/${res.fileName}`)
+      },
+      error: function (err) {
+        const { msg } = err.responseJSON[0]
+        alert(msg)
+      },
+      cache: false,
+      contentType: false,
+      processData: false,
+    })
+  })
+
+  bgFileInput.change(function () {
+    bgForm.submit()
+  })
+
+  bgForm.submit(function (event) {
+    event.preventDefault()
+
+    const formData = new FormData(this)
+
+    $.ajax({
+      url: '/profile/changebg',
+      type: 'post',
+      data: formData,
+      success: function (res) {
+        const $img = $('<img>')
+        $img.attr('src', `/uploads/${res.fileName}`)
+        $img.attr('width', '100%')
+        $('.bg-image-box').html($img)
       },
       error: function (err) {
         const { msg } = err.responseJSON[0]

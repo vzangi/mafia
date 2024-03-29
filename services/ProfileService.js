@@ -361,6 +361,50 @@ class ProfileService {
     return fileName
   }
 
+  async changeBG(account, bg) {
+    if (!account || !bg) throw new Error('Нет необходимых данных')
+
+    if (!account.vip) {
+      throw new Error('Менять фон могут только игроки с VIP-статусом')
+    }
+
+    let ext = ''
+    if (bg.mimetype == 'image/jpeg') ext = 'jpg'
+
+    if (ext == '') {
+      throw new Error(
+        'Можно загружать только фото в формате: jpg, png, gif, webp'
+      )
+    }
+
+    const rnd1 = Math.ceil(Math.random() * 10000)
+    const rnd2 = Math.ceil(Math.random() * 10000)
+
+    // Формирую имя бэкграунда
+    const fileName = `${account.id}-bg-${rnd1}-${rnd2}.${ext}`
+
+    // Запрещаю загрузку автарок больше 1 мегабайт
+    if (bg.size > 1_000_000) {
+      throw new Error('Размер фото не должно превышать ограничение в 1Mb')
+    }
+
+    await bg.mv('./public/uploads/' + fileName)
+
+    // Если предыдущее фото не то, что даётся по умолчанию
+    if (account.bg != '') {
+      // Удаляю предыдущее фото, чтобы не захламлять сервер
+      fs.unlink(`${__dirname}/../public/uploads/${account.bg}`, (err) => {
+        if (err) log(err)
+      })
+    }
+
+    // Сохраняю автарку в базу
+    account.bg = fileName
+    await account.save()
+
+    return fileName
+  }
+
   async notifications(account) {
     if (!account) {
       throw new Error('Нет необходимых данных')

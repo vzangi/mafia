@@ -32,6 +32,7 @@ const getCurrentAccount = async (user) => {
       'email',
       'telegramChatId',
       'skin',
+      'bg',
     ],
     include: [
       {

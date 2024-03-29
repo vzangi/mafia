@@ -8,6 +8,9 @@ html
     if !currentAccount || (currentAccount && currentAccount.skin == 1)
       link(rel='stylesheet' href='/css/skin/dark.css')
 
+    if currentAccount && currentAccount.vip == 1 && currentAccount.bg
+      style= `body{background-image: url(/uploads/${currentAccount.bg})}`
+
   body 
     div(class="wrapper")
       div(class="content")

@@ -112,6 +112,24 @@ class ProfileController {
     }
   }
 
+  // Процедура смены бэкграунда
+  async changeBG(req, res) {
+    try {
+      const { account } = req
+      if (!req.files) {
+        throw new Error('Файл не выбран')
+      }
+      const { bg } = req.files
+
+      const fileName = await service.changeBG(account, bg)
+      // Возвращаю ответ с именем нового бэкграунда
+      res.json({ fileName })
+    } catch (error) {
+      log(error)
+      return res.status(400).json([{ msg: error.message }])
+    }
+  }
+
   async notifications(req, res, next) {
     try {
       const { account } = req

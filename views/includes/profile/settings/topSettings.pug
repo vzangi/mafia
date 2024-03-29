@@ -6,7 +6,7 @@ div(class="block")
         img(src='/uploads/'+currentAccount.avatar alt=currentAccount.username)
       div(class="change-avatar-box") 
         button(class="btn btn-success change-avatar-btn") Обновить аватар
-        form(enctype="multipart/form-data" method="post")
+        form(enctype="multipart/form-data" method="post" class="file-upload-form" class="hide")
           input(type='file' name="avatar")
 
     div(class="fields-box")
@@ -46,3 +46,16 @@ div(class="block")
         select(class="form-control" id="skin")
           option(value="0" selected=currentAccount.skin==0) Светлая
           option(value="1" selected=currentAccount.skin==1) Тёмная
+
+      if currentAccount.vip
+        div(class="change-bg-box")
+          div
+            label(class="form-label") Фон страницы
+          div(class="bg-image-box mb-2")
+            if currentAccount.bg  
+              img(src=`/uploads/${currentAccount.bg}` width="100%")
+            else 
+              small Не установлен
+          button(class="btn btn-success change-bg-btn") Сменить фон
+          form(enctype="multipart/form-data" method="post" action="/changebg" class="hide")
+            input(type='file' name="bg")
