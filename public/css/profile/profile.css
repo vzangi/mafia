@@ -42,7 +42,8 @@
 	border-radius: var(--border-radius);
 }
 
-h4 {
+h4,
+.power-value {
 	background-color: var(--color-bg-07);
 	padding: 0 0.5rem;
 	border-radius: var(--border-radius);

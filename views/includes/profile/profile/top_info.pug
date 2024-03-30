@@ -37,7 +37,7 @@ div(class="container")
         div(class="power mt-3 fs-4") 
           span(title="Сила в режиме «Перестрелка»" data-bs-toggle="tooltip" data-bs-placement="bottom")
             span(class="ion-flash text-secondary") 
-            span= power
+            span(class="power-value")= power
       if partner 
         -var pName='Партнёр'
         if profile.gender == 1
