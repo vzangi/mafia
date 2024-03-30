@@ -344,8 +344,6 @@ class GameService {
 			],
 		})
 
-		console.log(data.games[0].game)
-
 		data.title = 'Архив поединков онлайн игры Мафия'
 		data.description =
 			'На этой странице вы найдёте список прошедших игр онлайн проекта Mafia One.'
