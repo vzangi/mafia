@@ -1,5 +1,5 @@
 :root {
-	--color-bg: #222;
+	--color-bg: #222 !important;
 	--color-bg-07: rgba(34, 34, 34, 0.77);
 	--color-text: #aaa;
 	--bs-heading-color: #aaa;
