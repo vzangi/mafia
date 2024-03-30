@@ -7,4 +7,8 @@ div(class="block mb-4 pb-2")
       a(href="/games/current") Текущие игры
     li 
       a(href="/games/archive" class="active") Архив игр
+    if currentAccount 
+      li 
+        a(href=`/games/archive/my`) Мои игры
+
 

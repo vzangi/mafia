@@ -11,4 +11,7 @@ router.get('/games/current', controller.current)
 // Архив игр сегодняшнего дня
 router.get('/games/archive', controller.archive)
 
+// Архив моих игр
+router.get('/games/archive/my', controller.userArchive)
+
 module.exports = router

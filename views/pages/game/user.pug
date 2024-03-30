@@ -1,0 +1,19 @@
+extends /layouts/two_column_8_4
+
+block head 
+  link(href="/css/lobbi/game.css" rel="stylesheet")
+  link(rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css")
+  link(href="/css/ui/datepicker.css" rel="stylesheet")
+  script(src="https://code.jquery.com/ui/1.13.2/jquery-ui.js")
+
+
+block main
+  h1(class="mb-3")= `Мои игры`
+  include /includes/games/user/list
+
+block aside 
+  include /includes/games/user/menu
+  include /includes/games/user/period
+
+block scripts 
+  script(src="/js/games/archive.js")
