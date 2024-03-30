@@ -57,5 +57,9 @@ div(class="block")
             else 
               small Не установлен
           button(class="btn btn-success change-bg-btn") Сменить фон
+          if currentAccount.bg
+            button(class="btn btn-danger remove-bg-btn ms-2") Удалить фон
+
           form(enctype="multipart/form-data" method="post" action="/changebg" class="hide")
             input(type='file' name="bg")
+

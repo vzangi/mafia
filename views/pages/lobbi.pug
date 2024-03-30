@@ -6,13 +6,14 @@ block head
   link(href="/css/lobbi/form.css" rel="stylesheet")
 
 block main
+  include /includes/lobbi/loader
+
   include /includes/lobbi/chat
   include /includes/lobbi/games
 
   if currentAccount 
     include /includes/lobbi/claim-form
 
-  include /includes/lobbi/loader
 
 block aside
   include /includes/lobbi/friends_online

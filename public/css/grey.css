@@ -1,20 +1,21 @@
 body {
-  background-color: #eee;
+	background-color: var(--color-bg);
+	color: var(--color-text);
 }
 header {
-  background: var(--color-true-white);
-  border-bottom: 1px solid #ddd;
+	background: var(--color-true-white);
+	border-bottom: 1px solid #ddd;
 }
 .header-logo > svg > path,
 .header-logo div {
-  fill: var(--color-footer-gray-dark);
-  color: var(--color-footer-gray-dark);
+	fill: var(--color-footer-gray-dark);
+	color: var(--color-footer-gray-dark);
 }
 
 header li a.nav-link {
-  color: var(--color-footer-gray-dark);
+	color: var(--color-footer-gray-dark);
 }
 
 .light-text {
-  color: var(--color-footer-gray-light);
+	color: var(--color-footer-gray-light);
 }
