@@ -10,6 +10,11 @@
 	--bs-body-color: #aaa;
 }
 
+body {
+	background-color: var(--color-bg);
+	background-color: #222;
+}
+
 .dropdown-menu {
 	--bs-dropdown-link-hover-color: #333;
 }
