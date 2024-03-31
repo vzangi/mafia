@@ -297,7 +297,7 @@ class ApiService extends BaseService {
 			throw new Error('Не авторизован')
 		}
 
-		if (skin != 0 && skin != 1) {
+		if (skin != 0 && skin != 1 && skin != 2) {
 			throw new Error('Неверное значение поля skin')
 		}
 
