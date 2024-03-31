@@ -1,5 +1,5 @@
 :root {
-	--color-bg: #030 !important;
+	--color-bg: #002444 !important;
 	--color-bg-07: rgba(0, 50, 0, 0.77);
 	--color-text: #aaa;
 	--bs-heading-color: #aaa;
@@ -12,16 +12,16 @@
 
 body {
 	background-color: var(--color-bg);
-	background-color: #030;
+	background-color: #002444;
 }
 
 body::-webkit-scrollbar {
 	width: 10px;
-	background-color: #240;
+	background-color: #044;
 }
 
 body::-webkit-scrollbar-thumb {
-	background-color: #240;
+	background-color: #003466;
 	transition: all 0.3s ease;
 }
 body::-webkit-scrollbar-track {
@@ -50,7 +50,7 @@ body::-webkit-scrollbar-track {
 
 .block {
 	--bs-text-opacity: 1;
-	background: #020;
+	background: #003455;
 	color: #aaa;
 	box-shadow: 0 0 10px 0px inset #111;
 	background-image: url(/images/diagonal-light.png);
@@ -62,8 +62,8 @@ body::-webkit-scrollbar-track {
 }
 
 header {
-	background: #020;
-	border-color: #040;
+	background: #003455;
+	border-color: #003466;
 }
 
 header li a.nav-link {
@@ -71,9 +71,9 @@ header li a.nav-link {
 }
 
 .footer {
-	background-color: #020;
+	background-color: #003455;
 	color: #aaa;
-	border-top: 1px solid #040;
+	border-top: 1px solid #003466;
 }
 
 .footer a {
@@ -115,7 +115,7 @@ header li a.nav-link {
 }
 
 article > * {
-	color: #aaa;
+	color: #ccc;
 }
 
 article h1,
@@ -188,7 +188,7 @@ article > blockquote {
 }
 
 .bb-1-gray {
-	border-color: #003900 !important;
+	border-color: #041c54 !important;
 }
 
 a.thing-item {
@@ -204,7 +204,7 @@ a.thing-item {
 }
 
 .dropdown-menu {
-	background: #040;
+	background: #002455;
 }
 
 .dropdown-item {
@@ -212,8 +212,8 @@ a.thing-item {
 }
 
 .thing-item {
-	background: #002a00 !important;
-	border-color: #040 !important;
+	background: #034a6e !important;
+	border-color: #002344 !important;
 }
 
 .btn-success {

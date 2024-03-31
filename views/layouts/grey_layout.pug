@@ -11,6 +11,12 @@ html
     if currentAccount && currentAccount.skin == 2
       link(rel='stylesheet' href='/css/skin/green.css?v=1.0')
 
+    if currentAccount && currentAccount.skin == 3
+      link(rel='stylesheet' href='/css/skin/nephrit.css?v=1.0')
+
+    if currentAccount && currentAccount.skin == 4
+      link(rel='stylesheet' href='/css/skin/blue.css?v=1.0')
+
     if currentAccount && currentAccount.vip == 1 && currentAccount.bg
       style= `body{background-image: url(/uploads/${currentAccount.bg})}`
 
