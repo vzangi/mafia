@@ -680,27 +680,6 @@ class GamePerestrelka extends GameBase {
     )
   }
 
-  // Переход после хода мафии
-  async transition() {
-    const { room } = this
-
-    // Завершаю ход мафии
-    room.emit('mafia.stop')
-
-    await this.systemMessage('<hr>')
-    await this.systemMessage('Внимание! Считаем трупы на рассвете.')
-
-    this.systemLog('<hr>Внимание! Считаем трупы на рассвете.')
-
-    // Проверяю наличие кома в игре
-    if (this.komInGame()) {
-      // Если он есть, то даю 6 секунд на то, чтобы выдать проверку
-      await this.setPeriod(Game.periods.TRANSITION, this.perehodInterval)
-    } else {
-      await this.afterNight()
-    }
-  }
-
   // После ночи
   async afterNight() {
     const { game, players } = this

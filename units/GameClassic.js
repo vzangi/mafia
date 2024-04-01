@@ -215,29 +215,6 @@ class GameClassic extends GameBase {
     room.emit('mafia.start')
   }
 
-  // Переход после хода мафии
-  async transition() {
-    const { room } = this
-
-    // Завершаю ход мафии
-    room.emit('mafia.stop')
-
-    await this.systemMessage('<hr>')
-    await this.systemMessage('Внимание! Считаем трупы на рассвете.')
-
-    this.systemLog('<hr>Внимание! Считаем трупы на рассвете.')
-
-    // Проверяю наличие кома в игре
-    if (this.komInGame()) {
-      const { perehodInterval } = this
-
-      // Если он есть, то даю 6 секунд на то, чтобы выдать проверку
-      await this.setPeriod(Game.periods.TRANSITION, perehodInterval)
-    } else {
-      await this.afterNight()
-    }
-  }
-
   // После ночи
   async afterNight() {
     const { room, game } = this
@@ -269,7 +246,7 @@ class GameClassic extends GameBase {
       }
       // Мафия промахнулась
       else {
-        this.missmatch()
+        await this.missmatch()
       }
     } else {
       await this.missmatch()
@@ -278,7 +255,8 @@ class GameClassic extends GameBase {
     // Проверка на завершение игры
     const winnerSide = await this.isOver()
     if (winnerSide) {
-      return await this.gameOver(winnerSide)
+      await this.gameOver(winnerSide)
+      return
     }
 
     // если игра не окончена, идём дальше

@@ -500,6 +500,22 @@ class GameBase {
     await game.save()
   }
 
+  // Переход после хода мафии
+  async transition() {
+    const { room, perehodInterval } = this
+
+    // Завершаю ход мафии
+    room.emit('mafia.stop')
+
+    await this.systemMessage('<hr>')
+    await this.systemMessage('Внимание! Считаем трупы на рассвете.')
+
+    this.systemLog('<hr>Внимание! Считаем трупы на рассвете.')
+
+    // даю 3 секунды после ночи на переход
+    await this.setPeriod(Game.periods.TRANSITION, perehodInterval)
+  }
+
   // Системное сообщение в игре
   async systemMessage(message) {
     const { game, room } = this
