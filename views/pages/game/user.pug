@@ -9,11 +9,13 @@ block head
 
 block main
   h1(class="mb-3")= `Мои игры`
-  include /includes/games/user/list
+  div(class="games-list mb-4")
+  //- include /includes/games/user/list
 
 block aside 
   include /includes/games/user/menu
   include /includes/games/user/period
 
 block scripts 
+  include /includes/games/user/games-tmpl
   script(src="/js/games/archive.js")

@@ -1,0 +1,58 @@
+script(id="noGamesTmpl" type="text/x-jquery-tmpl")
+  small(class="") Игр не найдено
+
+script(id="moreGamesTmpl" type="text/x-jquery-tmpl")
+  div(class="text-center")
+    button(class="btn btn-dark btn-more" data-idless="${id}") Ещё...
+
+script(id="gameTmpl" type="text/x-jquery-tmpl")
+  a(class="game-item old-game-type-${gametype.id}" data-id="${id}" href="/game/${id}")
+    div(class="block p-4 mb-3")
+      div(class="game-info mb-3")
+        div(class="d-flex justify-content-between align-items-center gap-1")
+          div(class="game-type d-flex align-items-center gap-1" title="Режим игры" data-bs-toggle="tooltip" data-bs-placement="bottom") 
+            span(class="ion-ios-game-controller-b fs-5 ion-icon") 
+            span ${gametype.name}
+            . 
+              {{if mode == 2}}
+            span(class="ion-flash" title="с добивами" data-bs-toggle="tooltip" data-bs-placement="right")
+            . 
+              {{/if}}
+          div(class="players-count d-flex align-items-center gap-1" title="Количество игроков в зявке" data-bs-toggle="tooltip" data-bs-placement="bottom") 
+            span(class="ion-ios-people fs-4 ion-icon") 
+            span(class="cnt") ${players.length}
+            span  / 
+            span ${playersCount}
+
+        div(class="description")
+          span ${description}
+
+      div(class="players d-flex flex-wrap")
+        p ${players.map(p => p.username).join(', ')}
+
+      div 
+        span Игра началсь: 
+        span ${coolStarted}
+
+      div 
+        span Победившая сторона: 
+        . 
+          {{if rolesideId == 1}}
+        span Ничья
+        . 
+          {{/if}}
+        . 
+          {{if rolesideId == 2}}
+        span Честные жители
+        . 
+          {{/if}}
+        . 
+          {{if rolesideId == 3}}
+        span Мафия
+        . 
+          {{/if}}
+        . 
+          {{if rolesideId == 4}}
+        span Маньяк
+        . 
+          {{/if}}

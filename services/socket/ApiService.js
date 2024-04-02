@@ -14,6 +14,7 @@ const { isCorrectDateString, isoFromDate } = require('../../units/helpers')
 const Game = require('../../models/Game')
 const GameType = require('../../models/GameType')
 const GameEvent = require('../../models/GameEvent')
+const archiveLimit = 11
 
 class ApiService extends BaseService {
   // Список пользователей по части ника
@@ -348,28 +349,43 @@ class ApiService extends BaseService {
     if (data.gameResult) {
       return await this._byResult(data)
     }
+
+    return await this._byResult(data)
   }
 
   // Архив по результатам
   async _byResult(data) {
-    let { from, to, gameResult } = data
-    const { account } = this
+    const { from, to, gameResult, idless } = data
+    const { user } = this
 
-    if (!account) throw new Error('Не авторизован')
+    if (!user) throw new Error('Не авторизован')
 
     const result = { from, to }
 
     const { startedAt } = this._getDateInterval(from, to)
 
     const where = {
-      accountId: account.id,
-      type: GameEvent.actionEvents.RESULT,
-      value: gameResult,
+      accountId: user.id,
+      type: GameEvent.eventTypes.RESULT,
       active: true,
     }
 
+    if (gameResult) {
+      where.value = gameResult * 1
+    }
+
+    if (idless) {
+      where.id = {
+        [Op.lte]: idless,
+      }
+    }
+
+    console.log(where)
+
     result.games = await GameEvent.findAll({
       where,
+      limit: archiveLimit,
+      order: [['id', 'desc']],
       include: [
         {
           model: Game,
@@ -394,6 +410,10 @@ class ApiService extends BaseService {
         },
       ],
     })
+
+    result.limit = archiveLimit
+
+    return result
   }
 
   // Получение интервала по датам

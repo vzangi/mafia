@@ -25,17 +25,16 @@ else
           p= game.players.map(p => p.username).join(', ')
 
         div 
-            span Игра началсь: 
-            span= game.coolStarted
-        
+          span Игра началсь: 
+          span= game.coolStarted
+
         div 
-            span Победившая сторона: 
-            if game.rolesideId == 1
-                span Ничья
-            if game.rolesideId == 2
-                span Честные жители
-            if game.rolesideId == 3
-                span Мафия
-            if game.rolesideId == 4
-                span Маньяк
-        
+          span Победившая сторона: 
+          if game.rolesideId == 1
+            span Ничья
+          if game.rolesideId == 2
+            span Честные жители
+          if game.rolesideId == 3
+            span Мафия
+          if game.rolesideId == 4
+            span Маньяк
