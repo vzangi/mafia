@@ -1,121 +1,121 @@
 :root {
-	--color-bg: #002444 !important;
-	--color-bg-07: rgba(0, 50, 0, 0.77);
-	--color-text: #aaa;
-	--bs-heading-color: #aaa;
-	--bs-modal-bg: #444;
-	--bs-body-bg: #444;
-	--bs-border-color: #555;
-	--bs-tertiary-bg: #555;
-	--bs-body-color: #aaa;
+  --color-bg: #002444 !important;
+  --color-bg-07: rgba(0, 34, 69, 0.77);
+  --color-text: #aaa;
+  --bs-heading-color: #aaa;
+  --bs-modal-bg: #444;
+  --bs-body-bg: #444;
+  --bs-border-color: #555;
+  --bs-tertiary-bg: #555;
+  --bs-body-color: #aaa;
 }
 
 body {
-	background-color: var(--color-bg);
-	background-color: #002444;
+  background-color: var(--color-bg);
+  background-color: #002444;
 }
 
 body::-webkit-scrollbar {
-	width: 10px;
-	background-color: #044;
+  width: 10px;
+  background-color: #044;
 }
 
 body::-webkit-scrollbar-thumb {
-	background-color: #003466;
-	transition: all 0.3s ease;
+  background-color: #003466;
+  transition: all 0.3s ease;
 }
 body::-webkit-scrollbar-track {
-	background-color: var(--color-bg);
+  background-color: var(--color-bg);
 }
 
 .dropdown-menu {
-	--bs-dropdown-link-hover-color: #333;
+  --bs-dropdown-link-hover-color: #333;
 }
 
 .form-control {
-	--color-block-bg: #444 !important;
-	border: 1px solid #555 !important;
-	color: #ccc;
-	transition: all 0.3s ease !important;
+  --color-block-bg: #444 !important;
+  border: 1px solid #555 !important;
+  color: #ccc;
+  transition: all 0.3s ease !important;
 }
 
 .form-control:focus {
-	background-color: #222;
+  background-color: #222;
 }
 
 .form-control:disabled {
-	opacity: 1;
-	background-color: #222;
+  opacity: 1;
+  background-color: #222;
 }
 
 .block {
-	--bs-text-opacity: 1;
-	background: #003455;
-	color: #aaa;
-	box-shadow: 0 0 10px 0px inset #111;
-	background-image: url(/images/diagonal-light.png);
+  --bs-text-opacity: 1;
+  background: #003455;
+  color: #aaa;
+  box-shadow: 0 0 10px 0px inset #111;
+  background-image: url(/images/diagonal-light.png);
 }
 
 .block a {
-	color: #bbb;
-	text-decoration: none;
+  color: #bbb;
+  text-decoration: none;
 }
 
 header {
-	background: #003455;
-	border-color: #003466;
+  background: #003455;
+  border-color: #003466;
 }
 
 header li a.nav-link {
-	color: #aaa;
+  color: #aaa;
 }
 
 .footer {
-	background-color: #003455;
-	color: #aaa;
-	border-top: 1px solid #003466;
+  background-color: #003455;
+  color: #aaa;
+  border-top: 1px solid #003466;
 }
 
 .footer a {
-	color: #aaa;
+  color: #aaa;
 }
 
 .footer a:hover {
-	color: var(--color-gold);
+  color: var(--color-gold);
 }
 
 .footer .title.title4 {
-	color: #aaa;
+  color: #aaa;
 }
 
 .header-logo > svg > path,
 .header-logo div {
-	fill: #aaa;
-	color: #aaa;
+  fill: #aaa;
+  color: #aaa;
 }
 
 .right-header-block .search,
 .right-header-block .chatbox {
-	color: #aaa;
+  color: #aaa;
 }
 
 .top3 .total {
-	color: inherit !important;
+  color: inherit !important;
 }
 
 .top-desc {
-	color: #aaa !important;
+  color: #aaa !important;
 }
 .line {
-	border-bottom: 1px solid #555 !important;
+  border-bottom: 1px solid #555 !important;
 }
 
 .list {
-	color: #aaa !important;
+  color: #aaa !important;
 }
 
 article > * {
-	color: #ccc;
+  color: #ccc;
 }
 
 article h1,
@@ -123,326 +123,326 @@ article h2,
 article h3,
 article h4,
 article h5 {
-	color: #aaa;
+  color: #aaa;
 }
 
 ul.aside-menu li a {
-	color: #aaa;
+  color: #aaa;
 }
 
 ul.aside-menu li a:hover {
-	background: transparent;
-	text-decoration: underline;
+  background: transparent;
+  text-decoration: underline;
 }
 
 article .text-dark,
 article a {
-	--bs-text-opacity: 1;
-	color: var(--color-gold) !important;
+  --bs-text-opacity: 1;
+  color: var(--color-gold) !important;
 }
 
 .game-form {
-	background: #333;
+  background: #333;
 }
 
 .game-types-list {
-	background-color: #333 !important;
-	color: #aaa !important;
+  background-color: #333 !important;
+  color: #aaa !important;
 }
 
 .game-settings-list {
-	background: #333 !important;
-	color: #aaa !important;
-	box-shadow: -9px 0px 5px -2px #222 !important;
+  background: #333 !important;
+  color: #aaa !important;
+  box-shadow: -9px 0px 5px -2px #222 !important;
 }
 
 .game-type-item:not(.active):hover {
-	background: #3d3d3d;
+  background: #3d3d3d;
 }
 
 .game-type-5.active {
-	color: #333;
+  color: #333;
 }
 
 .game-type-item h4 {
-	color: #ccc;
+  color: #ccc;
 }
 
 .game-type-item.active h4 {
-	color: inherit;
+  color: inherit;
 }
 @media (max-width: 620px) {
-	.settings-head h5 {
-		color: #f0f0f0;
-	}
-	.game-settings-5 .settings-head {
-		color: #555;
-	}
-	.game-settings-5 h5 {
-		color: #555;
-	}
+  .settings-head h5 {
+    color: #f0f0f0;
+  }
+  .game-settings-5 .settings-head {
+    color: #555;
+  }
+  .game-settings-5 h5 {
+    color: #555;
+  }
 }
 
 article > blockquote {
-	border-left: 4px solid var(--color-gold);
+  border-left: 4px solid var(--color-gold);
 }
 
 .bb-1-gray {
-	border-color: #041c54 !important;
+  border-color: #041c54 !important;
 }
 
 a.thing-item {
-	color: #aaa !important;
+  color: #aaa !important;
 }
 
 .thing-name-block h4 {
-	color: #f5f5f5;
+  color: #f5f5f5;
 }
 
 .market-list .bb-1-gray:last-child {
-	border: 0;
+  border: 0;
 }
 
 .dropdown-menu {
-	background: #002455;
+  background: #002455;
 }
 
 .dropdown-item {
-	color: #aaa;
+  color: #aaa;
 }
 
 .thing-item {
-	background: #034a6e !important;
-	border-color: #002344 !important;
+  background: #034a6e !important;
+  border-color: #002344 !important;
 }
 
 .btn-success {
-	--bs-btn-color: #fff;
-	--bs-btn-bg: #5a5d4b;
-	--bs-btn-border-color: #676b55;
-	--bs-btn-hover-color: #fff;
-	--bs-btn-hover-bg: #6f800e;
-	--bs-btn-hover-border-color: #605d08;
-	--bs-btn-focus-shadow-rgb: 60, 153, 110;
-	--bs-btn-active-color: #fff;
-	--bs-btn-active-bg: #146c43;
-	--bs-btn-active-border-color: #13653f;
-	--bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-	--bs-btn-disabled-color: #fff;
-	--bs-btn-disabled-bg: #198754;
-	--bs-btn-disabled-border-color: #198754;
+  --bs-btn-color: #fff;
+  --bs-btn-bg: #5a5d4b;
+  --bs-btn-border-color: #676b55;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #6f800e;
+  --bs-btn-hover-border-color: #605d08;
+  --bs-btn-focus-shadow-rgb: 60, 153, 110;
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: #146c43;
+  --bs-btn-active-border-color: #13653f;
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  --bs-btn-disabled-color: #fff;
+  --bs-btn-disabled-bg: #198754;
+  --bs-btn-disabled-border-color: #198754;
 }
 
 .btn-outline-success {
-	--bs-btn-color: #676b55;
-	--bs-btn-border-color: #676b55;
-	--bs-btn-hover-color: #fff;
-	--bs-btn-hover-bg: #6f800e;
-	--bs-btn-hover-border-color: #6f800e;
-	--bs-btn-focus-shadow-rgb: 25, 135, 84;
-	--bs-btn-active-color: #fff;
-	--bs-btn-active-bg: #198754;
-	--bs-btn-active-border-color: #198754;
-	--bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-	--bs-btn-disabled-color: #198754;
-	--bs-btn-disabled-bg: transparent;
-	--bs-btn-disabled-border-color: #198754;
-	--bs-gradient: none;
+  --bs-btn-color: #676b55;
+  --bs-btn-border-color: #676b55;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #6f800e;
+  --bs-btn-hover-border-color: #6f800e;
+  --bs-btn-focus-shadow-rgb: 25, 135, 84;
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: #198754;
+  --bs-btn-active-border-color: #198754;
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  --bs-btn-disabled-color: #198754;
+  --bs-btn-disabled-bg: transparent;
+  --bs-btn-disabled-border-color: #198754;
+  --bs-gradient: none;
 }
 
 .tooltip {
-	--bs-tooltip-color: #aaa;
+  --bs-tooltip-color: #aaa;
 }
 
 .pm-friends-list-box {
-	background: #333;
+  background: #333;
 }
 
 .pm-chat-box {
-	background: #444;
+  background: #444;
 }
 
 .friend-item.active {
-	background: #444;
+  background: #444;
 }
 
 .friend-item:hover {
-	background: #555;
+  background: #555;
 }
 
 .pm-chat-title {
-	border-color: #555;
+  border-color: #555;
 }
 
 .pm-friend-nik a {
-	color: #aaa;
-	border-bottom: 1px solid #555;
+  color: #aaa;
+  border-bottom: 1px solid #555;
 }
 
 .messages-date span {
-	background: #555;
+  background: #555;
 }
 
 .friend-message .msg {
-	background: #ddd;
-	color: #333;
-	box-shadow: none;
+  background: #ddd;
+  color: #333;
+  box-shadow: none;
 }
 
 .user-search-result {
-	background: #555;
+  background: #555;
 }
 
 .user-search-result a.user-item {
-	color: #aaa;
-	border-color: #666;
+  color: #aaa;
+  border-color: #666;
 }
 
 .user-search-result a.user-item:hover {
-	background: #444;
+  background: #444;
 }
 
 .pm-friend-avatar.online:after,
 .friend-avatar.online:after {
-	border: 2px solid #333;
+  border: 2px solid #333;
 }
 
 input::placeholder,
 textarea::placeholder {
-	color: #777 !important;
+  color: #777 !important;
 }
 
 .ui-datepicker-header.ui-widget-header.ui-helper-clearfix.ui-corner-all {
-	background: #666;
+  background: #666;
 }
 div#ui-datepicker-div:before {
-	border-bottom-color: #666;
+  border-bottom-color: #666;
 }
 
 table.ui-datepicker-calendar {
-	background: #f5f5f5;
+  background: #f5f5f5;
 }
 
 .old-game-type-1 .block {
-	background: #0e5914;
-	background: linear-gradient(45deg, #0e5914, transparent);
-	box-shadow: 0 0 10px inset #292929;
-	color: #ddd;
+  background: #0e5914;
+  background: linear-gradient(45deg, #0e5914, transparent);
+  box-shadow: 0 0 10px inset #292929;
+  color: #ddd;
 }
 
 .old-game-type-1 .friend-avatar.online:after {
-	border-color: #0a4b0f;
+  border-color: #0a4b0f;
 }
 
 .old-game-type-2 .block {
-	background: #0048b3;
-	background: linear-gradient(45deg, #0048b3, transparent);
-	box-shadow: 0 0 10px inset #292929;
-	color: #ddd;
+  background: #0048b3;
+  background: linear-gradient(45deg, #0048b3, transparent);
+  box-shadow: 0 0 10px inset #292929;
+  color: #ddd;
 }
 
 .old-game-type-2 .friend-avatar.online:after {
-	border-color: #0c4aa5;
+  border-color: #0c4aa5;
 }
 
 .contest-box .block {
-	background: #c04b38;
-	background: linear-gradient(45deg, #c04b38, transparent);
-	box-shadow: 0 0 10px inset #292929;
-	color: #ddd;
+  background: #c04b38;
+  background: linear-gradient(45deg, #c04b38, transparent);
+  box-shadow: 0 0 10px inset #292929;
+  color: #ddd;
 }
 
 .contest-box .friend-avatar.online:after {
-	border-color: #c04b38;
+  border-color: #c04b38;
 }
 
 .old-game-type-4 .block {
-	background: #5b359f;
-	background: linear-gradient(45deg, #5b359f, transparent);
-	box-shadow: 0 0 10px inset #292929;
-	color: #ddd;
+  background: #5b359f;
+  background: linear-gradient(45deg, #5b359f, transparent);
+  box-shadow: 0 0 10px inset #292929;
+  color: #ddd;
 }
 
 .old-game-type-4 .friend-avatar.online:after {
-	border-color: #4a2e7d;
+  border-color: #4a2e7d;
 }
 
 .old-game-type-5 .block {
-	background: #a5a012;
-	background: linear-gradient(45deg, #a5a012, transparent);
-	box-shadow: 0 0 10px inset #292929;
-	color: #ddd;
+  background: #a5a012;
+  background: linear-gradient(45deg, #a5a012, transparent);
+  box-shadow: 0 0 10px inset #292929;
+  color: #ddd;
 }
 
 .old-game-type-5 .friend-avatar.online:after {
-	border-color: #878310;
+  border-color: #878310;
 }
 
 .game-action-btn.btn-to-game {
-	color: #f5f5f5;
+  color: #f5f5f5;
 }
 
 .chatbox.unread:after {
-	border-color: #333;
+  border-color: #333;
 }
 
 .pm-chat-box .pm-friend-avatar.online:after {
-	border: 2px solid #444;
+  border: 2px solid #444;
 }
 
 .pm-friends-list .friend-item.active .friend-avatar.online:after {
-	border: 2px solid #444;
+  border: 2px solid #444;
 }
 
 .pm-friends-list .friend-item:hover .friend-avatar.online:after {
-	border: 2px solid #555;
+  border: 2px solid #555;
 }
 
 .transactions {
-	border-top: 0;
+  border-top: 0;
 }
 
 .table-success {
-	--bs-table-color: #f0f0f0;
-	--bs-table-bg: #00572f;
-	--bs-table-border-color: #555;
+  --bs-table-color: #f0f0f0;
+  --bs-table-bg: #00572f;
+  --bs-table-border-color: #555;
 }
 
 .table-danger {
-	--bs-table-color: #f0f0f0;
-	--bs-table-bg: #9f0110;
-	--bs-table-border-color: #555;
+  --bs-table-color: #f0f0f0;
+  --bs-table-bg: #9f0110;
+  --bs-table-border-color: #555;
 }
 
 .table-info {
-	--bs-table-color: #f0f0f0;
-	--bs-table-bg: #007189;
-	--bs-table-border-color: #555;
+  --bs-table-color: #f0f0f0;
+  --bs-table-bg: #007189;
+  --bs-table-border-color: #555;
 }
 
 .table-warning {
-	--bs-table-bg: #e9b100;
-	--bs-table-border-color: #555;
+  --bs-table-bg: #e9b100;
+  --bs-table-border-color: #555;
 }
 
 .game-item {
-	transition: all 0.5s ease;
-	opacity: 1;
-	transform: rotateX(0deg);
-	background-image: url(/images/diagonal.png);
-	border-radius: var(--border-radius);
+  transition: all 0.5s ease;
+  opacity: 1;
+  transform: rotateX(0deg);
+  background-image: url(/images/diagonal.png);
+  border-radius: var(--border-radius);
 }
 
 .game-item.removing {
-	opacity: 0;
-	transform: rotateX(90deg);
+  opacity: 0;
+  transform: rotateX(90deg);
 }
 
 .pm-friend-info .back {
-	color: #aaa;
+  color: #aaa;
 }
 
 .notifier {
-	background: #333;
-	box-shadow: -1px 0 8px inset #111;
+  background: #333;
+  box-shadow: -1px 0 8px inset #111;
 }
