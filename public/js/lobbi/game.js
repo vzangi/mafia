@@ -171,7 +171,7 @@ $(function () {
       game.removeClass('my').removeClass('ingame')
     }
 
-    const cnt = game.find('.player').length
+    const cnt = game.find('.player:not(.added)').length
     game.find('.players-count .cnt').text(cnt)
   })
 
