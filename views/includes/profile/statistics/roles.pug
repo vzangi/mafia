@@ -17,17 +17,18 @@ mixin role_row(name, role, roles)
 if role
   div(class="block p-3 mb-4")
     h5 По ролям
-    table(class="table table-hover")
-      thead 
-        tr 
-          th Роль
-          th Всего
-          th Побед
-          th Поражений
-          th Ничьи
-          th Тайм
-      tbody
-        +role_row('Мафия', role.mafia, '[2,8,9]')
-        +role_row('Комиссар', role.komissar, '[3,4]')
-        +role_row('Честный житель', role.citizen, '[1,5,7]')
-        +role_row('Маньяк', role.maniac, '[6]')
+    div(class="overflow-auto")
+      table(class="table table-hover")
+        thead 
+          tr 
+            th Роль
+            th Всего
+            th Побед
+            th Поражений
+            th Ничьи
+            th Тайм
+        tbody
+          +role_row('Мафия', role.mafia, '[2,8,9]')
+          +role_row('Комиссар', role.komissar, '[3,4]')
+          +role_row('Честный житель', role.citizen, '[1,5,7]')
+          +role_row('Маньяк', role.maniac, '[6]')
