@@ -1,19 +1,32 @@
-$(function(){
-    $('.market-list').on('click', '.buy', function(){
-        const { id } = $(this).data()
-        if (!id) {
-            return alert("Упс!")
-        }
-        confirm("Купить этот лот?").then((accept) => {
-            if (!accept) return
-            socket.emit('market.buy', id, (res) => {
-                if (res.status != 0) {
-                    return alert(res.msg)
-                }
-                alert('Покупка успешно проведена!').then(() => {
-                    location.reload()
-                })
-            })
-        })
-    })
+$(function () {
+	$('.market-list').on('click', '.buy', function () {
+		const { id } = $(this).data()
+		if (!id) return alert('Упс!')
+		confirm('Купить этот лот?').then((accept) => {
+			if (!accept) return
+			socket.emit('market.buy', id, (res) => {
+				const { status, msg } = res
+				if (status != 0) return alert(msg)
+
+				$(`.thing-item[data-id=${id}]`).remove()
+				notify('Покупка успешно проведена!')
+			})
+		})
+	})
+
+	$('.market-list').on('click', '.take-back', function () {
+		const { id } = $(this).data()
+		if (!id) return alert('Упс!')
+
+		confirm('Снять этот лот с продажи?').then((accept) => {
+			if (!accept) return
+			socket.emit('market.takeback', id, (res) => {
+				const { status, msg } = res
+				if (status != 0) return alert(msg)
+
+				$(`.thing-item[data-id=${id}]`).remove()
+				notify('Лот снят с продажи')
+			})
+		})
+	})
 })

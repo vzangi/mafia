@@ -13,7 +13,7 @@ block main
       else 
         each offer in thingOffers
 
-          div(class="thing-item bb-1-gray")
+          div(class="thing-item bb-1-gray" data-id=offer.id)
 
             div(class="thing-line")
               div(class="thing-image")
@@ -59,4 +59,4 @@ block aside
 
 block scripts 
   if currentAccount
-    script(src="/js/market/thing.js")
+    script(src="/js/market/thing.js?v=1.0")
