@@ -25,6 +25,7 @@ const {
   getCoolDateTime,
   isCorrectDateString,
   isoFromDate,
+  getDateFromIso,
 } = require('../units/helpers')
 
 class ProfileService {
@@ -549,6 +550,11 @@ class ProfileService {
     if (isCorrectDateString(from)) data.from = from
     if (isCorrectDateString(to)) data.to = to
 
+    data.today = getDateFromIso(new Date().toISOString())
+      .split('.')
+      .reverse()
+      .join('.')
+
     return data
   }
 
@@ -678,6 +684,14 @@ class ProfileService {
     // Поражений
     req.where.value = GameEvent.resultEvents.LOOSE
     role.loose = await GameEvent.count(req)
+
+    // Ничьи
+    req.where.value = GameEvent.resultEvents.DRAW
+    role.draw = await GameEvent.count(req)
+
+    // Тайм
+    req.where.value = GameEvent.resultEvents.TIMEOUT
+    role.timeout = await GameEvent.count(req)
 
     return role
   }

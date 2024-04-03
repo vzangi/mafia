@@ -198,12 +198,20 @@ class ProfileController {
       const { username } = req.params
       const { from, to } = req.query
       const statData = { from, to, username }
-      if (!username) {
-        if (req.account) {
-          statData.username = req.account.username
+      if (!username && req.account) {
+        statData.username = req.account.username
+      }
+
+      const data = await service.statistics(statData)
+
+      if (!username && req.account) {
+        data.my = true
+      }
+      if (req.account) {
+        if (req.account.username == username) {
+          data.my = true
         }
       }
-      const data = await service.statistics(statData)
 
       res.render('pages/profile/statistics', data)
     } catch (error) {

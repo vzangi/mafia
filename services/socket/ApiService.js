@@ -10,11 +10,15 @@ const WalletEvents = require('../../models/WalletEvents')
 const BaseService = require('./BaseService')
 const Punishment = require('../../models/Punishment')
 const AccountSetting = require('../../models/AccountSetting')
-const { isCorrectDateString, isoFromDate } = require('../../units/helpers')
+const {
+  isCorrectDateString,
+  isoFromDate,
+  getDateFromIso,
+} = require('../../units/helpers')
 const Game = require('../../models/Game')
 const GameType = require('../../models/GameType')
 const GameEvent = require('../../models/GameEvent')
-const archiveLimit = 11
+const archiveLimit = 20
 
 class ApiService extends BaseService {
   // Список пользователей по части ника
@@ -346,6 +350,10 @@ class ApiService extends BaseService {
 
   // Архив игр игрока
   async userArchive(data) {
+    if (data.userRoles) {
+      return await this._byRoles(data)
+    }
+
     if (data.gameResult) {
       return await this._byResult(data)
     }
@@ -371,6 +379,7 @@ class ApiService extends BaseService {
     }
 
     if (gameResult) {
+      if (isNaN(gameResult)) throw new Error('Неверный аргумент')
       where.value = gameResult * 1
     }
 
@@ -380,11 +389,9 @@ class ApiService extends BaseService {
       }
     }
 
-    console.log(where)
-
     result.games = await GameEvent.findAll({
       where,
-      limit: archiveLimit,
+      limit: archiveLimit + 1,
       order: [['id', 'desc']],
       include: [
         {
@@ -410,6 +417,96 @@ class ApiService extends BaseService {
         },
       ],
     })
+
+    result.limit = archiveLimit
+
+    return result
+  }
+
+  // Архив по ролям
+  async _byRoles(data) {
+    const { from, to, gameResult, userRoles, idless } = data
+    const { user } = this
+
+    if (!user) throw new Error('Не авторизован')
+
+    const result = { from, to }
+
+    const { startedAt } = this._getDateInterval(from, to)
+
+    const eventsWhere = {
+      where: {
+        accountId: user.id,
+        type: GameEvent.eventTypes.RESULT,
+        createdAt: startedAt,
+      },
+      attributes: ['id', 'gameId'],
+      limit: archiveLimit + 1,
+      order: [['id', 'desc']],
+      raw: true,
+      include: [
+        {
+          model: Game,
+          required: true,
+          include: [
+            {
+              model: GamePlayer,
+              as: 'players',
+              where: {
+                accountId: user.id,
+                roleId: JSON.parse(userRoles),
+              },
+              required: true,
+            },
+          ],
+        },
+      ],
+    }
+
+    if (gameResult) {
+      if (isNaN(gameResult)) throw new Error('Неверный аргумент')
+      eventsWhere.where.value = gameResult * 1
+    }
+
+    if (idless) {
+      eventsWhere.where.id = {
+        [Op.lte]: idless,
+      }
+    }
+
+    const events = await GameEvent.findAll(eventsWhere)
+
+    const ids = events.map((e) => e.id)
+
+    const where = {
+      where: { id: ids },
+      limit: archiveLimit + 1,
+      order: [['id', 'desc']],
+      include: [
+        {
+          model: Game,
+          include: [
+            {
+              model: GameType,
+            },
+            {
+              model: GamePlayer,
+              as: 'players',
+              where: {
+                status: [
+                  GamePlayer.playerStatuses.KILLED,
+                  GamePlayer.playerStatuses.PRISONED,
+                  GamePlayer.playerStatuses.TIMEOUT,
+                  GamePlayer.playerStatuses.WON,
+                ],
+              },
+            },
+          ],
+        },
+      ],
+    }
+
+    result.games = await GameEvent.findAll(where)
 
     result.limit = archiveLimit
 

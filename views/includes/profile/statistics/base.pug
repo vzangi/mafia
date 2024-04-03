@@ -1,18 +1,17 @@
+mixin base_row(name, value, result)
+  tr 
+    td= name
+    td
+      if my
+        a(href=`/games/archive/my?from=${from?from:''}&to=${to?to:today}&gameResult=${result}` target="_blank")= value
+      else 
+        span= value
+
 div(class="block p-3 mb-4")
-	h5 Общая статистика
-	table(class="table table-hover")
-		tr 
-			td Всего игр
-			td= total.all
-		tr 
-			td Побед
-			td= total.win
-		tr 
-			td Поражений
-			td= total.loose
-		tr 
-			td Ничьи
-			td= total.draw
-		tr 
-			td Выход в тайм
-			td= total.timeout
+  h5 Общая статистика
+  table(class="table table-hover")
+    +base_row('Всего игр', total.all, '')
+    +base_row('Побед', total.win, 1)
+    +base_row('Поражений', total.loose, 2)
+    +base_row('Ничьи', total.draw, 3)
+    +base_row('Выход в тайм', total.timeout, 4)

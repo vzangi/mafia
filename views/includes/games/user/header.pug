@@ -1,0 +1,28 @@
+h1(class="mb-3")= `Мои игры`
+
+if gameResult && gameResult == 1
+  h5 Выигранные партии
+
+if gameResult && gameResult == 2
+  h5 Проигранные партии
+
+if gameResult && gameResult == 3
+  h5 Ничьи
+
+if gameResult && gameResult == 4
+  h5 Выходы в тайм
+
+if userRoles 
+  -var roles = ['', 'Честный житель', 'Мафия', 'Комиссар', 'Сержант', 'Врач', 'Маньяк', 'Дитя', 'Адвокат', 'Любовница']
+  -var ur = JSON.parse(userRoles)
+  h6 
+    if ur.length == 1
+      span За роль: 
+    else
+      span За роли: 
+    span= ur.map(r => roles[r]).join(', ')
+
+hr
+
+div(class="games-list mb-4")
+  img(src="/images/loading.gif" width=50 class="loader")

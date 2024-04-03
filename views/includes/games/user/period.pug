@@ -3,6 +3,10 @@ div(class="block mb-4 pb-2 mt-md-3 sticky-top")
     h4 Период
 
     form
+      if gameResult
+        input(type="hidden" name="gameResult" id="gameResult" value=gameResult)
+      if userRoles
+        input(type="hidden" name="userRoles" id="userRoles" value=userRoles)
       div(class="input-group mb-3")
         span(class="input-group-text") 
           span(class="ion-android-calendar me-1") 

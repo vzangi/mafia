@@ -295,13 +295,15 @@ class GameService {
 
   // Архив игр
   async myArchive(account, archiveData) {
-    let { from, to } = archiveData
+    let { from, to, gameResult, userRoles } = archiveData
 
     if (!account) throw new Error('Нет необходимых данных')
 
     const data = {
       from,
       to,
+      gameResult,
+      userRoles,
     }
 
     const { startedAt } = this._getDateInterval(from, to)
