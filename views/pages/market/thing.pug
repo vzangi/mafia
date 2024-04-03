@@ -29,7 +29,10 @@ block main
                   img(src="/uploads/"+offer.account.avatar)
               div(class="thing-price-box")
                 span= `${offer.marketPrice} р.`
-                button(class="btn btn-sm btn-success buy" data-id=offer.id) Купить
+                if currentAccount && currentAccount.username == offer.account.username
+                  button(class="btn btn-sm btn-danger take-back" data-id=offer.id title="Снять лот с продажи" data-bs-toggle="tooltip" data-bs-placement="bottom") Снять
+                else 
+                  button(class="btn btn-sm btn-success buy" data-id=offer.id) Купить
 
 
 block aside 
