@@ -37,4 +37,7 @@ module.exports = (io, socket) => {
 
   // Жалоба
   socket.on('claim', controller.claim.bind(controller))
+
+  // Остановка партии
+  socket.on('stop', controller.stop.bind(controller))
 }

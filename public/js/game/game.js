@@ -202,4 +202,13 @@ $(function () {
 
     $('.kill-dot:not(.checked)').addClass('hide')
   })
+
+  // Остановка игры
+  gameSocket.on('game.stop', () => {
+    $('.chat-input-box').remove()
+    $('.vote-dot').remove()
+    $('.kill-dot').remove()
+    $('.prova-dot').remove()
+    $('.to-lobbi').removeClass('hide')
+  })
 })

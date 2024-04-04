@@ -26,3 +26,5 @@ block scripts
   if game.status == 2
     script(src="/js/game/timer.js")
     script(src="/js/game/game.js?v=1.0")
+    if currentAccount && currentAccount.role == 1
+      script(src="/js/admin/game/game.js")

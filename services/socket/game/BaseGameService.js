@@ -649,6 +649,27 @@ class BaseGameService extends BaseService {
 
     return punish
   }
+
+  // Остановка партии
+  async stopTheGame() {
+    const { socket } = this
+
+    const { user, gameId } = socket
+    if (!user) return
+
+    const account = await Account.findByPk(user.id)
+    if (!account) return
+
+    // Останавливать партии могут только админы
+    if (account.role != 1) return
+
+    // Беру текущую игру
+    const game = Games.getGame(gameId)
+
+    if (!game) return
+
+    await game.stop()
+  }
 }
 
 module.exports = BaseGameService

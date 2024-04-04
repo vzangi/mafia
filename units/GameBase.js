@@ -1689,6 +1689,41 @@ class GameBase {
 
     return flooder.time - currentTime
   }
+
+  // Остановка партии
+  async stop() {
+    const { game, players, room } = this
+    game.status = Game.statuses.STOPPED
+    game.period = Game.periods.END
+    game.save()
+
+    // Освобождаю игроков из партии и показываю их роли
+    for (const index in players) {
+      const player = players[index]
+      if (
+        player.status != GamePlayer.playerStatuses.IN_GAME &&
+        player.status != GamePlayer.playerStatuses.FREEZED
+      )
+        continue
+      player.status = GamePlayer.playerStatuses.STOPPED
+      await player.save()
+      await this.showPlayerRole(player, GamePlayer.playerStatuses.WON)
+    }
+
+    // Удаляю все статистические события игры
+    await GameEvent.destroy({
+      where: {
+        gameId: game.id,
+      },
+    })
+
+    const msg = 'Игра остановлена администратором.'
+    await this.systemMessage('<hr>')
+    await this.systemMessage(msg)
+    this.systemLog('<hr>' + msg)
+
+    room.emit('game.stop')
+  }
 }
 
 module.exports = GameBase
