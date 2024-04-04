@@ -13,7 +13,7 @@ mixin things(things)
   div(class="things-list")
     if things && things.length != 0
       each thing, index in things
-        div(class="thing-item" data-id=thing.id data-trader=thing.accountId data-thing=thing)
+        div(class="thing-item" data-id=thing.id data-trader=thing.accountId data-thing=thing  data-bs-toggle="tooltip" data-bs-placement="bottom" title=thing.thing.description)
           div(class="thing-item-img")
             img(src="/uploads/thing/"+thing.thing.picture)
           div(class="thing-item-name tin-class-"+thing.thing.thingclassId)
