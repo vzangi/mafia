@@ -1076,7 +1076,10 @@ class LobbiService extends BaseService {
     }
 
     if (userAccount.role != 1 || game.players.length < 3) {
-      if (game.players.length < minCount) {
+      if (
+        game.players.length < minCount &&
+        game.gametypeId != Game.types.CONSTRUCTOR
+      ) {
         throw new Error(
           `Минимальное количество игроков для запуска игры - ${minCount}`
         )
