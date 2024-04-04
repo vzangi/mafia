@@ -36,7 +36,7 @@ div(class="container")
       if power 
         div(class="power mt-3 fs-4") 
           span(title="Сила в режиме «Перестрелка»" data-bs-toggle="tooltip" data-bs-placement="bottom")
-            span(class="ion-flash text-secondary") 
+            span(class="bi bi-lightning-charge-fill text-secondary") 
             span(class="power-value backfon")= power
       if partner 
         -var pName='Партнёр'
@@ -47,6 +47,6 @@ div(class="container")
 
         div(class="partner mt-3 fs-5") 
           span(data-bs-toggle="tooltip" data-bs-placement="bottom" title=pName)
-            span(class="ion-android-favorite text-secondary") 
+            span(class="bi bi-suit-heart-fill text-secondary") 
             a(class="text-decoration-none backfon" href="/profile/" + partner.friend.username)= partner.friend.username
 
