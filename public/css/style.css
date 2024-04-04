@@ -427,6 +427,7 @@ a.anchor:before {
 
 .dropdown-menu {
   transform: translate3d(0, 0, 0) !important;
+  z-index: 1060;
 }
 
 .show > .rounded-circle {
