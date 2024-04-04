@@ -9,9 +9,6 @@
 .profile-top-info-main-nick .nick {
   font-size: 45px;
   font-weight: 300;
-  background-color: var(--color-bg-07);
-  padding: 0 0.5rem;
-  border-radius: var(--border-radius);
 }
 
 .profile-top-info-main-rank {
@@ -37,16 +34,6 @@
   letter-spacing: 0.4px;
   font-size: 20px;
   color: var(--color-text);
-  background-color: var(--color-bg-07);
-  padding: 0 0.5rem;
-  border-radius: var(--border-radius);
-}
-
-h4,
-.power-value {
-  background-color: var(--color-bg-07);
-  padding: 0 0.5rem;
-  border-radius: var(--border-radius);
 }
 
 .vip-user {
@@ -507,4 +494,10 @@ a.user-name {
   .badge-box img {
     position: static;
   }
+}
+
+.backfon {
+  background-color: var(--color-bg-07);
+  padding: 0 0.5rem;
+  border-radius: var(--border-radius);
 }

@@ -658,7 +658,7 @@ ul.aside-menu li a.active {
 
 .thing-class {
   padding: 1px 10px;
-  color: var(--color-white);
+  color: var(--color-white) !important;
   font-size: 0.8em;
   border-radius: 4px;
 }

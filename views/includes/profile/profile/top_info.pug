@@ -19,14 +19,14 @@ div(class="container")
       div(class="profile-top-info-main-nick d-flex align-items-center")
         if profile.vip
           span(class="bi bi-star-fill fs-3 text-warning me-1" data-bs-toggle="tooltip" data-bs-placement="top" title='VIP-статус<br>до ' + prettyDate(profile.vipTo) data-bs-html="true") 
-        span(class="nick" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title='Дата регистрации <br>' + prettyDate(profile.createdAt))=profile.username
+        span(class="nick backfon" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title='Дата регистрации <br>' + prettyDate(profile.createdAt))=profile.username
       div(class="profile-top-info-main-rank")
         if profile.rank == 0
           div(class="image" style="background-image:url(/images/0.svg)")
           div(class="text") Нет ранга
         else 
           div(class="image" style=`background-image:url(/images/${rankImg}.svg)`)
-          div(class="text f-mon" title="Ранг" data-bs-toggle="tooltip" data-bs-placement="right")= profile.rank
+          div(class="text f-mon backfon" title="Ранг" data-bs-toggle="tooltip" data-bs-placement="right")= profile.rank
 
       div(class="profile-level d-flex mt-2")
         span(title=`${levelNum} уровень<hr>Набрано баллов: ${profile.level}` data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true")
@@ -37,7 +37,7 @@ div(class="container")
         div(class="power mt-3 fs-4") 
           span(title="Сила в режиме «Перестрелка»" data-bs-toggle="tooltip" data-bs-placement="bottom")
             span(class="ion-flash text-secondary") 
-            span(class="power-value")= power
+            span(class="power-value backfon")= power
       if partner 
         -var pName='Партнёр'
         if profile.gender == 1
@@ -48,5 +48,5 @@ div(class="container")
         div(class="partner mt-3 fs-5") 
           span(data-bs-toggle="tooltip" data-bs-placement="bottom" title=pName)
             span(class="ion-android-favorite text-secondary") 
-            a(class="text-decoration-none" href="/profile/" + partner.friend.username)= partner.friend.username
+            a(class="text-decoration-none backfon" href="/profile/" + partner.friend.username)= partner.friend.username
 
