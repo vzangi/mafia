@@ -466,7 +466,7 @@ class GameMulti extends GameBase {
         // Такой игрок найден
         // Это означает что тут либо омон, либо никто не садиться
 
-        const mafiaCount = this.liveMafiaCount()
+        const mafiaCount = this.liveMafiaCount() + this.liveOtherMafiaCount()
 
         // Все голоса распределены
         if (activePlayers == steps.length) {

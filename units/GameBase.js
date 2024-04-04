@@ -919,14 +919,11 @@ class GameBase {
           continue
         }
 
-        // Роль адвоката
-        if (player.roleId == Game.roles.ADVOCATE) {
-          aliveOtherMafia += 1
-          continue
-        }
-
-        // Роль любовницы
-        if (player.roleId == Game.roles.LOVER) {
+        // Роль адвоката или любовницы
+        if (
+          player.roleId == Game.roles.ADVOCATE ||
+          player.roleId == Game.roles.LOVER
+        ) {
           aliveOtherMafia += 1
           continue
         }
@@ -957,7 +954,11 @@ class GameBase {
     }
 
     // Победа мафии
-    if (aliveMafia > 0 && aliveCitizens == 0 && aliveManiac == 0) {
+    if (
+      aliveMafia + aliveOtherMafia > 0 &&
+      aliveCitizens == 0 &&
+      aliveManiac == 0
+    ) {
       return Game.sides.MAFIA
     }
 
@@ -1548,6 +1549,15 @@ class GameBase {
       (p) =>
         p.status == GamePlayer.playerStatuses.IN_GAME &&
         p.roleId == Game.roles.MAFIA
+    ).length
+  }
+
+  // Количество активных мафиози (которые ещё не выбыли из игры)
+  liveOtherMafiaCount() {
+    return this.players.filter(
+      (p) =>
+        p.status == GamePlayer.playerStatuses.IN_GAME &&
+        (p.roleId == Game.roles.LOVER || p.roleId == Game.roles.ADVOCATE)
     ).length
   }
 
