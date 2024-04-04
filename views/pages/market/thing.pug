@@ -28,10 +28,11 @@ block main
                 a(href="/profile/"+offer.account.username title=offer.account.username data-bs-toggle="tooltip" data-bs-placement="bottom")
                   img(src="/uploads/"+offer.account.avatar)
               div(class="thing-price-box")
-                span= `${offer.marketPrice} р.`
                 if currentAccount && currentAccount.username == offer.account.username
+                  button(class="btn change-price pb-0 pt-0" data-id=offer.id title="Изменить цену" data-bs-toggle="tooltip" data-bs-placement="top")= `${offer.marketPrice} р.`
                   button(class="btn btn-sm btn-danger take-back" data-id=offer.id title="Снять лот с продажи" data-bs-toggle="tooltip" data-bs-placement="bottom") Снять
                 else 
+                  span= `${offer.marketPrice} р.`
                   button(class="btn btn-sm btn-success buy" data-id=offer.id) Купить
 
 

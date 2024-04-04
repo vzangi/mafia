@@ -25,7 +25,7 @@ block main
 
             div(class="thing-line")
               div(class="thing-price-box")
-                span= `${thing.marketPrice} р.`
+                button(class="btn change-price p-0" data-id=thing.id title="Изменить цену" data-bs-toggle="tooltip" data-bs-placement="top")= `${thing.marketPrice} р.`
                 button(class="btn btn-sm btn-danger take-back" data-id=thing.id) Снять
 
 block aside 
