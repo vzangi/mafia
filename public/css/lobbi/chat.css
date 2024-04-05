@@ -43,7 +43,6 @@ a.user-online-box {
 }
 
 .chat-settings > span {
-  font-size: 26px;
   cursor: pointer;
   transition: color 0.3s ease;
   color: #bbb;
@@ -343,9 +342,9 @@ input:checked + .slider:before {
 }
 
 .message-box:not(.system-message) .m-time:hover:before {
-  content: '\f100';
+  content: '\F337';
   display: inline-block;
-  font-family: 'Ionicons';
+  font-family: 'bootstrap-icons';
   margin-right: 4px;
 }
 
@@ -359,8 +358,9 @@ input:checked + .slider:before {
 }
 
 .m-nik.vip:before {
-  content: '\f2fc';
-  font-family: 'Ionicons';
+  content: '\F586';
+  font-family: 'bootstrap-icons';
+  font-size: 0.77em;
   margin-right: 5px;
 }
 
@@ -545,7 +545,7 @@ input:checked + .slider:before {
 }
 
 .start-chat {
-  font-size: 1.4rem;
+  font-size: 1.1rem;
   color: #aaa;
   position: relative;
   top: 2px;

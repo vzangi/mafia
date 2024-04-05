@@ -7,7 +7,7 @@ div(class="chat-box mb-4")
     span(class="online-user-count-box me-auto") 
       a(href="/online" class="user-online-box") #[span(class="user-online") ] сейчас онлайн
     div(class="chat-settings ms-3")
-      span(class="ion-gear-a gear" title="настройки чата")
+      span(class="bi bi-gear gear" title="настройки чата")
       div(class="chat-settings-box")
         +settings_item("Расширенный&nbsp;чат", "chat-whide")
         +settings_item("Зафиксировать&nbsp;чат", "chat-fix")
@@ -27,7 +27,7 @@ div(class="chat-box mb-4")
             div(class="font-size small" data-font="font-14" title="Мелкий") 
               include ../text_icon
 
-      span(class="ion-arrow-expand expand ms-2" title="на всё окно")
+      span(class="bi bi-arrows-fullscreen expand ms-2" title="на всё окно")
 
   div(class="chat")  
     div(class="loader")
@@ -56,7 +56,7 @@ div(class="chat-box mb-4")
         -var until = currentAccount.punishments.filter(p => p.type == 1)[0].untilAt
         -until = until.toLocaleString('ru-RU', { month: 'long', day: 'numeric' }) + ' ' + until.toLocaleTimeString('ru-Ru').substr(0, 5)
         div(class="muted p-1 ps-2 pe-2")
-          span(class="ion-alert-circled") 
+          span(class="bi-exclamation-octagon") 
           span Вам запрещено писать сообщения до 
           span= until
 

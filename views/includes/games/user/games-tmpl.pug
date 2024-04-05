@@ -11,15 +11,15 @@ script(id="gameTmpl" type="text/x-jquery-tmpl")
       div(class="game-info mb-3")
         div(class="d-flex justify-content-between align-items-center gap-1")
           div(class="game-type d-flex align-items-center gap-1" title="Режим игры" data-bs-toggle="tooltip" data-bs-placement="bottom") 
-            span(class="ion-ios-game-controller-b fs-5 ion-icon") 
+            span(class="bi-controller fs-5 bi-icon") 
             span ${gametype.name}
             . 
               {{if mode == 2}}
-            span(class="ion-flash" title="с добивами" data-bs-toggle="tooltip" data-bs-placement="right")
+            span(class="bi-lightning-fill" title="с добивами" data-bs-toggle="tooltip" data-bs-placement="right")
             . 
               {{/if}}
           div(class="players-count d-flex align-items-center gap-1" title="Количество игроков в зявке" data-bs-toggle="tooltip" data-bs-placement="bottom") 
-            span(class="ion-ios-people fs-4 ion-icon") 
+            span(class="bi-people-fill fs-5 bi-icon") 
             span(class="cnt") ${players.length}
             span  / 
             span ${playersCount}

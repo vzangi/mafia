@@ -11,10 +11,10 @@
 
 .gift-item .vip {
   position: absolute;
-  top: 0.5rem;
-  right: 0.6rem;
+  top: 0.7rem;
+  right: 0.7rem;
   color: var(--color-gold);
-  font-size: 2rem;
+  font-size: 1.6rem;
   text-shadow: 0 0 1rem #888;
   line-height: 1rem;
   opacity: 0.5;

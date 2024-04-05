@@ -1,6 +1,6 @@
 script(id="noMessagesTmpl" type="text/x-jquery-tmpl")
   div(class='nomessages text-secondary')
-    span(class="icon ion-edit")
+    span(class="icon bi-pencil")
     p Тут пока нет сообщений. Напишите первое
 
 script(id="pmListItemTmpl" type="text/x-jquery-tmpl")
@@ -31,7 +31,7 @@ script(id="privateMessagesOnlineStatusTmpl" type="text/x-jquery-tmpl")
 script(id="privateMessagesBoxTmpl" type="text/x-jquery-tmpl")
   div(class="pm-chat-title")
     div(class="pm-friend-info")
-      span(class="ion-chevron-left back")
+      span(class="bi-chevron-left back")
       div(class="pm-friend-avatar ${online?'online':''}") 
         img(src="/uploads/${avatar}")
       div(class="pm-friend-nik") 
@@ -59,7 +59,7 @@ script(id="privateMessagesBoxTmpl" type="text/x-jquery-tmpl")
 
 script(id="myPrivateMessagesTmpl" type="text/x-jquery-tmpl")
   div(class="my-message read-${isRead?1:0}") 
-    span(class='ion-ios-checkmark-empty isread' title='Прочитано')
+    span(class='bi-check2-all isread' title='Прочитано')
     div(class="time" title="${date}") ${time}
     div(class="msg {{if smile}}smile{{/if}}") {{html message}}
 
@@ -75,7 +75,7 @@ script(id="messageDateTmpl" type="text/x-jquery-tmpl")
 script(id="messagesBeginningTmpl" type="text/x-jquery-tmpl")
   div(class="chat-beginning")
     div
-      span(class="ion-chatboxes icon")
+      span(class="bi-chat-right-dots icon")
       p(class="text-secondary") Выберите диалог из списка слева.
 
 script(id="pmTypingTmpl" type="text/x-jquery-tmpl")

@@ -7,7 +7,7 @@ block head
 block main
   h1 
     a(href="/gift/groups")
-      span(class="ion-chevron-left fs-2")
+      span(class="bi-chevron-left fs-2")
     span(class="ms-2") Редактирование группы
 
   div(class="block p-4 mt-4 mb-4")
@@ -50,7 +50,7 @@ block main
         div(class="gifts-list-item" data-id=gift.id)
           img(src="/uploads/gift/"+gift.picture width=140)
           if gift.isVip 
-            div(class="vip ion-android-star vip" title="Вип открытка") 
+            div(class="vip bi-star-fill vip" title="Вип открытка") 
           div(class="price")= gift.price+' р.'
           div(class="gift-actions")
             div(class="text-center mb-2")

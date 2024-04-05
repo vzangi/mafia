@@ -347,7 +347,6 @@ div.checker {
   width: 17px;
   height: 17px;
   border-radius: 5px;
-  font-family: Ionicons;
   font-size: 11px;
   line-height: 17px;
   cursor: pointer;
@@ -448,7 +447,7 @@ a.anchor:before {
 
 .right-header-block .search,
 .right-header-block .chatbox {
-  font-size: 30px;
+  font-size: 21px;
   margin: 0 10px;
   color: #c7ccd3;
   cursor: pointer;
@@ -814,4 +813,8 @@ ul.aside-menu li a.active {
   animation-timing-function: ease-out;
   animation-iteration-count: 1;
   height: 100%;
+}
+
+.chat-settings .gear {
+  font-size: 1.2em;
 }

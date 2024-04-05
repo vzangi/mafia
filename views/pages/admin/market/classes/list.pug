@@ -3,7 +3,7 @@ extends /layouts/two_column_3_9
 block main
   h1 
     a(href="/market/admin")
-      span(class="ion-chevron-left fs-2")
+      span(class="bi-chevron-left fs-2")
     span(class="ms-2") Типы классов
   table(class="table mt-4 mb-4")
     thead 
@@ -19,7 +19,7 @@ block main
       td= item.name
       td= item.sort
       td(class="text-end")
-        a(class="btn btn-sm btn-primary ion-edit" href="/market/classes/"+item.id title="Редактировать") 
+        a(class="btn btn-sm btn-primary bi-pencil" href="/market/classes/"+item.id title="Редактировать") 
 
 block aside
   include /includes/admin/market/menu

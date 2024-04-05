@@ -3,7 +3,7 @@ extends /layouts/two_column_3_9
 block main
   h1 
     a(href="/market/admin")
-      span(class="ion-chevron-left fs-2")
+      span(class="bi-chevron-left fs-2")
     span(class="ms-2") Типы предметов
   form(method="post" action="/market/types/create")
     table(class="table mt-4 mb-4")
@@ -20,7 +20,7 @@ block main
             td= item.name
             td= item.sort
             td(class="text-end")
-              a(class="btn btn-sm btn-primary ion-edit" href="/market/types/"+item.id title="Редактировать") 
+              a(class="btn btn-sm btn-primary bi-pencil" href="/market/types/"+item.id title="Редактировать") 
         tr  
           td 
           td 
@@ -28,7 +28,7 @@ block main
           td 
             input(type="number" value="0" name="sort" class="form-control" placeholder="Сортировка")
           td(class="text-end")
-            button(type="submit" class="btn btn-success btn-sm ion-plus" title="Добавить тип") 
+            button(type="submit" class="btn btn-success btn-sm bi-plus" title="Добавить тип") 
 
 block aside
   include /includes/admin/market/menu

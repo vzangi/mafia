@@ -18,7 +18,7 @@ block main
                 if user.punishments && user.punishments.length > 0
                   each pun in user.punishments
                     if pun.type == 1
-                      span(class="ion-android-microphone-off2" title="Молчанка<br> до "+(pun.coolDate) data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true")
+                      span(title="Молчанка<br> до "+(pun.coolDate) data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true")
                         i(class="bi bi-envelope-slash-fill") 
                 a(href="/profile/"+user.username)= user.username
             div(class="friend-actions") 

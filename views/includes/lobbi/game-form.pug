@@ -1,10 +1,10 @@
 mixin numberInput(name, min, max, defValue)
   div(class="number-input-box")
     button(class="btn btn-success btn-less")
-      span(class="ion-chevron-left")
+      span(class="bi-chevron-left")
     div(class="form-control" data-min=min data-max=max id=name)= defValue
     button(class="btn btn-success btn-more")
-      span(class="ion-chevron-right")
+      span(class="bi-chevron-right")
 
 mixin gameFormRow(desc)
   div(class="mb-3")
@@ -40,20 +40,20 @@ div(class="modal fade" id="makeForm" tabindex="-1")
           div(class="game-type-item game-type-5" data-id="5")
             h4 
               span Конструктор 
-              span(class="ion-android-star" title="Режим доступен только VIP-игрокам" data-bs-toggle="tooltip" data-bs-placement="bottom")
+              span(class="bi-star-fill" title="Режим доступен только VIP-игрокам" data-bs-toggle="tooltip" data-bs-placement="bottom")
             p Режим игры с настраиваемым набором ролей
 
         div(class="game-settings-list")
 
           div(class="welkome-game flex-grow-1")
             div(class="d-flex flex-column justify-content-center align-items-center h-100 p-2 text-center")
-              div(class="ion-ios-game-controller-b fs-1 text-secondary")
+              div(class="bi-controller fs-1 text-secondary")
               h4(class="text-secondary") Выберите #[br] режим игры
 
           div(class="game-settings game-settings-1" data-id="1")
             div(class="settings-head d-flex align-items-center mb-3 mt-2")
               div 
-                span(class="ion-chevron-left back gs-back")
+                span(class="bi-chevron-left back gs-back")
               h5 Классическая игра
 
             p(class="text-secondary")
@@ -77,12 +77,12 @@ div(class="modal fade" id="makeForm" tabindex="-1")
               +gameFormRow('')
                 +settings_item('Автостарт', 'autostart-1', true)
                   | 
-                  span(class="ion-ios-help-outline" title="Игра запуститься как только наберётся нужное количество игроков" data-bs-toggle="tooltip" data-bs-placement="bottom")
+                  span(class="bi-question-circle" title="Игра запуститься как только наберётся нужное количество игроков" data-bs-toggle="tooltip" data-bs-placement="bottom")
 
             +gameFormRow('')
               +settings_item('С добивами', 'mode-1', true)
                 | 
-                span(class="ion-ios-help-outline" title="В режиме с добивами в тюрьму отправляется игрок набравший наибольшее количество голосов за день" data-bs-toggle="tooltip" data-bs-placement="bottom")
+                span(class="bi-question-circle" title="В режиме с добивами в тюрьму отправляется игрок набравший наибольшее количество голосов за день" data-bs-toggle="tooltip" data-bs-placement="bottom")
 
             +gameFormRow('Подпись к заявке')
               input(class="form-control" type="text" placeholder="Подпись к заявке" maxlength="69" id="gameDescription-1" name="gameDescription-1")
@@ -94,7 +94,7 @@ div(class="modal fade" id="makeForm" tabindex="-1")
           div(class="game-settings game-settings-2" data-id="2")
             div(class="settings-head d-flex align-items-center mb-3 mt-2")
               div 
-                span(class="ion-chevron-left back gs-back")
+                span(class="bi-chevron-left back gs-back")
               h5 Перестрелка
 
             p(class="text-secondary")
@@ -110,17 +110,17 @@ div(class="modal fade" id="makeForm" tabindex="-1")
               +gameFormRow('')
                 +settings_item('Автостарт', 'autostart-2', true)
                   | 
-                  span(class="ion-ios-help-outline" title="Игра запуститься как только наберётся нужное количество игроков" data-bs-toggle="tooltip" data-bs-placement="bottom")
+                  span(class="bi-question-circle" title="Игра запуститься как только наберётся нужное количество игроков" data-bs-toggle="tooltip" data-bs-placement="bottom")
 
             +gameFormRow('')
               +settings_item('Ждать все ходы', 'mode-2', true)
                 | 
-                span(class="ion-ios-help-outline" title="С этой опцией день будет завершаться, когда все игроки сделают ход" data-bs-toggle="tooltip" data-bs-placement="bottom")
+                span(class="bi-question-circle" title="С этой опцией день будет завершаться, когда все игроки сделают ход" data-bs-toggle="tooltip" data-bs-placement="bottom")
 
             +gameFormRow('')
               +settings_item('Рукопашная', 'melee-2', false)
                 | 
-                span(class="ion-ios-help-outline" title="Игра без оружия" data-bs-toggle="tooltip" data-bs-placement="bottom")
+                span(class="bi-question-circle" title="Игра без оружия" data-bs-toggle="tooltip" data-bs-placement="bottom")
 
             +gameFormRow('Подпись к заявке')
               input(class="form-control" type="text" placeholder="Подпись к заявке" maxlength="69" id="gameDescription-2" name="gameDescription-2")
@@ -132,7 +132,7 @@ div(class="modal fade" id="makeForm" tabindex="-1")
           div(class="game-settings game-settings-3" data-id="3")
             div(class="settings-head d-flex align-items-center mb-3 mt-2")
               div 
-                span(class="ion-chevron-left back gs-back")
+                span(class="bi-chevron-left back gs-back")
               h5 Соревновательный
 
             p(class="text-secondary")
@@ -153,7 +153,7 @@ div(class="modal fade" id="makeForm" tabindex="-1")
           div(class="game-settings game-settings-4" data-id="4")
             div(class="settings-head d-flex align-items-center mb-3 mt-2")
               div 
-                span(class="ion-chevron-left back gs-back")
+                span(class="bi-chevron-left back gs-back")
               h5 Мультиролевая игра
 
             p(class="text-secondary")
@@ -169,12 +169,12 @@ div(class="modal fade" id="makeForm" tabindex="-1")
               +gameFormRow('')
                 +settings_item('Автостарт', 'autostart-4', true)
                   | 
-                  span(class="ion-ios-help-outline" title="Игра запуститься как только наберётся нужное количество игроков" data-bs-toggle="tooltip" data-bs-placement="bottom")
+                  span(class="bi-question-circle" title="Игра запуститься как только наберётся нужное количество игроков" data-bs-toggle="tooltip" data-bs-placement="bottom")
 
             +gameFormRow('')
               +settings_item('С добивами', 'mode-4', true)
                 | 
-                span(class="ion-ios-help-outline" title="В режиме с добивами в тюрьму отправляется игрок набравший наибольшее количество голосов за день" data-bs-toggle="tooltip" data-bs-placement="bottom")
+                span(class="bi-question-circle" title="В режиме с добивами в тюрьму отправляется игрок набравший наибольшее количество голосов за день" data-bs-toggle="tooltip" data-bs-placement="bottom")
 
             +gameFormRow('Подпись к заявке')
               input(class="form-control" type="text" placeholder="Подпись к заявке" maxlength="69" id="gameDescription-4" name="gameDescription-4")
@@ -186,7 +186,7 @@ div(class="modal fade" id="makeForm" tabindex="-1")
           div(class="game-settings game-settings-5" data-id="5")
             div(class="settings-head d-flex align-items-center mb-3 mt-2")
               div 
-                span(class="ion-chevron-left back gs-back")
+                span(class="bi-chevron-left back gs-back")
               h5 Конструктор
 
             p(class="text-secondary")
@@ -203,12 +203,12 @@ div(class="modal fade" id="makeForm" tabindex="-1")
               +gameFormRow('')
                 +settings_item('Автостарт', 'autostart-5', true)
                   | 
-                  span(class="ion-ios-help-outline" title="Игра запуститься как только наберётся нужное количество игроков" data-bs-toggle="tooltip" data-bs-placement="bottom")
+                  span(class="bi-question-circle" title="Игра запуститься как только наберётся нужное количество игроков" data-bs-toggle="tooltip" data-bs-placement="bottom")
 
             +gameFormRow('')
               +settings_item('С добивами', 'mode-5', true)
                 | 
-                span(class="ion-ios-help-outline" title="В режиме с добивами в тюрьму отправляется игрок набравший наибольшее количество голосов за день" data-bs-toggle="tooltip" data-bs-placement="bottom")
+                span(class="bi-question-circle" title="В режиме с добивами в тюрьму отправляется игрок набравший наибольшее количество голосов за день" data-bs-toggle="tooltip" data-bs-placement="bottom")
 
             +gameFormRow('Количество мафиози (1 - 4 игроков)')
               +numberInput("mafiaCount-5", 1, 4, 2)

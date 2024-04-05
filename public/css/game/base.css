@@ -327,9 +327,9 @@ header,
 }
 
 .message-box:not(.system-message) .m-time:hover:before {
-  content: '\f100';
+  content: '\F337';
   display: inline-block;
-  font-family: 'Ionicons';
+  font-family: 'bootstrap-icons';
   margin-right: 4px;
   cursor: pointer;
 }

@@ -13,8 +13,8 @@ script(id="friendOnlineTmpl" type="text/x-jquery-tmpl")
             {{if punishments && punishments.length != 0}}
             {{each(i,punishment) punishments}}
             {{if punishment.type == 1}}
-          span(class="ion-android-microphone-off2" title="Молчанка до {{html punishment.coolDate}}" data-bs-toggle="tooltip" data-bs-placement="bottom")
-            i(class="bi bi-envelope-slash-fill")
+          span(title="Молчанка до {{html punishment.coolDate}}" data-bs-toggle="tooltip" data-bs-placement="bottom")
+            i(class="bi bi-mic-mute-fill")
           . 
             {{/if}}
             {{/each}}
@@ -30,7 +30,7 @@ script(id="friendOnlineTmpl" type="text/x-jquery-tmpl")
         a(class="to-game bi bi-controller me-2" title="Смотреть игру" data-bs-toggle="tooltip" data-bs-placement="bottom")
         . 
           {{/if}}
-        span(class="start-chat ion-chatbox-working" title="Личное сообщение" data-bs-toggle="tooltip" data-bs-placement="bottom" onclick="startPrivateWith(${id})")
+        span(class="start-chat bi bi-chat-right-dots" title="Личное сообщение" data-bs-toggle="tooltip" data-bs-placement="bottom" onclick="startPrivateWith(${id})")
 
 script(id="gamePlayerTmpl" type="text/x-jquery-tmpl")
   div(class="player added" data-username="${player.account.username}")
@@ -38,7 +38,7 @@ script(id="gamePlayerTmpl" type="text/x-jquery-tmpl")
       div(class="friend-avatar ${player.account.online?'online':''}")
         img(src="/uploads/${player.account.avatar}")
         div(class="remove-from-game" data-gameid="${id}" data-username="${player.account.username}")
-          div(class="ion-ios-close-outline text-danger")
+          div(class="bi bi-x-circle text-danger")
       div(class="friend-info text-center w-100")
         a(href="/profile/${player.account.username}") ${player.account.username}
 
@@ -49,16 +49,16 @@ script(id="gameItemTmpl" type="text/x-jquery-tmpl")
       div(class="game-info mb-3")
         div(class="d-flex justify-content-between align-items-center gap-1")
           div(class="game-type d-flex align-items-center gap-1" title="Режим игры" data-bs-toggle="tooltip" data-bs-placement="bottom") 
-            span(class="ion-ios-game-controller-b fs-5 ion-icon") 
+            span(class="bi bi-controller fs-5 bi-icon") 
             span ${gametype.name}
             . 
               {{if mode == 2 && (gametype.id == 1 || gametype.id == 4 || gametype.id == 5)}}
-            span(class="ion-flash" title="с добивами" data-bs-toggle="tooltip" data-bs-placement="right")
+            span(class="bi bi-lightning-fill" title="с добивами" data-bs-toggle="tooltip" data-bs-placement="right")
             .               
               {{/if}}
             . 
               {{if mode == 2 && gametype.id == 2}}
-            span(class="ion-flash ms-1" title="Ждать все ходы" data-bs-toggle="tooltip" data-bs-placement="right")
+            span(class="bi bi-lightning-fill ms-1" title="Ждать все ходы" data-bs-toggle="tooltip" data-bs-placement="right")
             .               
               {{/if}}
             .               
@@ -68,12 +68,12 @@ script(id="gameItemTmpl" type="text/x-jquery-tmpl")
               {{/if}}
 
           div(class="players-count d-flex align-items-center gap-1" title="Количество игроков в зявке" data-bs-toggle="tooltip" data-bs-placement="bottom") 
-            span(class="ion-ios-people fs-4 ion-icon") 
+            span(class="bi bi-people-fill fs-5 bi-icon") 
             span(class="cnt") ${players.length} 
             span  / 
             span ${playersCount} 
           div(class="d-flex align-items-center gap-1") 
-            span(class="ion-ios-clock fs-6 ion-icon" title="Время для сбора игроков{{if autostart}}<hr class='m-0'>Автостарт{{/if}}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true")
+            span(class="bi bi-stopwatch-fill fs-6 bi-icon" title="Время для сбора игроков{{if autostart}}<hr class='m-0'>Автостарт{{/if}}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true")
             span(class="waithing-time" data-deadline="${deadline}" data-seconds="${seconds}" data-stamp="${Date.now()}") 
             . 
               {{if my && account.vip}}
@@ -90,7 +90,7 @@ script(id="gameItemTmpl" type="text/x-jquery-tmpl")
             span(class="role-name") ${r.role.name} 
             . 
               {{if r.cnt > 1}}
-            span(class='ion-ios-close-empty') 
+            span(class='bi bi-x') 
             span(class="role-cnt") ${r.cnt}
             . 
               {{/if}}
@@ -108,14 +108,14 @@ script(id="gameItemTmpl" type="text/x-jquery-tmpl")
           . 
             {{if my}}
           div
-            div(class="game-action-btn btn-remove-game ion-ios-close-outline me-2" data-id="${id}" title="Удалить заявку" data-bs-toggle="tooltip" data-bs-placement="bottom")
+            div(class="game-action-btn btn-remove-game bi bi-x-circle me-2" data-id="${id}" title="Удалить заявку" data-bs-toggle="tooltip" data-bs-placement="bottom")
           .
             {{/if}}
           div
-            div(class="game-action-btn btn-from-game ion-ios-minus-outline me-2 ${inGame?'':'hide'}" data-id="${id}" title="Покинуть заявку" data-bs-toggle="tooltip" data-bs-placement="bottom")
+            div(class="game-action-btn btn-from-game bi bi-dash-circle me-2 ${inGame?'':'hide'}" data-id="${id}" title="Покинуть заявку" data-bs-toggle="tooltip" data-bs-placement="bottom")
 
           div
-            div(class="game-action-btn btn-to-game ion-ios-plus-outline me-2" data-id="${id}" title="Присоедениться к заявке" data-bs-toggle="tooltip" data-bs-placement="bottom")
+            div(class="game-action-btn btn-to-game bi bi-plus-circle me-2" data-id="${id}" title="Присоедениться к заявке" data-bs-toggle="tooltip" data-bs-placement="bottom")
 
         . 
           {{each(i,player) players}}

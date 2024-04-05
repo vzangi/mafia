@@ -43,7 +43,6 @@ a.user-online {
 }
 
 .chat-settings > span {
-  font-size: 26px;
   cursor: pointer;
   transition: color 0.3s ease;
   color: #bbb;
@@ -552,7 +551,7 @@ input:checked + .slider:before {
 }
 
 .start-chat {
-  font-size: 1.4rem;
+  font-size: 1.1rem;
   color: #aaa;
   position: relative;
   top: 2px;

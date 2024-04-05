@@ -331,10 +331,8 @@
 
 .isread {
   color: #7db4ff;
-  font-size: 1.8rem;
-  line-height: 1rem;
   position: relative;
-  top: 6px;
+  top: 4px;
   right: -5px;
 }
 

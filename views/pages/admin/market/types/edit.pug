@@ -1,19 +1,19 @@
 extends /layouts/two_column_3_9
 
 block main
-    h1 
-        a(href="/market/types")
-            span(class="ion-chevron-left fs-2")
-        span(class="ms-2") Редактирование типа
+  h1 
+    a(href="/market/types")
+      span(class="bi-chevron-left fs-2")
+    span(class="ms-2") Редактирование типа
 
-    div(class="block p-4 mt-4 mb-4")
-        form(method="post" action="/market/types/update")
-            input(type="hidden" name="id" value=type.id)
-            div(class="mb-3")
-                label(class="form-label") Название
-                input(type="text" name="name" value=type.name class="form-control")
-            div(class="mb-3")
-                label(class="form-label") Сортировка
-                input(type="number" name="sort" value=type.sort class="form-control")
-            button(type="submit" class="btn btn-primary") Изменить
+  div(class="block p-4 mt-4 mb-4")
+    form(method="post" action="/market/types/update")
+      input(type="hidden" name="id" value=type.id)
+      div(class="mb-3")
+        label(class="form-label") Название
+        input(type="text" name="name" value=type.name class="form-control")
+      div(class="mb-3")
+        label(class="form-label") Сортировка
+        input(type="number" name="sort" value=type.sort class="form-control")
+      button(type="submit" class="btn btn-primary") Изменить
 

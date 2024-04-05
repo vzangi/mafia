@@ -9,7 +9,7 @@ script(id="onlineUserTmpl" type="text/x-jquery-tmpl")
             {{if punishments && punishments.length != 0}}
             {{each(i,punishment) punishments}}
             {{if punishment.type == 1}}
-          span(class="ion-android-microphone-off2" title="Молчанка<br> до {{html punishment.coolDate}}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true")
+          span(title="Молчанка<br> до {{html punishment.coolDate}}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true")
             i(class="bi bi-envelope-slash-fill") 
           . 
             {{/if}}

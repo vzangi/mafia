@@ -44,29 +44,29 @@ div(class="mb-3")
                 img(src="/uploads/"+player.account.avatar)
 
             div(class="claim-btn-box" style="display:"+(game.status==3?'block':'none'))
-              span(class="ion-alert-circled show-claim-form" title="Пожаловаться" data-bs-toggle="tooltip" data-bs-placement="left") 
+              span(class="bi-exclamation-octagon show-claim-form" title="Пожаловаться" data-bs-toggle="tooltip" data-bs-placement="left") 
 
-            div(class="friend-info")
-              div(class="ellipsis")
-                a(class="username")= player.username
-              if out
-                small(class="role")= player.role.name
-              else 
-                if steps && steps.filter(s => s.account.username == player.username).length == 1
-                  small(class='vote-result') 
-                    span против 
-                    span= steps.filter(s => s.account.username == player.username)[0].player.username
+  div(class="friend-info")
+    div(class="ellipsis")
+      a(class="username")= player.username
+    if out
+      small(class="role")= player.role.name
+    else 
+      if steps && steps.filter(s => s.account.username == player.username).length == 1
+        small(class='vote-result') 
+          span против 
+          span= steps.filter(s => s.account.username == player.username)[0].player.username
 
-            if !out
+  if !out
 
-              div(class="vote-dot "+(steps?'':'hide') title="Голосов" data-username=player.username)
-                if !steps
-                  span(class="vote-cnt") 0
-                else 
-                  span(class="vote-cnt")= steps.filter(s => s.player.username == player.username).length
+    div(class="vote-dot "+(steps?'':'hide') title="Голосов" data-username=player.username)
+      if !steps
+        span(class="vote-cnt") 0
+      else 
+        span(class="vote-cnt")= steps.filter(s => s.player.username == player.username).length
 
-              div(class="kill-dot"+(game.period==4?(shoot?(shoot.player.username==player.username?' checked':' hide'):''):' hide') title="Выстрелить" data-username=player.username)
+    div(class="kill-dot"+(game.period==4?(shoot?(shoot.player.username==player.username?' checked':' hide'):''):' hide') title="Выстрелить" data-username=player.username)
 
-              div(class="prova-dot"+(game.period==3?'':' hide') title="Проверить" data-username=player.username)
+    div(class="prova-dot"+(game.period==3?'':' hide') title="Проверить" data-username=player.username)
 
-              div(class="doc-dot"+(game.period==4?(save?(save.player.username==player.username?' checked':' hide'):''):' hide') title="Лечить" data-username=player.username)
+    div(class="doc-dot"+(game.period==4?(save?(save.player.username==player.username?' checked':' hide'):''):' hide') title="Лечить" data-username=player.username)

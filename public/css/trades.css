@@ -1,8 +1,3 @@
-.offer .ion-arrow-swap:before {
-  content: '\f268';
-  transform: rotate(90deg);
-}
-
 .offer .icon {
   color: var(--color-white);
   font-size: 1.5rem;
