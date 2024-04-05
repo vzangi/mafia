@@ -333,3 +333,14 @@ header,
   margin-right: 4px;
   cursor: pointer;
 }
+
+.kill-dot.checked:before {
+  content: '\F769';
+  font-family: 'bootstrap-icons';
+  font-size: 2em;
+  color: #fff;
+  position: absolute;
+  top: -4px;
+  left: 4px;
+  opacity: 0.7;
+}
