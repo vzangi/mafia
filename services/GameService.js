@@ -257,7 +257,7 @@ class GameService {
 
     data.games = await Game.findAll({
       where: {
-        status: [Game.statuses.ENDED, Game.statuses.STOPPED],
+        status: [Game.statuses.ENDED],
         startedAt,
       },
       order: [['startedAt', 'desc']],

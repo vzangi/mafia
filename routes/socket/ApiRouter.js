@@ -45,5 +45,8 @@ module.exports = (io, socket) => {
   socket.on('profile.bg.remove', controller.removeBG.bind(controller))
 
   // Архив игр игрока
-  socket.on('archive', controller.userArchive.bind(controller))
+  socket.on('myarchive', controller.userArchive.bind(controller))
+
+  // Архив игр игрока
+  socket.on('archive', controller.archive.bind(controller))
 }

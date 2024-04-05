@@ -132,6 +132,17 @@ class ApiController extends BaseSocketController {
   }
 
   // Архив игр игрока
+  async archive(userData, callback) {
+    try {
+      const data = await this.service.archive(userData)
+      if (callback) callback({ status: 0, data })
+    } catch (error) {
+      log(error)
+      if (callback) callback({ status: 1, msg: error.message })
+    }
+  }
+
+  // Архив игр игрока
   async userArchive(userData, callback) {
     try {
       const data = await this.service.userArchive(userData)

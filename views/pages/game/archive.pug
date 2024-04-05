@@ -8,12 +8,13 @@ block head
 
 
 block main
-  h1(class="mb-3") Архив игр
-  include /includes/games/archive/list
+  include /includes/games/archive/header
 
 block aside 
   include /includes/games/archive/menu
   include /includes/games/archive/period
 
 block scripts 
+  include /includes/games/games-tmpl
+  script(src="/js/games/datepicker.js")
   script(src="/js/games/archive.js")

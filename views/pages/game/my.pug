@@ -8,12 +8,13 @@ block head
 
 
 block main
-  include /includes/games/user/header
+  include /includes/games/my/header
 
 block aside 
-  include /includes/games/user/menu
-  include /includes/games/user/period
+  include /includes/games/my/menu
+  include /includes/games/my/period
 
 block scripts 
-  include /includes/games/user/games-tmpl
-  script(src="/js/games/archive.js")
+  include /includes/games/games-tmpl
+  script(src="/js/games/datepicker.js")
+  script(src="/js/games/my.js")

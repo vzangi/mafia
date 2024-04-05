@@ -348,6 +348,58 @@ class ApiService extends BaseService {
     }
   }
 
+  // Архив всех игр
+  async archive(data) {
+    let { from, to, idless } = data
+    const result = { from, to }
+
+    const { startedAt } = this._getDateInterval(from, to)
+
+    const where = {
+      status: [Game.statuses.ENDED],
+      startedAt,
+    }
+
+    if (idless) {
+      where.id = {
+        [Op.lte]: idless,
+      }
+    }
+
+    result.games = await Game.findAll({
+      where,
+      order: [['startedAt', 'desc']],
+      limit: archiveLimit + 1,
+      include: [
+        { model: GameType },
+        {
+          model: GamePlayer,
+          as: 'players',
+          where: {
+            status: [
+              GamePlayer.playerStatuses.IN_GAME,
+              GamePlayer.playerStatuses.KILLED,
+              GamePlayer.playerStatuses.PRISONED,
+              GamePlayer.playerStatuses.TIMEOUT,
+              GamePlayer.playerStatuses.FREEZED,
+              GamePlayer.playerStatuses.WON,
+            ],
+          },
+          include: [
+            {
+              model: Account,
+              attributes: ['username', 'avatar', 'online'],
+            },
+          ],
+        },
+      ],
+    })
+
+    result.limit = archiveLimit
+
+    return result
+  }
+
   // Архив игр игрока
   async userArchive(data) {
     if (data.userRoles) {

@@ -44,7 +44,7 @@ class GameController {
     try {
       const { account } = req
       const data = await service.myArchive(account, req.query)
-      res.render('pages/game/user', data)
+      res.render('pages/game/my', data)
     } catch (error) {
       log(error)
       next(error)
