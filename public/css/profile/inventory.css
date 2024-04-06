@@ -1,113 +1,113 @@
 .things-list {
-  grid-template-columns: repeat(auto-fill, 15.5%);
+	grid-template-columns: repeat(auto-fill, 15.5%);
 }
 .thing-item {
-  cursor: pointer;
-  margin-bottom: 0.8rem;
-  position: relative;
+	cursor: pointer;
+	margin-bottom: 0.8rem;
+	position: relative;
 }
 
 .thing-image {
-  display: flex;
-  aspect-ratio: 1/1;
-  flex-direction: column;
-  justify-content: center;
+	display: flex;
+	aspect-ratio: 1/1;
+	flex-direction: column;
+	justify-content: center;
 }
 
 .thing-image img {
-  max-height: 100%;
+	max-height: 100%;
 }
 
 @media (max-width: 768px) {
-  .things-list {
-    grid-template-columns: repeat(auto-fill, 31.5%);
-  }
+	.things-list {
+		grid-template-columns: repeat(auto-fill, 31.5%);
+	}
 }
 @media (max-width: 576px) {
-  .things-list {
-    grid-template-columns: repeat(auto-fill, 48.6%);
-  }
+	.things-list {
+		grid-template-columns: repeat(auto-fill, 48.6%);
+	}
 }
 @media (max-width: 320px) {
-  .things-list {
-    grid-template-columns: repeat(auto-fill, 100%);
-  }
+	.things-list {
+		grid-template-columns: repeat(auto-fill, 100%);
+	}
 }
 
 .modal-title {
-  color: var(--color-white);
+	color: var(--color-white);
 }
 
 .input-group-text {
-  padding: 0 10px;
+	padding: 0 10px;
 }
 .sell-form-img {
-  width: 100px;
-  flex: none;
+	width: 100px;
+	flex: none;
 }
 .sell-form-img .thing-class {
-  height: 10px;
-  width: 100%;
-  border-bottom-left-radius: inherit;
-  border-bottom-right-radius: inherit;
-  border-top-right-radius: 0;
-  border-top-left-radius: 0;
+	height: 10px;
+	width: 100%;
+	border-bottom-left-radius: inherit;
+	border-bottom-right-radius: inherit;
+	border-top-right-radius: 0;
+	border-top-left-radius: 0;
 }
 .img-sell {
-  border: 1px solid #eee;
-  border-radius: 4px;
-  display: flex;
-  flex-direction: column;
-  aspect-ratio: 1/1;
-  justify-content: space-between;
+	border: 1px solid #eee;
+	border-radius: 4px;
+	display: flex;
+	flex-direction: column;
+	aspect-ratio: 1/1;
+	justify-content: space-between;
 }
 
 .img-sell > div:first-child {
-  flex: 1;
-  display: flex;
-  align-items: center;
+	flex: 1;
+	display: flex;
+	align-items: center;
 }
 
 .sort-box select,
 .type-box select {
-  width: 200px;
+	width: 200px;
 }
 
 .hide-item {
-  display: none !important;
+	display: none !important;
 }
 
 @media (max-width: 768px) {
-  .sort-box select,
-  .type-box select {
-    width: 167px;
-  }
+	.sort-box select,
+	.type-box select {
+		width: 167px;
+	}
 }
 @media (max-width: 576px) {
-  .sort-box select,
-  .type-box select {
-    width: 100%;
-  }
-  .sort-box,
-  .type-box {
-    flex: 1 1 50%;
-  }
+	.sort-box select,
+	.type-box select {
+		width: 100%;
+	}
+	.sort-box,
+	.type-box {
+		flex: 1 1 50%;
+	}
 }
 
 .thing-item.taked:after {
-  color: var(--bs-green);
-  content: '\f3fd';
-  font-family: 'Ionicons';
-  font-size: 24px;
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  width: 20px;
-  height: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  border-radius: 10px;
-  border: 2px solid var(--bs-green);
+	color: var(--bs-green);
+	content: '\F272';
+	font-family: 'bootstrap-icons';
+	font-size: 14px;
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	width: 20px;
+	height: 20px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	border-radius: 10px;
+	border: 2px solid var(--bs-green);
 }

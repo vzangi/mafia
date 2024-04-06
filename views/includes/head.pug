@@ -12,10 +12,17 @@ link(rel="manifest" href="/icons/site.webmanifest")
 link(rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="#5bbad5")
 meta(name="msapplication-TileColor" content="#da532c")
 
-if !currentAccount || (currentAccount && currentAccount.skin == 1)
-    meta(name="theme-color" content="#222")
-else
-    meta(name="theme-color" content="#ffffff")
+-var themeColor = '#222'
+if !currentAccount || (currentAccount && currentAccount.skin == 0)
+    -themeColor = '#ffffff'
+if !currentAccount || (currentAccount && currentAccount.skin == 2)
+    -themeColor = '#020'
+if !currentAccount || (currentAccount && currentAccount.skin == 3)
+    -themeColor = '#022'
+if !currentAccount || (currentAccount && currentAccount.skin == 4)
+    -themeColor = '#003455'
+
+meta(name="theme-color" content=themeColor)
 
 if noindex 
     meta(name="robots" content="noindex")

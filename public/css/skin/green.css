@@ -304,7 +304,7 @@ a.thing-item {
 
 .pm-friend-avatar.online:after,
 .friend-avatar.online:after {
-	border: 2px solid #333;
+	border: 2px solid #020;
 }
 
 input::placeholder,

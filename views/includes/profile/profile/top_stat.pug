@@ -1,55 +1,55 @@
 div(class="container")
 
-    div(class="d-flex flex-column flex-md-row justify-content-between")
+  div(class="d-flex flex-column flex-md-row justify-content-between")
 
-        div(class="profile-top-stat")
-            div(class="profile-top-stat-actions")
-                if currentAccount && currentAccount.id != profile.id
-                    if !isFrends
-                        div(class="btn btn-success action-add-to-friends action-btn" data-id=profile.id data-question='Добавить в друзья?' data-event='friends.add') Добавить в друзья
-                    else 
-                        if isFrends.status > 0
-                            div(class="btn btn-success action-private-message" onclick="startPrivateWith("+profile.id+")") Личное сообщение
-                        if isFrends.status == -1
-                            div(class="btn btn-warning") Запрос дружбы отклонён
-                        if isFrends.status == 0
-                            div(class="btn btn-warning") Запрос отправлен
-                        if isFrends.status == 2
-                            div(class="btn btn-warning") Предложение сделано
+    div(class="profile-top-stat")
+      div(class="profile-top-stat-actions")
+        if currentAccount && currentAccount.id != profile.id
+          if !isFrends
+            div(class="btn btn-success action-add-to-friends action-btn" data-id=profile.id data-question='Добавить в друзья?' data-event='friends.add') Добавить в друзья
+          else 
+            if isFrends.status > 0
+              div(class="btn btn-success action-private-message" onclick="startPrivateWith("+profile.id+")") Личное сообщение
+            if isFrends.status == -1
+              div(class="btn btn-warning") Запрос дружбы отклонён
+            if isFrends.status == 0
+              div(class="btn btn-warning") Запрос отправлен
+            if isFrends.status == 2
+              div(class="btn btn-warning") Предложение сделано
 
-                    div(class="profile-top-stat-actions-dropdown")
-                        if isFrends && isFrends.status == -2
-                            div(class="profile-top-stat-actions-dropdown-text") Игрок в ЧС #[span(class="bi bi-chevron-down")]
-                            div(class="profile-top-stat-actions-dropdown-list")
-                                div(class="unblock-user action-btn" data-id=profile.id data-question='Разблокировать игрока?' data-event='friends.unblock') Разблокировать
-                        else
-                            div(class="profile-top-stat-actions-dropdown-text") Действия #[span(class="bi bi-chevron-down")]
-                            div(class="profile-top-stat-actions-dropdown-list")
-                                if isFrends && isFrends.status > 0
-                                    if isFrends.status == 1
-                                        div(class="remove-from-frends action-btn" data-id=profile.id data-question='Удалить из друзей?' data-event='friends.remove') Удалить из друзей
-                                        if !havePartner && !partner
-                                            div(class="to-zags action-btn" data-id=profile.id data-question='Вы уверены, что хотите сделать предложение? В кошельке должно быть 50 рублей.' data-event='friends.zags') Позвать в ЗАГС
-                                    if isFrends.status == 2
-                                        div(class="remove-zags-request action-btn" data-id=profile.id data-question='Вы точно хотите отозвать предложение? В кошелёк верёнтся 25 рублей.' data-event='friends.zags.recall') Отозвать предложение
-                                    if isFrends.status == 3
-                                        div(class="remove-partner action-btn" data-id=profile.id data-question='Вы точно хотите развестись? В кошельке должно быть 100 рублей.' data-event='friends.divorce') Развестись
-                                if !isFrends || isFrends && isFrends.status < 2
-                                    div(class="block-user action-btn" data-id=profile.id data-question='Заблокировать игрока?' data-event='friends.block') Заблокировать
+          div(class="profile-top-stat-actions-dropdown")
+            if isFrends && isFrends.status == -2
+              div(class="profile-top-stat-actions-dropdown-text") Игрок в ЧС #[span(class="bi bi-chevron-down")]
+              div(class="profile-top-stat-actions-dropdown-list")
+                div(class="unblock-user action-btn" data-id=profile.id data-question='Разблокировать игрока?' data-event='friends.unblock') Разблокировать
+            else
+              div(class="profile-top-stat-actions-dropdown-text") Действия #[span(class="bi bi-chevron-down")]
+              div(class="profile-top-stat-actions-dropdown-list")
+                if isFrends && isFrends.status > 0
+                  if isFrends.status == 1
+                    div(class="remove-from-frends action-btn" data-id=profile.id data-question='Удалить из друзей?' data-event='friends.remove') Удалить из друзей
+                    if !havePartner && !partner
+                      div(class="to-zags action-btn" data-id=profile.id data-question='Вы уверены, что хотите сделать предложение? В кошельке должно быть 50 рублей.' data-event='friends.zags') Позвать в ЗАГС
+                  if isFrends.status == 2
+                    div(class="remove-zags-request action-btn" data-id=profile.id data-question='Вы точно хотите отозвать предложение? В кошелёк верёнтся 25 рублей.' data-event='friends.zags.recall') Отозвать предложение
+                  if isFrends.status == 3
+                    div(class="remove-partner action-btn" data-id=profile.id data-question='Вы точно хотите развестись? В кошельке должно быть 100 рублей.' data-event='friends.divorce') Развестись
+                if !isFrends || isFrends && isFrends.status < 2
+                  div(class="block-user action-btn" data-id=profile.id data-question='Заблокировать игрока?' data-event='friends.block') Заблокировать
 
-            div(class="profile-top-stat-list")
-            if friends.length != 0
-                div(class="profile-top-stat-list-one friends")
-                    div(class="friends-stat")
-                        div(class="val")= friends.length
-                        div(class="key")= friendsCorrectForm
-                    div(class="friends-list") 
-                        each friend, index in friends
-                            if index == 5
-                                - break 
-                            a(href="/profile/" + friend.friend.username style="background-image:url(/uploads/"+ friend.friend.avatar +")" data-bs-toggle="tooltip" data-bs-placement="bottom" title=friend.friend.username)
-                    a(class="friends-link" href="/profile/" + profile.username + "/friends") 
+      div(class="profile-top-stat-list")
+      if friends.length != 0
+        div(class="profile-top-stat-list-one friends")
+          div(class="friends-stat")
+            div(class="val")= friends.length
+            div(class="key")= friendsCorrectForm
+          div(class="friends-list") 
+            each friend, index in friends
+              if index == 5
+                - break 
+              a(href="/profile/" + friend.friend.username style="background-image:url(/uploads/"+ friend.friend.avatar +")" data-bs-toggle="tooltip" data-bs-placement="bottom" title=friend.friend.username)
+          a(class="friends-link" href="/profile/" + profile.username + "/friends") 
 
-        div(class="badge-box")
-            if badge 
-                img(src="/uploads/thing/"+badge.thing.picture title=badge.thing.name data-bs-toggle="tooltip" data-bs-placement="bottom")
+    div(class="badge-box")
+      if badge 
+        img(src="/uploads/thing/"+badge.thing.picture title=badge.thing.name data-bs-toggle="tooltip" data-bs-placement="bottom")
