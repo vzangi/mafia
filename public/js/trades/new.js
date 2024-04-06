@@ -13,7 +13,7 @@ $(function () {
 	// Отправляет вещь в список обмена
 	$('.things-box').on('click', '.thing-item', function () {
 		const { trader } = $(this).data()
-		const offerList = $(`.offer .things-list[data-id=${trader}]`)
+		const offerList = $(`.offer .things-list[data-id='${trader}']`)
 		offerList.prev().hide()
 		$(this).remove().appendTo(offerList)
 		$('.send-offer-btn').removeAttr('disabled')
@@ -22,9 +22,9 @@ $(function () {
 	// Возвращает вещь из списка обмена
 	$('.offer').on('click', '.thing-item', function () {
 		const { trader } = $(this).data()
-		const offerList = $(`.offer .things-list[data-id=${trader}]`)
+		const offerList = $(`.offer .things-list[data-id='${trader}']`)
 		const traderThingsList = $(
-			`.trader-things[data-trader=${trader}] .things-list`
+			`.trader-things[data-trader='${trader}'] .things-list`
 		)
 
 		$(this).remove().appendTo(traderThingsList)

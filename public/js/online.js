@@ -11,7 +11,7 @@ $(function () {
 
 	onlineSocket.on('offline', (account) => {
 		const { username } = account
-		$(`[data-nik=${username}`).remove()
+		$(`[data-nik='${username}'`).remove()
 	})
 
 	filterInput.keyup(function () {
