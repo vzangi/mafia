@@ -2,8 +2,8 @@ const express = require('express')
 const router = express.Router()
 const controller = require('../controllers/ProfileController')
 const {
-  validator,
-  validationMiddleware,
+	validator,
+	validationMiddleware,
 } = require('../middlewares/ValidatorsMiddleware')
 const { isAuth } = require('../middlewares/AuthMiddleware')
 
@@ -24,11 +24,11 @@ router.get('/change-password', isAuth, controller.changePasswordForm)
 
 // Процедура смены пароля
 router.post(
-  '/change-password',
-  isAuth,
-  validator.password,
-  validationMiddleware,
-  controller.changePassword
+	'/change-password',
+	isAuth,
+	validator.password,
+	validationMiddleware,
+	controller.changePassword
 )
 
 // Статистика игрока по нику
@@ -62,12 +62,12 @@ router.post('/offtelegram', isAuth, controller.offTelegramNotifes)
 router.get('/things', controller.myInventory)
 
 // Инвентарь игрока
-router.get('/:username/things', controller.inventory)
+router.get('/things/:username', controller.inventory)
+
+// Друзья игрока
+router.get('/friends/:nik', controller.friends)
 
 // Профиль игрока по нику
 router.get('/:nik', controller.showAccountByNik)
-
-// Друзья игрока
-router.get('/:nik/friends', controller.friends)
 
 module.exports = router

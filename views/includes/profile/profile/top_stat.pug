@@ -48,7 +48,7 @@ div(class="container")
               if index == 5
                 - break 
               a(href="/profile/" + friend.friend.username style="background-image:url(/uploads/"+ friend.friend.avatar +")" data-bs-toggle="tooltip" data-bs-placement="bottom" title=friend.friend.username)
-          a(class="friends-link" href="/profile/" + profile.username + "/friends") 
+          a(class="friends-link" href="/profile/friends/" + profile.username) 
 
     div(class="badge-box")
       if badge 

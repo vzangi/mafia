@@ -1,25 +1,33 @@
+mixin action_cell(value, action)
+  td
+    if my
+      a(href=`/games/archive/my?from=${from?from:''}&to=${to?to:today}&action=${action}` target="_blank")= value
+    else
+      span= value
+
+
 if currentAccount && currentAccount.vip && action
   div(class="block p-3 mb-4")
     h5 Игровые действия
     table(class="table table-hover")
       tr 
         td Трупов за мафию
-        td= action.maf_kill
+        +action_cell(action.maf_kill, 1)
       tr 
         td Промахов за мафию
-        td= action.maf_miss
+        +action_cell(action.maf_miss, 2)
       tr 
         td Трупов за маньяка
-        td= action.man_kill
+        +action_cell(action.man_kill, 3)
       tr 
         td Проверенных мафиози
-        td= action.kom_find_maf
+        +action_cell(action.kom_find_maf, 4)
       tr 
         td Спасений доктором
-        td= action.doc_save
+        +action_cell(action.doc_save, 5)
       tr 
         td Спасений адвокатом
-        td= action.adv_save
+        +action_cell(action.adv_save, 6)
       tr 
         td Зоморозок любовницей
-        td= action.lover_freez
+        +action_cell(action.lover_freez, 7)

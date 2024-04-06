@@ -1,18 +1,10 @@
 h1(class="mb-3")= `Мои игры`
 
-if gameResult && gameResult == 1
-  h5 Выигранные партии
+if gameResult && !action && !fact
+  -var results=['','Выигранные партии','Проигранные партии','Ничьи','Выходы в тайм']
+  h5= results[gameResult]
 
-if gameResult && gameResult == 2
-  h5 Проигранные партии
-
-if gameResult && gameResult == 3
-  h5 Ничьи
-
-if gameResult && gameResult == 4
-  h5 Выходы в тайм
-
-if userRoles 
+if userRoles && !action && !fact
   -var roles = ['', 'Честный житель', 'Мафия', 'Комиссар', 'Сержант', 'Врач', 'Маньяк', 'Дитя', 'Адвокат', 'Любовница']
   -var ur = JSON.parse(userRoles)
   h6 
@@ -21,6 +13,16 @@ if userRoles
     else
       span За роли: 
     span= ur.map(r => roles[r]).join(', ')
+
+if action && !fact
+  -var actions = ['','Трупы за мафию','Промахи за мафию','Трупы за маньяка','Проверенные мафиози','Спасения доктором','Спасения адвокатом','Зоморозки любовницей']
+  h5 По игровым действиям
+  h6= actions[action]
+
+if fact
+  -var facts=['','Первая посадка','Первый труп','Первая проверка']
+  h5 По игровым фактам
+  h6= facts[fact]
 
 hr
 

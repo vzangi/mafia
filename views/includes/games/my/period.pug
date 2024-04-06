@@ -3,10 +3,18 @@ div(class="block mb-4 pb-2 mt-md-3 sticky-top")
     h4 Период
 
     form
-      if gameResult
+      if fact
+        input(type="hidden" name="fact" id="fact" value=fact)
+
+      if action && !fact
+        input(type="hidden" name="action" id="action" value=action)
+
+      if gameResult && !action && !fact
         input(type="hidden" name="gameResult" id="gameResult" value=gameResult)
-      if userRoles
+
+      if userRoles && !action && !fact
         input(type="hidden" name="userRoles" id="userRoles" value=userRoles)
+
       div(class="input-group mb-3")
         span(class="input-group-text") 
           span(class="bi-calendar-event me-1") 

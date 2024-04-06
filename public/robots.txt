@@ -12,11 +12,7 @@ Disallow: /return_url
 Disallow: /profile/wallet
 Disallow: /profile/settings
 Disallow: /profile/notifications
-Disallow: /profile/friends*
-Disallow: /profile/things
 Disallow: /profile/statistics/*
-Disallow: /profile/*/friends
-Disallow: /profile/*/things
 Disallow: /games/current
 Disallow: /games/archive*
 Disallow: /game/*

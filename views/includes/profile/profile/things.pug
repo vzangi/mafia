@@ -4,7 +4,7 @@ div(class="col-12 col-md-6")
     if myprofile || (hideinvent != 2 && (hideinvent != 1 || isFrends))
       if things.length != 0
         div
-          a(href="/profile/"+profile.username+"/things" class="btn btn-sm btn-outline-secondary") Все вещи
+          a(href="/profile/things/"+profile.username class="btn btn-sm btn-outline-secondary") Все вещи
 
   if !myprofile && (hideinvent == 2 || (hideinvent == 1 && !isFrends))
     p Инвентарь скрыт

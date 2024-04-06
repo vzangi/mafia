@@ -18,9 +18,9 @@ block article
   include /includes/profile/statistics/roles
 
   if currentAccount && currentAccount.vip
-    include /includes/profile/statistics/actions
-
     include /includes/profile/statistics/facts
+
+    include /includes/profile/statistics/actions
 
 block scripts 
   script(src="/js/profile/statistics/datepicker.js")
