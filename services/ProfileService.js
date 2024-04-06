@@ -182,6 +182,7 @@ class ProfileService {
 		}
 
 		const data = await this.profileInfo(profile, user)
+
 		return data
 	}
 
@@ -219,6 +220,8 @@ class ProfileService {
 			title: `Друзья ${profile.username} — игрока онлайн проекта Мафия Уан`,
 			description: `На этой странице вы можете посмотреть список друзей ${profile.username} — игрока онлайн проекта Мафия Уан`,
 		}
+
+		data.noindex = profile.noindex
 
 		return data
 	}
@@ -458,6 +461,9 @@ class ProfileService {
 			throw new Error('Пользователь с таким ником не найден')
 		}
 
+		const data = { profile }
+		data.noindex = profile.noindex
+
 		if (!user || user.id != profile.id) {
 			const hideinvent = await AccountSetting.getHideInventSetting(profile.id)
 
@@ -498,21 +504,16 @@ class ProfileService {
 			}
 		}
 
-		const thingsCount = await AccountThing.scope({
+		data.thingsCount = await AccountThing.scope({
 			method: ['withThings', profile.id],
 		}).count()
 
-		const types = await ThingType.findAll({
+		data.types = await ThingType.findAll({
 			order: [['sort']],
 		})
 
-		const data = {
-			profile,
-			thingsCount,
-			types,
-			title: `Инвентарь ${username} — игрока онлайн проекта Мафия Уан`,
-			description: `На этой странице вы можете посмотреть список вещей находящихся в инвентаре ${username} — игрока онлайн проекта Мафия Уан`,
-		}
+		data.title = `Инвентарь ${username} — игрока онлайн проекта Мафия Уан`
+		data.description = `На этой странице вы можете посмотреть список вещей находящихся в инвентаре ${username} — игрока онлайн проекта Мафия Уан`
 
 		// Количество запросов на обмен
 		data.tradesCount = await Trade.count({
@@ -539,6 +540,7 @@ class ProfileService {
 		const period = this._getPeriod(from, to)
 
 		const data = { profile: account }
+		data.noindex = account.noindex
 
 		// Общая статистика
 		data.total = await this._getTotal(account.id, period)
