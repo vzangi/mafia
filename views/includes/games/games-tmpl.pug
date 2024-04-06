@@ -7,8 +7,8 @@ script(id="moreGamesTmpl" type="text/x-jquery-tmpl")
 
 script(id="gameTmpl" type="text/x-jquery-tmpl")
   a(class="game-item old-game-type-${gametype.id}" data-id="${id}" href="/game/${id}")
-    div(class="block p-4 mb-3")
-      div(class="game-info mb-3")
+    div(class="block p-4 mb-3 position-relative")
+      div(class="game-info mb-2")
         div(class="d-flex justify-content-between align-items-center gap-1")
           div(class="game-type d-flex align-items-center gap-1") 
             .
@@ -23,41 +23,30 @@ script(id="gameTmpl" type="text/x-jquery-tmpl")
             span(class="bi-lightning-fill" title="с добивами" data-bs-toggle="tooltip" data-bs-placement="right")
             . 
               {{/if}}
-          div(class="players-count d-flex align-items-center gap-1" title="Количество игроков в зявке" data-bs-toggle="tooltip" data-bs-placement="bottom") 
+
+          div(title="Время начала игры" data-bs-toggle="tooltip" data-bs-placement="bottom") 
+            span(class="bi-clock") 
+            span ${coolStarted.replace(new Date().getFullYear(), '')}
+
+      . 
+        {{if description != ''}}
+      div(class="description mb-2") ${description}
+      . 
+        {{/if}}
+
+      div(class="d-flex flex-column")
+        div(class="d-flex")
+          div(class="players-count d-flex align-items-center gap-1" title="Количество игроков в зявке" data-bs-toggle="tooltip" data-bs-placement="right") 
             span(class="bi-people-fill fs-5 bi-icon") 
             span(class="cnt") ${players.length}
             span  / 
             span ${playersCount}
 
-        div(class="description")
-          span ${description}
+        div(class="players d-flex flex-wrap")
+          p ${players.map(p => p.username).join(', ')}
 
-      div(class="players d-flex flex-wrap")
-        p ${players.map(p => p.username).join(', ')}
-
-      div 
-        span Игра началсь: 
-        span ${coolStarted}
-
-      div 
-        span Победившая сторона: 
-        . 
-          {{if rolesideId == 1}}
-        span Ничья
-        . 
-          {{/if}}
-        . 
-          {{if rolesideId == 2}}
-        span Честные жители
-        . 
-          {{/if}}
-        . 
-          {{if rolesideId == 3}}
-        span Мафия
-        . 
-          {{/if}}
-        . 
-          {{if rolesideId == 4}}
-        span Маньяк
-        . 
-          {{/if}}
+      . 
+        {{if rolesideId != 1}}
+      div(class="winner winner-side-${rolesideId}" title="${rolesideId==2?'Победили честные жители':rolesideId==3?'Победила мафия':rolesideId==4?'Победил маньяк':''}" data-bs-toggle="tooltip" data-bs-placement="left")
+      . 
+        {{/if}}
