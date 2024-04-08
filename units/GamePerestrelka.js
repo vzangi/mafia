@@ -356,7 +356,8 @@ class GamePerestrelka extends GameBase {
     // Проверка на окончание игры
     const winnerSide = await this.isOver()
     if (winnerSide) {
-      return await this.gameOver(winnerSide)
+      await this.gameOver(winnerSide)
+      return
     }
 
     // Если ком ещё в игре
@@ -805,7 +806,8 @@ class GamePerestrelka extends GameBase {
     // Проверка на завершение игры
     const winnerSide = await this.isOver()
     if (winnerSide) {
-      return await this.gameOver(winnerSide)
+      await this.gameOver(winnerSide)
+      return
     }
 
     // если игра не окончена, идём дальше

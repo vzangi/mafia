@@ -197,7 +197,8 @@ class GameMulti extends GameBase {
       // Проверка на окончание игры
       const winnerSide = await this.isOver()
       if (winnerSide) {
-        return await this.gameOver(winnerSide)
+        await this.gameOver(winnerSide)
+        return
       }
     } else {
       // Событие - адвокат спас игрока от посадки
@@ -394,7 +395,8 @@ class GameMulti extends GameBase {
     // Проверка на завершение игры
     const winnerSide = await this.isOver()
     if (winnerSide) {
-      return await this.gameOver(winnerSide)
+      await this.gameOver(winnerSide)
+      return
     }
 
     // если игра не окончена, идём дальше

@@ -244,7 +244,7 @@ class GameBase {
     // Проверка на завершение игры
     const winnerSide = await this.isOver()
     if (winnerSide) {
-      return await this.gameOver(winnerSide)
+      await this.gameOver(winnerSide)
     }
   }
 
@@ -1023,8 +1023,6 @@ class GameBase {
       this.systemLog('<hr>Игра окончена. Маньяк победил.')
     }
 
-    room.emit('game.over', side)
-
     // Запуск процесса раздачи подарков победившей стороне ...
     await this.prizes(side)
 
@@ -1079,6 +1077,8 @@ class GameBase {
         }
       )
     }
+
+    room.emit('game.over', side)
   }
 
   // Пересчёт рангов
