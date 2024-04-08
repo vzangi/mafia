@@ -13,6 +13,19 @@
   margin: auto;
 }
 
+.coolscroll::-webkit-scrollbar {
+  width: 5px;
+  background-color: var(--chat-black-light);
+}
+
+.coolscroll::-webkit-scrollbar-thumb {
+  background-color: var(--chat-black-light);
+  transition: all 0.3s ease;
+}
+.coolscroll::-webkit-scrollbar-track {
+  background-color: var(--color-bg);
+}
+
 .pm-friends-list-box {
   width: 280px;
   height: 100%;
