@@ -1,4 +1,4 @@
-User-agent: *
+User-agent: Yandex
 
 Disallow: /login
 Disallow: /registration
