@@ -185,13 +185,9 @@ class AuthService {
 
     if (!payload) throw new Error('Нет данных')
 
-    console.log(payload, payload.user)
-
     const { user } = JSON.parse(payload)
 
     if (!user) throw new Error('Нет пользователя в ответе сервера')
-
-    console.log(user, user.id)
 
     const account = await Account.findOne({
       where: { email: `${user.id}@vk.com` },
@@ -212,7 +208,7 @@ class AuthService {
     } else {
       // Аккаунт подтверждён
       if (account.status == 1) {
-        const accessToken = await this.login(account.username, `${account.id}`)
+        const accessToken = await this.login(account.username, `${user.id}`)
         return { accessToken }
       } else {
         // Возвращаю созданный аккаунт, чтобы перенаправить его на страницу для указания ника
