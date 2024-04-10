@@ -181,6 +181,10 @@ class AuthService {
 
   async VK_auth(data) {
     console.log(data)
+
+    const { payload } = data
+
+    console.log(payload)
   }
 }
 

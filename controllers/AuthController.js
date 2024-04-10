@@ -85,7 +85,7 @@ class AuthController {
   async VK_auth(req, res) {
     try {
       const { query } = req
-      await service.VK_auth(req)
+      await service.VK_auth(query)
       res.redirect('/login')
     } catch (error) {
       log(error)
