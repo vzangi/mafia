@@ -85,7 +85,53 @@ class AuthController {
   async VK_auth(req, res) {
     try {
       const { query } = req
-      await service.VK_auth(query)
+      const { accessToken, account } = await service.VK_auth(query)
+
+      // Если пришёл accessToken - пользователь авторизован
+      if (accessToken) {
+        res.cookie(cookieTokenName, accessToken, { maxAge })
+        res.redirect('/lobbi')
+        return
+      }
+
+      // Если пришёл аккаунт - надо выбрать ник
+      if (account) {
+        res.redirect(`/makenick?id=${account.id}&vkid=${account.username}`)
+        return
+      }
+
+      // Если ничего не пришло - переход на логин
+      res.redirect('/login')
+    } catch (error) {
+      log(error)
+      res.redirect('/login')
+    }
+  }
+
+  // Отображение формы смены ника
+  async makenickForm(req, res) {
+    try {
+      const account = await service.getMakenickAccount(req.query)
+      res.render('pages/auth/makenick', { account })
+    } catch (error) {
+      log(error)
+      res.redirect('/login')
+    }
+  }
+
+  // Установка нового ника
+  async setnick(req, res) {
+    try {
+      const accessToken = await service.setnick(req.body)
+
+      // Если пришёл accessToken - пользователь авторизован
+      if (accessToken) {
+        res.cookie(cookieTokenName, accessToken, { maxAge })
+        res.redirect('/lobbi')
+        return
+      }
+
+      // Если ничего не пришло - переход на логин
       res.redirect('/login')
     } catch (error) {
       log(error)

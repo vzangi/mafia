@@ -179,12 +179,92 @@ class AuthService {
     mail(account.email, 'Восстановление пароля на Mafia One', message)
   }
 
+  // Авторизация через VK
   async VK_auth(data) {
     console.log(data)
 
     const { payload } = data
 
+    if (!payload) throw new Error('Нет данных')
+
     console.log(payload)
+
+    const { user } = payload
+
+    if (!user) throw new Error('Нет пользователя в ответе сервера')
+
+    const account = await Account.findOne({
+      where: { email: `${user.id}@vk.com` },
+    })
+
+    // Пользователь авторизуется впервые
+    if (!account) {
+      // Создаю пользователю аккаунт
+      const accData = {}
+      accData.username = user.id
+      accData.email = `${user.id}@vk.com`
+      accData.password = await hash(user.id, saltNumber)
+
+      const newAccount = await Account.create(accData)
+
+      // Возвращаю созданный аккаунт, чтобы перенаправить его на страницу для указания ника
+      return { account: newAccount }
+    } else {
+      // Аккаунт подтверждён
+      if (account.status == 1) {
+        const accessToken = await this.login(user.username, user.id)
+        return { accessToken }
+      } else {
+        // Возвращаю созданный аккаунт, чтобы перенаправить его на страницу для указания ника
+        return { account }
+      }
+    }
+  }
+
+  // Данные для страницы установки ника
+  async getMakenickAccount(data) {
+    const { id, vkid } = data
+    if (!id || !vkid) throw new Error('Нет необходимых данных')
+
+    // Беру аккаунт
+    const account = await Account.findOne({
+      where: {
+        id,
+        username: vkid,
+        status: 0,
+      },
+    })
+    if (!account) throw new Error('Аккаунт не найден')
+
+    // Проверяю пароль
+    const match = await compare(vkid, account.password)
+    if (!match) throw new Error('Не верный пароль')
+
+    // Возвращаю аккаунт
+    return account
+  }
+
+  // Установка ника
+  async setnick(data) {
+    const account = await this.getMakenickAccount(data)
+
+    const username = data.nik
+    if (!username) throw new Error('Ник не указан')
+
+    const hasNick = await Account.findOne({ where: { username } })
+    if (hasNick) throw new Error('Ник уже используется')
+
+    const secondCheck = await AccountName.findOne({ where: { username } })
+    if (secondCheck) throw new Error('Ник занят')
+
+    // Сохраняю ник
+    account.username = username
+    account.status = 1
+    await account.save()
+
+    // Получаю токен авторизации
+    const accessToken = createToken(account)
+    return accessToken
   }
 }
 

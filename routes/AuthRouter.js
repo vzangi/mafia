@@ -38,4 +38,10 @@ router.get('/restore/:email/:hash(*)', auth.restorePassword)
 // Авторизация через VK
 router.get('/vk_auth', auth.VK_auth)
 
+// Форма установки ника
+router.get('/makenick', auth.makenickForm)
+
+// Установка ника
+router.post('/makenick', validator.nik, validationMiddleware, auth.setnick)
+
 module.exports = router
