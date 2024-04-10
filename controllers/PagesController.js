@@ -111,7 +111,7 @@ class PagesController {
       if (account.role != 1) throw new Error('Нет прав доступа')
       const data = await service.users()
       data.title = 'Список игроков Mafia One'
-      res.render('pages/users', data)
+      res.render('pages/admin/users', data)
     } catch (error) {
       log(error)
       next()

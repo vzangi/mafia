@@ -1,9 +1,9 @@
 extends /layouts/grey_layout
 
 block head
-  script(src="/js/login.js")
+  script(src="/js/auth/login.js")
 
 block content 
-  include /includes/login/form
+  include /includes/auth/login/form
 
   div(class="text-center small light-text mb-4") Зарегистрироваться можно #[a(href="/registration") здесь].
