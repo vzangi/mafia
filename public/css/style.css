@@ -818,3 +818,36 @@ ul.aside-menu li a.active {
 .chat-settings .gear {
   font-size: 1.2em;
 }
+
+.auth-block {
+  width: 640px;
+  margin: auto;
+}
+
+.auth-border {
+  border-right: 1px solid #444;
+}
+
+.auth-flex-cols {
+  display: flex;
+}
+
+@media (max-width: 767px) {
+  .auth-block {
+    max-width: 320px;
+    width: auto;
+  }
+  .auth-border {
+    border-right: 0;
+    border-bottom: 1px solid #444;
+    margin: 0 1rem 1rem 1rem;
+    padding-bottom: 1rem;
+    width: auto !important;
+  }
+  .auth-border form {
+    padding: 0 10px !important;
+  }
+  .auth-flex-cols {
+    flex-direction: column;
+  }
+}

@@ -35,4 +35,7 @@ router.post('/restore', validator.email, validationMiddleware, auth.restore)
 // Форма смены пароля
 router.get('/restore/:email/:hash(*)', auth.restorePassword)
 
+// Авторизация через VK
+router.get('/vk_auth', auth.VK_auth)
+
 module.exports = router

@@ -80,6 +80,18 @@ class AuthController {
       res.status(400).json([{ msg: error.message }])
     }
   }
+
+  // Авторизация по ссылке отправленной на почту для смены пароля
+  async VK_auth(req, res) {
+    try {
+      const { query } = req
+      await service.VK_auth(req)
+      res.redirect('/login')
+    } catch (error) {
+      log(error)
+      res.status(400).json([{ msg: error.message }])
+    }
+  }
 }
 
 module.exports = new AuthController()

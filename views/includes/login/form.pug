@@ -1,13 +1,21 @@
 include ../form_mixins
-              
+
 div(class="container")
-  div(class='block block-320 mb-4')
+  div(class='block mb-4 auth-block' style="width:320px")
     div(class='title title-3') Авторизация
-    form(class="form" id="login-form" method="post")
-      +form_row("Никнейм", "text", "login-form-nik", "например, nagibator2005", true)
-      +form_row("Пароль", "password", "login-form-pass", "например, ******", true)
-      div(class="form-row")
-        input(class="btn btn-success me-4" type="submit" value="Войти")
-        a(href="/restore" class="small") Забыли пароль?
-      div(class="alert alert-danger hide") 
-      
+    div(class="pb-3 auth-flex-cols")
+      div(class="w-100 auth-border" style="border:0")
+        form(class="form w-100 m-0 ps-4 pe-4" id="login-form" method="post")
+          +form_row("Никнейм", "text", "login-form-nik", "например, nagibator2005", true)
+          +form_row("Пароль", "password", "login-form-pass", "например, ******", true)
+          div(class="form-row")
+            input(class="btn btn-success me-4" type="submit" value="Войти")
+            a(href="/restore" class="small") Забыли пароль?
+          div(class="alert alert-danger hide") 
+      div(class="w-100 p-4 d-flex align-items-center justify-content-center" style="display:none !important;")
+        div
+          p Вход через социальную сеть*
+          a(href=`https://id.vk.com/auth?uuid=${uuid}&app_id=${vkappid}&response_type=silent_token&redirect_uri=${host}${redirect_url}&redirect_state=auth` class="btn btn-primary ps-5 pe-5 mb-2 text-white") Войти через VK
+          p 
+            small *Если вы входите через социальную сеть первый раз, вам будет создан новый аккаунт.
+
