@@ -203,7 +203,7 @@ class AuthService {
       const accData = {}
       accData.username = user.id
       accData.email = `${user.id}@vk.com`
-      accData.password = await hash(user.id, saltNumber)
+      accData.password = await hash(`${user.id}`, saltNumber)
 
       const newAccount = await Account.create(accData)
 
@@ -212,10 +212,7 @@ class AuthService {
     } else {
       // Аккаунт подтверждён
       if (account.status == 1) {
-        const accessToken = await this.login(
-          account.username,
-          account.id.toString()
-        )
+        const accessToken = await this.login(account.username, `${account.id}`)
         return { accessToken }
       } else {
         // Возвращаю созданный аккаунт, чтобы перенаправить его на страницу для указания ника
