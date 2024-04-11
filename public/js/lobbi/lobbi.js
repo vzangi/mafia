@@ -224,6 +224,13 @@ $(async function () {
     return false
   })
 
+  $('.users-list').on('click', '.friend-info a', function (event) {
+    event.preventDefault()
+    const username = $(this).text()
+    insertTextToInput(`[${username}] `)
+    return false
+  })
+
   const tmpl = (template, data) => {
     return $.tmpl(template, data).get()[0].outerHTML
   }

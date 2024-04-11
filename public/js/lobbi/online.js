@@ -1,22 +1,30 @@
 $(function () {
   const filterInput = $('#filter')
 
-  const onlineSocket = io('/online')
+  $('.user-online-box').click(function (event) {
+    event.preventDefault()
+    $('#onlineForm').modal('show')
+    return false
+  })
 
   onlineSocket.on('online', (account) => {
-    if ($(`.friend-box[data-nik='${account.username}']`).length != 0) return
+    console.log(account)
+    if (
+      $(`.users-list .friend-box[data-nik='${account.username}']`).length != 0
+    )
+      return
     $('#onlineUserTmpl').tmpl(account).prependTo('.users-list')
     activateBSTooltips()
   })
 
   onlineSocket.on('offline', (account) => {
     const { username } = account
-    $(`[data-nik='${username}'`).remove()
+    $(`.users-list [data-nik='${username}'`).parent().remove()
   })
 
   filterInput.keyup(function () {
     const filter = $(this).val().toLowerCase()
-    $('.online-friend-box').each((_, friend) => {
+    $('.users-list .online-friend-box').each((_, friend) => {
       if (
         $(friend).find('.friend-links a').text().toLowerCase().indexOf(filter) <
         0

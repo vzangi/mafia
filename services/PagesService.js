@@ -2,11 +2,10 @@ const smiles = require('../units/smiles')
 const Contest = require('../models/Contest')
 const GamePlayer = require('../models/GamePlayer')
 const Account = require('../models/Account')
-const Punishment = require('../models/Punishment')
-const { Op } = require('sequelize')
 const GameEvent = require('../models/GameEvent')
 const WalletEvent = require('../models/WalletEvents')
 const Notification = require('../models/Notification')
+const { online } = require('../units/AccountHelper')
 
 class PagesService {
   async lobbi(user) {
@@ -54,38 +53,13 @@ class PagesService {
       }
     }
 
+    data.users = await online()
+
     return data
   }
 
   async online() {
-    const users = await Account.findAll({
-      where: {
-        online: 1,
-      },
-      include: [
-        {
-          model: Punishment,
-          where: {
-            untilAt: {
-              [Op.gt]: new Date().toISOString(),
-            },
-          },
-          required: false,
-        },
-        {
-          model: GamePlayer,
-          attributes: ['gameId'],
-          where: {
-            status: [
-              GamePlayer.playerStatuses.IN_GAME,
-              GamePlayer.playerStatuses.FREEZED,
-            ],
-          },
-          required: false,
-        },
-      ],
-    })
-
+    const users = await online()
     return users
   }
 

@@ -1,9 +1,10 @@
 script(id="onlineUserTmpl" type="text/x-jquery-tmpl")
-  div(class="friend-box d-flex align-items-center m-3${gameplayers?(gameplayers.length != 0?' in-game':''):''}" data-nik="${username}")
-    div(class="friend-avatar online")
-      img(src="/uploads/${avatar}" alt="${username}")
-    div(class="friend-links friend-info ms-2 flex-grow-1")
-      span
+  div(class="online-friend-box"+(gameplayers&&gameplayers.length!=0?' in-game':''))
+    div(class="friend-box d-flex align-items-center m-3${gameplayers?(gameplayers.length != 0?' in-game':''):''}" data-nik="${username}")
+      div(class="friend-avatar online")
+        a(href="/profile/${username}" target="_blank")
+          img(src="/uploads/${avatar}" alt="${username}")
+      div(class="friend-links friend-info ms-2 flex-grow-1")
         span(class="ellipsis") 
           . 
             {{if punishments && punishments.length != 0}}
@@ -15,11 +16,11 @@ script(id="onlineUserTmpl" type="text/x-jquery-tmpl")
             {{/if}}
             {{/each}}
             {{/if}}
-        a(href="/profile/${username}") ${username}
+          a(href="/profile/${username}") ${username}
 
-    div(class="friend-actions") 
-      . 
-        {{if gameplayers && gameplayers.length != 0}}
-      a(href="/game/${gameplayers[0].gameId}" class="to-game bi bi-controller me-2" title="Смотреть игру" data-bs-toggle="tooltip" data-bs-placement="bottom")
-      . 
-        {{/if}}
+      div(class="friend-actions") 
+        . 
+          {{if gameplayers && gameplayers.length != 0}}
+        a(href="/game/${gameplayers[0].gameId}" class="to-game bi bi-controller me-2" title="Смотреть игру" data-bs-toggle="tooltip" data-bs-placement="bottom")
+        . 
+          {{/if}}

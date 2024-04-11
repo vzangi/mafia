@@ -12,9 +12,10 @@ block main
         div(class="online-friend-box"+(user.gameplayers&&user.gameplayers.length!=0?' in-game':''))
           div(class="friend-box d-flex align-items-center m-3" data-nik=user.username)
             div(class="friend-avatar online")
-              img(src="/uploads/"+user.avatar alt=user.username)
+              a(href="/profile/"+user.username target="_blank")
+                img(src="/uploads/"+user.avatar alt=user.username)
             div(class="friend-links friend-info ms-2 flex-grow-1")
-              span
+              span(class="ellipsis")
                 if user.punishments && user.punishments.length > 0
                   each pun in user.punishments
                     if pun.type == 1
