@@ -9,6 +9,7 @@ const online = async () => {
     where: {
       online: 1,
     },
+    attributes: ['username', 'avatar'],
     include: [
       {
         model: Punishment,

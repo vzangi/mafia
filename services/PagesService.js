@@ -53,8 +53,6 @@ class PagesService {
       }
     }
 
-    data.users = await online()
-
     return data
   }
 

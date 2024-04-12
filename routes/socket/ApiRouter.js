@@ -9,6 +9,9 @@ module.exports = (io, socket) => {
   // Поиск пользователя по нику
   socket.on('user.search', controller.searchUsersByNik.bind(controller))
 
+  // Игроки онлайн
+  socket.on('users.online', controller.onlineUsers.bind(controller))
+
   // Возвращаю список доступных смайлов
   socket.on('smiles.list', controller.smiles.bind(controller))
 

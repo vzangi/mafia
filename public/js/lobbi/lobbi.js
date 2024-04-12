@@ -51,6 +51,33 @@ $(async function () {
     })
   })
 
+  // Функция загрузки пользователей онлайн
+  function updateOnlineUsers() {
+    socket.emit('users.online', (res) => {
+      const { status, msg, users } = res
+      if (status != 0) {
+        console.log(msg)
+        return
+      }
+
+      $('#onlineUserTmpl').tmpl(users).prependTo($('.users-list').empty())
+    })
+  }
+
+  // Событие при получении страницей фокуса
+  function onWindowFocus() {
+    updateOnlineUsers()
+    $(window).one('blur', onWindowBlur)
+  }
+
+  // Событие при потере фокуса страницей
+  function onWindowBlur() {
+    $(window).one('focus', onWindowFocus)
+  }
+
+  // Запуск события получения фокуса
+  onWindowFocus()
+
   setTimeout(() => {
     socket.on('connect', () => {
       location.reload()

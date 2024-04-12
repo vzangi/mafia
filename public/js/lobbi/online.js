@@ -8,12 +8,12 @@ $(function () {
   })
 
   onlineSocket.on('online', (account) => {
-    console.log(account)
     if (
       $(`.users-list .friend-box[data-nik='${account.username}']`).length != 0
     )
       return
     $('#onlineUserTmpl').tmpl(account).prependTo('.users-list')
+    filterInput.keyup()
     activateBSTooltips()
   })
 

@@ -12,6 +12,15 @@ class ApiController extends BaseSocketController {
       callback({ status: 1, msg: error.message })
     }
   }
+  // Игроки онлайн
+  async onlineUsers(callback) {
+    try {
+      const users = await this.service.onlineUsers()
+      callback({ status: 0, users })
+    } catch (error) {
+      callback({ status: 1, msg: error.message })
+    }
+  }
 
   // Поиск пользователей по нику
   async searchUsersByNik(nik, callback) {
