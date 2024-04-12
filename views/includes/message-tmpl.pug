@@ -24,6 +24,8 @@ script(id="messageTmpl" type="text/x-jquery-tmpl")
     {{else}}
   div(class="message-box {{if highlight }}highlight{{/if}} system-message")
     div(class="message")
+      if currentAccount && currentAccount.id == 1
+        span(class="bi bi-x btn-remove-message me-1" data-id="${id}" title="Удалить сообщение" data-bs-toggle="tooltip" data-bs-placement="bottom")
       div(class="m-time me-2") ${time}
     span
       span(class="m-message") {{html message}}
