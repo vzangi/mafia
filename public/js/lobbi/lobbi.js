@@ -61,6 +61,7 @@ $(async function () {
       }
 
       $('#onlineUserTmpl').tmpl(users).prependTo($('.users-list').empty())
+      calcOnline()
     })
   }
 
@@ -115,6 +116,7 @@ $(async function () {
   // Обновление количества игроков в онлайне
   socket.emit('online.count', (response) => {
     userOnlineCount.text(response.count)
+    calcOnline()
   })
 
   // Запрашиваю список доступных смайлов для чата
@@ -157,6 +159,7 @@ $(async function () {
   // Получение количества пользователей онлайн с сервера
   socket.on('online.count', (count) => {
     userOnlineCount.text(count)
+    calcOnline()
   })
 
   socket.on('friend.ingame', (friendId, gameId) => {

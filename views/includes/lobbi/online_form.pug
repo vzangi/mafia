@@ -4,6 +4,17 @@ div(class="modal fade" id="onlineForm" tabindex="-1")
       div(class="modal-header border-0")
         button(type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть")
       div(class="modal-body block p-0")
-        div(class="p-3")
+        div(class="p-3 pb-1")
           input(type="text" class="form-control w-100" id="filter" placeholder="Поиск по нику..." autocomplete="off")  
+        div(class="users-counts ps-3 pe-3 pb-1")
+          div(class="d-flex")
+            div(class="flex-grow-1 text-center border-end")
+              small Всего - 
+              small(class="total-user-count") 0
+            div(class="flex-grow-1 text-center border-end")
+              small Авторизованных - 
+              small(class="auth-user-count") 0
+            div(class="flex-grow-1 text-center")
+              small Гостей - 
+              small(class="guest-user-count") 0
         div(class="block users-list")

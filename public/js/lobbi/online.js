@@ -14,12 +14,14 @@ $(function () {
       return
     $('#onlineUserTmpl').tmpl(account).prependTo('.users-list')
     filterInput.keyup()
+    calcOnline()
     activateBSTooltips()
   })
 
   onlineSocket.on('offline', (account) => {
     const { username } = account
     $(`.users-list [data-nik='${username}'`).parent().remove()
+    calcOnline()
   })
 
   filterInput.keyup(function () {
