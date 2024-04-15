@@ -43,8 +43,11 @@ script(id="gameTmpl" type="text/x-jquery-tmpl")
             span ${playersCount}
 
         div(class="me-5")
-          p ${players.map(p => p.username).join(', ')}
-
+          p
+            . 
+              {{each(i, player) players}}
+                {{html "<span class='player-in-game'>"+player.username+"</span>"}}{{if i < players.length - 1}},{{/if}}
+              {{/each}}
       . 
         {{if rolesideId != 1}}
       div(class="winner winner-side-${rolesideId}" title="${rolesideId==2?'Победили честные жители':rolesideId==3?'Победила мафия':rolesideId==4?'Победил маньяк':''}" data-bs-toggle="tooltip" data-bs-placement="left")

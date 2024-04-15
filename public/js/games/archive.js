@@ -40,4 +40,11 @@ $(function () {
     $(this).parent().slideUp()
     getGames({ idless })
   })
+
+  $('.games-list').on('click', '.player-in-game', function (event) {
+    event.preventDefault()
+    const username = $(this).text()
+    window.open('/profile/' + username, '_blank')
+    return false
+  })
 })
