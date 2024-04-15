@@ -209,6 +209,11 @@ $(function () {
       return tmpl(smileTemplate, { smile })
     })
 
+    // Смайлик :) заменяется на Hehe
+    msg.message = msg.message.replaceAll(':)', (_, smile) => {
+      return tmpl(smileTemplate, { smile: 'Hehe' })
+    })
+
     // Достаём дату и время из ISO формта
     msg.time = getTimeFromIso(msg.createdAt)
     msg.date = getDateFromIso(msg.createdAt)
