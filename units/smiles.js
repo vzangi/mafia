@@ -15,7 +15,7 @@ const smiles = [
   'Peppa',
   'Popcorn',
   'Rip',
-  'Ten',
+  'Laughter',
   'Fire',
   'Sirena',
   'Coffee',
