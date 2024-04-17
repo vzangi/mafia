@@ -118,7 +118,10 @@ const GameEvent = sequelize.define(
           'account.avatar',
         ],
         group: ['accountId'],
-        order: [['total', 'desc']],
+        order: [
+          ['total', 'desc'],
+          ['accountId', 'desc'],
+        ],
         raw: true,
       },
     },
