@@ -19,7 +19,8 @@ div(class="container")
       div(class="profile-top-info-main-nick d-flex align-items-center")
         if profile.vip
           span(class="bi bi-star-fill fs-3 text-warning me-1" data-bs-toggle="tooltip" data-bs-placement="top" title='VIP-статус<br>до ' + prettyDate(profile.vipTo) data-bs-html="true") 
-        span(class="nick backfon" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title='Дата регистрации <br>' + prettyDate(profile.createdAt))=profile.username
+        //- span(class="nick backfon" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title='Дата регистрации <br>' + prettyDate(profile.createdAt))=profile.username
+        span(class="nick backfon")=profile.username
       div(class="profile-top-info-main-rank")
         if profile.rank == 0
           div(class="image" style="background-image:url(/images/0.svg)")
