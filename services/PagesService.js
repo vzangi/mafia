@@ -5,8 +5,11 @@ const Account = require('../models/Account')
 const GameEvent = require('../models/GameEvent')
 const WalletEvent = require('../models/WalletEvents')
 const Notification = require('../models/Notification')
+const Report = require('../models/Report')
 const { online } = require('../units/AccountHelper')
-const { query } = require('express')
+const { mail } = require('../units/mailer')
+const htmlspecialchars = require('htmlspecialchars')
+const { Op } = require('sequelize')
 
 class PagesService {
   async lobbi(user) {
@@ -172,6 +175,100 @@ class PagesService {
     }
 
     console.log(data, account.username)
+  }
+
+  async sendReport(req) {
+    const { body, account } = req
+    if (!body) throw new Error('Нет необходимых данных')
+
+    if (!account) throw new Error('Не авторизован')
+
+    const { rfmessage, rftheme } = body
+    if (!rfmessage || !rftheme) throw new Error('Нет необходимых данных')
+
+    if (rftheme != 1 && rftheme != 2 && rftheme != 3)
+      throw new Error('Неверное значение темы обращения')
+
+    const data = {
+      message: htmlspecialchars(rfmessage),
+      theme: rftheme,
+      accountId: account.id,
+    }
+
+    if (data.message.length > 1000)
+      throw new Error('Сообщение больше ограничения в 1000 символов.')
+
+    const hasReport = await Report.findOne({
+      where: {
+        accountId: data.accountId,
+        createdAt: {
+          [Op.gt]: new Date(Date.now() - 1000 * 60 * 60).toISOString(), // Час
+        },
+      },
+    })
+
+    if (hasReport)
+      throw new Error('В течении часа можно отправить только один отзыв')
+
+    if (req.files) {
+      const { rffile } = req.files
+
+      if (!rffile) throw new Error('Нет необходимых данных')
+
+      let ext = ''
+      if (rffile.mimetype == 'image/jpeg') ext = 'jpg'
+      if (rffile.mimetype == 'image/png') ext = 'png'
+
+      if (ext == '') {
+        throw new Error('Можно загружать только фото в формате: jpg, png')
+      }
+
+      const rnd1 = Math.ceil(Math.random() * 10000)
+      const rnd2 = Math.ceil(Math.random() * 10000)
+
+      // Формирую имя новой автарки
+      const fileName = `${account.id}-scr-${rnd1}-${rnd2}.${ext}`
+
+      // Запрещаю загрузку файлов больше 1 мегабайт
+      if (rffile.size > 1_000_000) {
+        throw new Error('Размер фото не должно превышать ограничение в 1Mb')
+      }
+
+      await rffile.mv('./public/uploads/' + fileName)
+
+      data.screen = `/uploads/${fileName}`
+    }
+
+    const theme = `[${this._getTheme(rftheme).toUpperCase()}] от ${
+      account.username
+    }`
+
+    const email = process.env.REPORT_EMAIL
+    const message = data.message
+    const attachments = []
+
+    if (data.screen) {
+      attachments.push({
+        filename: data.screen.replace('/uploads/', ''),
+        path: process.cwd() + '/public' + data.screen,
+      })
+    }
+
+    await mail(email, theme, message, attachments)
+
+    await Report.create(data)
+  }
+
+  _getTheme(theme) {
+    switch (theme * 1) {
+      case 1:
+        return 'предложение'
+      case 2:
+        return 'баг'
+      case 3:
+        return 'отзыв'
+    }
+    return 'newer'
   }
 }
 

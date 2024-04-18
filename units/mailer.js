@@ -8,7 +8,7 @@ const transporter = createTransport({
   },
 })
 
-const mail = async (email, theme, message) => {
+const mail = async (email, theme, message, attachments) => {
   const msg = {
     from: 'Mafia One <noreply@mafia-one.com>',
     to: email,
@@ -16,6 +16,8 @@ const mail = async (email, theme, message) => {
     text: '',
     html: message,
   }
+
+  if (attachments) msg.attachments = attachments
 
   const info = await transporter.sendMail(msg)
   return info

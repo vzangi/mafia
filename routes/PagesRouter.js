@@ -42,6 +42,12 @@ router.get('/report', pages.reportForm)
 // Страница репорта
 router.post('/report', pages.report)
 
+// Форма репорта
+router.get('/report-form', pages.ajaxReportForm)
+
+// Обработка репорта
+router.post('/report-form', pages.sendReport)
+
 // Cтраницы со статическим содержимым
 router.use('/', require('./BlogRouter'))
 

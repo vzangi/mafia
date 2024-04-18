@@ -140,6 +140,26 @@ class PagesController {
       res.render('pages/report', { error: error.message })
     }
   }
+
+  // Форма репорта
+  async ajaxReportForm(req, res) {
+    try {
+      if (!req.user)
+        throw new Error('Чтобы отправить отзыв - необходимо авторизоваться')
+      res.render('partial/report-form')
+    } catch (error) {
+      res.status(400).json([{ msg: error.message }])
+    }
+  }
+
+  async sendReport(req, res) {
+    try {
+      await service.sendReport(req)
+      res.json({ status: 0 })
+    } catch (error) {
+      res.status(400).json([{ msg: error.message }])
+    }
+  }
 }
 
 module.exports = new PagesController()
