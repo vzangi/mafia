@@ -36,6 +36,12 @@ router.get('/clear-top-of-week/:secret', pages.clearTopOfWeek)
 // Список пользователей
 router.get('/users', pages.users)
 
+// Страница репорта
+router.get('/report', pages.reportForm)
+
+// Страница репорта
+router.post('/report', pages.report)
+
 // Cтраницы со статическим содержимым
 router.use('/', require('./BlogRouter'))
 

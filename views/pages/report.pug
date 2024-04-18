@@ -1,0 +1,31 @@
+extends /layouts/two_column_8_4
+
+block head
+
+block main
+  div(class="report")
+    div(class="block p-4 mb-4")
+
+      if success
+        h1 Благодарим за обратную связь!
+        p Мы получили ваше сообщение и уже думаем что с ним делать)
+      else
+        h1 Отзывы и предложения
+        p На этой странице вы можете отправить нам пожелания по улучшению, замеченные ошибки или просто оставить свой отзыв.
+
+        form(method="post" enctype="multipart/form-data")
+          div(class="mb-3")
+            textarea(class="form-control" name="message" id="message" placeholder="Ваше сообщение" rows="5" required="required")
+          div(class="mb-3")
+            div(class="d-flex justify-content-between gap-3 flex-md-row flex-column")
+              div
+                input(class="form-control" type="file" name="screen" id="screen")
+              div
+                button(class="btn btn-success w-100" type="submit") Отправить
+
+        if error 
+          div(class="alert alert-danger")= error
+
+block aside
+
+block scripts 

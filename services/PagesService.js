@@ -6,6 +6,7 @@ const GameEvent = require('../models/GameEvent')
 const WalletEvent = require('../models/WalletEvents')
 const Notification = require('../models/Notification')
 const { online } = require('../units/AccountHelper')
+const { query } = require('express')
 
 class PagesService {
   async lobbi(user) {
@@ -130,6 +131,47 @@ class PagesService {
     })
 
     return data
+  }
+
+  async report(req) {
+    const { body, account } = req
+    if (!body) throw new Error('Нет необходимых данных')
+
+    const { message } = body
+    if (!message) throw new Error('Нет необходимых данных')
+
+    const data = { message }
+
+    if (req.files) {
+      const { screen } = req.files
+
+      if (!screen) throw new Error('Нет необходимых данных')
+
+      let ext = ''
+      if (screen.mimetype == 'image/jpeg') ext = 'jpg'
+      if (screen.mimetype == 'image/png') ext = 'png'
+
+      if (ext == '') {
+        throw new Error('Можно загружать только фото в формате: jpg, png')
+      }
+
+      const rnd1 = Math.ceil(Math.random() * 10000)
+      const rnd2 = Math.ceil(Math.random() * 10000)
+
+      // Формирую имя новой автарки
+      const fileName = `${account.id}-${rnd1}-${rnd2}.${ext}`
+
+      // Запрещаю загрузку файлов больше 1 мегабайт
+      if (screen.size > 1_000_000) {
+        throw new Error('Размер фото не должно превышать ограничение в 1Mb')
+      }
+
+      await screen.mv('./public/uploads/' + fileName)
+
+      data.screen = `/uploads/${fileName}`
+    }
+
+    console.log(data, account.username)
   }
 }
 

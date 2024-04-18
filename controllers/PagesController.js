@@ -117,6 +117,29 @@ class PagesController {
       next()
     }
   }
+
+  // Страница репорта
+  async reportForm(req, res) {
+    if (!req.user) {
+      return res.redirect('/login')
+    }
+    res.render('pages/report')
+  }
+
+  // Обработчик репорта
+  async report(req, res) {
+    try {
+      const { account } = req
+      if (!account) return res.redirect('/login')
+
+      await service.report(req)
+
+      res.render('pages/report', { success: true })
+    } catch (error) {
+      log(error)
+      res.render('pages/report', { error: error.message })
+    }
+  }
 }
 
 module.exports = new PagesController()
