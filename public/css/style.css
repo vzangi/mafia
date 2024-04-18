@@ -62,6 +62,7 @@ body {
 
 body {
   background-color: var(--color-body-dark);
+  background-color: #333333;
   font-family: 'Open Sans', tahoma, arial, sans-serif;
   color: var(--color-black);
   background-attachment: fixed;
@@ -145,7 +146,7 @@ img.prevu {
   width: 800px;
   margin: 3em auto;
   border-radius: 1em;
-  box-shadow: 0px 0px 20px 8px #1c1c1c;
+  box-shadow: 0 0 20px #fff;
   position: relative;
   z-index: 2;
 }
