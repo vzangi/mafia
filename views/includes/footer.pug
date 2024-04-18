@@ -5,7 +5,7 @@ div(class="footer pt-4 pb-4")
         div(class="paragraph")
           include svg-icon
         div(class="paragraph") Мафия — бесплатная онлайн-игра.
-        if currentAccount && currentAccount.role == 1
+        if currentAccount
           div(class="paragraph") 
             button(class="show-report-form btn btn-sm btn-warning" style="width:80px") Отзыв
 
