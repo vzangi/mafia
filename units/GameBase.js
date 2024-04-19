@@ -624,7 +624,7 @@ class GameBase {
       player.status != GamePlayer.playerStatuses.IN_GAME &&
       player.status != GamePlayer.playerStatuses.FREEZED
     ) {
-      throw new Error('Нельза голосовать в выбывшего игрока')
+      throw new Error('Нельзя голосовать в выбывшего игрока')
     }
 
     const { game, room } = this
@@ -670,47 +670,40 @@ class GameBase {
     room.emit('vote', voter.username, username)
 
     // Проверяю, можно ли завершать голосование
+    const votesEnded = await this.haveZek()
 
-    const steps = await GameStep.findAll({
+    if (votesEnded) game.deadline = 0
+  }
+
+  // Проверяю, определился ли игрок, которого можно посадить
+  async haveZek() {
+    const { game } = this
+
+    // Количесвто активных игроков
+    const activePlayers = this.activePlayersCount()
+
+    // Количество голосов
+    const votesCount = await GameStep.count({
       where: {
         gameId: game.id,
-        day,
+        day: game.day,
         stepType: GameStep.stepTypes.DAY,
       },
     })
 
-    const playersInGame = this.activePlayersCount()
+    if (activePlayers == votesCount) return true
 
-    // Количество ходов равно количеству игроков
-    if (steps.length == playersInGame) {
-      // Завершаю голосование
-      game.deadline = 0
-      return
-    }
+    // Беру игроков с максимальным количеством голосов
+    const { maxVotes, prevVotes } = await GameStep.maxVotes(game)
 
-    // Беру игрока с максимальным количеством голосов
-    const maxVotes = await GameStep.findOne({
-      where: {
-        gameId: game.id,
-        day,
-      },
-      group: 'playerId',
-      attributes: [
-        'playerId',
-        [sequelize.fn('COUNT', sequelize.col('*')), 'votesCount'],
-      ],
-      order: [['votesCount', 'DESC']],
-      limit: 1,
-    })
+    // Если равенство голосов, то посадка не определена
+    if (maxVotes == prevVotes) return false
 
-    if (maxVotes) {
-      // максимальное количество голсов умноженное на 2 больше чем количество игроков
-      if (playersInGame < maxVotes.get('votesCount') * 2) {
-        // завершаю голосование
-        game.deadline = 0
-        return
-      }
-    }
+    // Количество не отданных голосов
+    const freeVotes = activePlayers - votesCount
+
+    // Если игрока с максимальным количеством уже нельзя сровнять, то посадка найдена
+    if (maxVotes - freeVotes > prevVotes) return true
   }
 
   // Выстрел

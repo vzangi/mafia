@@ -163,7 +163,7 @@ class GameClassic extends GameBase {
         // то идёт проверка кома
         await this.komStep()
       } else {
-        this.systemMessage('Комиссар окончил своё расследование.')
+        await this.systemMessage('Комиссар окончил своё расследование.')
         this.systemLog('Комиссар окончил своё расследование.')
 
         // Ход мафии
@@ -349,12 +349,6 @@ class GameClassic extends GameBase {
           }
         }
 
-        // await this.systemMessage(
-        //   'Равенство голосов. В тюрьму никто не отправляется.'
-        // )
-        // this.systemLog('Равенство голосов. В тюрьму никто не отправляется.')
-
-        // Никто не садиться (равенство голосов)
         return null
       }
     }

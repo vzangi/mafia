@@ -54,4 +54,26 @@ GameStep.stepTypes = stepTypes
 GameStep.belongsTo(Account, { as: 'account', foreignKey: 'accountId' })
 GameStep.belongsTo(Account, { as: 'player', foreignKey: 'playerId' })
 
+GameStep.maxVotes = async (game) => {
+  let maxVotes = 0
+  let prevVotes = 0
+
+  const votes = await GameStep.findAll({
+    where: {
+      gameId: game.id,
+      day: game.day,
+    },
+    group: 'playerId',
+    attributes: [
+      'playerId',
+      [sequelize.fn('COUNT', sequelize.col('*')), 'votesCount'],
+    ],
+    order: [['votesCount', 'DESC']],
+    limit: 2,
+  })
+  if (votes.length > 0) maxVotes = votes[0].dataValues.votesCount
+  if (votes.length > 1) prevVotes = votes[1].dataValues.votesCount
+  return { maxVotes, prevVotes }
+}
+
 module.exports = GameStep
