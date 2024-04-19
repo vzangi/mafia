@@ -1,0 +1,36 @@
+extends /layouts/two_column_3_9
+
+block main
+  h1 Список отзывов и предложения
+
+  div(class="block mt-3 mb-3")
+    div(class="block users-list")
+
+      each report in reports
+        div(class="report p-3 mb-3" style="border-bottom: 1px solid #aaa;")
+
+          div(class="d-flex justify-content-between")
+
+            div
+              div(class="d-flex")
+
+                div(class="date-time me-3")
+                  span(class="bi bi-clock") 
+                  span= report.createdAt.toLocaleDateString('ru-Ru') 
+                  span 
+                  span= report.createdAt.toLocaleTimeString('ru-Ru').substr(0, 5)
+
+                div(class="from")
+                  span от 
+                  a(href="/profile/"+report.account.username target="_blank")= report.account.username
+
+              div(class="message")
+                b= report.message
+
+            if report.screen
+              div(class="screen")
+                a(href=report.screen target="_blank")
+                  img(src=report.screen width="100")
+
+block scripts 
+  if currentAccount && currentAccount.id == 1

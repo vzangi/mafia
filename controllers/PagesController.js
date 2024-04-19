@@ -160,6 +160,21 @@ class PagesController {
       res.status(400).json([{ msg: error.message }])
     }
   }
+
+  // Список игроков онлайн
+  async getReports(req, res, next) {
+    try {
+      const { account } = req
+      if (!account) throw new Error('Не авторизован')
+      if (account.role != 1) throw new Error('Нет прав доступа')
+      const data = await service.getReports()
+      data.title = 'Список отзывов и предложений'
+      res.render('pages/admin/reports', data)
+    } catch (error) {
+      log(error)
+      next()
+    }
+  }
 }
 
 module.exports = new PagesController()

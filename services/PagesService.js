@@ -270,6 +270,19 @@ class PagesService {
     }
     return 'newer'
   }
+
+  async getReports() {
+    const data = {}
+    data.reports = await Report.findAll({
+      order: [['id', 'desc']],
+      include: [
+        {
+          model: Account,
+        },
+      ],
+    })
+    return data
+  }
 }
 
 module.exports = new PagesService()

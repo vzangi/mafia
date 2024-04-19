@@ -48,6 +48,9 @@ router.get('/report-form', pages.ajaxReportForm)
 // Обработка репорта
 router.post('/report-form', pages.sendReport)
 
+// Список отзывов
+router.get('/reports', pages.getReports)
+
 // Cтраницы со статическим содержимым
 router.use('/', require('./BlogRouter'))
 
