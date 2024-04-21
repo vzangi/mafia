@@ -127,7 +127,7 @@ $(function () {
 
 	// Переход в игру
 	lobbiSocket.on('game.play', (id) => {
-		playSound(startSound)
+		//playSound(startSound)
 		setTimeout(() => (location.href = `/game/${id}`), 100)
 	})
 
