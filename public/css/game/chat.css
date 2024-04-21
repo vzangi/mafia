@@ -687,3 +687,11 @@ input:checked + .slider:before {
 .white .log-box.log-type-4 {
 	color: #383cff;
 }
+
+.message-box.system-message b {
+	color: #00ffff;
+}
+
+.white .message-box.system-message b {
+	color: #383cff;
+}
