@@ -7,7 +7,7 @@ $(function () {
 	let newGameMutex = false
 
 	// Звук нотификации
-	const startSound = new Audio('/sounds/gamestart.mp3')
+	const startSound = new Audio('/sounds/gunload.mp3')
 	$('body').append(playSound)
 
 	// На мобильных утройствах делаю список режимов скрываемым
@@ -127,7 +127,7 @@ $(function () {
 
 	// Переход в игру
 	lobbiSocket.on('game.play', (id) => {
-		//playSound(startSound)
+		playSound(startSound)
 		setTimeout(() => (location.href = `/game/${id}`), 100)
 	})
 
