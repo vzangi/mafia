@@ -689,9 +689,20 @@ input:checked + .slider:before {
 }
 
 .message-box.system-message b {
-	color: #00ffff;
+	color: #333;
+	color: #22a0be;
+}
+
+.message-box.system-message b .user {
+	color: #02dba9;
+	color: #112e9b;
+	color: #6fd9fb;
 }
 
 .white .message-box.system-message b {
-	color: #383cff;
+	color: #5357f9;
+}
+
+.white .message-box.system-message b .user {
+	color: #5357f9;
 }
