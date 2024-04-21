@@ -7,10 +7,10 @@ class LobbiController extends BaseSocketController {
 	async makeGame(settings, callback) {
 		try {
 			const game = await this.service.makeGame(settings)
-			callback({ status: 0, game })
+			if (callback) callback({ status: 0, game })
 		} catch (error) {
 			log(error)
-			callback({ status: 1, msg: error.message })
+			if (callback) callback({ status: 1, msg: error.message })
 		}
 	}
 
@@ -18,10 +18,10 @@ class LobbiController extends BaseSocketController {
 	async contests(data, callback) {
 		try {
 			await this.service.addToContest(data)
-			callback({ status: 0 })
+			if (callback) callback({ status: 0 })
 		} catch (error) {
 			log(error)
-			callback({ status: 1, msg: error.message })
+			if (callback) callback({ status: 1, msg: error.message })
 		}
 	}
 
@@ -29,10 +29,10 @@ class LobbiController extends BaseSocketController {
 	async leaveContest(callback) {
 		try {
 			await this.service.leaveContest()
-			callback({ status: 0 })
+			if (callback) callback({ status: 0 })
 		} catch (error) {
 			log(error)
-			callback({ status: 1, msg: error.message })
+			if (callback) callback({ status: 1, msg: error.message })
 		}
 	}
 
@@ -40,10 +40,10 @@ class LobbiController extends BaseSocketController {
 	async getGames(callback) {
 		try {
 			const data = await this.service.getGames()
-			callback({ status: 0, data })
+			if (callback) callback({ status: 0, data })
 		} catch (error) {
 			log(error)
-			callback({ status: 1, msg: error.message })
+			if (callback) callback({ status: 1, msg: error.message })
 		}
 	}
 
@@ -51,10 +51,10 @@ class LobbiController extends BaseSocketController {
 	async toGame(gameId, callback) {
 		try {
 			await this.service.toGame(gameId)
-			callback({ status: 0 })
+			if (callback) callback({ status: 0 })
 		} catch (error) {
 			log(error)
-			callback({ status: 1, msg: error.message })
+			if (callback) callback({ status: 1, msg: error.message })
 		}
 	}
 
@@ -62,10 +62,10 @@ class LobbiController extends BaseSocketController {
 	async removeGame(gameId, callback) {
 		try {
 			await this.service.removeGame(gameId)
-			callback({ status: 0 })
+			if (callback) callback({ status: 0 })
 		} catch (error) {
 			log(error)
-			callback({ status: 1, msg: error.message })
+			if (callback) callback({ status: 1, msg: error.message })
 		}
 	}
 
@@ -73,10 +73,10 @@ class LobbiController extends BaseSocketController {
 	async leaveGame(gameId, callback) {
 		try {
 			await this.service.leaveGame(gameId)
-			callback({ status: 0 })
+			if (callback) callback({ status: 0 })
 		} catch (error) {
 			log(error)
-			callback({ status: 1, msg: error.message })
+			if (callback) callback({ status: 1, msg: error.message })
 		}
 	}
 
@@ -84,10 +84,10 @@ class LobbiController extends BaseSocketController {
 	async removePlayerFromGame(gameId, username, callback) {
 		try {
 			await this.service.removePlayerFromGame(gameId, username)
-			callback({ status: 0 })
+			if (callback) callback({ status: 0 })
 		} catch (error) {
 			log(error)
-			callback({ status: 1, msg: error.message })
+			if (callback) callback({ status: 1, msg: error.message })
 		}
 	}
 
@@ -95,10 +95,10 @@ class LobbiController extends BaseSocketController {
 	async claim(data, callback) {
 		try {
 			await this.service.claim(data)
-			callback({ status: 0 })
+			if (callback) callback({ status: 0 })
 		} catch (error) {
 			log(error)
-			callback({ status: 1, msg: error.message })
+			if (callback) callback({ status: 1, msg: error.message })
 		}
 	}
 
@@ -106,10 +106,10 @@ class LobbiController extends BaseSocketController {
 	async startGame(gameId, callback) {
 		try {
 			await this.service.startGame(gameId)
-			callback({ status: 0 })
+			if (callback) callback({ status: 0 })
 		} catch (error) {
 			log(error)
-			callback({ status: 1, msg: error.message })
+			if (callback) callback({ status: 1, msg: error.message })
 		}
 	}
 }

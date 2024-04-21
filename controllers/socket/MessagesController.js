@@ -25,9 +25,9 @@ class MessagesController extends BaseSocketController {
 	async isFriend(friendId, callback) {
 		try {
 			const friend = await this.service.isFriend(friendId)
-			callback({ status: 0, friend })
+			if (callback) callback({ status: 0, friend })
 		} catch (error) {
-			callback({ status: 1, msg: error.message })
+			if (callback) callback({ status: 1, msg: error.message })
 		}
 	}
 
@@ -35,9 +35,9 @@ class MessagesController extends BaseSocketController {
 	async getMessages(friendId, offset, callback) {
 		try {
 			const messages = await this.service.getMessages(friendId, offset)
-			callback({ status: 0, messages })
+			if (callback) callback({ status: 0, messages })
 		} catch (error) {
-			callback({ status: 1, msg: error.message })
+			if (callback) callback({ status: 1, msg: error.message })
 		}
 	}
 
@@ -45,10 +45,10 @@ class MessagesController extends BaseSocketController {
 	async getList(callback) {
 		try {
 			const lastMsgs = await this.service.getList()
-			callback({ status: 0, lastMsgs, userId: this.user.id })
+			if (callback) callback({ status: 0, lastMsgs, userId: this.user.id })
 		} catch (error) {
 			log(error)
-			callback({ status: 1, msg: error.message })
+			if (callback) callback({ status: 1, msg: error.message })
 		}
 	}
 
@@ -56,9 +56,9 @@ class MessagesController extends BaseSocketController {
 	async sendMessage(friendId, message, callback) {
 		try {
 			const msg = await this.service.sendMessage(friendId, message)
-			callback(0, msg)
+			if (callback) callback(0, msg)
 		} catch (error) {
-			callback({ status: 1, msg: error.message })
+			if (callback) callback({ status: 1, msg: error.message })
 		}
 	}
 

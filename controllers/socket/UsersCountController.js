@@ -7,10 +7,10 @@ class UsersCountController extends BaseSocketController {
 	count(callback) {
 		try {
 			const count = this.service.count()
-			callback({ count })
+			if (callback) callback({ count })
 		} catch (error) {
 			log(error)
-			callback({ count: 0 })
+			if (callback) callback({ count: 0 })
 		}
 	}
 

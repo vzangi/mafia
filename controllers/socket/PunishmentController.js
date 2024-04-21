@@ -29,10 +29,10 @@ class PunishmentController extends BaseSocketController {
 
 			await this.service.makePunish(data)
 
-			callback({ status: 0 })
+			if (callback) callback({ status: 0 })
 		} catch (error) {
 			log(error)
-			callback({ status: 1, msg: error.message })
+			if (callback) callback({ status: 1, msg: error.message })
 		}
 	}
 }

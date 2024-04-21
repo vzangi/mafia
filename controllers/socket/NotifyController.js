@@ -16,10 +16,10 @@ class NotifyController extends BaseSocketController {
 	async getNewNotifies(callback) {
 		try {
 			const notifies = await this.service.getNewNotifies()
-			callback({ status: 0, notifies })
+			if (callback) callback({ status: 0, notifies })
 		} catch (error) {
 			log(error)
-			callback({ status: 1, msg: error.message })
+			if (callback) callback({ status: 1, msg: error.message })
 		}
 	}
 }
