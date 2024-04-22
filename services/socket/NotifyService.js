@@ -1,3 +1,4 @@
+const Account = require('../../models/Account')
 const Notification = require('../../models/Notification')
 const BaseService = require('./BaseService')
 
@@ -40,6 +41,21 @@ class NotifyService extends BaseService {
     })
 
     return notifies
+  }
+
+  // Отправка нотификации пользователю
+  async sendNotify(notifyData) {
+    const { user } = this
+    if (!user) throw new Error('Не авторизован')
+    const account = await Account.findByPk(user.id)
+    if (!account) throw new Error('Не авторизован')
+    if (account.role != 1) throw new Error('Нет доступа')
+
+    if (notifyData.message.length > 255) {
+      notifyData.message = notifyData.message.substr(0, 255)
+    }
+
+    await Notification.create(notifyData)
   }
 }
 

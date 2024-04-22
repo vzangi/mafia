@@ -1,0 +1,27 @@
+hr
+
+button(class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#notifyForm") Нотификация
+
+div(class="modal fade" id="notifyForm" tabindex="-1" data-id=profile.id)
+  div(class="modal-dialog modal-dialog-centered")
+    div(class="modal-content")
+      div(class="modal-header")
+        h5(class="modal-title") Нотификация от админа
+        button(type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть")
+
+      div(class="modal-body")
+        div(class="container-fluid")
+          p С помощью этой формы можно отправить игроку нотификацию 
+          div(class="row")
+            div(class="mb-3")
+              textarea(class="form-control" id="notify-message")
+            div(class="mb-3")
+              select(class="form-control" id="notify-level")
+                option(value='0') Обычная (Зелёная)
+                option(value='1') Предупреждающая (Желтая)
+                option(value='2') Угрожающая (Красная)
+                option(value='3') Информационная (Синяя)
+            div(class="mb-3")
+              button(class="btn btn-primary btn-send-notify") Отправить нотификацию
+
+script(src="/js/admin/profile/notification-form.js")
