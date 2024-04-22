@@ -9,6 +9,9 @@ const settingTypes = {
 
   // Отправлять ли уведомление о начале игры
   GAME_START_NOTIFY: 2,
+
+  // Давать ли звуковое уведомление о начале игры
+  GAME_START_SOUND: 3,
 }
 
 const AccountSetting = sequelize.define('accountsettings', {
@@ -99,6 +102,25 @@ AccountSetting.setGameStartNotifySetting = async (accountId, value) => {
   const setting = await setSetting({
     accountId,
     type: settingTypes.GAME_START_NOTIFY,
+    value,
+  })
+  return setting
+}
+
+// Получение значение настройки уведомления
+AccountSetting.getGameStartSoundSetting = async (accountId) => {
+  const val = await getSetting({
+    accountId,
+    type: settingTypes.GAME_START_SOUND,
+  })
+  return val
+}
+
+// Установка настройки уведомления
+AccountSetting.setGameStartSoundSetting = async (accountId, value) => {
+  const setting = await setSetting({
+    accountId,
+    type: settingTypes.GAME_START_SOUND,
     value,
   })
   return setting

@@ -41,6 +41,12 @@ module.exports = (io, socket) => {
     socket.on('indexable', controller.indexable.bind(controller))
   }
 
+  // Иземенение настройки звука в начале игры
+  socket.on(
+    'profile.gameplaysound.change',
+    controller.gamePlaySoundSetting.bind(controller)
+  )
+
   // Иземенение скина
   socket.on('profile.skin.change', controller.changeSkin.bind(controller))
 

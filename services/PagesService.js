@@ -10,6 +10,7 @@ const { online } = require('../units/AccountHelper')
 const { mail } = require('../units/mailer')
 const htmlspecialchars = require('htmlspecialchars')
 const { Op } = require('sequelize')
+const AccountSetting = require('../models/AccountSetting')
 
 class PagesService {
   async lobbi(user) {
@@ -55,6 +56,11 @@ class PagesService {
           data.playerInTop = player
         }
       }
+
+      const hasGameStartSound = await AccountSetting.getGameStartSoundSetting(
+        user.id
+      )
+      if (hasGameStartSound == 0) data.playsuond = true
     }
 
     return data

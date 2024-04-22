@@ -299,6 +299,22 @@ class ApiService extends BaseService {
     return true
   }
 
+  // Настройка уведомления о начале игры в телегу
+  async gamePlaySoundSetting(value) {
+    const { user } = this
+    if (!user) {
+      throw new Error('Не авторизован')
+    }
+
+    if (value != 1 && value != 0) {
+      throw new Error('Неверные данные')
+    }
+
+    await AccountSetting.setGameStartSoundSetting(user.id, value)
+
+    return true
+  }
+
   // Установка индексируемости профиля
   async indexable(data) {
     const { id, noindex } = data
