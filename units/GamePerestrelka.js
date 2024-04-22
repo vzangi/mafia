@@ -241,9 +241,9 @@ class GamePerestrelka extends GameBase {
     if (playerLife.life < 0) playerLife.life = 0
     playerLife.save()
 
-    const msg = `<b>${voter.username} ${
+    const msg = `<b><span class='user voter'>${voter.username}</span> ${
       voter.account.gender == 2 ? 'нанесла' : 'нанёс'
-    } ${username} урон -${uron}</b>`
+    } <span class='user pretendent'>${username}</span> урон <span class='uron'>-${uron}</span></b>`
     this.systemMessage(msg)
     this.systemLog(msg, GameLog.types.STEP)
 
@@ -333,12 +333,10 @@ class GamePerestrelka extends GameBase {
 
       const role = await player.getRole()
 
-      await this.systemMessage(
-        `<b>${role.name} ${player.username} отправляется в госпиталь.</b>`
-      )
-      this.systemLog(
-        `<b>${role.name} ${player.username} отправляется в госпиталь.</b>`
-      )
+      const msg = `<b><span class='role role-${role.id}'>${role.name}</span> <span class='user zek role-${role.id}'>${player.username}</span> отправляется в госпиталь.</b>`
+
+      await this.systemMessage(msg)
+      this.systemLog(msg)
 
       // Если посажен комиссар - надо посмотреть есть ли в игре сержант
       // Если есть, то передаю роль комиссара ему
@@ -834,11 +832,13 @@ class GamePerestrelka extends GameBase {
 
     const role = await killed.getRole()
 
-    const msg = `<b>${role.name} ${killed.username} ${
-      killed.account.gender == 2 ? 'убита' : 'убит'
-    } мафией.</b>`
-    await this.systemMessage(msg)
+    const msg = `<b><span class='role role-${role.id}'>${
+      role.name
+    }</span> <span class='user trup role-${role.id}'>${
+      killed.username
+    }</span> ${killed.account.gender == 2 ? 'убита' : 'убит'} мафией.</b>`
 
+    await this.systemMessage(msg)
     this.systemLog(msg)
 
     // Если убит комиссар - надо посмотреть есть ли в игре сержант
@@ -871,9 +871,12 @@ class GamePerestrelka extends GameBase {
 
     const role = await killed.getRole()
 
-    const msg = `<b>${role.name} ${killed.username} ${
-      killed.account.gender == 2 ? 'убита' : 'убит'
-    } маньяком.</b>`
+    const msg = `<b><span class='role role-${role.id}'>${
+      role.name
+    }</span> <span class='user trup role-${role.id}'>${
+      killed.username
+    }</span> ${killed.account.gender == 2 ? 'убита' : 'убит'} маньяком.</b>`
+
     await this.systemMessage(msg)
 
     // Событие - ман убил игрока

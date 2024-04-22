@@ -136,7 +136,7 @@ class GameClassic extends GameBase {
 
     const role = await player.getRole()
 
-    const msg = `<b>${role.name} ${player.username} отправляется в тюрьму.</b>`
+    const msg = `<b><span class='role role-${role.id}'>${role.name}</span> <span class='user zek role-${role.id}'>${player.username}</span> отправляется в тюрьму.</b>`
     await this.systemMessage(msg)
     this.systemLog(msg, GameLog.types.STEP)
 
@@ -386,9 +386,11 @@ class GameClassic extends GameBase {
 
     const role = await killed.getRole()
 
-    const msg = `<b>${role.name} ${killed.username} ${
-      killed.account.gender == 2 ? 'убита' : 'убит'
-    } мафией.</b>`
+    const msg = `<b><span class='role role-${role.id}'>${
+      role.name
+    }</span> <span class='user trup role-${role.id}'>${
+      killed.username
+    }</span> ${killed.account.gender == 2 ? 'убита' : 'убит'} мафией.</b>`
 
     await this.systemMessage(msg)
 
