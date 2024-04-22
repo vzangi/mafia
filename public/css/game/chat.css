@@ -696,6 +696,10 @@ input:checked + .slider:before {
   color: #6fd9fb;
 }
 
+.message-box.system-message .role {
+  color: #6fd9fb;
+}
+
 .white .message-box.system-message b {
   color: #5357f9;
 }
@@ -704,21 +708,34 @@ input:checked + .slider:before {
   color: #5357f9;
 }
 
-.message-box.system-message .role {
-  color: #6fd9fb;
+.blue .message-box.system-message b {
+  color: #37d9ff;
+}
+
+.blue .message-box.system-message b .user {
+  color: #b4fff2;
 }
 
 .message-box.system-message b .role-2,
 .message-box.system-message b .role-8,
 .message-box.system-message b .role-9 {
-  color: #fb6f6f;
+  color: #fb6f6f !important;
 }
 
 .message-box.system-message b .role-3,
 .message-box.system-message b .role-4 {
-  color: #a06ffb;
+  color: #a06ffb !important;
 }
 
 .message-box.system-message b .role-6 {
-  color: #ff9b32;
+  color: #ff9b32 !important;
+}
+
+.blue .message-box.system-message .role {
+  color: #b4fff2 !important;
+}
+
+.blue .message-box.system-message b .role-3,
+.blue .message-box.system-message b .role-4 {
+  color: #00d530 !important;
 }
