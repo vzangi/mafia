@@ -384,7 +384,6 @@ input:checked + .slider:before {
 
 .m-message a {
   text-decoration: none;
-  color: inherit;
 }
 .log::-webkit-scrollbar,
 .chat::-webkit-scrollbar {
