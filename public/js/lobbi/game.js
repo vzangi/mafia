@@ -415,6 +415,7 @@ $(function () {
     data.autostart = true
     if ($('#autostart-5').length == 1)
       data.autostart = $('#autostart-5')[0].checked ? 1 : 0
+    data.firstday = $('#firstday-5')[0].checked ? 1 : 0
 
     data.roles = []
 

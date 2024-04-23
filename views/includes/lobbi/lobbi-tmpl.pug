@@ -67,6 +67,11 @@ script(id="gameItemTmpl" type="text/x-jquery-tmpl")
             span(class="bi bi-p-circle ms-1" title="Рукопашная" data-bs-toggle="tooltip" data-bs-placement="right")
             .               
               {{/if}}
+            .               
+              {{if !firstday}}
+            span(class="bi bi-moon-stars-fill ms-1" title="После знакомства сразу идёт ночь" data-bs-toggle="tooltip" data-bs-placement="right")
+            .               
+              {{/if}}
 
           div(class="players-count d-flex align-items-center gap-1" title="Количество игроков в зявке" data-bs-toggle="tooltip" data-bs-placement="bottom") 
             span(class="bi bi-people-fill fs-5 bi-icon") 

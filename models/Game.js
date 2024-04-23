@@ -99,7 +99,11 @@ const Game = sequelize.define(
       defaultValue: 1,
     },
     autostart: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.BOOLEAN,
+      defaultValue: 1,
+    },
+    firstday: {
+      type: DataTypes.BOOLEAN,
       defaultValue: 1,
     },
     melee: {
@@ -204,6 +208,7 @@ const Game = sequelize.define(
           'period',
           'day',
           'mode',
+          'firstday',
         ],
         include: [
           { model: GameType },
