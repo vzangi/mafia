@@ -248,12 +248,14 @@ class LobbiService extends BaseService {
 
     // Создаю заявку на игру
     const newGame = await Game.create(gameData)
+    const position = Math.ceil(Math.random() * 1000)
 
     // Добавляю в неё игрока
     const player = await GamePlayer.create({
       accountId: user.id,
       username: account.username,
       gameId: newGame.id,
+      position,
     })
 
     // Если конструктор - добавляю в базу список ролей
@@ -602,11 +604,14 @@ class LobbiService extends BaseService {
       throw new Error('Вы всё ещё в другой заявке')
     }
 
+    const position = Math.ceil(Math.random() * 1000)
+
     // Добавляю игрока в заявку
     await GamePlayer.create({
       gameId,
       accountId: account.id,
       username: account.username,
+      position,
     })
 
     // Проверяю попал ли игрок в заявку единожды

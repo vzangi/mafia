@@ -43,6 +43,9 @@ const GamePlayer = sequelize.define(
     roleId: {
       type: DataTypes.INTEGER,
     },
+    position: {
+      type: DataTypes.INTEGER,
+    },
   },
   {
     scopes: {
@@ -77,6 +80,7 @@ const GamePlayer = sequelize.define(
               model: Role,
             },
           ],
+          order: ['position'],
         }
       },
     },
