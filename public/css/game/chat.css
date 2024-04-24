@@ -632,7 +632,6 @@ input:checked + .slider:before {
 .log-box.log-type-6,
 .log-box.log-type-7,
 .log-box.log-type-5 {
-  text-decoration: underline;
   font-weight: 400;
 }
 
@@ -737,4 +736,28 @@ input:checked + .slider:before {
 .blue .message-box.system-message b .role-3,
 .blue .message-box.system-message b .role-4 {
   color: #00d530 !important;
+}
+
+.log-box.log-type-2 {
+  color: #22a0be;
+}
+
+.log-box .user,
+.log-box .role {
+  color: #6fd9fb;
+}
+
+.log-box .role-2,
+.log-box .role-8,
+.log-box .role-9 {
+  color: #fb6f6f !important;
+}
+
+.log-box .role-3,
+.log-box .role-4 {
+  color: #a06ffb !important;
+}
+
+.log-box .role-6 {
+  color: #ff9b32 !important;
 }
