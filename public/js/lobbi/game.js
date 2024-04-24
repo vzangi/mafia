@@ -423,6 +423,8 @@ $(function () {
     const mafiaCount = $('#mafiaCount-5').text() * 1
     data.roles.push([2, mafiaCount])
 
+    let totalMafiaCount = mafiaCount
+
     // Комиссар
     if ($('#komissar-5')[0].checked) {
       data.roles.push([3, 1])
@@ -456,11 +458,17 @@ $(function () {
     // Адвокат
     if ($('#advocate-5')[0].checked) {
       data.roles.push([8, 1])
+      totalMafiaCount += 1
     }
 
     // Любовница
     if ($('#lover-5')[0].checked) {
       data.roles.push([9, 1])
+      totalMafiaCount += 1
+    }
+
+    if (totalMafiaCount * 2 >= data.playersCount) {
+      return alert('Игроков команды мафии не может быть больше половины')
     }
 
     const totalRolesCount = data.roles.reduce((a, b) => a + b[1], 0)
