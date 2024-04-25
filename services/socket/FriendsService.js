@@ -447,7 +447,7 @@ class FriendsService extends BaseService {
     const partner = await Account.findByPk(friendId)
     if (!partner) return
 
-    const msg = `<span class="text-white">[${socket.account.username}] и [${partner.username}] теперь женаты, поздравляем молодожёнов!</span>`
+    const msg = `<span class="text-white">[${socket.account.username}] и [${partner.username}] теперь женаты, поздравляем молодожёнов! ~Bottle</span>`
 
     // Записываю сообщение в базу
     const sysmsg = await Chat.sysMessage(msg, false)
