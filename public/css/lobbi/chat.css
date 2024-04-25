@@ -617,3 +617,7 @@ input:checked + .slider:before {
 .top3 .total {
   color: #555;
 }
+
+.white .text-white {
+  color: #4082ff !important;
+}

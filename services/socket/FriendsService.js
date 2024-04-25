@@ -447,10 +447,10 @@ class FriendsService extends BaseService {
     const partner = await Account.findByPk(friendId)
     if (!partner) return
 
-    const msg = `[${socket.account.username}] и [${partner.username}] теперь женаты, поздравляем молодожёнов!`
+    const msg = `<span class="text-white">[${socket.account.username}] и [${partner.username}] теперь женаты, поздравляем молодожёнов!</span>`
 
     // Записываю сообщение в базу
-    const sysmsg = await Chat.sysMessage(msg)
+    const sysmsg = await Chat.sysMessage(msg, false)
 
     // Рассылаю сообщение всем подключенным пользователям
     this.io.of('/lobbi').emit('chat.message', sysmsg)

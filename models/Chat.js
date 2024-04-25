@@ -129,8 +129,8 @@ Chat.newMessage = async (accountId, msg) => {
   return await Chat.scope('def').findOne({ where: { id: newMsg.id } })
 }
 
-Chat.sysMessage = async (msg) => {
-  let message = htmlspecialchars(msg)
+Chat.sysMessage = async (msg, nohtml = true) => {
+  let message = nohtml ? htmlspecialchars(msg) : msg
   if (message.length > 255) {
     message = message.substr(0, 255)
   }
