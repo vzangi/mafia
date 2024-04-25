@@ -1,5 +1,5 @@
 div(class="mb-3")
-  div(class="players-list"+(steps?' voting':''+game.period==4?' night':''+game.period==3?' twilight':''))
+  div(class=`players-list colcount-${colcount || 1}`+(steps?' voting':''+game.period==4?' night':''+game.period==3?' twilight':''))
     each player in players 
       -var out = false
       -var ps = ''
