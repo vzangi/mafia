@@ -19,6 +19,7 @@ const Game = require('../../models/Game')
 const GameType = require('../../models/GameType')
 const GameEvent = require('../../models/GameEvent')
 const { online } = require('../../units/AccountHelper')
+const sequelize = require('../../units/db')
 const archiveLimit = 20
 
 class ApiService extends BaseService {
@@ -398,6 +399,30 @@ class ApiService extends BaseService {
       status: [Game.statuses.ENDED],
       startedAt,
     }
+
+    const cnt = await Game.findAll({
+      where,
+      group: ['gametypeId'],
+      attributes: [[sequelize.fn('count', 'id'), 'cnt'], 'gametypeId'],
+    })
+
+    result.cnt = {
+      total: 0,
+      classic: 0,
+      shootout: 0,
+      multi: 0,
+      constructor: 0,
+    }
+
+    cnt.forEach((c) => {
+      const count = c.get('cnt') * 1
+      result.cnt.total += count
+      if (c.gametypeId == Game.types.CLASSIC) result.cnt.classic += count
+      if (c.gametypeId == Game.types.SHOOTOUT) result.cnt.shootout += count
+      if (c.gametypeId == Game.types.MULTI) result.cnt.multi += count
+      if (c.gametypeId == Game.types.CONSTRUCTOR)
+        result.cnt.constructor += count
+    })
 
     if (idless) {
       where.id = {

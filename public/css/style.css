@@ -852,3 +852,10 @@ ul.aside-menu li a.active {
     flex-direction: column;
   }
 }
+
+.dots {
+  width: 100%;
+  border-bottom: 1px solid rgba(100, 100, 100, 0.5);
+  position: relative;
+  bottom: 3px;
+}

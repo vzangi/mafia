@@ -12,7 +12,13 @@ $(function () {
       const { status, msg, data } = res
       if (status != 0) return alert(msg)
 
-      const { games, limit } = data
+      const { games, limit, cnt } = data
+
+      $('.counts .total').text(cnt.total)
+      $('.counts .classic').text(cnt.classic)
+      $('.counts .shootout').text(cnt.shootout)
+      $('.counts .multi').text(cnt.multi)
+      $('.counts .constructor').text(cnt.constructor)
 
       if (games.length == 0) {
         $('#noGamesTmpl').tmpl().appendTo($('.games-list'))
