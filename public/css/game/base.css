@@ -10,13 +10,32 @@ body {
   background-color: var(--color-bg-light);
   overflow-x: hidden;
   transition: background-color 0.3s ease;
+
+  background-image: url(/uploads/gamebg2.jpg);
+  background-size: 400px;
 }
+
 body.night {
   background-color: #111;
 }
 body.dawn,
 body.twilight {
   background-color: #133;
+}
+
+.wrapper {
+  background: rgb(43, 43, 43, 0.5);
+  box-shadow: 0 0 30px #121212 inset;
+  transition: all 0.3s ease;
+}
+
+.twilight .wrapper,
+.dawn .wrapper {
+  background: rgb(16, 48, 48, 0.8);
+}
+
+.night .wrapper {
+  background: rgb(16, 16, 16, 0.8);
 }
 
 header {
