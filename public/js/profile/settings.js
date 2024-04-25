@@ -5,6 +5,7 @@ $(function () {
   const hideSetting = $('#inventhide')
   const skin = $('#skin')
   const gameNotify = $('#gamenotify')
+  const colcount = $('#colcount')
   const gamesound = $('#gameplaysound')
   const avatarForm = $('.change-avatar-box form')
   const bgForm = $('.change-bg-box form')
@@ -61,6 +62,11 @@ $(function () {
   genderSelect.change(function () {
     const gender = $(this).val()
     socket.emit('profile.gender.change', gender)
+  })
+
+  colcount.change(function () {
+    const value = $(this).val()
+    socket.emit('profile.colcount.change', value)
   })
 
   gamesound.change(function () {

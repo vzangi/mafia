@@ -12,6 +12,9 @@ const settingTypes = {
 
   // Давать ли звуковое уведомление о начале игры
   GAME_START_SOUND: 3,
+
+  // Количество колонок в игре
+  GAME_COL_COUNT: 4,
 }
 
 const AccountSetting = sequelize.define('accountsettings', {
@@ -69,7 +72,7 @@ const getSetting = async (settingData) => {
   return currentSetting.value * 1
 }
 
-// Получение значение настройки отображения инвентаря
+// Получение значения настройки отображения инвентаря
 AccountSetting.getHideInventSetting = async (accountId) => {
   const val = await getSetting({
     accountId,
@@ -88,7 +91,7 @@ AccountSetting.setHideInventSetting = async (accountId, value) => {
   return setting
 }
 
-// Получение значение настройки уведомления
+// Получение значения настройки уведомления
 AccountSetting.getGameStartNotifySetting = async (accountId) => {
   const val = await getSetting({
     accountId,
@@ -107,7 +110,7 @@ AccountSetting.setGameStartNotifySetting = async (accountId, value) => {
   return setting
 }
 
-// Получение значение настройки уведомления
+// Получение значения настройки уведомления
 AccountSetting.getGameStartSoundSetting = async (accountId) => {
   const val = await getSetting({
     accountId,
@@ -121,6 +124,25 @@ AccountSetting.setGameStartSoundSetting = async (accountId, value) => {
   const setting = await setSetting({
     accountId,
     type: settingTypes.GAME_START_SOUND,
+    value,
+  })
+  return setting
+}
+
+// Получение значения настройки колонок
+AccountSetting.getGameColCountSetting = async (accountId) => {
+  const val = await getSetting({
+    accountId,
+    type: settingTypes.GAME_COL_COUNT,
+  })
+  return val
+}
+
+// Установка настройки количества колонок
+AccountSetting.setGameColCountSetting = async (accountId, value) => {
+  const setting = await setSetting({
+    accountId,
+    type: settingTypes.GAME_COL_COUNT,
     value,
   })
   return setting

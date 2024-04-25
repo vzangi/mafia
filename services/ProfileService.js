@@ -278,6 +278,9 @@ class ProfileService {
       accountId
     )
 
+    // текущее значение настройки количества колонок в игре
+    data.colcount = await AccountSetting.getGameColCountSetting(accountId)
+
     return data
   }
 

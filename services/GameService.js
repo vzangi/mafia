@@ -1,6 +1,7 @@
 const { Op } = require('sequelize')
 const Account = require('../models/Account')
 const AccountThing = require('../models/AccountThing')
+const AccountSetting = require('../models/AccountSetting')
 const Game = require('../models/Game')
 const GamePlayer = require('../models/GamePlayer')
 const GameStep = require('../models/GameStep')
@@ -37,6 +38,8 @@ class GameService {
 
     data.isPlayer = false
 
+    // По умолчанию игроки в одну колонку
+    data.colcount = 1
     if (user) {
       const inGame = await GamePlayer.findOne({
         where: {
@@ -53,6 +56,8 @@ class GameService {
         data.isPlayer = true
         data.isFreezed = inGame.status == GamePlayer.playerStatuses.FREEZED
       }
+
+      data.colcount = await AccountSetting.getGameColCountSetting(user.id)
     }
 
     const seconds = Math.floor(

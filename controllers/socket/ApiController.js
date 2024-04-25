@@ -114,6 +114,16 @@ class ApiController extends BaseSocketController {
   }
 
   // Настройка уведомления о начале игры в телегу
+  async gameColCountSetting(value, callback) {
+    try {
+      await this.service.gameColCountSetting(value)
+      if (callback) callback({ status: 0 })
+    } catch (error) {
+      if (callback) callback({ status: 1, msg: error.message })
+    }
+  }
+
+  // Настройка уведомления о начале игры в телегу
   async gamePlaySoundSetting(value, callback) {
     try {
       await this.service.gamePlaySoundSetting(value)

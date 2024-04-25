@@ -315,6 +315,22 @@ class ApiService extends BaseService {
     return true
   }
 
+  // Настройка количества колонок в игре
+  async gameColCountSetting(value) {
+    const { user } = this
+    if (!user) {
+      throw new Error('Не авторизован')
+    }
+
+    if (value != 1 && value != 2) {
+      throw new Error('Неверные данные')
+    }
+
+    await AccountSetting.setGameColCountSetting(user.id, value)
+
+    return true
+  }
+
   // Установка индексируемости профиля
   async indexable(data) {
     const { id, noindex } = data

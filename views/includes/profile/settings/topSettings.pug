@@ -35,6 +35,12 @@ div(class="block")
           option(value="2" selected=hideinvent==2) Скрыт для всех
 
       div(class="mb-3")
+        label(class="form-label") Количество колонок в игре
+        select(class="form-control" id="colcount")
+          option(value="1") 1
+          option(value="2" selected=colcount==2) 2
+
+      div(class="mb-3")
         label(class="form-label") Звуковое уведомление о начале партии
         select(class="form-control" id="gameplaysound")
           option(value="0") Включено

@@ -51,10 +51,19 @@ header,
   display: none !important;
 }
 
-/*.players-list {
-   display: flex;
-  flex-wrap: wrap; 
-}*/
+.players-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.players-list.colcount-1 > div {
+  flex: 1 1 100%;
+}
+
+.players-list.colcount-2 > div {
+  flex: 1 1 calc(50% - 5px);
+  max-width: 50%;
+}
 
 .players-list > div {
   flex: 0 1 100%;

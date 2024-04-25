@@ -47,6 +47,12 @@ module.exports = (io, socket) => {
     controller.gamePlaySoundSetting.bind(controller)
   )
 
+  // Иземенение количества колонок в игре
+  socket.on(
+    'profile.colcount.change',
+    controller.gameColCountSetting.bind(controller)
+  )
+
   // Иземенение скина
   socket.on('profile.skin.change', controller.changeSkin.bind(controller))
 
