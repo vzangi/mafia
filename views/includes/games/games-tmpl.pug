@@ -23,6 +23,11 @@ script(id="gameTmpl" type="text/x-jquery-tmpl")
             span(class="bi-lightning-fill" title="с добивами" data-bs-toggle="tooltip" data-bs-placement="right")
             . 
               {{/if}}
+            .               
+              {{if !firstday}}
+            span(class="bi bi-moon-stars-fill ms-1" title="После знакомства сразу идёт ночь" data-bs-toggle="tooltip" data-bs-placement="right")
+            .               
+              {{/if}}
 
           div(title="Время начала игры" data-bs-toggle="tooltip" data-bs-placement="bottom") 
             span(class="bi-clock") 
