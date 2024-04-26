@@ -1,3 +1,4 @@
+const Account = require('../models/Account')
 const Game = require('../models/Game')
 const GameEvent = require('../models/GameEvent')
 const GameLog = require('../models/GameLog')
@@ -390,7 +391,13 @@ class GameClassic extends GameBase {
       role.name
     }</span> <span class='user trup role-${role.id}'>${
       killed.username
-    }</span> ${killed.account.gender == 2 ? 'убита' : 'убит'} мафией.</b>`
+    }</span> ${
+      killed.account.gender == Account.genders.FEMALE
+        ? 'убита'
+        : killed.account.gender == Account.genders.MALE
+        ? 'убит'
+        : 'убит(а)'
+    } мафией.</b>`
 
     await this.systemMessage(msg)
 

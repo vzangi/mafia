@@ -90,7 +90,11 @@ class MarketService extends BaseService {
     await WalletEvent.buyThing(user.id, thing)
 
     const notifyMessage = `${account.username} ${
-      account.gender == 2 ? 'купила' : 'купил'
+      account.gender == Account.genders.FEMALE
+        ? 'купила'
+        : account.gender == Account.genders.MALE
+        ? 'купил'
+        : 'купил(а)'
     } у вас на маркете ${thing.thing.name} за ${(
       thing.marketPrice * WalletEvent.sellingRate
     ).toFixed(2)} р.`

@@ -9,6 +9,7 @@ const GameBase = require('./GameBase')
 const sequelize = require('./db')
 const log = require('./customLog')
 const GameEvent = require('../models/GameEvent')
+const Account = require('../models/Account')
 
 // Игра в классическом режиме
 class GamePerestrelka extends GameBase {
@@ -242,7 +243,11 @@ class GamePerestrelka extends GameBase {
     playerLife.save()
 
     const msg = `<b><span class='user voter'>${voter.username}</span> ${
-      voter.account.gender == 2 ? 'нанесла' : 'нанёс'
+      voter.account.gender == Account.genders.FEMALE
+        ? 'нанесла'
+        : voter.account.gender == Account.genders.MALE
+        ? 'нанёс'
+        : 'нанес(ла)'
     } <span class='user pretendent'>${username}</span> урон <span class='uron'>-${uron}</span></b>`
     this.systemMessage(msg)
     this.systemLog(msg, GameLog.types.STEP)
@@ -836,7 +841,13 @@ class GamePerestrelka extends GameBase {
       role.name
     }</span> <span class='user trup role-${role.id}'>${
       killed.username
-    }</span> ${killed.account.gender == 2 ? 'убита' : 'убит'} мафией.</b>`
+    }</span> ${
+      killed.account.gender == Account.genders.FEMALE
+        ? 'убита'
+        : killed.account.gender == Account.genders.MALE
+        ? 'убит'
+        : 'убит(а)'
+    } мафией.</b>`
 
     await this.systemMessage(msg)
     this.systemLog(msg)
@@ -875,7 +886,13 @@ class GamePerestrelka extends GameBase {
       role.name
     }</span> <span class='user trup role-${role.id}'>${
       killed.username
-    }</span> ${killed.account.gender == 2 ? 'убита' : 'убит'} маньяком.</b>`
+    }</span> ${
+      killed.account.gender == Account.genders.FEMALE
+        ? 'убита'
+        : killed.account.gender == Account.genders.MALE
+        ? 'убит'
+        : 'убит(а)'
+    } маньяком.</b>`
 
     await this.systemMessage(msg)
 

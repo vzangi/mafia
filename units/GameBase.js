@@ -231,7 +231,11 @@ class GameBase {
       }
 
       const msg = `${role.name} <b>${player.username}</b> ${
-        playerInBase.gender == 2 ? 'вышла' : 'вышел'
+        playerInBase.gender == Account.genders.FEMALE
+          ? 'вышла'
+          : playerInBase.gender == Account.genders.MALE
+          ? 'вышел'
+          : 'вышел(ла)'
       } из партии по таймауту`
 
       this.systemMessage(msg)

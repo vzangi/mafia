@@ -234,7 +234,11 @@ class WalletService extends BaseService {
     await WalletEvent.transfer(user.id, recipient.id, count, comment)
 
     const notifyText = `${account.username} ${
-      account.gender == Account.genders.FEMALE ? 'перевела' : 'перевёл'
+      account.gender == Account.genders.FEMALE
+        ? 'перевела'
+        : account.gender == Account.genders.MALE
+        ? 'перевёл'
+        : 'перевел(а)'
     } вам ${count} рублей c комментарием: ${comment}`
 
     // Отправляю уведомление другу

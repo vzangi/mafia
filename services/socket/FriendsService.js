@@ -122,7 +122,11 @@ class FriendsService extends BaseService {
       this.notify(
         friendId,
         `${socket.account.username} ${
-          socket.account.gender == genders.FEMALE ? 'приняла' : 'принял'
+          socket.account.gender == genders.FEMALE
+            ? 'приняла'
+            : socket.account.gender == genders.MALE
+            ? 'принял'
+            : 'принял(а)'
         } ваш запрос, теперь вы друзья`
       )
     }
@@ -168,7 +172,11 @@ class FriendsService extends BaseService {
       this.notify(
         friendId,
         `${socket.account.username} ${
-          socket.account.gender == genders.FEMALE ? 'отклонила' : 'отклонил'
+          socket.account.gender == genders.FEMALE
+            ? 'отклонила'
+            : socket.account.gender == genders.MALE
+            ? 'отклонил'
+            : 'отклонил(а)'
         } ваш запрос на дружбу`,
         2
       )
@@ -208,7 +216,11 @@ class FriendsService extends BaseService {
       this.notify(
         friendId,
         `${socket.account.username} ${
-          socket.account.gender == genders.FEMALE ? 'удалила' : 'удалил'
+          socket.account.gender == genders.FEMALE
+            ? 'удалила'
+            : socket.account.gender == genders.MALE
+            ? 'удалил'
+            : 'удалил(а)'
         } вас из друзей`,
         2
       )
@@ -438,7 +450,11 @@ class FriendsService extends BaseService {
       this.notify(
         friendId,
         `${socket.account.username} ${
-          socket.account.gender == genders.FEMALE ? 'согласилась' : 'согласился'
+          socket.account.gender == genders.FEMALE
+            ? 'согласилась'
+            : socket.account.gender == genders.MALE
+            ? 'согласился'
+            : 'согласился(ась)'
         } на твоё предложение руки и сердца!`,
         1
       )
@@ -492,7 +508,11 @@ class FriendsService extends BaseService {
       this.notify(
         friendId,
         `${socket.account.username} ${
-          socket.account.gender == genders.FEMALE ? 'отказалась' : 'отказался'
+          socket.account.gender == genders.FEMALE
+            ? 'отказалась'
+            : socket.account.gender == genders.MALE
+            ? 'отказался'
+            : 'отказался(ась)'
         } от твоего предложения руки и сердца`,
         2
       )
@@ -535,7 +555,11 @@ class FriendsService extends BaseService {
       this.notify(
         friendId,
         `${socket.account.username} ${
-          socket.account.gender == genders.FEMALE ? 'отозвала' : 'отозвал'
+          socket.account.gender == genders.FEMALE
+            ? 'отозвала'
+            : socket.account.gender == genders.MALE
+            ? 'отозвал'
+            : 'отозвал(а)'
         } своё предложение руки и сердца`,
         2
       )
@@ -593,7 +617,11 @@ class FriendsService extends BaseService {
       this.notify(
         friendId,
         `${socket.account.username} ${
-          socket.account.gender == genders.FEMALE ? 'развелась' : 'развёлся'
+          socket.account.gender == genders.FEMALE
+            ? 'развелась'
+            : socket.account.gender == genders.MALE
+            ? 'развёлся'
+            : 'развелся(ась)'
         } с тобой`,
         2
       )
