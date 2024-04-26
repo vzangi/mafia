@@ -22,17 +22,8 @@ class AuthService {
       throw new Error('Пароли не совпадают')
     }
 
-    const checkNik = await Account.findOne({ where: { username } })
-
-    if (checkNik) {
-      throw new Error('Ник уже используется')
-    }
-
-    const secondCheck = await AccountName.findOne({ where: { username } })
-
-    if (secondCheck) {
-      throw new Error('Ник занят')
-    }
+    // Проверяю ник на ограничения
+    await this._nikCheck(username)
 
     if (accept != 1) {
       throw new Error('Необходимо согласиться с правилами сайта')
@@ -245,13 +236,9 @@ class AuthService {
     const account = await this.getMakenickAccount(data)
 
     const username = data.nik
-    if (!username) throw new Error('Ник не указан')
 
-    const hasNick = await Account.findOne({ where: { username } })
-    if (hasNick) throw new Error('Ник уже используется')
-
-    const secondCheck = await AccountName.findOne({ where: { username } })
-    if (secondCheck) throw new Error('Ник занят')
+    // Проверяю ник на ограничения
+    await this._nikCheck(username)
 
     // Сохраняю ник
     account.username = username
@@ -261,6 +248,28 @@ class AuthService {
     // Получаю токен авторизации
     const accessToken = createToken(account)
     return accessToken
+  }
+
+  // Проверяю ник на ограничения
+  async _nikCheck(username) {
+    if (!username) throw new Error('Ник не указан')
+
+    const hasNick = await Account.findOne({ where: { username } })
+    if (hasNick) throw new Error('Ник уже используется')
+
+    const secondCheck = await AccountName.findOne({ where: { username } })
+    if (secondCheck) throw new Error('Ник занят')
+
+    const usernameLower = username.toLocaleLowerCase()
+
+    if (usernameLower.indexOf('админ') >= 0) throw new Error('Ник занят')
+    if (usernameLower.indexOf('aдмин') >= 0) throw new Error('Ник занят')
+    if (usernameLower.indexOf('admin') >= 0) throw new Error('Ник занят')
+    if (usernameLower.indexOf('аdmin') >= 0) throw new Error('Ник занят')
+
+    if (username[0] == ' ') throw new Error('Ник не может начинаться с пробела')
+    if (username[username.length - 1] == ' ')
+      throw new Error('В конце ника не должно быть пробелов')
   }
 }
 

@@ -4,6 +4,11 @@ const log = require('../units/customLog')
 class PagesController {
   // Главная страница
   home(req, res) {
+    const { user } = req
+    if (user) {
+      res.redirect('lobbi')
+      return
+    }
     res.render('pages/home')
   }
 
