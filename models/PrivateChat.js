@@ -153,7 +153,7 @@ PrivateChat.getChats = async (accountId) => {
 		result.push(data)
 	}
 
-	return result
+	return result.sort((a, b) => b.id - a.id)
 }
 
 module.exports = PrivateChat
