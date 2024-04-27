@@ -99,7 +99,9 @@ class MessagesService extends BaseService {
 			throw new Error('Не авторизован')
 		}
 
-		const lastMsgs = await Message.lastMessages(user.id)
+		// const lastMsgs = await Message.lastMessages(user.id)
+		const lastMsgs = await PrivateChat.getChats(user.id)
+
 		return lastMsgs
 	}
 

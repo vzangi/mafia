@@ -44,7 +44,7 @@ $(function () {
 					// Мои сообщения
 					return {
 						message: parseMessage(msg).message,
-						...msg.friend,
+						...msg.account,
 						isRead: 1,
 					}
 				} else {

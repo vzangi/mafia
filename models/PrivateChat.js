@@ -1,6 +1,7 @@
-const { DataTypes, Op } = require('sequelize')
+const { DataTypes, Op, where } = require('sequelize')
 const sequelize = require('../units/db')
 const Account = require('./Account')
+const Message = require('./Message')
 
 const activeStatuses = {
 	NOT_ACTIVE: 0,
@@ -87,6 +88,72 @@ PrivateChat.findOrCreatePrivateChatId = async (accountId, friendId) => {
 	})
 
 	return newPC.id
+}
+
+function getAccountData(account) {
+	return {
+		username: account.username,
+		avatar: account.avatar,
+		online: account.online,
+		vip: account.vip,
+		vipTo: account.vipTo,
+		id: account.id,
+	}
+}
+
+// Получение чатов
+PrivateChat.getChats = async (accountId) => {
+	const chats = await PrivateChat.findAll({
+		where: {
+			active: activeStatuses.ACTIVE,
+			[Op.or]: [
+				{
+					accountId: accountId,
+				},
+				{
+					friendId: accountId,
+				},
+			],
+		},
+		include: [
+			{
+				model: Account,
+				as: 'account',
+			},
+			{
+				model: Account,
+				as: 'friend',
+			},
+		],
+	})
+
+	const result = []
+
+	for (const index in chats) {
+		const chat = chats[index]
+		const lastMessage = await Message.findOne({
+			where: {
+				privatechatId: chat.id,
+			},
+			limit: 1,
+			order: [['id', 'desc']],
+			attributes: ['message', 'id', 'isRead', 'accountId'],
+			raw: true,
+		})
+		const data = {
+			id: chat.id,
+			...lastMessage,
+		}
+
+		data.account =
+			chat.account.id == accountId
+				? getAccountData(chat.friend)
+				: getAccountData(chat.account)
+
+		result.push(data)
+	}
+
+	return result
 }
 
 module.exports = PrivateChat
