@@ -51,6 +51,8 @@ router.post('/report-form', pages.sendReport)
 // Список отзывов
 router.get('/reports', pages.getReports)
 
+router.get('/pc', pages.privatechats)
+
 // Cтраницы со статическим содержимым
 router.use('/', require('./BlogRouter'))
 
