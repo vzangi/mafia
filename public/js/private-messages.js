@@ -196,7 +196,7 @@ $(function () {
 
 		if (typingMutex) return
 		typingMutex = true
-		setTimeout(() => (typingMutex = true), 2000)
+		setTimeout(() => (typingMutex = false), 2000)
 
 		if (currentFriendId) socket.emit('messages.typing', currentFriendId)
 		clearTimeout(typingTimerId)
