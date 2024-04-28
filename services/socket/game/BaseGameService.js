@@ -153,12 +153,14 @@ class BaseGameService extends BaseService {
 		let privateMessages = []
 		let pmForMe = []
 
-		if (user) {
-			// Приватные сообщения, которые игрок писал сам
+		const game = await Game.findByPk(gameId)
+
+		if (!game) return []
+
+		if (game.period == Game.periods.END) {
 			privateMessages = await GameChat.findAll({
 				where: {
 					gameId,
-					accountId: user.id,
 					private: true,
 				},
 				attributes: ['message', 'private', 'createdAt', 'username'],
@@ -179,37 +181,65 @@ class BaseGameService extends BaseService {
 					},
 				],
 			})
-
-			// Приватные сообщения, которые были написаны игроку другим игроком
-			pmForMe = await GameChat.findAll({
-				where: {
-					gameId,
-					accountId: {
-						[Op.ne]: user.id,
+		} else {
+			if (user) {
+				// Приватные сообщения, которые игрок писал сам
+				privateMessages = await GameChat.findAll({
+					where: {
+						gameId,
+						accountId: user.id,
+						private: true,
 					},
-					private: true,
-				},
-				attributes: ['message', 'private', 'createdAt', 'username'],
-				include: [
-					{
-						model: Account,
-						attributes: ['username'],
-						required: false,
-					},
-					{
-						model: GameChatUsers,
-						where: {
-							accountId: user.id,
+					attributes: ['message', 'private', 'createdAt', 'username'],
+					include: [
+						{
+							model: Account,
+							attributes: ['username'],
+							required: false,
 						},
-						include: [
-							{
-								model: Account,
-								attributes: ['username'],
-							},
-						],
+						{
+							model: GameChatUsers,
+							include: [
+								{
+									model: Account,
+									attributes: ['username'],
+								},
+							],
+						},
+					],
+				})
+
+				// Приватные сообщения, которые были написаны игроку другим игроком
+				pmForMe = await GameChat.findAll({
+					where: {
+						gameId,
+						accountId: {
+							[Op.ne]: user.id,
+						},
+						private: true,
 					},
-				],
-			})
+					attributes: ['message', 'private', 'createdAt', 'username'],
+					include: [
+						{
+							model: Account,
+							attributes: ['username'],
+							required: false,
+						},
+						{
+							model: GameChatUsers,
+							where: {
+								accountId: user.id,
+							},
+							include: [
+								{
+									model: Account,
+									attributes: ['username'],
+								},
+							],
+						},
+					],
+				})
+			}
 		}
 
 		const resultMessages = [...messages, ...privateMessages, ...pmForMe].sort(
