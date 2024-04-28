@@ -405,7 +405,8 @@ $(function () {
 		const dateObj = new Date(isoDate)
 		const hour = _(dateObj.getHours())
 		const minute = _(dateObj.getMinutes())
-		return `${hour}:${minute}`
+		const seconds = _(dateObj.getSeconds())
+		return `${minute}:${seconds}`
 	}
 
 	const getDateFromIso = (isoDate) => {
