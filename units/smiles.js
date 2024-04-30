@@ -29,6 +29,11 @@ const smiles = [
   'Beer',
   'Pizza',
   'Angry',
+  'One',
+  'Knife',
+  'Facepalm',
+  'Berry',
+  'Helm',
 ]
 
 module.exports = smiles

@@ -311,7 +311,7 @@ input:checked + .slider:before {
 }
 
 .all-smiles-items {
-  max-width: 253px;
+  width: 295px;
 }
 
 .all-smiles-items img {
