@@ -1,0 +1,12 @@
+extends /layouts/grey_layout
+
+block head 
+	link(rel="stylesheet" href="/css/profile/new-profile.css")
+
+block content 
+	include /includes/profile/new-profile/top
+	include /includes/profile/new-profile/content
+
+block scripts 
+	include /includes/profile/profile/profile-gift-tmpl
+	script(src="/js/profile/profile.js")

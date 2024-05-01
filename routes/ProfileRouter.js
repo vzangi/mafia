@@ -70,4 +70,7 @@ router.get('/friends/:nik', controller.friends)
 // Профиль игрока по нику
 router.get('/:nik', controller.showAccountByNik)
 
+// Профиль игрока по нику
+router.get('/new/:nik', controller.newShowAccountByNik)
+
 module.exports = router

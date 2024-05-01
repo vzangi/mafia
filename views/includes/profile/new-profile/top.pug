@@ -1,0 +1,89 @@
+div(class="container-fliud mb-3")
+	div(class="back-bg")
+		div(class="container")
+
+			div(class="d-flex flex-column justify-content-end top-column")
+
+				div(class="d-flex justify-content-between align-items-center pb-3 pt-3")
+
+					div(class="avatar-box align-self-start")
+						div(class="d-flex align-items-center gap-3")
+
+							div(class="profile-avatar " + (profile.online ? "online" : ""))
+								div(class="profile-avatar-image" style="background-image:url(/uploads/" + profile.avatar + ")" data-bs-toggle="tooltip" data-bs-placement="top" title=profile.online ? '' : 'Последний раз в онлайне - ' + (profile.updatedAt.toLocaleString('ru-Ru')))
+							div(class="profile-top-info-main")
+								div(class="profile-top-info-main-nick d-flex align-items-center fs-2")
+									if profile.vip
+										span(class="bi bi-star-fill fs-3 text-warning me-1" data-bs-toggle="tooltip" data-bs-placement="top" title='VIP-статус<br>до ' + (profile.vipTo) data-bs-html="true") 
+									span(class="nick backfon" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title='Дата регистрации <br>' + (profile.createdAt.toLocaleDateString('ru-Ru')))=profile.username
+
+					if currentAccount && currentAccount.id != profile.id
+						div(class="btns-box")
+							div(class="d-flex gap-1 mt-2 mb-2")
+								div 
+									div(class="actions-dropdown")
+										if isFrends && isFrends.status == -2
+											div(class="btn btn-sm") 
+												span(class="d-none d-md-inline") Игрок в ЧС	
+												i(class="bi bi-chevron-down") 	
+											div(class="actions-dropdown-list")
+												div(class="btn btn-light btn-sm action-btn" data-id=profile.id data-question='Разблокировать игрока?' data-event='friends.unblock') Разблокировать
+										else
+											div(class="btn btn-sm") 
+												span(class="d-none d-md-inline") Действия 
+												i(class="bi bi-chevron-down") 
+											div(class="actions-dropdown-list")
+												if isFrends && isFrends.status > 0
+
+													if isFrends.status == 1
+														div(class="btn btn-light btn-sm w-100 mb-1 action-btn" data-id=profile.id data-question='Удалить из друзей?' data-event='friends.remove') Удалить из друзей
+														if !havePartner && !partner
+															div(class="btn btn-light btn-sm w-100 mb-1 action-btn" data-id=profile.id data-question='Вы уверены, что хотите сделать предложение? В кошельке должно быть 50 рублей.' data-event='friends.zags') Позвать в ЗАГС
+
+													if isFrends.status == 2
+														div(class="btn btn-light btn-sm w-100 mb-1 action-btn" data-id=profile.id data-question='Вы точно хотите отозвать предложение? В кошелёк верёнтся 25 рублей.' data-event='friends.zags.recall') Отозвать предложение
+
+													if isFrends.status == 3
+														div(class="btn btn-light btn-sm w-100 mb-1 action-btn" data-id=profile.id data-question='Вы точно хотите развестись? В кошельке должно быть 100 рублей.' data-event='friends.divorce') Развестись
+
+												if !isFrends || isFrends && isFrends.status < 2
+													div(class="btn btn-light btn-sm w-100 mb-1 action-btn" data-id=profile.id data-question='Заблокировать игрока?' data-event='friends.block') Заблокировать
+
+								div 
+									if !isFrends
+										div(class="btn btn-success btn-sm action-add-to-friends action-btn" data-id=profile.id data-question='Добавить в друзья?' data-event='friends.add') 
+											i(class="bi bi-person-plus") 
+											span(class="d-none d-md-inline") Добавить в друзья
+									else
+										if isFrends.status > 0
+											button(class="btn btn-success btn-sm" onclick="startPrivateWith("+profile.id+")") 
+												i(class="bi bi-envelope-paper") 
+												span(class="d-none d-md-inline") Написать сообщение 
+										if isFrends.status == -1
+											div(class="btn btn-warning btn-sm")
+												i(class="bi bi-person-fill-slash")  
+												span(class="d-none d-md-inline") Запрос дружбы отклонён
+										if isFrends.status == 0
+											div(class="btn btn-warning btn-sm") 
+												i(class="bi bi-hourglass-split") 
+												span(class="d-none d-md-inline") Запрос отправлен
+										if isFrends.status == 2
+											div(class="btn btn-warning btn-sm") 
+												i(class="bi bi-hourglass-split") 
+												span(class="d-none d-md-inline") Предложение сделано
+
+				div(class="links-box pb-3")
+					div(class="d-flex justify-content-center")
+						a(href=`/profile/new/${profile.username}` class="active") 
+							i(class="bi bi-layout-split") 
+							span(class="d-none d-md-inline") Профиль
+						a(href=`/profile/friends/${profile.username}`) 
+							i(class="bi bi-people") 
+							span(class="d-none d-md-inline") Друзья 
+							small= friends.length
+						a(href=`/profile/things/${profile.username}`) 
+							i(class="bi bi-handbag") 
+							span(class="d-none d-md-inline") Инвентарь
+						a(href="#") 
+							i(class="bi bi-gift") 
+							span(class="d-none d-md-inline") Открытки

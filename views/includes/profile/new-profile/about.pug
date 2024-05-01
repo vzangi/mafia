@@ -1,0 +1,49 @@
+div(class="block p-3 mb-4")
+	p 
+		b Об игроке
+	//- p Привет! Я zangi, люблю играть в мафию))
+
+	div(class="mb-3")
+		div
+			b(class="text-uppercase") Играет в мафию:
+		div
+			span с 
+			span= profile.createdAt.toLocaleDateString('ru-Ru')
+			span  года
+
+	if partner 
+		-var pName='Партнёр'
+		if profile.gender == 1
+			- pName='Супруга'
+		if profile.gender == 2
+			- pName='Супруг'
+		div(class="mb-3")
+			div
+				b(class="text-uppercase")= `${pName}:`
+			div 
+				span(class="bi bi-heart-fill" style="color:red") 
+				a(href=`/profile/new/${partner.friend.username}`)= partner.friend.username
+
+	div(class="mb-3")
+		b(class="text-uppercase") Ранг:
+		div(class="d-flex gap-2 align-items-center")
+			if profile.rank == 0
+				div(class="rang-image" style="background-image:url(/images/0.svg)")
+				div(class="text") Нет ранга
+			else 
+				div(class="rang-image" style=`background-image:url(/images/${rankImg}.svg)`)
+				div(class="text f-mon")= profile.rank
+
+	div(class="mb-3")
+		b(class="text-uppercase") Уровень:
+		div
+			span(title=`${levelNum} уровень<hr>Набрано баллов: ${profile.level}` data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true")
+				a(href="/profile/statistics/"+profile.username)
+					span= levelName
+
+	div(class="mb-3")
+		b(class="text-uppercase") Сила:
+		div(class="power") 
+			span(title="Сила в режиме «Перестрелка»" data-bs-toggle="tooltip" data-bs-placement="bottom")
+				span(class="bi bi-lightning-fill" style="color:orange")
+				span(class="power-value backfon")= power

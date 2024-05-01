@@ -1,0 +1,33 @@
+div(class="block p-3 mb-4")
+	-var gift = null
+	if gifts.length == 0
+		p Здесь пока нет открыток. #[a(href=`/gift?to=${profile.username}`) Подари первую!]
+	else
+		-gift = gifts[0] 
+		p= `Открытка от ${gift.fromusername} — подарена ${gift.giftDate}`
+		p= gift.description.trim().replaceAll('\n','<br>')
+		div(class="gift-item" data-id=gift.id)
+			img(src="/uploads/gift/"+gift.gift.picture)
+
+		if gifts.length > 1
+			-gift = gifts[1] 
+			div(class="d-md-none")
+				hr
+				p= `Открытка от ${gift.fromusername} — подарена ${gift.giftDate}`
+				p= gift.description.trim().replaceAll('\n','<br>')
+				div(class="gift-item" data-id=gift.id)
+					img(src="/uploads/gift/"+gift.gift.picture)
+
+				if gifts.length > 2
+					-gift = gifts[2] 
+						hr
+						p= `Открытка от ${gift.fromusername} — подарена ${gift.giftDate}`
+						p= gift.description.trim().replaceAll('\n','<br>')
+						div(class="gift-item" data-id=gift.id)
+							img(src="/uploads/gift/"+gift.gift.picture)
+
+					if gifts.length > 3
+						hr
+						center
+							button(class="btn btn-sm btn-success") Загрузить ещё
+
