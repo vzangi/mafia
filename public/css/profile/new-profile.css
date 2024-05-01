@@ -91,6 +91,11 @@ header.mb-4 {
 	display: block;
 }
 
+.badge-box {
+	max-width: 180px;
+	margin: auto;
+}
+
 @media (max-width: 767px) {
 	.btns-box .btn {
 		min-width: auto;
