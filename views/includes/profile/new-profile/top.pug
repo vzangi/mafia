@@ -1,5 +1,5 @@
 div(class="container-fliud mb-3")
-	div(class="back-bg")
+	div(class="back-bg block")
 		div(class="container")
 
 			div(class="d-flex flex-column justify-content-end top-column")
@@ -15,7 +15,7 @@ div(class="container-fliud mb-3")
 								div(class="profile-top-info-main-nick d-flex align-items-center fs-2")
 									if profile.vip
 										span(class="bi bi-star-fill fs-3 text-warning me-1" data-bs-toggle="tooltip" data-bs-placement="top" title='VIP-статус<br>до ' + (profile.vipTo) data-bs-html="true") 
-									span(class="nick backfon" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title='Дата регистрации <br>' + (profile.createdAt.toLocaleDateString('ru-Ru')))=profile.username
+									span(class="nick backfon")=profile.username
 
 					if currentAccount && currentAccount.id != profile.id
 						div(class="btns-box")

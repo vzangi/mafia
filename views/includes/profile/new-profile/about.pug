@@ -20,8 +20,8 @@ div(class="block p-3 mb-4")
 		div(class="mb-3")
 			div
 				b(class="text-uppercase")= `${pName}:`
-			div 
-				span(class="bi bi-heart-fill" style="color:red") 
+			div(class="d-flex gap-2") 
+				span(class="bi bi-heart-fill fs-5" style="color:red" title=`Женаты с ${partner.createdAt.toLocaleDateString('ru-Ru')}` data-bs-toggle="tooltip" data-bs-placement="bottom") 
 				a(href=`/profile/new/${partner.friend.username}`)= partner.friend.username
 
 	div(class="mb-3")
@@ -44,6 +44,6 @@ div(class="block p-3 mb-4")
 	div(class="mb-3")
 		b(class="text-uppercase") Сила:
 		div(class="power") 
-			span(title="Сила в режиме «Перестрелка»" data-bs-toggle="tooltip" data-bs-placement="bottom")
-				span(class="bi bi-lightning-fill" style="color:orange")
+			span(title="Сила в режиме «Перестрелка»" data-bs-toggle="tooltip" data-bs-placement="bottom" class="d-flex")
+				span(class="bi bi-lightning-fill fs-6" style="color:orange")
 				span(class="power-value backfon")= power
