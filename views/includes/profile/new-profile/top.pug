@@ -29,14 +29,14 @@ div(class="container-fliud mb-3")
 											div(class="actions-dropdown-list")
 												div(class="btn btn-light btn-sm action-btn" data-id=profile.id data-question='Разблокировать игрока?' data-event='friends.unblock') Разблокировать
 										else
-											div(class="btn btn-sm") 
+											div(class="btn btn-light btn-sm") 
 												span(class="d-none d-md-inline") Действия 
 												i(class="bi bi-chevron-down") 
 											div(class="actions-dropdown-list")
 												if isFrends && isFrends.status > 0
 
 													if isFrends.status == 1
-														div(class="btn btn-light btn-sm w-100 mb-1 action-btn" data-id=profile.id data-question='Удалить из друзей?' data-event='friends.remove') Удалить из друзей
+														div(class="btn btn-light btn-sm w-100 mb-1 action-btn text-nowrap" data-id=profile.id data-question='Удалить из друзей?' data-event='friends.remove') Удалить из друзей
 														if !havePartner && !partner
 															div(class="btn btn-light btn-sm w-100 mb-1 action-btn" data-id=profile.id data-question='Вы уверены, что хотите сделать предложение? В кошельке должно быть 50 рублей.' data-event='friends.zags') Позвать в ЗАГС
 
