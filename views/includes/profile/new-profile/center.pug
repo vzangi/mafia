@@ -1,18 +1,18 @@
-div(class="block p-3 mb-4")
-	-var gift = null
-	if gifts.length == 0
+if gifts.length == 0
+	div(class="block p-3 mb-4")
 		p Здесь пока нет открыток. #[a(href=`/gift?to=${profile.username}`) Подари первую!]
-	else
-		each gift, index in gifts
-			if index < 3
+else
+	each gift, index in gifts
+		if index < 3
+			div(class="block p-3 mb-3")
 				p= `Открытка от ${gift.fromusername} — подарена ${gift.giftDate}`
 				hr
 				p= gift.description.trim().replaceAll('\n','<br>')
-				div(class="gift-item mb-3" data-id=gift.id)
+				div(class="gift-item" data-id=gift.id)
 					img(src="/uploads/gift/"+gift.gift.picture)
 
-		if gifts.length > 3 && false
-			hr
-			center
-				button(class="btn btn-sm btn-success") Загрузить ещё
+	if gifts.length > 3 && false
+		hr
+		center
+			button(class="btn btn-sm btn-success") Загрузить ещё
 
