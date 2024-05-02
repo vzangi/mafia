@@ -69,6 +69,7 @@ header.mb-4 {
 
 .gift-item img {
   border-radius: 5px;
+  width: 100%;
 }
 
 .actions-dropdown {
@@ -94,6 +95,10 @@ header.mb-4 {
 .badge-box {
   max-width: 180px;
   margin: auto;
+}
+
+.badge-box img {
+  width: 100%;
 }
 
 @media (max-width: 767px) {

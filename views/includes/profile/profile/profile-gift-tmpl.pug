@@ -1,3 +1,11 @@
 script(id="giftItemTmpl" type="text/x-jquery-tmpl")
-    div(class="gift-item" data-id="${id}")
-        img(src="/uploads/gift/${gift.picture}" data-bs-html="true" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${fromusername}<hr>${description}<hr>${giftDate}")
+  div(class="gift-item" data-id="${id}")
+    img(src="/uploads/gift/${gift.picture}" data-bs-html="true" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${fromusername}<hr>${description}<hr>${giftDate}")
+
+script(id="giftListItemTmpl" type="text/x-jquery-tmpl")
+  div(class="block gift-list-item p-3 mb-3" data-id="${id}")
+    p Открытка от ${fromusername} — подарена ${giftDate}
+    hr
+    p ${description}
+    div(class="gift-item")
+      img(src="/uploads/gift/${gift.picture}")

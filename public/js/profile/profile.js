@@ -1,10 +1,9 @@
 $(function () {
   let mutex = false
 
-  $('.more-gifts-btn').click(function () {
+  function loadGifts(btn, tmpl, lastId, toBlock) {
     if (mutex) return false
     mutex = true
-    const lastId = $('.gift-item:last').data().id
     const accountId = $('.gifts-list').data().id
 
     socket.emit('gifts.getnext', accountId, lastId, (res) => {
@@ -17,7 +16,7 @@ $(function () {
       let { gifts } = res
 
       if (gifts.length < 9) {
-        $('.more-btn-box').remove()
+        $(btn).remove()
       }
 
       gifts = gifts.map((gift) => {
@@ -25,15 +24,20 @@ $(function () {
         return gift
       })
 
-      $('#giftItemTmpl').tmpl(gifts).appendTo($('.gifts-list'))
+      $(tmpl).tmpl(gifts).appendTo($(toBlock))
 
       // Включаем тултипы
-      const tooltipTriggerList = [].slice.call(
-        document.querySelectorAll('[data-bs-toggle="tooltip"]')
-      )
-      tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl)
-      })
+      activateBSTooltips()
     })
+  }
+
+  $('.more-gift-list').click(function () {
+    const lastId = $('.gift-list-item:last').data().id
+    loadGifts(this, '#giftListItemTmpl', lastId, '.big-gifts')
+  })
+
+  $('.more-gifts-btn').click(function () {
+    const lastId = $('.gift-item:last').data().id
+    loadGifts(this, '#giftItemTmpl', lastId, '.gifts-list')
   })
 })
