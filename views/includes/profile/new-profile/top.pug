@@ -36,7 +36,7 @@ div(class="container-fliud mb-3")
 												if isFrends && isFrends.status > 0
 
 													if isFrends.status == 1
-														div(class="btn btn-light btn-sm w-100 mb-1 action-btn text-nowrap" data-id=profile.id data-question='Удалить из друзей?' data-event='friends.remove') Удалить из друзей
+														div(class="btn btn-light-green btn-sm w-100 mb-1 action-btn text-nowrap" data-id=profile.id data-question='Удалить из друзей?' data-event='friends.remove') Удалить из друзей
 														if !havePartner && !partner
 															div(class="btn btn-light btn-sm w-100 mb-1 action-btn" data-id=profile.id data-question='Вы уверены, что хотите сделать предложение? В кошельке должно быть 50 рублей.' data-event='friends.zags') Позвать в ЗАГС
 
@@ -47,7 +47,7 @@ div(class="container-fliud mb-3")
 														div(class="btn btn-light btn-sm w-100 mb-1 action-btn" data-id=profile.id data-question='Вы точно хотите развестись? В кошельке должно быть 100 рублей.' data-event='friends.divorce') Развестись
 
 												if !isFrends || isFrends && isFrends.status < 2
-													div(class="btn btn-light btn-sm w-100 mb-1 action-btn" data-id=profile.id data-question='Заблокировать игрока?' data-event='friends.block') Заблокировать
+													div(class="btn btn-light-green btn-sm w-100 mb-1 action-btn" data-id=profile.id data-question='Заблокировать игрока?' data-event='friends.block') Заблокировать
 
 								div 
 									if !isFrends
