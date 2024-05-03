@@ -8,9 +8,9 @@ else
         div(class="block gift-list-item p-3 mb-3" data-id=gift.id)
           p= `Открытка от ${gift.fromusername} — подарена ${gift.giftDate}`
           hr
-          p= gift.description.trim().replaceAll('\n','<br>')
+          p!= gift.description.trim().replaceAll('\n','<br>')
           div(class="gift-item")
-            img(src="/uploads/gift/"+gift.gift.picture)
+            img(src="/uploads/gift/"+gift.gift.picture alt=gift.description)
 
   if gifts.length > 3 
     center(class="mt-3 mb-3")

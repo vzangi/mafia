@@ -7,6 +7,7 @@ const Gift = require('../../models/Gift')
 const GiftGroups = require('../../models/GiftGroup')
 const WalletEvent = require('../../models/WalletEvents')
 const BaseService = require('./BaseService')
+const htmlspecialchars = require('htmlspecialchars')
 
 const maxGiftMessageLength = 255
 
@@ -49,6 +50,8 @@ class GiftService extends BaseService {
     if (!to || !giftId || !description) {
       throw new Error('Отсутсвуют необходимые данные')
     }
+
+    description = htmlspecialchars(description)
 
     if (description.length > maxGiftMessageLength) {
       description = description.substr(0, maxGiftMessageLength)

@@ -1,0 +1,6 @@
+if lastGames && lastGames.length > 0
+  p #[b Последние игры]
+
+  div(class="games-list")
+    each pl in lastGames
+      +gameItem(pl.game)

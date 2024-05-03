@@ -7,8 +7,9 @@ div(class="block p-3 mb-4")
 		div
 			b(class="text-uppercase") Играет в мафию:
 		div
-			span с 
-			span= profile.createdAt.toLocaleDateString('ru-Ru')
+			span с  
+			//- span= profile.createdAt.toLocaleDateString('ru-Ru')
+			span= playFrom.substring(0, playFrom.length - 5)
 			span  года
 
 	if partner 
@@ -44,6 +45,6 @@ div(class="block p-3 mb-4")
 	div(class="mb-3")
 		b(class="text-uppercase") Сила:
 		div(class="power") 
-			span(title="Сила в режиме «Перестрелка»" data-bs-toggle="tooltip" data-bs-placement="bottom" class="d-flex")
+			span(class="d-flex")
 				span(class="bi bi-lightning-fill fs-6" style="color:orange")
-				span(class="power-value backfon")= power
+				span(class="power-value backfon" title="Сила в режиме «Перестрелка»" data-bs-toggle="tooltip" data-bs-placement="bottom")= power

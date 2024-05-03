@@ -1,0 +1,9 @@
+if punishments.filter(p => p.current).length > 0
+  -var pcls=['','info','warning','danger','dark','primary','primary']
+  -var ptps=['','Молчанка до ','Запрет на создание заявок до ','Запрет на участие в играх до ', 'Запрет входа на сайт до ', 'Запрет на подачу жалоб до ','Запрет на смену аватарки до ']
+  each pun, index in punishments
+    if pun.current
+      div(class="alert alert-"+(pcls[pun.type]) role="alert mt-4")
+        span(class="bi bi-exclamation-triangle-fill me-1")
+        span= ptps[pun.type]  
+        span= pun.coolDate

@@ -1,0 +1,10 @@
+if currentGames && currentGames.length > 0
+  p 
+    span(class="text-danger bi bi-circle-fill sb-07") 
+    b Текущие игры
+
+  div(class="games-list")
+    each pl in currentGames
+      +gameItem(pl.game)
+
+  hr

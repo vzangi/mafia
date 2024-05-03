@@ -2,8 +2,8 @@ const express = require('express')
 const router = express.Router()
 const controller = require('../controllers/ProfileController')
 const {
-	validator,
-	validationMiddleware,
+  validator,
+  validationMiddleware,
 } = require('../middlewares/ValidatorsMiddleware')
 const { isAuth } = require('../middlewares/AuthMiddleware')
 
@@ -24,11 +24,11 @@ router.get('/change-password', isAuth, controller.changePasswordForm)
 
 // Процедура смены пароля
 router.post(
-	'/change-password',
-	isAuth,
-	validator.password,
-	validationMiddleware,
-	controller.changePassword
+  '/change-password',
+  isAuth,
+  validator.password,
+  validationMiddleware,
+  controller.changePassword
 )
 
 // Статистика игрока по нику
@@ -71,6 +71,6 @@ router.get('/friends/:nik', controller.friends)
 router.get('/:nik', controller.showAccountByNik)
 
 // Профиль игрока по нику
-router.get('/new/:nik', controller.newShowAccountByNik)
+router.get('/old/:nik', controller.oldShowAccountByNik)
 
 module.exports = router

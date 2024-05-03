@@ -1,12 +1,32 @@
-div(class="container")
-	div(class="row")
+if !isBlock
+  include top
 
-		div(class="col-md-3") 
-			include about
+  div(class="container")
+    div(class="row")
 
-		div(class="col-md-6") 
-			include center
+      div(class="col-md-3") 
+        include punish
+        include about
+        include game_mixin
+        include current_games
+        include last_games
 
-		div(class="col-md-3") 
-			include badge
-			include gifts
+      div(class="col-md-6") 
+        include center
+
+      div(class="col-md-3") 
+        include badge
+        include gifts
+else 
+  include /includes/profile/profile/block
+
+if currentAccount && currentAccount.role == 1
+  div(class="container")
+    div(class="row")
+      div(class="col-md-12") 
+        include ../profile/punishments
+      div(class="col-md-3") 
+        include ../profile/notify-form
+      div(class="col-md-12 mb-4") 
+        hr
+        include /includes/profile/settings/nikChanges

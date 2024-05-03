@@ -80,6 +80,7 @@ img {
 
 a {
   color: var(--color-link);
+  text-decoration: none;
 }
 
 td {
@@ -875,4 +876,26 @@ ul.aside-menu li a.active {
   --bs-btn-disabled-color: #fff;
   --bs-btn-disabled-bg: #198754;
   --bs-btn-disabled-border-color: #198754;
+}
+
+.winner {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 80px;
+  height: 80px;
+  background-size: 110px;
+  opacity: 0.5;
+}
+
+.winner-side-2 {
+  background-image: url(/images/rcitizen.svg);
+}
+
+.winner-side-3 {
+  background-image: url(/images/rmafia.svg);
+}
+
+.winner-side-4 {
+  background-image: url(/images/rmaniac.svg);
 }

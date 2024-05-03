@@ -1,0 +1,37 @@
+mixin gameItem(game)
+  a(class=`game-item old-game-type-${game.gametype.id}` data-id=`${game.id}` href=`/game/${game.id}`)
+    div(class="block p-4 mb-3 position-relative")
+      div(class="game-info")
+        div(class="d-flex justify-content-between align-items-center gap-1")
+          div(class="game-type d-flex align-items-center gap-1") 
+            if game.competition 
+              span(class="bi-trophy me-1" title="Соревновательный" data-bs-toggle="tooltip" data-bs-placement="right")
+            span(class="bi-controller fs-5 bi-icon" title="Режим игры" data-bs-toggle="tooltip" data-bs-placement="bottom") 
+            span= game.gametype.name
+            if game.mode == 2
+              span(class="bi-lightning-fill" title="с добивами" data-bs-toggle="tooltip" data-bs-placement="right")
+            if !game.firstday
+              span(class="bi bi-moon-stars-fill ms-1" title="После знакомства сразу идёт ночь" data-bs-toggle="tooltip" data-bs-placement="right")
+
+        div(title="Время начала игры" data-bs-toggle="tooltip" data-bs-placement="bottom") 
+          span(class="bi-clock") 
+          span= game.coolStarted.replace(new Date().getFullYear(), '')
+
+        div(class="d-flex flex-column")
+          div(class="d-flex")
+            div(class="players-count d-flex align-items-center gap-1" title="Количество игроков в зявке" data-bs-toggle="tooltip" data-bs-placement="right") 
+              span(class="bi-people-fill fs-5 bi-icon") 
+              span(class="cnt")= game.players.length
+              span  / 
+              span= game.playersCount
+
+        div(class="me-5 d-md-none")
+          p= game.players.map(p => p.username).join(', ')
+
+        if game.rolesideId != 1
+          -var winner = 'Победили честные жители'
+          if game.rolesideId == 3
+            -winner = 'Победила мафия'
+          if game.rolesideId == 4
+            -winner = 'Победил маньяк'
+          div(class=`winner winner-side-${game.rolesideId}` title=winner data-bs-toggle="tooltip" data-bs-placement="left")
