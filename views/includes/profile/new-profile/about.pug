@@ -23,7 +23,7 @@ div(class="block p-3 mb-4")
 				b(class="text-uppercase")= `${pName}:`
 			div(class="d-flex gap-2") 
 				span(class="bi bi-heart-fill fs-5" style="color:red" title=`Женаты с ${partner.createdAt.toLocaleDateString('ru-Ru')}` data-bs-toggle="tooltip" data-bs-placement="bottom") 
-				a(href=`/profile/new/${partner.friend.username}`)= partner.friend.username
+				a(href=`/profile/${partner.friend.username}`)= partner.friend.username
 
 	div(class="mb-3")
 		b(class="text-uppercase") Ранг:
