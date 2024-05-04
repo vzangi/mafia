@@ -1,0 +1,11 @@
+extends /layouts/grey_layout
+
+block head 
+	link(rel="stylesheet" href="/css/profile/new-profile.css")
+	link(rel="stylesheet" href="/css/profile/new-friends.css")
+
+block content 
+	include /includes/profile/new-friends/content
+
+block scripts 
+	script(src="/js/profile/friends.js")

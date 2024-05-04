@@ -1,0 +1,23 @@
+.friends-list {
+	display: flex;
+	gap: 1rem;
+	flex-wrap: wrap;
+}
+
+.friend-box {
+	flex: 0 1 calc(33% - 0.5rem);
+}
+
+.friend-item {
+	flex: 0 0 auto;
+}
+
+.friend-item:hover {
+	background: transparent !important;
+}
+
+@media (max-width: 767px) {
+	.friend-box {
+		flex: 0 1 calc(100%);
+	}
+}

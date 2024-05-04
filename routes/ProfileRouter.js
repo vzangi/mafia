@@ -2,8 +2,8 @@ const express = require('express')
 const router = express.Router()
 const controller = require('../controllers/ProfileController')
 const {
-  validator,
-  validationMiddleware,
+	validator,
+	validationMiddleware,
 } = require('../middlewares/ValidatorsMiddleware')
 const { isAuth } = require('../middlewares/AuthMiddleware')
 
@@ -14,7 +14,7 @@ router.use(express.urlencoded({ extended: true }))
 router.get('/', isAuth, controller.showAccountByNik)
 
 // Друзья
-router.get('/friends', isAuth, controller.friends)
+router.get('/friends', isAuth, controller.newFriends)
 
 // Запросы в друзья
 router.get('/friends/requests', controller.friendsRequest)
@@ -24,11 +24,11 @@ router.get('/change-password', isAuth, controller.changePasswordForm)
 
 // Процедура смены пароля
 router.post(
-  '/change-password',
-  isAuth,
-  validator.password,
-  validationMiddleware,
-  controller.changePassword
+	'/change-password',
+	isAuth,
+	validator.password,
+	validationMiddleware,
+	controller.changePassword
 )
 
 // Статистика игрока по нику
@@ -65,7 +65,10 @@ router.get('/things', controller.myInventory)
 router.get('/things/:username', controller.inventory)
 
 // Друзья игрока
-router.get('/friends/:nik', controller.friends)
+router.get('/friends/old/:nik', controller.friends)
+
+// Друзья игрока
+router.get('/friends/:nik', controller.newFriends)
 
 // Профиль игрока по нику
 router.get('/:nik', controller.showAccountByNik)

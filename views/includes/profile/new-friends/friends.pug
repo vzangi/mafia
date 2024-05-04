@@ -1,0 +1,29 @@
+mixin friendItem(friend, isPartner = false)
+	div(class="friend-box overflow-hidden" data-username=friend.username.toLowerCase())
+		div(class="block p-4 pt-3 pb-3")
+			div(class="d-flex justify-content-between align-items-center")
+
+				div(class="d-flex align-items-center flex-grow-1 overflow-hidden")
+					div(class="friend-item p-0 me-2")
+						div(class="friend-avatar"+(friend.online?' online':''))
+							a(href=`/profile/${friend.username}`)
+								img(src=`/uploads/${friend.avatar}` alt=friend.username)
+
+					div(class="nik overflow-hidden ellipsis")
+						a(href=`/profile/${friend.username}`)= friend.username
+
+				if currentAccount && currentAccount.id == profile.id
+					div(class="btns d-flex gap-1 flex-grow-0")
+						if !isPartner
+							button(class="btn btn-sm btn-success action-btn" data-id=friend.id 	data-question='Удалить из друзей?' data-event='friends.remove')
+								i(class="bi bi-person-dash")
+						button(class="btn btn-sm btn-success" onclick="startPrivateWith("+friend.id+")")
+							i(class="bi bi-envelope")
+
+div(class="friends-list mt-3 mb-4")
+	if partner 
+		+friendItem(partner.friend, true)
+
+	each friend in friends
+		if !partner || partner.friend.id != friend.friend.id
+			+friendItem(friend.friend)

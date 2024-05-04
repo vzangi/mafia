@@ -30,9 +30,40 @@ const {
 const GameType = require('../models/GameType')
 
 class ProfileService {
-	async profileInfo(profile, currentUser) {
+	async topData(profile, currentUser) {
 		const data = {}
 		data.profile = profile
+
+		if (currentUser) {
+			data.isFrends = await Friend.findOne({
+				where: {
+					accountId: currentUser.id,
+					friendId: profile.id,
+				},
+				order: [['id', 'DESC']],
+			})
+
+			data.isBlock = await Friend.findOne({
+				where: {
+					accountId: profile.id,
+					friendId: currentUser.id,
+					status: Friend.statuses.BLOCK,
+				},
+			})
+			data.havePartner = await Friend.findOne({
+				where: {
+					accountId: currentUser.id,
+					status: Friend.statuses.MARRIED,
+				},
+			})
+		}
+
+		return data
+	}
+
+	async profileInfo(profile, currentUser) {
+		const data = await this.topData(profile, currentUser)
+		data.link = 'profile'
 		data.title = `Профиль ${profile.username} — игрока онлайн проекта Мафия`
 		data.description = `Персональная страница ${profile.username} — игрока онлайн проекта Mafia One. На этой странице вы можете посмотреть личную статистику, список друзей, подаренные игроку открытки и список вещей в инвентаре.`
 		data.ogimage = process.env.APP_HOST + '/uploads/' + profile.avatar
@@ -66,32 +97,7 @@ class ProfileService {
 			],
 		})
 
-		data.hideinvent = await AccountSetting.getHideInventSetting(profile.id)
-		data.about = await AccountSetting.getAboutSetting(profile.id)
-
 		if (currentUser) {
-			data.isFrends = await Friend.findOne({
-				where: {
-					accountId: currentUser.id,
-					friendId: profile.id,
-				},
-				order: [['id', 'DESC']],
-			})
-
-			data.isBlock = await Friend.findOne({
-				where: {
-					accountId: profile.id,
-					friendId: currentUser.id,
-					status: Friend.statuses.BLOCK,
-				},
-			})
-			data.havePartner = await Friend.findOne({
-				where: {
-					accountId: currentUser.id,
-					status: Friend.statuses.MARRIED,
-				},
-			})
-
 			data.nikChanges = await AccountName.findAll({
 				where: { accountId: profile.id },
 				order: [['id', 'DESC']],
@@ -129,6 +135,9 @@ class ProfileService {
 			limit: 9,
 			order: [['id', 'desc']],
 		})
+
+		data.hideinvent = await AccountSetting.getHideInventSetting(profile.id)
+		data.about = await AccountSetting.getAboutSetting(profile.id)
 
 		// Наказания
 		data.punishments = await Punishment.findAll({
@@ -269,6 +278,12 @@ class ProfileService {
 		return data
 	}
 
+	async newCurrentUserFriendsList(user) {
+		const account = await Account.findByPk(user.id)
+		const data = await this.newFriendsList(account.username, user)
+		return data
+	}
+
 	async friendsList(nik) {
 		const profile = await Account.findOne({
 			where: {
@@ -297,6 +312,39 @@ class ProfileService {
 			title: `Друзья ${profile.username} — игрока онлайн проекта Мафия Уан`,
 			description: `На этой странице вы можете посмотреть список друзей ${profile.username} — игрока онлайн проекта Мафия Уан`,
 		}
+
+		data.noindex = profile.noindex
+
+		return data
+	}
+
+	async newFriendsList(nik, currentAccount) {
+		const profile = await Account.findOne({
+			where: {
+				username: nik,
+			},
+		})
+
+		const data = await this.topData(profile, currentAccount)
+
+		data.friends = await Friend.scope({
+			method: ['friends', profile.id],
+		}).findAll()
+
+		data.partner = await Friend.scope('def').findOne({
+			where: {
+				accountId: profile.id,
+				status: Friend.statuses.MARRIED,
+			},
+		})
+
+		data.requests = await Friend.scope({
+			method: ['requests', profile.id],
+		}).findAll()
+
+		data.link = 'friends'
+		data.title = `Друзья ${profile.username} — игрока онлайн проекта Мафия Уан`
+		data.description = `На этой странице вы можете посмотреть список друзей ${profile.username} — игрока онлайн проекта Мафия Уан`
 
 		data.noindex = profile.noindex
 

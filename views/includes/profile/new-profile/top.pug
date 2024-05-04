@@ -27,7 +27,7 @@ div(class="container-fliud mb-3")
                         span(class="d-none d-md-inline") Игрок в ЧС	
                         i(class="bi bi-chevron-down") 	
                       div(class="actions-dropdown-list")
-                        div(class="btn btn-light btn-sm action-btn" data-id=profile.id data-question='Разблокировать игрока?' data-event='friends.unblock') Разблокировать
+                        div(class="btn btn-light-green btn-sm action-btn" data-id=profile.id data-question='Разблокировать игрока?' data-event='friends.unblock') Разблокировать
                     else
                       div(class="btn btn-success btn-sm") 
                         i(class="bi bi-chevron-down") 
@@ -38,13 +38,13 @@ div(class="container-fliud mb-3")
                           if isFrends.status == 1
                             div(class="btn btn-light-green btn-sm w-100 mb-1 action-btn text-nowrap" data-id=profile.id data-question='Удалить из друзей?' data-event='friends.remove') Удалить из друзей
                             if !havePartner && !partner
-                              div(class="btn btn-light btn-sm w-100 mb-1 action-btn" data-id=profile.id data-question='Вы уверены, что хотите сделать предложение? В кошельке должно быть 50 рублей.' data-event='friends.zags') Позвать в ЗАГС
+                              div(class="btn btn-light-green btn-sm w-100 mb-1 action-btn" data-id=profile.id data-question='Вы уверены, что хотите сделать предложение? В кошельке должно быть 50 рублей.' data-event='friends.zags') Позвать в ЗАГС
 
                           if isFrends.status == 2
-                            div(class="btn btn-light btn-sm w-100 mb-1 action-btn" data-id=profile.id data-question='Вы точно хотите отозвать предложение? В кошелёк верёнтся 25 рублей.' data-event='friends.zags.recall') Отозвать предложение
+                            div(class="btn btn-light-green btn-sm w-100 mb-1 action-btn" data-id=profile.id data-question='Вы точно хотите отозвать предложение? В кошелёк верёнтся 25 рублей.' data-event='friends.zags.recall') Отозвать предложение
 
                           if isFrends.status == 3
-                            div(class="btn btn-light btn-sm w-100 mb-1 action-btn" data-id=profile.id data-question='Вы точно хотите развестись? В кошельке должно быть 100 рублей.' data-event='friends.divorce') Развестись
+                            div(class="btn btn-light-green btn-sm w-100 mb-1 action-btn" data-id=profile.id data-question='Вы точно хотите развестись? В кошельке должно быть 100 рублей.' data-event='friends.divorce') Развестись
 
                         if !isFrends || isFrends && isFrends.status < 2
                           div(class="btn btn-light-green btn-sm w-100 mb-1 action-btn" data-id=profile.id data-question='Заблокировать игрока?' data-event='friends.block') Заблокировать
@@ -68,22 +68,22 @@ div(class="container-fliud mb-3")
                         i(class="bi bi-hourglass-split") 
                         span(class="d-none d-md-inline") Запрос отправлен
                     if isFrends.status == 2
-                      div(class="btn btn-warning btn-sm") 
+                      div(class="btn btn-warning btn-sm ms-1") 
                         i(class="bi bi-hourglass-split") 
                         span(class="d-none d-md-inline") Предложение сделано
 
         div(class="links-box pb-3")
           div(class="d-flex justify-content-center")
-            a(href=`/profile/${profile.username}` class="active") 
+            a(href=`/profile/${profile.username}` class=(link=='profile'?'active':'')) 
               i(class="bi bi-layout-split") 
               span(class="d-none d-md-inline") Профиль
-            a(href=`/profile/friends/${profile.username}`) 
+            a(href=`/profile/friends/${profile.username}` class=(link=='friends'?'active':'')) 
               i(class="bi bi-people") 
               span(class="d-none d-md-inline") Друзья 
               small= friends.length
-            a(href=`/profile/things/${profile.username}`) 
+            a(href=`/profile/things/${profile.username}` class=(link=='things'?'active':'')) 
               i(class="bi bi-handbag") 
               span(class="d-none d-md-inline") Инвентарь
-            a(href=`/profile/statistics/${profile.username}`) 
+            a(href=`/profile/statistics/${profile.username}` class=(link=='statistics'?'active':'')) 
               i(class="bi bi-bar-chart-line") 
               span(class="d-none d-md-inline") Статистика

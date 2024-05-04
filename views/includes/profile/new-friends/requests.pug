@@ -1,0 +1,46 @@
+mixin friendRequest(friend, zags = false)
+	div(class="friend-box overflow-hidden")
+		div(class="block p-4 pt-3 pb-3")
+			div(class="d-flex justify-content-between align-items-center")
+
+				div(class="d-flex align-items-center flex-grow-1 overflow-hidden")
+					div(class="friend-item p-0 me-2")
+						div(class="friend-avatar"+(friend.online?' online':''))
+							a(href=`/profile/${friend.username}`)
+								img(src=`/uploads/${friend.avatar}` alt=friend.username)
+
+					div(class="nik overflow-hidden ellipsis")
+						a(href=`/profile/${friend.username}`)= friend.username
+
+
+				div(class="btns d-flex gap-1 flex-grow-0")
+					if !zags
+						button(class="btn btn-sm btn-success action-btn" data-id=friend.id data-question='Добавить в друзья?' data-event='friends.accept' title="Принять")
+							i(class="bi bi-check")
+						button(class="btn btn-sm btn-danger action-btn" data-id=friend.id data-question='Отклонить запрос в друзья?' data-event='friends.decline' title="Отклонить")
+							i(class="bi bi-x")
+					else
+						button(class="btn btn-sm btn-warning action-btn" data-id=friend.id data-question='Принять предложение?' data-event='friends.zags.accept' title="Принять")
+							i(class="bi bi-check")
+						button(class="btn btn-sm btn-danger action-btn" data-id=friend.id data-question='Отклонить предложение?' data-event='friends.zags.decline' title="Отклонить")
+							i(class="bi bi-x")
+
+if requests && requests.filter(r => r.status != 0).length > 0
+	h4 
+		span(class="bi-heart-fill") 
+		span Предложение руки и сердца
+	div(class="friends-list mt-3 mb-4")
+
+		each request in requests.filter(r => r.status != 0)
+			+friendRequest(request.account, true)
+
+	hr
+
+if requests && requests.filter(r => r.status == 0).length > 0
+	h4 Заявки в друзья
+	div(class="friends-list mt-3 mb-4")
+
+		each request in requests.filter(r => r.status == 0)
+			+friendRequest(request.account)
+
+	hr
