@@ -1,7 +1,7 @@
 const fs = require('fs')
 const Jimp = require('jimp')
 const bcrypt = require('bcrypt')
-const { Op } = require('sequelize')
+const { Op, where } = require('sequelize')
 const sequelize = require('../units/db')
 const Account = require('../models/Account')
 const AccountGift = require('../models/AccountGift')
@@ -187,12 +187,14 @@ class ProfileService {
 						{
 							model: GamePlayer,
 							as: 'players',
-							status: [
-								GamePlayer.playerStatuses.KILLED,
-								GamePlayer.playerStatuses.PRISONED,
-								GamePlayer.playerStatuses.TIMEOUT,
-								GamePlayer.playerStatuses.WON,
-							],
+							where: {
+								status: [
+									GamePlayer.playerStatuses.KILLED,
+									GamePlayer.playerStatuses.PRISONED,
+									GamePlayer.playerStatuses.TIMEOUT,
+									GamePlayer.playerStatuses.WON,
+								],
+							},
 						},
 					],
 					required: true,
@@ -218,13 +220,15 @@ class ProfileService {
 						{
 							model: GamePlayer,
 							as: 'players',
-							status: [
-								GamePlayer.playerStatuses.IN_GAME,
-								GamePlayer.playerStatuses.KILLED,
-								GamePlayer.playerStatuses.PRISONED,
-								GamePlayer.playerStatuses.TIMEOUT,
-								GamePlayer.playerStatuses.FREEZED,
-							],
+							where: {
+								status: [
+									GamePlayer.playerStatuses.IN_GAME,
+									GamePlayer.playerStatuses.KILLED,
+									GamePlayer.playerStatuses.PRISONED,
+									GamePlayer.playerStatuses.TIMEOUT,
+									GamePlayer.playerStatuses.FREEZED,
+								],
+							},
 						},
 					],
 					required: true,
