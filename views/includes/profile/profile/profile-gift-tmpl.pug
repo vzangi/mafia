@@ -6,6 +6,6 @@ script(id="giftListItemTmpl" type="text/x-jquery-tmpl")
   div(class="block gift-list-item p-3 mb-3" data-id="${id}")
     p Открытка от ${fromusername} — подарена ${giftDate}
     hr
-    p ${description}
+    p {{html description}}
     div(class="gift-item")
       img(src="/uploads/gift/${gift.picture}")
