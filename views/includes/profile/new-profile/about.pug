@@ -1,14 +1,24 @@
 div(class="block p-3 mb-4")
 	p 
 		b Об игроке
-	//- p Привет! Я zangi, люблю играть в мафию))
+	div(class="about-box d-flex")
+		if about && about != ''
+			p(class="about-text overflow-hidden")= about
+			if myprofile
+				div
+					button(class="btn btn-success btn-sm mb-3 change-about") 
+						span(class="bi bi-pencil-fill")
+		else 
+			if myprofile
+				button(class="btn btn-primary btn-success btn-sm mb-3 add-about") 
+					span(class="bi bi-pencil") 
+					span Немного о себе
 
 	div(class="mb-3")
 		div
 			b(class="text-uppercase") Играет в мафию:
 		div
 			span с  
-			//- span= profile.createdAt.toLocaleDateString('ru-Ru')
 			span= playFrom.substring(0, playFrom.length - 5)
 			span  года
 
@@ -18,7 +28,7 @@ div(class="block p-3 mb-4")
 			- pName='Супруга'
 		if profile.gender == 2
 			- pName='Супруг'
-		div(class="mb-3")
+		div(class="mb-2")
 			div
 				b(class="text-uppercase")= `${pName}:`
 			div(class="d-flex gap-2") 
@@ -42,7 +52,7 @@ div(class="block p-3 mb-4")
 				a(href="/profile/statistics/"+profile.username)
 					span= levelName
 
-	div(class="mb-3")
+	div(class="mb-0")
 		b(class="text-uppercase") Сила:
 		div(class="power") 
 			span(class="d-flex")

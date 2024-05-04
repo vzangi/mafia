@@ -7,16 +7,16 @@ if !isBlock
       div(class="col-md-3") 
         include punish
         include about
-        include game_mixin
-        include current_games
-        include last_games
+        include gifts
 
       div(class="col-md-6") 
         include center
 
       div(class="col-md-3") 
         include badge
-        include gifts
+        include game_mixin
+        include current_games
+        include last_games
 else 
   include /includes/profile/profile/block
 
