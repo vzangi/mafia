@@ -338,9 +338,10 @@ class ProfileService {
 			},
 		})
 
-		data.requests = await Friend.scope({
-			method: ['requests', profile.id],
-		}).findAll()
+		if (currentAccount && currentAccount.id == profile.id)
+			data.requests = await Friend.scope({
+				method: ['requests', profile.id],
+			}).findAll()
 
 		data.link = 'friends'
 		data.title = `Друзья ${profile.username} — игрока онлайн проекта Мафия Уан`
