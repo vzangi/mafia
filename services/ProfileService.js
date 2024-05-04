@@ -187,6 +187,12 @@ class ProfileService {
 						{
 							model: GamePlayer,
 							as: 'players',
+							status: [
+								GamePlayer.playerStatuses.KILLED,
+								GamePlayer.playerStatuses.PRISONED,
+								GamePlayer.playerStatuses.TIMEOUT,
+								GamePlayer.playerStatuses.WON,
+							],
 						},
 					],
 					required: true,
@@ -212,6 +218,13 @@ class ProfileService {
 						{
 							model: GamePlayer,
 							as: 'players',
+							status: [
+								GamePlayer.playerStatuses.IN_GAME,
+								GamePlayer.playerStatuses.KILLED,
+								GamePlayer.playerStatuses.PRISONED,
+								GamePlayer.playerStatuses.TIMEOUT,
+								GamePlayer.playerStatuses.FREEZED,
+							],
 						},
 					],
 					required: true,
