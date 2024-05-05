@@ -233,6 +233,7 @@ class ProfileController {
 			if (!username && req.account) {
 				statData.username = req.account.username
 			}
+			statData.user = req.user
 
 			const data = await service.statistics(statData)
 
@@ -245,7 +246,7 @@ class ProfileController {
 				}
 			}
 
-			res.render('pages/profile/statistics', data)
+			res.render('pages/profile/new-statistics', data)
 		} catch (error) {
 			log(error)
 			console.log(error)

@@ -34,6 +34,10 @@ class ProfileService {
 		const data = {}
 		data.profile = profile
 
+		data.friends = await Friend.scope({
+			method: ['friends', profile.id],
+		}).findAll()
+
 		if (currentUser) {
 			data.isFrends = await Friend.findOne({
 				where: {
@@ -326,10 +330,6 @@ class ProfileService {
 		})
 
 		const data = await this.topData(profile, currentAccount)
-
-		data.friends = await Friend.scope({
-			method: ['friends', profile.id],
-		}).findAll()
 
 		data.partner = await Friend.scope('def').findOne({
 			where: {
@@ -662,7 +662,7 @@ class ProfileService {
 
 	// Статистика
 	async statistics(statData) {
-		const { username, from, to } = statData
+		const { username, from, to, user } = statData
 
 		if (!username) throw new Error('Ник не указан')
 
@@ -673,7 +673,7 @@ class ProfileService {
 
 		const period = this._getPeriod(from, to)
 
-		const data = { profile: account }
+		const data = await this.topData(account, user)
 		data.noindex = account.noindex
 
 		// Общая статистика

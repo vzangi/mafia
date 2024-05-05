@@ -1,0 +1,14 @@
+extends /layouts/grey_layout
+
+block head 
+	link(rel="stylesheet" href="/css/profile/new-profile.css")
+	link(href="/css/lobbi/game.css?v=1.0" rel="stylesheet")
+	link(rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css")
+	link(href="/css/ui/datepicker.css" rel="stylesheet")
+	script(src="https://code.jquery.com/ui/1.13.2/jquery-ui.js")
+
+block content 
+	include /includes/profile/new-statistics/content
+
+block scripts 
+	script(src="/js/profile/statistics/datepicker.js")

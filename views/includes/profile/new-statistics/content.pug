@@ -1,0 +1,19 @@
+include ../new-profile/top
+
+div(class="container")
+  div(class="row")
+
+    div(class="col-md-8") 
+      h4 Статистика
+
+      include /includes/profile/statistics/base
+
+      include /includes/profile/statistics/roles
+
+      if currentAccount && currentAccount.vip
+        include /includes/profile/statistics/facts
+
+        include /includes/profile/statistics/actions
+
+    div(class="col-md-4") 
+      include ../statistics/period
