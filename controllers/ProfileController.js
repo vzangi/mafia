@@ -203,7 +203,7 @@ class ProfileController {
 			const { username } = req.params
 			const { user } = req
 			const data = await service.inventory(username, user)
-			res.render('pages/profile/inventory', data)
+			res.render('pages/profile/new-inventory', data)
 		} catch (error) {
 			log(error)
 			res.redirect('/profile')
@@ -217,7 +217,7 @@ class ProfileController {
 			if (!account) throw new Error('Не авторизован')
 			const { username } = req.account
 			const data = await service.inventory(username, account)
-			res.render('pages/profile/inventory', data)
+			res.render('pages/profile/new-inventory', data)
 		} catch (error) {
 			log(error)
 			res.redirect('/profile')

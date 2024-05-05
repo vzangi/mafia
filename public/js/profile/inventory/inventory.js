@@ -103,7 +103,7 @@ $(function () {
 		$('#thingForm').modal('show')
 	}
 
-	const username = $('.user-name').text()
+	const username = $('.nick:first').text()
 
 	socket.emit('inventory.things', username, (res) => {
 		if (res.status != 0) {

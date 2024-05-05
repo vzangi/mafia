@@ -595,8 +595,9 @@ class ProfileService {
 			throw new Error('Пользователь с таким ником не найден')
 		}
 
-		const data = { profile }
+		const data = await this.topData(profile, user)
 		data.noindex = profile.noindex
+		data.link = 'things'
 
 		if (!user || user.id != profile.id) {
 			const hideinvent = await AccountSetting.getHideInventSetting(profile.id)
@@ -675,6 +676,7 @@ class ProfileService {
 
 		const data = await this.topData(account, user)
 		data.noindex = account.noindex
+		data.link = 'statistics'
 
 		// Общая статистика
 		data.total = await this._getTotal(account.id, period)

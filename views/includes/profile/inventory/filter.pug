@@ -1,17 +1,17 @@
-div(class="things-filter mb-3")
-  div(class="d-flex flex-column flex-sm-row gap-2")
+div(class="things-filter")
+  div(class="d-flex flex-column gap-2")
     div(class="filter-box flex-grow-1")
       input(class="form-control" placeholder="Поиск по вещам")
-    div(class="d-flex flex-grow-0 gap-2")
+    div(class="d-flex flex-column flex-grow-0 gap-2")
 
       div(class="type-box")
-        select(class="form-control")
+        select(class="form-control w-100")
           option(value="0") Все
           each type in types
             option(value=type.id)= type.name
 
       div(class="sort-box")
-        select(class="form-control")
+        select(class="form-control w-100")
           option(value="0") По умолчанию
           option(value="1") По названию
           option(value="2") По классу

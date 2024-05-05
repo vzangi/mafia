@@ -11,11 +11,11 @@ div(class="container-fliud mb-3")
 
               div(class="profile-avatar " + (profile.online ? "online" : ""))
                 div(class="profile-avatar-image" style="background-image:url(/uploads/" + profile.avatar + ")" data-bs-toggle="tooltip" data-bs-placement="top" title=profile.online ? '' : 'Последний раз в онлайне - ' + (profile.updatedAt.toLocaleString('ru-Ru')))
-              div(class="profile-top-info-main")
-                div(class="profile-top-info-main-nick d-flex align-items-center fs-2")
+              div(class="profile-top-info-main m-0")
+                div(class="d-flex align-items-center fs-2")
                   if profile.vip
                     span(class="bi bi-star-fill fs-3 text-warning me-1" data-bs-toggle="tooltip" data-bs-placement="top" title='VIP-статус<br>до ' + (profile.vipTo.toLocaleString('ru-Ru')) data-bs-html="true") 
-                  span(class="nick backfon")=profile.username
+                  span(class="nick")=profile.username
 
           if currentAccount && currentAccount.id != profile.id
             div(class="btns-box")
