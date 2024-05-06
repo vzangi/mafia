@@ -1,4 +1,4 @@
-div(class="container")
+div(class="container mt-3")
     p(class="text-secondary text-center fs-4") Этот пользователь добавил вас в чёрный список.
     if !isFrends || (ifFrends && isFrends.status != -2)
         p(class="text-secondary text-center") Вы тоже можете #[a(class="block-user-too action-btn" data-id=profile.id data-question='Заблокировать игрока?' data-event='friends.block.too') добавить] его в чёрный список.

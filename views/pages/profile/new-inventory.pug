@@ -9,9 +9,10 @@ block content
 	include /includes/profile/new-inventory/content
 
 block scripts 
-	include /includes/profile/inventory/thing-tmpl
-	script(src="/js/profile/inventory/inventory.js?v=1.1")
-	script(src="/js/profile/inventory/filter.js")
+	if !isBlock && !isHide
+		include /includes/profile/inventory/thing-tmpl
+		script(src="/js/profile/inventory/inventory.js?v=1.1")
+		script(src="/js/profile/inventory/filter.js")
 	if currentAccount && profile.id == currentAccount.id
 		script(src="/js/profile/inventory/trading.js")
 		script(src="/js/profile/inventory/kraft.js")

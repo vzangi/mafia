@@ -1,16 +1,19 @@
-include ../new-profile/top
+if !isBlock
+  include ../new-profile/top
 
-div(class="container")
-  div(class="row")
+  div(class="container")
+    div(class="row")
 
-    div(class="col-12") 
-      include requests
+      div(class="col-12") 
+        include requests
 
-    div(class="col-12") 
-      div(class="d-flex justify-content-between")
-        h4(class="m-0") Друзья
-        div 
-          input(class="form-control form-control-sm" id="friendsFilter" placeholder="Поиск по друзьям")
+      div(class="col-12") 
+        div(class="d-flex justify-content-between")
+          h4(class="m-0") Друзья
+          div 
+            input(class="form-control form-control-sm" id="friendsFilter" placeholder="Поиск по друзьям")
 
-    div(class="col-12") 
-      include friends
+      div(class="col-12") 
+        include friends
+else 
+  include /includes/profile/profile/block
