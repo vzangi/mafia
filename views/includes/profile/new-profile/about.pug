@@ -21,6 +21,8 @@ div(class="block p-3 mb-4")
 			span с  
 			span= playFrom.substring(0, playFrom.length - 5)
 			span  года
+			if currentAccount && currentAccount.role == 1
+				span= ` (${playFrom.substring(playFrom.length - 5)})`
 
 	if partner 
 		-var pName='Партнёр'
