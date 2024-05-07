@@ -329,7 +329,7 @@ input:checked + .slider:before {
   color: #ccc;
 }
 
-.message-box.highlight {
+.message-box:not(.system-message).highlight {
   color: var(--color-yellow);
 }
 
@@ -760,4 +760,9 @@ input:checked + .slider:before {
 
 .log-box .role-6 {
   color: #ff9b32 !important;
+}
+
+.whisper {
+  color: #ff3f3f;
+  text-shadow: 0px 0px 2px #111;
 }

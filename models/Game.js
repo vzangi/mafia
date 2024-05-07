@@ -98,6 +98,10 @@ const Game = sequelize.define(
       type: DataTypes.INTEGER,
       defaultValue: 1,
     },
+    fullprivate: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: 1,
+    },
     autostart: {
       type: DataTypes.BOOLEAN,
       defaultValue: 1,
@@ -209,6 +213,7 @@ const Game = sequelize.define(
           'day',
           'mode',
           'firstday',
+          'fullprivate',
         ],
         include: [
           { model: GameType },

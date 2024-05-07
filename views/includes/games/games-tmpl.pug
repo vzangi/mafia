@@ -23,6 +23,16 @@ script(id="gameTmpl" type="text/x-jquery-tmpl")
             span(class="bi-lightning-fill" title="с добивами" data-bs-toggle="tooltip" data-bs-placement="right")
             . 
               {{/if}}
+            . 
+              {{if fullprivate != 1}}
+            span(class="bi bi-sign-no-parking-fill ms-1" title="Приват отключен" data-bs-toggle="tooltip" data-bs-placement="right")
+            .               
+              {{/if}}
+            .               
+              {{if gametype.id == 2 && melee == 1}}
+            span(class="bi bi-h-circle-fill ms-1" title="Рукопашная" data-bs-toggle="tooltip" data-bs-placement="right")
+            .               
+              {{/if}}
             .               
               {{if !firstday}}
             span(class="bi bi-moon-stars-fill ms-1" title="После знакомства сразу идёт ночь" data-bs-toggle="tooltip" data-bs-placement="right")

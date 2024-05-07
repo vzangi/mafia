@@ -59,6 +59,9 @@ class GameClassic extends GameBase {
     const { game } = this
 
     if (game.period == Game.periods.START) {
+      if (!game.fullprivate) {
+        this.systemMessage('Внимание! Приват отключен.')
+      }
       await this.nextDay()
       return
     }

@@ -84,6 +84,11 @@ div(class="modal fade" id="makeForm" tabindex="-1")
                 | 
                 span(class="bi-question-circle" title="В режиме с добивами в тюрьму отправляется игрок набравший наибольшее количество голосов за день" data-bs-toggle="tooltip" data-bs-placement="bottom")
 
+            +gameFormRow('')
+              +settings_item('Приват', 'fullprivate-1', true)
+                | 
+                span(class="bi-question-circle" title="Если отключить эту настройку полноценный приват будет работать только первые две минуты, а дальше станет виден как шёпот" data-bs-toggle="tooltip" data-bs-placement="bottom")
+
             +gameFormRow('Подпись к заявке')
               input(class="form-control" type="text" placeholder="Подпись к заявке" maxlength="69" id="gameDescription-1" name="gameDescription-1")
 
@@ -116,6 +121,11 @@ div(class="modal fade" id="makeForm" tabindex="-1")
               +settings_item('Ждать все ходы', 'mode-2', true)
                 | 
                 span(class="bi-question-circle" title="С этой опцией день будет завершаться, когда все игроки сделают ход" data-bs-toggle="tooltip" data-bs-placement="bottom")
+
+            +gameFormRow('')
+              +settings_item('Приват', 'fullprivate-2', true)
+                | 
+                span(class="bi-question-circle" title="Если отключить эту настройку полноценный приват будет работать только первые две минуты, а дальше станет виден как шёпот" data-bs-toggle="tooltip" data-bs-placement="bottom")
 
             +gameFormRow('')
               +settings_item('Рукопашная', 'melee-2', false)
@@ -176,6 +186,11 @@ div(class="modal fade" id="makeForm" tabindex="-1")
                 | 
                 span(class="bi-question-circle" title="В режиме с добивами в тюрьму отправляется игрок набравший наибольшее количество голосов за день" data-bs-toggle="tooltip" data-bs-placement="bottom")
 
+            +gameFormRow('')
+              +settings_item('Приват', 'fullprivate-4', true)
+                | 
+                span(class="bi-question-circle" title="Если отключить эту настройку полноценный приват будет работать только первые две минуты, а дальше станет виден как шёпот" data-bs-toggle="tooltip" data-bs-placement="bottom")
+
             +gameFormRow('Подпись к заявке')
               input(class="form-control" type="text" placeholder="Подпись к заявке" maxlength="69" id="gameDescription-4" name="gameDescription-4")
 
@@ -214,6 +229,11 @@ div(class="modal fade" id="makeForm" tabindex="-1")
               +settings_item('С добивами', 'mode-5', true)
                 | 
                 span(class="bi-question-circle" title="В режиме с добивами в тюрьму отправляется игрок набравший наибольшее количество голосов за день" data-bs-toggle="tooltip" data-bs-placement="bottom")
+
+            +gameFormRow('')
+              +settings_item('Приват', 'fullprivate-5', true)
+                | 
+                span(class="bi-question-circle" title="Если отключить эту настройку полноценный приват будет работать только первые две минуты, а дальше станет виден как шёпот" data-bs-toggle="tooltip" data-bs-placement="bottom")
 
             +gameFormRow('Количество мафиози (1 - 4 игроков)')
               +numberInput("mafiaCount-5", 1, 4, 2)

@@ -12,6 +12,13 @@ else
               span= game.gametype.name
               if game.mode == 2
                 span(class="bi-lightning-fill" title="с добивами" data-bs-toggle="tooltip" data-bs-placement="right")
+              if game.fullprivate != 1
+                span(class="bi bi-sign-no-parking-fill ms-1" title="Приват отключен" data-bs-toggle="tooltip" data-bs-placement="right")
+              if game.melee == 1 && game.gametypeId == 2
+                span(class="bi bi-h-circle-fill ms-1" title="Рукопашная" data-bs-toggle="tooltip" data-bs-placement="right")
+              if !game.firstday
+                span(class="bi bi-moon-stars-fill ms-1" title="После знакомства сразу идёт ночь" data-bs-toggle="tooltip" data-bs-placement="right")
+
             div(class="players-count d-flex align-items-center gap-1" title="Количество игроков в зявке" data-bs-toggle="tooltip" data-bs-placement="bottom") 
               span(class="bi-people-fill fs-5 bi-icon") 
               span(class="cnt")= game.players.length

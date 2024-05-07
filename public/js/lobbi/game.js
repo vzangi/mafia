@@ -285,6 +285,9 @@ $(function () {
     data.autostart = true
     if ($('#autostart-1').length == 1)
       data.autostart = $('#autostart-1')[0].checked ? 1 : 0
+    data.fullprivate = true
+    if ($('#fullprivate-1').length == 1)
+      data.fullprivate = $('#fullprivate-1')[0].checked ? 1 : 0
 
     // Ставлю мутекс
     if (newGameMutex) return
@@ -319,6 +322,9 @@ $(function () {
     data.autostart = true
     if ($('#autostart-2').length == 1)
       data.autostart = $('#autostart-2')[0].checked ? 1 : 0
+    data.fullprivate = true
+    if ($('#fullprivate-2').length == 1)
+      data.fullprivate = $('#fullprivate-2')[0].checked ? 1 : 0
 
     // Ставлю мутекс
     if (newGameMutex) return
@@ -382,6 +388,9 @@ $(function () {
     data.autostart = true
     if ($('#autostart-4').length == 1)
       data.autostart = $('#autostart-4')[0].checked ? 1 : 0
+    data.fullprivate = true
+    if ($('#fullprivate-4').length == 1)
+      data.fullprivate = $('#fullprivate-4')[0].checked ? 1 : 0
 
     // Ставлю мутекс
     if (newGameMutex) return
@@ -416,6 +425,9 @@ $(function () {
     if ($('#autostart-5').length == 1)
       data.autostart = $('#autostart-5')[0].checked ? 1 : 0
     data.firstday = $('#firstday-5')[0].checked ? 1 : 0
+    data.fullprivate = true
+    if ($('#fullprivate-5').length == 1)
+      data.fullprivate = $('#fullprivate-5')[0].checked ? 1 : 0
 
     data.roles = []
 
