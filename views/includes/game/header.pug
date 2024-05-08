@@ -19,7 +19,7 @@ header(class="game-status-"+game.status+ " game-period-"+game.period)
         div(class="to-lobbi text-end "+(game.period!=10&&isPlayer?'hide':''))
           a(class="btn btn-sm btn-warning" href="/lobbi") вернуться в лобби
 
-      if currentAccount && currentAccount.id == 1 && game.period != 10
+      if currentAccount && currentAccount.role == 1 && game.period != 10
         div(class="stop-box")
           button(class="btn" id="stopTheGame") 
             span(class="bi bi-sign-stop-fill text-light")
