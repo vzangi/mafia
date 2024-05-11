@@ -1,0 +1,44 @@
+extends /layouts/two_column_3_9
+
+block main
+  h1 Список жалоб
+
+  div(class="block mt-3 mb-3 p-3")
+    div(class="block claims-list")
+
+      each claim in claims
+        div(class="claim-item border p-2 mb-2")
+          div(class="claim-from")
+            span От: 
+            a(href="/profile/"+claim.account.username target="_blank")= claim.account.username
+          div(class="claim-to")
+            span На: 
+            a(href="/profile/"+claim.player.username target="_blank")= claim.player.username
+          div(class="claim-type")
+            span Тип жалобы: 
+            span= claim.typeName
+          div(class="claim-date")
+            span Дата: 
+            span= claim.createdAt.toLocaleString('ru-Ru')
+          if claim.comment
+            div(class="claim-comment")
+              div
+                span Коммент: 
+                span= claim.comment
+          if claim.game
+            div(class="claim-game")
+              span Игра: 
+              a(href="/game/"+claim.game.id target="_blank")= claim.game.id
+          if claim.punishment 
+            div(class="claim-punishment")
+              span Наказание: 
+              if claim.punishment.type == 1
+                span Мут 
+              if claim.punishment.type == 3
+                span Запрет на игры 
+              span до 
+              span= claim.punishment.createdAt.toLocaleString('ru-Ru')
+
+block scripts 
+  //- if currentAccount && currentAccount.id == 1
+    script(src="/js/admin/claims.js")

@@ -36,6 +36,9 @@ router.get('/clear-top-of-week/:secret', pages.clearTopOfWeek)
 // Список пользователей
 router.get('/users', pages.users)
 
+// Список жалоб
+router.get('/claims', pages.claims)
+
 // Страница репорта
 router.get('/report', pages.reportForm)
 

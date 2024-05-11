@@ -1,5 +1,6 @@
 const smiles = require('../units/smiles')
 const Contest = require('../models/Contest')
+const Claim = require('../models/Claim')
 const GamePlayer = require('../models/GamePlayer')
 const Account = require('../models/Account')
 const GameEvent = require('../models/GameEvent')
@@ -139,6 +140,16 @@ class PagesService {
 		const data = {}
 
 		data.users = await Account.findAll({
+			order: [['id', 'desc']],
+		})
+
+		return data
+	}
+
+	async claims() {
+		const data = {}
+
+		data.claims = await Claim.scope('def').findAll({
 			order: [['id', 'desc']],
 		})
 

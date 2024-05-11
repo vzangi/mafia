@@ -123,6 +123,21 @@ class PagesController {
 		}
 	}
 
+	// Список жалоб
+	async claims(req, res, next) {
+		try {
+			const { account } = req
+			if (!account) throw new Error('Не авторизован')
+			if (account.role != 1) throw new Error('Нет прав доступа')
+			const data = await service.claims()
+			data.title = 'Список жалоб Mafia One'
+			res.render('pages/admin/claims', data)
+		} catch (error) {
+			log(error)
+			next()
+		}
+	}
+
 	// Страница репорта
 	async reportForm(req, res) {
 		if (!req.user) {
