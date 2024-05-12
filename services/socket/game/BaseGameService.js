@@ -343,11 +343,31 @@ class BaseGameService extends BaseService {
 					}
 				})
 
-				// Если мафия пишет в приват никого не выделяя
+				// Если ком пишет в приват никого не выделяя
+
 				if (
+					msg.gamechatusers.length == 0 &&
+					(player.roleId == Game.roles.KOMISSAR ||
+						player.roleId == Game.roles.SERGEANT)
+				) {
+					// Рассылаю сообщение комам
+					game.players.forEach((pl) => {
+						if (pl.accountId == player.accountId) return
+						if (
+							pl.roleId != Game.roles.KOMISSAR &&
+							pl.roleId != Game.roles.SERGEANT
+						)
+							return
+						const ids = this.getUserSockets(pl.accountId, '/game')
+						ids.forEach((sock) => {
+							sock.emit('message', msg)
+						})
+					})
+				} else if (
 					msg.gamechatusers.length == 0 &&
 					player.roleId == Game.roles.MAFIA
 				) {
+					// Если мафия пишет в приват никого не выделяя
 					// Рассылаю сообщение всем мафам
 					game.players.forEach((pl) => {
 						if (pl.accountId == player.accountId) return
