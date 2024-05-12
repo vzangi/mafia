@@ -24,8 +24,8 @@ script(id="gameTmpl" type="text/x-jquery-tmpl")
             . 
               {{/if}}
             . 
-              {{if fullprivate != 1}}
-            span(class="bi bi-sign-no-parking-fill ms-1" title="Приват отключен" data-bs-toggle="tooltip" data-bs-placement="right")
+              {{if fullprivate == 1}}
+            span(class="bi bi-sign-no-parking-fill ms-1" title="Шёпот отключен" data-bs-toggle="tooltip" data-bs-placement="right")
             .               
               {{/if}}
             .               

@@ -343,22 +343,42 @@ class BaseGameService extends BaseService {
 					}
 				})
 
-				// Если приват отключен
-				if (!game.game.fullprivate && game.game.period != Game.periods.START) {
-					// Шёпот
-					const users = msg.gamechatusers
-						.map(
-							(u) => `<span class='recipient'>[${u.account.username}]</span>`
-						)
-						.join(', ')
-					const forma =
-						player.account.gender == Account.genders.FEMALE
-							? 'шепнула'
-							: player.account.gender == Account.genders.MALE
-							? 'шепнул'
-							: 'шепнул(а)'
-					const whisper = `<span class='whisper'><span class='initiator'>[${player.username}]</span> что-то ${forma} <span class='recipients'>${users}</span></span>`
-					game.systemMessage(whisper)
+				// Если мафия пишет в приват никого не выделяя
+				if (
+					msg.gamechatusers.length == 0 &&
+					player.roleId == Game.roles.MAFIA
+				) {
+					// Рассылаю сообщение всем мафам
+					game.players.forEach((pl) => {
+						if (pl.accountId == player.accountId) return
+						if (pl.roleId != Game.roles.MAFIA) return
+						const ids = this.getUserSockets(pl.accountId, '/game')
+						ids.forEach((sock) => {
+							sock.emit('message', msg)
+						})
+					})
+				} else {
+					// Если приват отключен
+					if (
+						!game.game.fullprivate &&
+						msg.gamechatusers.length > 0 &&
+						game.game.period != Game.periods.START
+					) {
+						// Шёпот
+						const users = msg.gamechatusers
+							.map(
+								(u) => `<span class='recipient'>[${u.account.username}]</span>`
+							)
+							.join(', ')
+						const forma =
+							player.account.gender == Account.genders.FEMALE
+								? 'шепнула'
+								: player.account.gender == Account.genders.MALE
+								? 'шепнул'
+								: 'шепнул(а)'
+						const whisper = `<span class='whisper'><span class='initiator'>[${player.username}]</span> что-то ${forma} <span class='recipients'>${users}</span></span>`
+						game.systemMessage(whisper)
+					}
 				}
 			}
 		} catch (error) {
