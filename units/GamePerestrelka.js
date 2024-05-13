@@ -32,6 +32,12 @@ class GamePerestrelka extends GameBase {
       case 6:
       case 7:
       case 8:
+        return [
+          [Game.roles.MAFIA, 2],
+          [Game.roles.KOMISSAR, 1],
+          [Game.roles.CHILD, 1],
+          [Game.roles.MANIAC, 1],
+        ]
       case 9:
       case 10:
       case 11:
@@ -40,13 +46,13 @@ class GamePerestrelka extends GameBase {
           [Game.roles.KOMISSAR, 1],
           [Game.roles.CHILD, 1],
           [Game.roles.MANIAC, 1],
+          [Game.roles.DOCTOR, 1],
         ]
       case 12:
       case 13:
       case 14:
       case 15:
       case 16:
-      case 17:
         return [
           [Game.roles.MAFIA, 3],
           [Game.roles.KOMISSAR, 1],
@@ -57,7 +63,7 @@ class GamePerestrelka extends GameBase {
         ]
     }
 
-    // 18 и больше
+    // 17 и больше
     return [
       [Game.roles.MAFIA, 4],
       [Game.roles.KOMISSAR, 1],
