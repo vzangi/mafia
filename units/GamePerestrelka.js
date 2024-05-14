@@ -233,11 +233,8 @@ class GamePerestrelka extends GameBase {
       stepType: GameStep.stepTypes.DAY,
     })
 
-    const voterPower = await AccountThing.getPower(voter.accountId)
-    const playerPower = await AccountThing.getPower(player.accountId)
-
     // Расчитываю урон
-    const uron = Math.ceil((100 + voterPower - playerPower) / 4)
+    const uron = await this.calcUron(voter, player)
 
     const playerLife = await GameLife.findOne({
       where: {
@@ -536,11 +533,8 @@ class GamePerestrelka extends GameBase {
       stepType: GameStep.stepTypes.NIGHT,
     })
 
-    const mafPower = await AccountThing.getPower(maf.accountId)
-    const playerPower = await AccountThing.getPower(player.accountId)
-
     // Рассчитываю урон
-    const uron = Math.ceil((100 + mafPower - playerPower) / 2)
+    const uron = await this.calcUron(maf, player, true)
 
     const playerLife = await GameLife.findOne({
       where: {
@@ -613,11 +607,8 @@ class GamePerestrelka extends GameBase {
     // Записываю выстрел в базу
     await GameStep.create(data)
 
-    const maniacPower = await AccountThing.getPower(maniac.accountId)
-    const playerPower = await AccountThing.getPower(player.accountId)
-
     // Рассчитываю урон
-    const uron = Math.ceil((100 + maniacPower - playerPower) / 2)
+    const uron = await this.calcUron(maniac, player, true)
 
     const playerLife = await GameLife.findOne({
       where: {
@@ -737,9 +728,8 @@ class GamePerestrelka extends GameBase {
         hasSave = true
 
         // Расчитываю велчину ночной жизни
-        const docPower = await AccountThing.getPower(docSave.accountId)
-        const playerPower = await AccountThing.getPower(player.accountId)
-        playerLife.life += Math.ceil((100 + docPower - playerPower) / 4)
+        playerLife.life += await this.calcUron(docSave, player)
+
         if (playerLife.life > 100) playerLife.life = 100
 
         // Увеличиваю уровень ночных жизней
@@ -998,15 +988,29 @@ class GamePerestrelka extends GameBase {
     })
 
     // Расчитываю уровень на который врач может спасти игрока
-    const docPower = await AccountThing.getPower(doc.accountId)
-    const playerPower = await AccountThing.getPower(player.accountId)
-    const save = Math.ceil((100 + docPower - playerPower) / 4)
+    const save = await this.calcUron(doc, player)
 
     this.systemLog(
       `<b>Врач ${doc.username} пытается спасти ${player.username} на +${save}</b>`,
       GameLog.types.DOC,
       true
     )
+  }
+
+  // Получение силы удара игрока
+  async getPower(accountId) {
+    if (this.game.melee == 1) return 0
+    return await AccountThing.getPower(accountId)
+  }
+
+  // Расчёт урона
+  async calcUron(player1, player2, night = false) {
+    const p1 = await this.getPower(player1.accountId)
+    const p2 = await this.getPower(player2.accountId)
+
+    const divider = night ? 2 : 4
+
+    return Math.ceil((100 + p1 - p2) / divider)
   }
 }
 

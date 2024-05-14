@@ -125,9 +125,12 @@ class GameService {
 
       data.power = {}
       for (const i in data.players) {
-        data.power[data.players[i].accountId] = await AccountThing.getPower(
-          data.players[i].accountId
-        )
+        data.power[data.players[i].accountId] = 0
+
+        if (game.melee != 1)
+          data.power[data.players[i].accountId] = await AccountThing.getPower(
+            data.players[i].accountId
+          )
       }
 
       // Если игрок в партии

@@ -237,15 +237,6 @@ class LobbiService extends BaseService {
     // Опция "Рукопашная"
     if (gametypeId == Game.types.SHOOTOUT && melee) {
       gameData.melee = true
-
-      // Проверяю, есть ли у меня инвентарь
-      const power = await AccountThing.getPower(user.id)
-
-      if (power != 0) {
-        throw new Error(
-          'Чтобы создать перестрелку в рукопашном режиме необходимо разоружиться'
-        )
-      }
     }
 
     // Создаю заявку на игру
@@ -577,16 +568,6 @@ class LobbiService extends BaseService {
 
       if (isBlocked) {
         throw new Error('Вы в ЧС у создателя заявки')
-      }
-    }
-
-    if (game.gametypeId == Game.types.SHOOTOUT && game.melee) {
-      const power = await AccountThing.getPower(account.id)
-
-      if (power != 0) {
-        throw new Error(
-          'Чтобы играть перестрелку в рукопашном режиме необходимо разоружиться'
-        )
       }
     }
 

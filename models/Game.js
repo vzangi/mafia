@@ -214,6 +214,7 @@ const Game = sequelize.define(
           'mode',
           'firstday',
           'fullprivate',
+          'melee',
         ],
         include: [
           { model: GameType },
