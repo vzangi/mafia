@@ -16,6 +16,9 @@ const Account = require('./models/Account')
     .then(async () => {
       log('DB connected... ok')
 
+      // Ставлю wait_timeout на неделю
+      await sequelize.query('SET SESSION wait_timeout = 604800')
+
       // Сбрасываю флаг онлайна
       await Account.update(
         {
