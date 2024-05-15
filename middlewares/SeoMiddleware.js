@@ -3,7 +3,7 @@ const seoData = {
     title: 'Мафия — Браузерная онлайн игра',
     description:
       'Приглашаем в бесплатную онлайн игру — мафию. Это отличное место, чтобы поиграть с друзьями в легендарную игру. Выбирайте различные режимы игр, собирайте редкие коллекции игровых предметов, общайтесь, веселитесь!',
-    ogimage: process.env.APP_HOST + '/images/logo.jpg',
+    ogimage: process.env.APP_HOST + '/images/oglogo.jpg',
   },
   '/login': {
     title: 'Вход на сайт Mafia One',
