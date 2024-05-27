@@ -21,4 +21,7 @@ module.exports = (io, socket) => {
 
   // Получение минимальной цены вещи на маркете
   socket.on('market.minprice', controller.getMinPrice.bind(controller))
+
+  // Получение минимальной цены вещи на маркете
+  socket.on('market.buy.vip', controller.buyVip.bind(controller))
 }

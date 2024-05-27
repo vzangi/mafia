@@ -42,6 +42,36 @@ const setTradesCancelled = async (thing) => {
 }
 
 class MarketService extends BaseService {
+  // Покупка VIP статуса
+  async buyVip(item) {
+    if (item != 1 && item != 2) throw new Error('Неверные данные')
+    const { user } = this
+
+    const price = item == 1 ? 60 : 150
+
+    if (!user)
+      throw new Error('Чтобы купить пропуск - необходимо авторизоваться')
+
+    const acc = await Account.findOne({
+      where: { id: user.id },
+      attributes: ['wallet'],
+    })
+
+    if (acc.wallet < price)
+      throw new Error('В кошельке не хватает средств, чтобы купить пропуск')
+
+    // Провожу оплату
+    await WalletEvent.buyItem(user.id, price, item)
+
+    // Создаю в инвентаре вещь
+    const thing = await AccountThing.create({
+      accountId: user.id,
+      thingId: item,
+    })
+
+    return 'Покупка успешно совершена. VIP пропуск в вашем инвентаре.'
+  }
+
   // Покупка лота
   async buy(thingId) {
     const { user } = this

@@ -4,6 +4,17 @@ const log = require('../../units/customLog')
 
 class MarketController extends BaseSocketController {
   // Покупка лота
+  async buyVip(req, callback) {
+    try {
+      const { item } = req
+      const message = await this.service.buyVip(item)
+      if (callback) callback({ status: 0, msg: message })
+    } catch (error) {
+      if (callback) callback({ status: 1, msg: error.message })
+    }
+  }
+
+  // Покупка лота
   async buy(offerId, callback) {
     try {
       await this.service.buy(offerId)

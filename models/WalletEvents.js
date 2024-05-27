@@ -189,4 +189,10 @@ WalletEvent.sell = async (offer) => {
   await transaction(WalletEvent.events.SELLING, accountId, price, thingId)
 }
 
+// Покупка вещи напрямую
+WalletEvent.buyItem = async (userId, price, itemId) => {
+  // Списываю средства со счёта покупателя
+  await transaction(WalletEvent.events.BUY, userId, -price, itemId)
+}
+
 module.exports = WalletEvent
