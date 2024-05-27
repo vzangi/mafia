@@ -197,6 +197,7 @@ class GameBase {
     const { players } = this
 
     let komIsOut = false
+    let hasTimeOut = false
 
     // Прохожу по каждому игроку
     for (let index = 0; index < players.length; index++) {
@@ -229,6 +230,8 @@ class GameBase {
       player.status = GamePlayer.playerStatuses.TIMEOUT
       await player.save()
 
+      hasTimeOut = true
+
       const role = await player.getRole()
 
       if (player.roleId == Game.roles.KOMISSAR) {
@@ -243,7 +246,7 @@ class GameBase {
           : 'вышел(ла)'
       } из партии по таймауту`
 
-      this.systemMessage(msg)
+      await this.systemMessage(msg)
 
       this.systemLog(msg)
 
@@ -255,6 +258,9 @@ class GameBase {
       // Передаю роль кома сержанту
       await this.updateSergeant()
     }
+
+    // Если никто не выходил в тайм - завершаю обработку
+    if (!hasTimeOut) return
 
     // Проверка на завершение игры
     const winnerSide = await this.isOver()
@@ -1007,22 +1013,22 @@ class GameBase {
     await this.systemMessage(`<hr>`)
 
     if (side == Game.sides.DRAW) {
-      this.systemMessage('Игра окончена. Ничья.')
+      await this.systemMessage('Игра окончена. Ничья.')
       this.systemLog('<hr>Игра окончена. Ничья.')
     }
 
     if (side == Game.sides.CITIZENS) {
-      this.systemMessage('Игра окончена. Честные жители победили.')
+      await this.systemMessage('Игра окончена. Честные жители победили.')
       this.systemLog('<hr>Игра окончена. Честные жители победили.')
     }
 
     if (side == Game.sides.MAFIA) {
-      this.systemMessage('Игра окончена. Мафия победила.')
+      await this.systemMessage('Игра окончена. Мафия победила.')
       this.systemLog('<hr>Игра окончена. Мафия победила.')
     }
 
     if (side == Game.sides.MANIAC) {
-      this.systemMessage('Игра окончена. Маньяк победил.')
+      await this.systemMessage('Игра окончена. Маньяк победил.')
       this.systemLog('<hr>Игра окончена. Маньяк победил.')
     }
 
@@ -1140,25 +1146,44 @@ class GameBase {
 
     const { players, game } = this
 
-    // Значение шанса определяет с какой веротностью будут раздоваться призы
-    // и зависит от количества игроков в партии
-    let chanceToPriz = (players.length * 4) / 100
-
-    // Если шанс больше случайного числа, то призы не раздаются
-    //if (chanceToPriz < Math.random()) return
-
     // Беру игроков выигравшей стороны
     const winPLayers = await GamePlayer.findAll({
       where: {
         gameId: game.id,
       },
-      include: {
-        model: Role,
-        where: {
-          rolesideId: side,
+      include: [
+        {
+          model: Role,
+          where: {
+            rolesideId: side,
+          },
         },
-      },
+        {
+          model: Account,
+          attributes: ['vipTo', 'vip'],
+        },
+      ],
     })
+
+    // Смотрю каждого игрока
+    // Если не конструктор, то апаю лвл
+    if (game.gametypeId != Game.types.CONSTRUCTOR) {
+      for (const gpId in winPLayers) {
+        const player = winPLayers[gpId]
+
+        // Вышедшим в тайм игрокам лвл не повышаю
+        if (player.status == GamePlayer.playerStatuses.TIMEOUT) continue
+
+        await this.levelUp(player)
+      }
+    }
+
+    // Значение шанса определяет с какой веротностью будут раздоваться призы
+    // и зависит от количества игроков в партии
+    let chanceToPriz = (players.length * 4) / 100
+
+    // Если шанс больше случайного числа, то призы не раздаются
+    if (chanceToPriz < Math.random()) return
 
     // Смотрю каждого игрока
     for (const gpId in winPLayers) {
@@ -1167,17 +1192,17 @@ class GameBase {
       // Вышедшим в тайм игрокам призы не даю
       if (player.status == GamePlayer.playerStatuses.TIMEOUT) continue
 
-      // Если не конструктор, то апаю лвл
-      if (game.gametypeId != Game.types.CONSTRUCTOR) {
-        await this.levelUp(player)
-      }
-
       // Шанс для выбывшего игрока
       chanceToPriz = 0.25
 
       // Шанс для игрока оставшегося в игре
       if (player.status == GamePlayer.playerStatuses.WON) {
         chanceToPriz = 0.5
+      }
+
+      // У VIP игроков шанс получить приз выше
+      if (player.account.vip) {
+        chanceToPriz += 0.25
       }
 
       // Если шанс меньше случайной величины - игрок не получает приз
@@ -1249,7 +1274,7 @@ class GameBase {
       const rndBadge = await Thing.findOne({
         where: {
           thingtypeId: ThingType.thingTypes.BADGE,
-          thingclassId: endLevel > 4 ? 4 : endLevel * 1 + 1,
+          thingclassId: 2, //endLevel > 4 ? 4 : endLevel * 1 + 1,
         },
         order: [sequelize.random()],
       })
@@ -1297,22 +1322,22 @@ class GameBase {
     }
 
     // Приз - вещь
-    if (rnd > 0.7) {
+    if (rnd > 0.8) {
       thingtypeId = 1
 
-      if (rnd > 0.79 && rnd < 0.8) {
+      if (rnd > 0.89 && rnd < 0.9) {
         // Вещь второго класса
         thingclassId = 2
       }
     }
 
     // Приз - подарочный набор
-    if (rnd > 0.8) {
+    if (rnd > 0.9) {
       thingtypeId = 3
     }
 
     // Приз - ключ
-    if (rnd > 0.9) {
+    if (rnd > 0.98) {
       thingtypeId = 5
     }
 
