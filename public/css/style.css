@@ -187,6 +187,8 @@ img.prevu {
 .feature-image {
   height: 175px;
   background: center center/contain no-repeat;
+  max-width: 200px;
+  margin: auto;
 }
 
 .feature h4 {
