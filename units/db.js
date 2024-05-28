@@ -13,6 +13,12 @@ const sequelize = new Sequelize(
       collate: 'utf8mb4_unicode_ci',
       timestamps: true,
     },
+    pool: {
+      max: 30,
+      min: 0,
+      acquire: 30000,
+      idle: 10000,
+    },
   }
 )
 
