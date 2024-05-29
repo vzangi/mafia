@@ -91,4 +91,20 @@ $(function () {
 
     return false
   })
+
+  $('#promoForm').submit(function (event) {
+    event.preventDefault()
+
+    const code = $(this).find('[name=promocode]').val().trim()
+
+    socket.emit('promo.take', code, (res) => {
+      const { status, msg } = res
+      if (status == 0) {
+        $(this).find('[name=promocode]').val('')
+      }
+      alert(msg)
+    })
+
+    return false
+  })
 })
