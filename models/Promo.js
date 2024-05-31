@@ -2,6 +2,7 @@ const { DataTypes } = require('sequelize')
 const sequelize = require('../units/db')
 const AccountPromo = require('./AccountPromo')
 const AccountThing = require('./AccountThing')
+const Account = require('./Account')
 
 const promos = {
   VIP_ON_WEEK: 1,
@@ -50,7 +51,7 @@ const vipOnWeek = async (promo, accountId) => {
 
 // Процедура активации промокода
 Promo.runPromo = async (promo, accountId) => {
-  if (promo.limitation !== null && promo.limitation <= 0)
+  if (promo.limitation !== null && promo.limitation < 1)
     throw new Error('Лимит по акции исчерпан')
 
   const date = new Date().getTime()
@@ -60,6 +61,14 @@ Promo.runPromo = async (promo, accountId) => {
 
   if (date > new Date(promo.toDate).getTime())
     throw new Error('Срок проведения акции истёк')
+
+  const account = await Account.findByPk(accountId)
+  if (!account) throw new Error('Аккаунт не найден')
+
+  if (account.createdAt > promo.fromDate)
+    throw new Error(
+      'Вы не можете активировать этот промокод, так как зарегистрировались позже начала акции'
+    )
 
   if (promo.id === promos.VIP_ON_WEEK) return await vipOnWeek(promo, accountId)
   throw new Error('Не удалось активировать промокод')
