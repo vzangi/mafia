@@ -13,6 +13,9 @@ module.exports = (io, socket) => {
   // Активация VIP пропуска
   socket.on('vip.activate', controller.vipActivate.bind(controller))
 
+  // Открытие пакета
+  socket.on('bag.open', controller.openBag.bind(controller))
+
   // Получение списка вещей набора или кейса
   socket.on('nabor.things', controller.getNaborThings.bind(controller))
 

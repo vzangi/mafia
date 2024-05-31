@@ -1,237 +1,258 @@
 $(function () {
-	const isFloat = (n) => {
-		return Number(n) === n && n % 1 !== 0
-	}
+  const isFloat = (n) => {
+    return Number(n) === n && n % 1 !== 0
+  }
 
-	const isInt = (n) => {
-		return Number(n) === n && n % 1 === 0
-	}
+  const isInt = (n) => {
+    return Number(n) === n && n % 1 === 0
+  }
 
-	// Удаление вещи из списка и уменьшение количества на единицу
-	const decThingsCount = (thingId) => {
-		const tc = $('.things-count')
-		tc.text(tc.text() * 1 - 1)
-		$(`.things-list-box .thing-item[data-id=${thingId}]`).remove()
-	}
+  // Удаление вещи из списка и уменьшение количества на единицу
+  const decThingsCount = (thingId) => {
+    const tc = $('.things-count')
+    tc.text(tc.text() * 1 - 1)
+    $(`.things-list-box .thing-item[data-id=${thingId}]`).remove()
+  }
 
-	// Активация VIP пропуска
-	$('body').on('click', '.btn-activate', function () {
-		$('#thingForm').modal('hide')
-		confirm('Активировать VIP пропуск?').then((accept) => {
-			if (!accept) {
-				$('#thingForm').modal('show')
-				return
-			}
+  // Активация VIP пропуска
+  $('body').on('click', '.btn-activate', function () {
+    $('#thingForm').modal('hide')
+    confirm('Активировать VIP пропуск?').then((accept) => {
+      if (!accept) {
+        $('#thingForm').modal('show')
+        return
+      }
 
-			const { id } = $('#thingForm').data()
+      const { id } = $('#thingForm').data()
 
-			socket.emit('vip.activate', id, (res) => {
-				if (res.status != 0) {
-					return alert(res.msg)
-				}
-				notify('VIP активирован!')
-				decThingsCount(id)
-			})
-		})
-	})
+      socket.emit('vip.activate', id, (res) => {
+        if (res.status != 0) {
+          return alert(res.msg)
+        }
+        notify('VIP активирован!')
+        decThingsCount(id)
+      })
+    })
+  })
 
-	// Продажа вещи
-	$('body').on('click', '.btn-sell', function () {
-		$('#thingForm').modal('hide')
-		confirm('Продать вещь по себестоймости?').then((accept) => {
-			if (!accept) {
-				$('#thingForm').modal('show')
-				return
-			}
+  // Открытие пакета с открытками
+  $('body').on('click', '.btn-open-bag', function () {
+    $('#thingForm').modal('hide')
+    confirm('Открыть пакет?').then((accept) => {
+      if (!accept) {
+        $('#thingForm').modal('show')
+        return
+      }
 
-			const { id } = $('#thingForm').data()
+      const { id } = $('#thingForm').data()
 
-			socket.emit('market.sell', id, (res) => {
-				if (res.status != 0) {
-					return alert(res.msg)
-				}
-				notify('Вещь продана!')
-				decThingsCount(id)
-			})
-		})
-	})
+      socket.emit('bag.open', id, (res) => {
+        if (res.status != 0) {
+          return alert(res.msg)
+        }
+        notify('Пакет открыт!')
+        decThingsCount(id)
+      })
+    })
+  })
 
-	// Выставить на маркет
-	$('body').on('click', '.btn-sell-on-market', function () {
-		$('#thingForm').modal('hide')
-		const { id } = $('#thingForm').data()
-		const { thing } = $(`.things-list-box .thing-item[data-id=${id}]`).data()
+  // Продажа вещи
+  $('body').on('click', '.btn-sell', function () {
+    $('#thingForm').modal('hide')
+    confirm('Продать вещь по себестоймости?').then((accept) => {
+      if (!accept) {
+        $('#thingForm').modal('show')
+        return
+      }
 
-		socket.emit('market.minprice', thing.thing.id, (res) => {
-			if (res.status != 0) {
-				return alert(res.msg)
-			}
+      const { id } = $('#thingForm').data()
 
-			const { minPrice } = res
+      socket.emit('market.sell', id, (res) => {
+        if (res.status != 0) {
+          return alert(res.msg)
+        }
+        notify('Вещь продана!')
+        decThingsCount(id)
+      })
+    })
+  })
 
-			$('.min-price')
-				.text(minPrice ? `${minPrice} р.` : 'нет предложений')
-				.attr('href', '/market/thing/' + thing.thing.id)
+  // Выставить на маркет
+  $('body').on('click', '.btn-sell-on-market', function () {
+    $('#thingForm').modal('hide')
+    const { id } = $('#thingForm').data()
+    const { thing } = $(`.things-list-box .thing-item[data-id=${id}]`).data()
 
-			$('#sellFormImgTmpl').tmpl(thing).appendTo($('.sell-form-img').empty())
+    socket.emit('market.minprice', thing.thing.id, (res) => {
+      if (res.status != 0) {
+        return alert(res.msg)
+      }
 
-			$('#sellForm').modal('show')
-		})
-	})
+      const { minPrice } = res
 
-	// Ввод цены для покупателя
-	$('#sellPrice').keyup(function (event) {
-		const price = $(this).val() * 1
-		if (price != 0) {
-			$('.btn-sell-on').removeAttr('disabled')
-		} else {
-			$('.btn-sell-on').attr('disabled', 'disabled')
-		}
-		$('#navarCount').val((price * 0.9).toFixed(2))
-	})
+      $('.min-price')
+        .text(minPrice ? `${minPrice} р.` : 'нет предложений')
+        .attr('href', '/market/thing/' + thing.thing.id)
 
-	// Ввод суммы прибыли от продажи
-	$('#navarCount').keyup(function (event) {
-		const price = $(this).val() * 1
-		if (price != 0) {
-			$('.btn-sell-on').removeAttr('disabled')
-		} else {
-			$('.btn-sell-on').attr('disabled', 'disabled')
-		}
-		$('#sellPrice').val(((price / 90) * 100).toFixed(2))
-	})
+      $('#sellFormImgTmpl').tmpl(thing).appendTo($('.sell-form-img').empty())
 
-	// Установка ограничения в два знака после запятой
-	$('#sellPrice, #navarCount').on('input', function (e) {
-		let value = $(this).val()
-		if (value.indexOf('.') != '-1') {
-			value = value.substring(0, value.indexOf('.') + 3)
-			$(this).val(value)
-		}
-	})
+      $('#sellForm').modal('show')
+    })
+  })
 
-	// Выставить вещь на маркет
-	$('.btn-sell-on').click(function () {
-		const { id } = $('#thingForm').data()
-		const price = $('#sellPrice').val()
+  // Ввод цены для покупателя
+  $('#sellPrice').keyup(function (event) {
+    const price = $(this).val() * 1
+    if (price != 0) {
+      $('.btn-sell-on').removeAttr('disabled')
+    } else {
+      $('.btn-sell-on').attr('disabled', 'disabled')
+    }
+    $('#navarCount').val((price * 0.9).toFixed(2))
+  })
 
-		$('#sellForm').modal('hide')
+  // Ввод суммы прибыли от продажи
+  $('#navarCount').keyup(function (event) {
+    const price = $(this).val() * 1
+    if (price != 0) {
+      $('.btn-sell-on').removeAttr('disabled')
+    } else {
+      $('.btn-sell-on').attr('disabled', 'disabled')
+    }
+    $('#sellPrice').val(((price / 90) * 100).toFixed(2))
+  })
 
-		confirm('Выставить вещь на продажу?').then((accept) => {
-			if (!accept) {
-				$('#thingForm').modal('show')
-				return
-			}
+  // Установка ограничения в два знака после запятой
+  $('#sellPrice, #navarCount').on('input', function (e) {
+    let value = $(this).val()
+    if (value.indexOf('.') != '-1') {
+      value = value.substring(0, value.indexOf('.') + 3)
+      $(this).val(value)
+    }
+  })
 
-			socket.emit('market.sell.on', id, price, (res) => {
-				if (res.status != 0) {
-					return alert(res.msg)
-				}
-				notify('Вещь выставлена на маркет!')
-				decThingsCount(id)
-			})
-		})
-	})
+  // Выставить вещь на маркет
+  $('.btn-sell-on').click(function () {
+    const { id } = $('#thingForm').data()
+    const price = $('#sellPrice').val()
 
-	// Нацепить значок
-	$('body').on('click', '.btn-take-badge', function () {
-		const { id } = $('#thingForm').data()
+    $('#sellForm').modal('hide')
 
-		confirm('Нацепить значок на профиль?').then((accept) => {
-			if (!accept) return
+    confirm('Выставить вещь на продажу?').then((accept) => {
+      if (!accept) {
+        $('#thingForm').modal('show')
+        return
+      }
 
-			socket.emit('badge.take', id, (res) => {
-				if (res.status != 0) {
-					return alert(res.msg)
-				}
+      socket.emit('market.sell.on', id, price, (res) => {
+        if (res.status != 0) {
+          return alert(res.msg)
+        }
+        notify('Вещь выставлена на маркет!')
+        decThingsCount(id)
+      })
+    })
+  })
 
-				untakeBadges()
+  // Нацепить значок
+  $('body').on('click', '.btn-take-badge', function () {
+    const { id } = $('#thingForm').data()
 
-				const item = $(`.things-list-box .thing-item[data-id=${id}]`)
+    confirm('Нацепить значок на профиль?').then((accept) => {
+      if (!accept) return
 
-				item.data().thing.taked = true
-				item.addClass('taked')
+      socket.emit('badge.take', id, (res) => {
+        if (res.status != 0) {
+          return alert(res.msg)
+        }
 
-				$('#thingForm').modal('hide')
-				notify('Значок одет!')
-			})
-		})
-	})
+        untakeBadges()
 
-	// Отцепить значок
-	$('body').on('click', '.btn-untake-badge', function () {
-		const { id } = $('#thingForm').data()
+        const item = $(`.things-list-box .thing-item[data-id=${id}]`)
 
-		confirm('Отцепить значок от профиля?').then((accept) => {
-			if (!accept) return
+        item.data().thing.taked = true
+        item.addClass('taked')
 
-			socket.emit('badge.untake', id, (res) => {
-				if (res.status != 0) {
-					return alert(res.msg)
-				}
+        $('#thingForm').modal('hide')
+        notify('Значок одет!')
+      })
+    })
+  })
 
-				untakeBadges()
+  // Отцепить значок
+  $('body').on('click', '.btn-untake-badge', function () {
+    const { id } = $('#thingForm').data()
 
-				$('#thingForm').modal('hide')
-				notify('Значок снят!')
-			})
-		})
-	})
+    confirm('Отцепить значок от профиля?').then((accept) => {
+      if (!accept) return
 
-	// Взять предмет в игру
-	$('body').on('click', '.btn-take-thing', function () {
-		const { id } = $('#thingForm').data()
+      socket.emit('badge.untake', id, (res) => {
+        if (res.status != 0) {
+          return alert(res.msg)
+        }
 
-		confirm('Взять предмет в игру?').then((accept) => {
-			if (!accept) return
+        untakeBadges()
 
-			socket.emit('thing.take', id, (res) => {
-				if (res.status != 0) {
-					return alert(res.msg)
-				}
+        $('#thingForm').modal('hide')
+        notify('Значок снят!')
+      })
+    })
+  })
 
-				const item = $(`.things-list-box .thing-item[data-id=${id}]`)
+  // Взять предмет в игру
+  $('body').on('click', '.btn-take-thing', function () {
+    const { id } = $('#thingForm').data()
 
-				item.data().thing.taked = true
-				item.addClass('taked')
+    confirm('Взять предмет в игру?').then((accept) => {
+      if (!accept) return
 
-				$('#thingForm').modal('hide')
-				notify('Предмет взят в игру!')
-			})
-		})
-	})
+      socket.emit('thing.take', id, (res) => {
+        if (res.status != 0) {
+          return alert(res.msg)
+        }
 
-	// Вернуть предмет в инвентарь
-	$('body').on('click', '.btn-untake-thing', function () {
-		const { id } = $('#thingForm').data()
+        const item = $(`.things-list-box .thing-item[data-id=${id}]`)
 
-		confirm('Вернуть предмет в инвентарь?').then((accept) => {
-			if (!accept) return
+        item.data().thing.taked = true
+        item.addClass('taked')
 
-			socket.emit('thing.untake', id, (res) => {
-				if (res.status != 0) {
-					return alert(res.msg)
-				}
+        $('#thingForm').modal('hide')
+        notify('Предмет взят в игру!')
+      })
+    })
+  })
 
-				const item = $(`.things-list-box .thing-item[data-id=${id}]`)
+  // Вернуть предмет в инвентарь
+  $('body').on('click', '.btn-untake-thing', function () {
+    const { id } = $('#thingForm').data()
 
-				item.data().thing.taked = false
-				item.removeClass('taked')
+    confirm('Вернуть предмет в инвентарь?').then((accept) => {
+      if (!accept) return
 
-				$('#thingForm').modal('hide')
-				notify('Предмет вернулся в инвентарь!')
-			})
-		})
-	})
+      socket.emit('thing.untake', id, (res) => {
+        if (res.status != 0) {
+          return alert(res.msg)
+        }
 
-	// Снимаю отметку
-	function untakeBadges() {
-		$(`.things-list-box .thing-item.taked`).each((_, item) => {
-			const { thing } = $(item).data()
-			if (thing.thing.thingtypeId == 6) {
-				$(item).data().thing.taked = false
-				$(item).removeClass('taked')
-			}
-		})
-	}
+        const item = $(`.things-list-box .thing-item[data-id=${id}]`)
+
+        item.data().thing.taked = false
+        item.removeClass('taked')
+
+        $('#thingForm').modal('hide')
+        notify('Предмет вернулся в инвентарь!')
+      })
+    })
+  })
+
+  // Снимаю отметку
+  function untakeBadges() {
+    $(`.things-list-box .thing-item.taked`).each((_, item) => {
+      const { thing } = $(item).data()
+      if (thing.thing.thingtypeId == 6) {
+        $(item).data().thing.taked = false
+        $(item).removeClass('taked')
+      }
+    })
+  }
 })

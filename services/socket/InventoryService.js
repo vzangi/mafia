@@ -7,6 +7,7 @@ const NaborThing = require('../../models/NaborThing')
 const sequelize = require('../../units/db')
 const BaseService = require('./BaseService')
 const GamePlayer = require('../../models/GamePlayer')
+const AccountSetting = require('../../models/AccountSetting')
 
 // id типов вещей
 const { thingTypes } = ThingType
@@ -190,6 +191,44 @@ class InventoryService extends BaseService {
     )
 
     // Удаляю пропуск из инвентаря
+    thing.accountId = null
+    await thing.save()
+  }
+
+  // Открытие пакета
+  async openBag(id) {
+    const { user } = this
+    if (!user) {
+      throw new Error('Не авторизован')
+    }
+
+    if (!id) {
+      throw new Error('Нет необходимых данных')
+    }
+
+    // Беру пакет из инвентаря
+    const thing = await AccountThing.findByPk(id, {
+      include: [{ model: Thing }, { model: Account }],
+    })
+
+    if (!thing) {
+      throw new Error('Пакет не найден')
+    }
+
+    if (thing.accountId != user.id) {
+      throw new Error('На чужое позарился!?')
+    }
+
+    if (thing.thing.thingtypeId != thingTypes.BAG) {
+      throw new Error('Это не пакет')
+    }
+
+    const depositeCounts = [3, 7, 15, 30]
+    const depositeValue = depositeCounts[thing.thing.thingclassId - 2]
+
+    await AccountSetting.incBagDepositeSetting(user.id, depositeValue)
+
+    // Удаляю пакет из инвентаря
     thing.accountId = null
     await thing.save()
   }

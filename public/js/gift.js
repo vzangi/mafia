@@ -78,25 +78,29 @@ $(function () {
       return alert('Укажите текст открытки')
     }
 
+    const data = {
+      giftId: giftId.val(),
+      to: to.val(),
+      description: description.val(),
+    }
+
     // Отправка данных по сокету
-    socket.emit(
-      'gifts.buy',
-      giftId.val(),
-      to.val(),
-      description.val(),
-      (res) => {
-        if (res.status != 0) {
-          return alert(res.msg)
-        }
-
-        // Очищаю поля для новой открытки
-        selectedGift.empty()
-        giftId.val('')
-        description.val('')
-
-        alert('Открытка подарена!')
+    socket.emit('gifts.buy', data, (res) => {
+      const { status, msg, deposit } = res
+      if (status != 0) {
+        return alert(msg)
       }
-    )
+
+      alert('Открытка подарена!')
+
+      // Очищаю поля для новой открытки
+      selectedGift.empty()
+      giftId.val('')
+      description.val('')
+      if (deposit != 0) $('#deposit').text(+deposit - 1)
+
+      if (+deposit < 2) $('.deposite-value').remove()
+    })
 
     return false
   })

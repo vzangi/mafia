@@ -2,6 +2,7 @@ const { Op } = require('sequelize')
 const sequelize = require('../../units/db')
 const bot = require('../../units/bot')
 const Account = require('../../models/Account')
+const AccountSetting = require('../../models/AccountSetting')
 const AccountGift = require('../../models/AccountGift')
 const Gift = require('../../models/Gift')
 const GiftGroups = require('../../models/GiftGroup')
@@ -41,7 +42,9 @@ class GiftService extends BaseService {
   }
 
   // Покупка открытки
-  async giftBuy(giftId, to, description) {
+  async giftBuy(giftData) {
+    const { giftId, to } = giftData
+    let { description } = giftData
     const { user, socket } = this
     if (!user) {
       throw new Error('Не авторизован')
@@ -101,15 +104,23 @@ class GiftService extends BaseService {
       }
     }
 
-    // Проверяю, есть ли у игрока достаточно средств
-    if (account.wallet < gift.price) {
-      throw new Error(
-        `Чтобы подарить эту открытку на счету должно быть как минимум ${gift.price} рублей`
-      )
-    }
+    // Количество бесплатных открыток по депозиту
+    const deposit = await AccountSetting.getBagDepositeSetting(user.id)
 
-    // Провожу транзакцию покупки
-    await WalletEvent.gift(user.id, gift.price)
+    // Если нет депозита, то беру оплату из кошелька
+    if (!deposit) {
+      // Проверяю, есть ли у игрока достаточно средств
+      if (account.wallet < gift.price) {
+        throw new Error(
+          `Чтобы подарить эту открытку на счету должно быть как минимум ${gift.price} рублей`
+        )
+      }
+      // Провожу транзакцию покупки
+      await WalletEvent.gift(user.id, gift.price)
+    } else {
+      // Уменьшаю депозит
+      await AccountSetting.incBagDepositeSetting(user.id, -1)
+    }
 
     // Дарю открытку
     await AccountGift.create({
@@ -139,6 +150,8 @@ class GiftService extends BaseService {
         { caption: `${notifyMessage}:\r\n${description}` }
       )
     }
+
+    return deposit
   }
 
   // Количество новых открыток

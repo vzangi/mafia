@@ -9,6 +9,7 @@ const thingTypes = {
   KEIS: 4,
   KEY: 5,
   BADGE: 6,
+  BAG: 7,
 }
 
 const ThingType = sequelize.define('thingtypes', {

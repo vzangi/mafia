@@ -21,6 +21,9 @@ block aside
             textarea(placeholder="Текст открытки" maxlength=255 rows=4 class="form-control mb-2" name="message" required)
             button(type="submit" class="btn btn-success btn-sm w-100") Отправить
 
+        if deposit && deposit != 0
+            p(class="mt-2 deposite-value") Количество бесплатных открыток в рамках депозита: #[b(id="deposit")= deposit]
+
 block scripts 
     include /includes/gifts-tmpl
     script(src="/js/gift.js")
