@@ -210,6 +210,9 @@ class ProfileService {
               },
             },
           ],
+        },
+        {
+          model: Role,
           required: true,
         },
       ],
