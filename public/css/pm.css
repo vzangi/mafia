@@ -191,6 +191,7 @@
   background: linear-gradient(30deg, #6097e0, #367bd8);
   color: #fff;
   font-size: 0.9rem;
+  flex: 0 1 auto;
 }
 
 .friend-message,
