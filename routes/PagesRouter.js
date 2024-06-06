@@ -56,6 +56,8 @@ router.get('/reports', pages.getReports)
 
 router.get('/pc', pages.privatechats)
 
+router.get('/inventory', pages.blogInventory)
+
 // Cтраницы со статическим содержимым
 router.use('/', require('./BlogRouter'))
 

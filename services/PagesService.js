@@ -15,6 +15,8 @@ const AccountSetting = require('../models/AccountSetting')
 const Message = require('../models/Message')
 const PrivateChat = require('../models/PrivateChat')
 const Friend = require('../models/Friend')
+const Thing = require('../models/Thing')
+const ThingType = require('../models/ThingType')
 
 class PagesService {
   async lobbi(user) {
@@ -395,6 +397,26 @@ class PagesService {
     }
 
     return cnt
+  }
+
+  async blogInventory() {
+    const data = {}
+
+    // Ключи
+    data.keys = await Thing.findAll({
+      where: {
+        thingtypeId: ThingType.thingTypes.KEY,
+      },
+    })
+
+    // Наборы открыток
+    data.bags = await Thing.findAll({
+      where: {
+        thingtypeId: ThingType.thingTypes.BAG,
+      },
+    })
+
+    return data
   }
 }
 

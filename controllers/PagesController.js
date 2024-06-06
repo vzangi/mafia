@@ -212,6 +212,17 @@ class PagesController {
       next()
     }
   }
+
+  // Страница блога об инвентаре
+  async blogInventory(req, res) {
+    try {
+      const data = await service.blogInventory()
+      res.render(`pages/blog/inventory`, data)
+    } catch (error) {
+      log(error)
+      next()
+    }
+  }
 }
 
 module.exports = new PagesController()

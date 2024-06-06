@@ -4,7 +4,6 @@ const pages = [
   'bans',
   'guidelines',
   'how-to-play',
-  'inventory',
   'payments',
   'ranks',
   'rules',
