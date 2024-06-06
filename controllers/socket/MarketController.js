@@ -24,6 +24,16 @@ class MarketController extends BaseSocketController {
     }
   }
 
+  // Покупка лота
+  async buyFromSystem(thingId, callback) {
+    try {
+      await this.service.buyFromSystem(thingId)
+      if (callback) callback({ status: 0 })
+    } catch (error) {
+      if (callback) callback({ status: 1, msg: error.message })
+    }
+  }
+
   // Продажа вещи
   async sell(offerId, callback) {
     try {

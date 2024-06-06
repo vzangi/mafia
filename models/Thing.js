@@ -24,6 +24,10 @@ const Thing = sequelize.define('things', {
   price: {
     type: DataTypes.FLOAT,
   },
+  systemPrice: {
+    type: DataTypes.FLOAT,
+    defaultValue: 0,
+  },
   forsale: {
     type: DataTypes.BOOLEAN,
   },

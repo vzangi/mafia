@@ -161,21 +161,24 @@ class MarketService {
   }
 
   // Процедура создания вещи
-  async createThing(
-    name,
-    description,
-    price,
-    forsale,
-    thingtypeId,
-    thingclassId,
-    thingcollectionId,
-    items,
-    picture
-  ) {
+  async createThing(thingData) {
+    const {
+      name,
+      description,
+      price,
+      systemPrice,
+      forsale,
+      thingtypeId,
+      thingclassId,
+      thingcollectionId,
+      items,
+      picture,
+    } = thingData
     if (
       !name ||
       !description ||
       !price ||
+      !systemPrice ||
       !thingtypeId ||
       !thingclassId ||
       !items ||
@@ -222,6 +225,7 @@ class MarketService {
       name,
       description,
       price,
+      systemPrice,
       forsale: forsale ? 1 : 0,
       thingtypeId,
       thingclassId,
@@ -273,23 +277,27 @@ class MarketService {
   }
 
   // Процедура обновления вещи
-  async updateThing(
-    id,
-    name,
-    description,
-    price,
-    forsale,
-    thingtypeId,
-    thingclassId,
-    thingcollectionId,
-    items,
-    picture
-  ) {
+  async updateThing(thingData) {
+    const {
+      id,
+      name,
+      description,
+      price,
+      systemPrice,
+      forsale,
+      thingtypeId,
+      thingclassId,
+      thingcollectionId,
+      items,
+      picture,
+    } = thingData
+
     if (
       !id ||
       !name ||
       !description ||
       !price ||
+      !systemPrice ||
       !thingtypeId ||
       !thingclassId ||
       !items
@@ -311,6 +319,7 @@ class MarketService {
     thing.name = name
     thing.description = description
     thing.price = price
+    thing.systemPrice = systemPrice
     thing.forsale = forsale ? 1 : 0
     thing.thingtypeId = thingtypeId
     thing.thingclassId = thingclassId

@@ -14,6 +14,20 @@ $(function () {
     })
   })
 
+  $('.market-list').on('click', '.buy-from-system', function () {
+    const { id } = $(this).data()
+    if (!id) return alert('Упс!')
+    confirm('Купить этот лот?').then((accept) => {
+      if (!accept) return
+      socket.emit('market.buy.system', id, (res) => {
+        const { status, msg } = res
+        if (status != 0) return alert(msg)
+
+        notify('Покупка успешно проведена!')
+      })
+    })
+  })
+
   $('.market-list').on('click', '.take-back', function () {
     const { id } = $(this).data()
     if (!id) return alert('Упс!')

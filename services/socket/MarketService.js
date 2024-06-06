@@ -143,6 +143,42 @@ class MarketService extends BaseService {
     }
   }
 
+  // Покупка лота в системе
+  async buyFromSystem(thingId) {
+    const { user } = this
+    if (!user) {
+      throw new Error('Не авторизован')
+    }
+    if (!thingId) {
+      throw new Error('Нет необходимых данных')
+    }
+
+    const thing = await Thing.findByPk(thingId)
+
+    if (!thing) {
+      throw new Error('Лот не найден')
+    }
+
+    if (thing.systemPrice == 0)
+      throw new Error('Нельзя купить этот лот в системе')
+
+    const account = await Account.findByPk(user.id)
+
+    if (account.wallet < thing.systemPrice) {
+      throw new Error(
+        `На счету должно быть как мимнимум ${thing.systemPrice} рублей, чтобы купить этот лот`
+      )
+    }
+
+    // Провожу покупку
+    await WalletEvent.buyItem(user.id, thing.systemPrice, thingId)
+
+    await AccountThing.create({
+      accountId: user.id,
+      thingId,
+    })
+  }
+
   // Продажа вещи
   async sell(thingId) {
     const { user } = this

@@ -143,28 +143,8 @@ class MarketController extends BaseAdminController {
   // Процедура создания вещи
   async createThing(req, res, next) {
     try {
-      const {
-        name,
-        description,
-        price,
-        forsale,
-        thingtypeId,
-        thingclassId,
-        thingcollectionId,
-        items,
-      } = req.body
-      const { file } = req.files
-      await service.createThing(
-        name,
-        description,
-        price,
-        forsale,
-        thingtypeId,
-        thingclassId,
-        thingcollectionId,
-        items,
-        file
-      )
+      const { picture } = req.files
+      await service.createThing({ ...req.body, picture })
       res.redirect('/market/things')
     } catch (error) {
       next(error)
@@ -185,33 +165,8 @@ class MarketController extends BaseAdminController {
   // Процедура обновления вещи
   async updateThing(req, res, next) {
     try {
-      const {
-        id,
-        name,
-        description,
-        price,
-        forsale,
-        thingtypeId,
-        thingclassId,
-        thingcollectionId,
-        items,
-      } = req.body
-      let file = null
-      if (req.files) {
-        file = req.files.file
-      }
-      await service.updateThing(
-        id,
-        name,
-        description,
-        price,
-        forsale,
-        thingtypeId,
-        thingclassId,
-        thingcollectionId,
-        items,
-        file
-      )
+      const picture = req.files ? req.files.file : null
+      await service.updateThing({ ...req.body, picture })
       res.redirect('/market/things')
     } catch (error) {
       next(error)

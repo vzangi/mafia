@@ -23,6 +23,10 @@ block main
         input(value=thing.price type="text" name="price" class="form-control" placeholder="Цена продажи" required)
 
       div(class="mb-3")
+        label(class="form-label") Цена покупки в системе
+        input(value=thing.systemPrice type="text" name="systemPrice" class="form-control" placeholder="Цена покупки в системе" required)
+
+      div(class="mb-3")
         if thing.forsale
           input(class="form-check-input" type="checkbox" value="on" name="forsale" checked)
         else

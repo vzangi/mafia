@@ -44,7 +44,9 @@ block main
           td
             div(class="desc" title=thing.description)= thing.description
           td
-            span= thing.price 
+            span(title="Цена продажи")= thing.price
+            span  / 
+            span(title="Цена покупки в системе")= thing.systemPrice
           td
             span(class='thing-class thing-class-'+thing.thingclass.id)= thing.thingclass.name
             br

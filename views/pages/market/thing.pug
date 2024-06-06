@@ -6,9 +6,9 @@ block head
 block main
   div(class="block mb-4")
     div(class="p-4 bb-1-gray")
-      h4 Предложения
+      h4 Предложения игроков
     div(class="market-list")
-      if thingOffers.length == 0
+      if thingOffers.length == 0 
         p(class="p-4") В данный момент никто не продаёт этот предмет
       else 
         each offer in thingOffers
@@ -36,6 +36,33 @@ block main
                   button(class="btn btn-sm btn-success buy" data-id=offer.id) Купить
 
 
+  if systemItem 
+    div(class="block mb-4")
+      div(class="p-4 bb-1-gray")
+        h4 Предложение системы
+
+      div(class="market-list")
+
+        div(class="thing-item bb-1-gray")
+
+          div(class="thing-line")
+            div(class="thing-image")
+              img(src="/uploads/thing/"+systemItem.picture alt=thing.name)
+            div(class="thing-name-box")
+              div(class="thing-name")= systemItem.name
+              div
+                span(class="thing-class thing-class-"+systemItem.thingclass.id)= `${systemItem.thingclass.name} класс`
+
+          div(class="thing-line")
+            div(class="offer-account")
+              div(style='width:50px')
+                include /includes/svg-icon
+
+            div(class="thing-price-box")
+              span= `${systemItem.systemPrice} р.`
+              button(class="btn btn-sm btn-success buy-from-system" data-id=thing.id) Купить
+
+
 block aside 
   div(class="block mb-4 sticky-top")
     div(class="thing-name-block p-3 thing-class-"+thing.thingclass.id)
@@ -60,4 +87,4 @@ block aside
 
 block scripts 
   if currentAccount
-    script(src="/js/market/thing.js?v=1.0")
+    script(src="/js/market/thing.js?v=1.1")
