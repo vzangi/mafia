@@ -48,8 +48,7 @@ block article
           p
             a(href="/market/thing/1")
               img(src="/uploads/thing/vip-week.svg" alt="VIP пропуск на неделю" width=200)
-          p(class="text-center")
-            button(class="btn btn-success btn-bye-vip ps-4 pe-4" data-item="1") Купить
+
 
         div 
           p 
@@ -57,12 +56,8 @@ block article
           p
             a(href="/market/thing/2")
               img(src="/uploads/thing/vip-month.svg" alt="VIP пропуск на месяц" width=200)
-          p(class="text-center")
-            button(class="btn btn-success btn-bye-vip ps-4 pe-4" data-item="2") Купить
+
 
 block aside
   include /includes/blog-menu
   +blog_menu('vip')
-
-block scripts 
-  script(src="/js/blog/vip.js")
