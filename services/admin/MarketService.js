@@ -178,7 +178,6 @@ class MarketService {
       !name ||
       !description ||
       !price ||
-      !systemPrice ||
       !thingtypeId ||
       !thingclassId ||
       !items ||
@@ -297,7 +296,6 @@ class MarketService {
       !name ||
       !description ||
       !price ||
-      !systemPrice ||
       !thingtypeId ||
       !thingclassId ||
       !items
