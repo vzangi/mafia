@@ -143,7 +143,7 @@ class MarketController extends BaseAdminController {
   // Процедура создания вещи
   async createThing(req, res, next) {
     try {
-      const { picture } = req.files
+      const picture = req.files ? req.files.file : null
       await service.createThing({ ...req.body, picture })
       res.redirect('/market/things')
     } catch (error) {
