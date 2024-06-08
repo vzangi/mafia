@@ -676,7 +676,7 @@ class InventoryService extends BaseService {
 	// Получение случайного класса для подарочного набора или кейса
 	_getRndClass(nabor = false) {
 		// Случайное число, для определения класса
-		const rnd = Math.random() * (nabor ? 2 : 1)
+		const rnd = Math.random() * (nabor ? 1.1 : 1)
 
 		console.log('Шанс: ', rnd)
 
