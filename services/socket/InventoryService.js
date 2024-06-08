@@ -305,7 +305,7 @@ class InventoryService extends BaseService {
 			throw new Error('Не удалось открыть набор, попробуй ещё раз')
 		}
 
-		log(`Получает ${thing.name}`)
+		log(`Получает ${thing.thing.name}`)
 
 		// Создаю новую вещь в инвентаре игрока
 		const newThing = await AccountThing.create({
@@ -395,7 +395,7 @@ class InventoryService extends BaseService {
 			throw new Error('Не удалось открыть набор, попробуй ещё раз')
 		}
 
-		log(`Получает ${thing.name}`)
+		log(`Получает ${thing.thing.name}`)
 
 		// Создаю новую вещь в инвентаре
 		const newThing = await AccountThing.create({
@@ -676,7 +676,7 @@ class InventoryService extends BaseService {
 	// Получение случайного класса для подарочного набора или кейса
 	_getRndClass(nabor = false) {
 		// Случайное число, для определения класса
-		const rnd = Math.random() * nabor ? 2 : 1
+		const rnd = Math.random() * (nabor ? 2 : 1)
 
 		console.log('Шанс: ', rnd)
 
