@@ -8,6 +8,7 @@ const sequelize = require('../../units/db')
 const BaseService = require('./BaseService')
 const GamePlayer = require('../../models/GamePlayer')
 const AccountSetting = require('../../models/AccountSetting')
+const { log } = require('../../units/customLog')
 
 // id типов вещей
 const { thingTypes } = ThingType
@@ -282,6 +283,8 @@ class InventoryService extends BaseService {
 			throw new Error('Вещь не является подарочным набором')
 		}
 
+		log(`${user.id} открывает набор ${nabor.thing.name}`)
+
 		// Получаю класс предмета, который будет получен из набора
 		const thingclassId = this._getRndClass(true)
 
@@ -292,6 +295,7 @@ class InventoryService extends BaseService {
 				{
 					model: Thing,
 					where: { thingclassId },
+					required: true,
 				},
 			],
 			order: sequelize.random(),
@@ -300,6 +304,8 @@ class InventoryService extends BaseService {
 		if (!thing) {
 			throw new Error('Не удалось открыть набор, попробуй ещё раз')
 		}
+
+		log(`Получает ${thing.name}`)
 
 		// Создаю новую вещь в инвентаре игрока
 		const newThing = await AccountThing.create({
@@ -367,6 +373,8 @@ class InventoryService extends BaseService {
 			)
 		}
 
+		log(`${user.id} открывает кейс ${keis.thing.name}`)
+
 		// Получаю класс предмета, который будет получен из кейса
 		const thingclassId = this._getRndClass()
 
@@ -377,6 +385,7 @@ class InventoryService extends BaseService {
 				{
 					model: Thing,
 					where: { thingclassId },
+					required: true,
 				},
 			],
 			order: sequelize.random(),
@@ -385,6 +394,8 @@ class InventoryService extends BaseService {
 		if (!thing) {
 			throw new Error('Не удалось открыть набор, попробуй ещё раз')
 		}
+
+		log(`Получает ${thing.name}`)
 
 		// Создаю новую вещь в инвентаре
 		const newThing = await AccountThing.create({
@@ -666,6 +677,8 @@ class InventoryService extends BaseService {
 	_getRndClass(nabor = false) {
 		// Случайное число, для определения класса
 		const rnd = Math.random() * nabor ? 2 : 1
+
+		console.log('Шанс: ', rnd)
 
 		if (!nabor && rnd < 0.001) return 5 // Эксклюзивный
 		if (rnd < 0.005) return 4 // Высочайший
