@@ -8,7 +8,7 @@ const sequelize = require('../../units/db')
 const BaseService = require('./BaseService')
 const GamePlayer = require('../../models/GamePlayer')
 const AccountSetting = require('../../models/AccountSetting')
-const { log } = require('../../units/customLog')
+const log = require('../../units/customLog')
 
 // id типов вещей
 const { thingTypes } = ThingType
