@@ -112,7 +112,7 @@ class MarketService extends BaseService {
 
     if (account.wallet < thing.marketPrice) {
       throw new Error(
-        `На счету должно быть как мимнимум ${thing.marketPrice} рублей, чтобы купить этот лот`
+        `На счету должно быть как минимум ${thing.marketPrice} рублей, чтобы купить этот лот`
       )
     }
 
@@ -166,7 +166,7 @@ class MarketService extends BaseService {
 
     if (account.wallet < thing.systemPrice) {
       throw new Error(
-        `На счету должно быть как мимнимум ${thing.systemPrice} рублей, чтобы купить этот лот`
+        `На счету должно быть как минимум ${thing.systemPrice} рублей, чтобы купить этот лот`
       )
     }
 
